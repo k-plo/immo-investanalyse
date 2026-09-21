@@ -57,7 +57,7 @@ Dokumente importieren
 
 1. **Ordner befüllen** – Lege unter `objekte/<objektname>/unterlagen/` alle Dokumente ab (PDF, Fotos, Scans). Nutze die Vorlage `objekte/_VORLAGE/unterlagen/README.md` als Checkliste.
 2. **Analyse starten** – Sag mir: *„Analysiere das Objekt `<objektname>`"*. Ich lese sämtliche Dokumente vollständig und fülle `analyse/01_datenbasis.md` (inkl. Quellenverzeichnis) und `analyse/02_dokumentenpruefung.md` aus.
-3. **Kalkulation** – Ich trage alle belegten Zahlen in `tools/kalkulation.html` ein (oder du selbst im Browser) und sichere das Ergebnis als `analyse/03_kalkulation.json` + `analyse/04_investmentbericht.md`.
+3. **Kalkulation** – Ich trage alle belegten Zahlen in `tools/kalkulation.html` ein (oder du selbst im Browser) und sichere das Ergebnis als `analyse/03_kalkulation.json` + `analyse/04_investmentbericht.md` + `analyse/05_mietempfehlung.md` (Standard-Struktur, siehe Abschnitt 2).
 4. **Ergebnis** – Du erhältst den Investmentbericht im Standardformat (siehe unten) mit Ampel-Status.
 
 ---
@@ -76,7 +76,8 @@ Immo/
 │   │       ├── 01_datenbasis.md
 │   │       ├── 02_dokumentenpruefung.md
 │   │       ├── 03_kalkulation.json
-│   │       └── 04_investmentbericht.md
+│   │       ├── 04_investmentbericht.md
+│   │       └── 05_mietempfehlung.md
 │   ├── Arnsbach (Kerstenhausener Str.)/
 │   │   ├── Arnsbach_..._Übersicht.html      ← interaktive Übersicht
 │   │   ├── Arnsbach_..._Übersicht_State.json ← Fail-Safe-Kopie
@@ -94,7 +95,21 @@ Immo/
     └── rechenkern.py              ← gleiche Logik in Python (prüfbar/nachvollziehbar)
 ```
 
-**💡 Die interaktive Übersicht** (`<Objektname>_Übersicht.html`) liegt **direkt im Objektordner** (nicht in `analyse/`), damit man sie schnell findet. Sie kombiniert Kalkulationstool + Entscheidungsübersicht: Zahlen oben ändern → alles rechnet live. Änderungen werden automatisch im Browser gespeichert; für dauerhafte Sicherung „💾 State speichern (Download)" klicken – die JSON landet im Download-Ordner (Browser-Standard) und wird dann **in den Objektordner verschoben**.
+**� Standard-Analyse-Struktur (User-Vorgabe 21.09.2026, verbindlich für alle NEUEN Objekte):**
+
+Jede Objekt-Analyse besteht aus genau **5 Dateien** in `objekte/<Name>/analyse/`:
+
+| Datei | Inhalt |
+|---|---|
+| `01_datenbasis.md` | Alle Objektdaten mit Kennzeichnung (BELEGT/ABGELEITET/ANNAHME/UNBEKANNT) + Quellen + Widersprüche + fehlende Infos (priorisiert) |
+| `02_dokumentenpruefung.md` | Dokumentenbewertung, Grundbuchanalyse, Flächenprüfung, technische Due Diligence, Mietverhältnis, Chancen, Risikoanalyse, Fragenliste |
+| `03_kalkulation.json` | Maschinenlesbare Kalkulation im Haarhausen-Schema: `objekt` / `kauf` / `miete` (inkl. `mietempfehlung`) / `laufende_kosten` / `finanzierung` (inkl. `zinsrecherche`) / `weg` / `annahmen` / `quellen` / `widersprueche` – Metadaten (adresse, objektart, baujahr, zimmer, stellplaetze) im `objekt`-Block sind Pflicht (DB + Portfolio lesen sie daraus!) |
+| `04_investmentbericht.md` | Investment-Report (Objekt, Wirtschaftlichkeit, Chancen, Risiken, Dokumentenstatus, Due Diligence, Verhandlung) + INVESTMENT-STATUS (Ampel) |
+| `05_mietempfehlung.md` | Mietempfehlung mit Herleitung (Regionalvergleich), objektspezifische Faktoren, Tragfähigkeit mit Nutzer-Vorgaben, Szenarien, Quellen, nächste Schritte |
+
+**Referenz/Muster = `objekte/Haarhausen/analyse/`** – Aufbau, Abschnitte und Kennzeichnung daran orientieren. Bestehende Analysen (z. B. Kerstenhausen) bleiben unverändert.
+
+**�💡 Die interaktive Übersicht** (`<Objektname>_Übersicht.html`) liegt **direkt im Objektordner** (nicht in `analyse/`), damit man sie schnell findet. Sie kombiniert Kalkulationstool + Entscheidungsübersicht: Zahlen oben ändern → alles rechnet live. Änderungen werden automatisch im Browser gespeichert; für dauerhafte Sicherung „💾 State speichern (Download)" klicken – die JSON landet im Download-Ordner (Browser-Standard) und wird dann **in den Objektordner verschoben**.
 
 ---
 

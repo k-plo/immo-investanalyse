@@ -7,8 +7,8 @@
 
 ## 🕐 Letzter Stand
 
-**Datum:** 18.09.2026
-**Letzte Aktion:** Portfolio-Button „Aktualisieren" mit Handle-Merken (IndexedDB) versehen – keine erneute Ordner-Freigabe mehr nötig (nur 1× nach Browser-Neustart eine kurze Berechtigungs-Nachfrage).
+**Datum:** 21.09.2026
+**Letzte Aktion:** Standard-Analyse-Struktur als verbindliche Konvention dokumentiert (README.md Abschnitt 2 + hier): 5 Dateien pro Objekt (01–05), Muster = Haarhausen. Bestehende Dateien bleiben unverändert (User-Wunsch). Zuvor: Git/GitHub eingerichtet (Repo `k-plo/immo-investanalyse`, alle Änderungen werden committed + gepusht).
 
 ---
 
@@ -55,6 +55,7 @@
 
 ## 🔧 Bekannte Eigenheiten / Wichtige Regeln
 
+- **📐 Standard-Analyse-Struktur (21.09., verbindlich für NEUE Objekte):** genau 5 Dateien in `objekte/<Name>/analyse/` – `01_datenbasis.md` · `02_dokumentenpruefung.md` · `03_kalkulation.json` · `04_investmentbericht.md` · `05_mietempfehlung.md`. Muster = Haarhausen. `03_kalkulation.json` im Haarhausen-Schema (Metadaten adresse/objektart/baujahr/zimmer/stellplaetze im `objekt`-Block sind Pflicht – DB + Portfolio lesen sie daraus). ⚠️ Bestehende Dateien NICHT ändern (User-Wunsch 21.09.) – Kerstenhausen hat bewusst kein 05 + eigenes JSON-Schema, bleibt so
 - **NIEMALS `localStorage.clear()`** auf User-Daten (hat einmal User-State zerstört)
 - Chrome: Directory-Handle-Berechtigungen verfallen nach Browser-Neustart → 1 kurze Nachfrage nötig (nicht umgehbar)
 - Übersichten schreiben State-JSON nur bei Eingabe-Events; ohne Ordner-Berechtigung läuft Auto-Sync still ins Leere
@@ -92,4 +93,4 @@
 
 ---
 
-*Diese Datei wird nach jeder Session aktualisiert. Letztes Update: 18.09.2026*
+*Diese Datei wird nach jeder Session aktualisiert. Letztes Update: 21.09.2026*
