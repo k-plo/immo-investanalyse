@@ -1,0 +1,38 @@
+# ===== Geheimnisse / Zugangsdaten (NIEMALS committen!) =====
+*.key
+*.pem
+*.p12
+*.pfx
+secrets.*
+credentials.*
+.env
+.env.*
+
+# ===== Datenbank (wird lokal generiert) =====
+immo_datenbank.db
+immo_datenbank.db-journal
+immo_datenbank.db-wal
+immo_datenbank.db-shm
+
+# ===== Betriebssystem / Editor =====
+Thumbs.db
+desktop.ini
+.DS_Store
+~$*
+*.tmp
+*.bak
+*.swp
+*~
+
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# ===== Node (falls später nötig) =====
+node_modules/
+
+# ===== Git selbst =====
+*.orig

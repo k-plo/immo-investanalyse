@@ -1,0 +1,78 @@
+{
+  "objekt": {
+    "name": "Kerstenhausen – Am Kindergarten 2",
+    "adresse": "Am Kindergarten 2, 34582 Borken-Kerstenhausen",
+    "objektart": "Einfamilienhaus, freistehend, 2 Etagen, vollunterkellert",
+    "baujahr": 1965,
+    "baujahr_hinweis": "Baugenehmigung 30.10.1954 (Typ 13d, Siedlung Altenburg) vs. 1965 (Ebay/Energieausweis) – Widerspruch klären",
+    "wohnflaeche_m2": 117.0,
+    "wohnflaeche_hinweis": "Ebay 117 m² vs. Bauplan 1954: 104 m² (EG 51,90 + OG 52,07) – Widerspruch klären",
+    "nutzflaeche_m2": 60.0,
+    "grundstuecksflaeche_m2": 570.0,
+    "anzahl_einheiten": 1,
+    "zimmer": 4,
+    "schlafzimmer": 3,
+    "baeder": 2,
+    "etage": 2,
+    "stellplaetze": 1,
+    "balkon_terrasse_m2": 12.0,
+    "balkone": 2,
+    "keller": "vollunterkellert (Werkstatt/Hobby/Stauraum)",
+    "einliegerwohnung": "lt. Ebay vorhanden – Details UNBEKANNT (wo? vermietet?)",
+    "energieklasse": "Bedarfsausweis 341 kWh/(m2*a) – Klasse H; Öl-Zentralheizung; Ausstellung 17.10.2024, gültig bis 17.02.2036",
+    "heizung": "Öl-Zentralheizung",
+    "bauweise": "Massiv: Keller Beton, EG/OG Gitterziegel-Hohlblocksteine, Holzbalkendecken (Lehmschlag), Doppel-Tonfalzziegel",
+    "umbauter_raum_m3": 599.75,
+    "bebaute_flaeche_m2": 77.12
+  },
+  "kauf": {
+    "angebotspreis_eur": 152100.0,
+    "grunderwerbsteuer_prozent": 6.0,
+    "notar_prozent": 2.0,
+    "grundbuch_prozent": 0.0,
+    "makler_prozent": 3.57,
+    "makler_anteil_verkaeufer_prozent": 0,
+    "renovierung_eur": 25000.0,
+    "sanierung_eur": 40000.0,
+    "sonstige_erwerbskosten_eur": 0.0,
+    "renovierung_sanierung_status": "ANNAHME: Reno 25.000 EUR (kosmetisch: Maler, Böden, Bad, Küche); Sanierung 40.000 EUR (Energie H → Dämmung/Fenster/Heizung anteilig; Komplettsanierung wäre mehr) – nach Besichtigung anpassen"
+  },
+  "miete": {
+    "kaltmiete_monatlich_eur": 800.0,
+    "nebenkosten_monatlich_eur": 0.0,
+    "leerstand_wochen_pro_jahr": 4,
+    "marktuebliche_miete_eur": 820.0,
+    "mietrueckstaende_eur": 0.0,
+    "mietstatus": "UNBEKANNT ob vermietet; Einliegerwohnung lt. Ebay (Details offen)",
+    "mietempfehlung": {
+      "empfohlene_kaltmiete_eur": 800.0,
+      "spanne_eur": [780.0, 860.0],
+      "eur_pro_m2": 6.84,
+      "status": "ABGELEITET (Regionalvergleich: Homeday-Preisatlas Nachbarorte 5,50–8,80 EUR/m², Dorf-Segment ~6,40–7,00 minus Zustands-/Energieabschlag Klasse H)",
+      "begruendung": "Kerstenhausen = Borkener Stadtteil (Dorf). Homeday-Nachbarorte: Frielendorf 5,90 · Wabern 6,40 · Bad Zwesten 6,70 · Homberg 6,50 · Fritzlar 8,80 EUR/m². Energie H (341 kWh) drückt Mietpotenzial → ~7,00 EUR/m² ≈ 820 EUR; konservativ 800 EUR eingetragen",
+      "details": "siehe analyse/03_kalkulation.md"
+    }
+  },
+  "laufende_kosten": {
+    "hausgeld_monatlich_eur": 0.0,
+    "verwaltung_prozent_von_miete": 0.0,
+    "instandhaltung_prozent_von_miete": 10.0,
+    "nicht_umlagefaehige_kosten_monatlich_eur": 0.0,
+    "status": "EFH ohne WEG: Hausgeld 0 (Tool rechnet 3 % Verwaltungspauschale); Instandhaltung 10 % = NUTZER-VORGABE"
+  },
+  "finanzierung": {
+    "eigenkapital_eur": 20000.0,
+    "zins_prozent": 3.5,
+    "tilgung_prozent": 2.0,
+    "zins_status": "ANNAHME Marktmitte; ⚠️ Live-Recherche 18.09. (Vergleich.de/Dr. Klein): 4,67–5,55 % bei 12/20 J. Bindung – Niveau scheinbar höher als CHECK24-Beispiel (3,02–3,77 %, 10 J., 16.09.) – bei Bankgespräch frisch prüfen"
+  },
+  "dokumente": {
+    "vorhanden": ["Ebay-Kleinanzeigen-Beschreibung (docx)", "Baubeschreibung + Baugenehmigung 1954 (Scan, 8 S.)", "Baugenehmigung 1999 (Windfang-Überdachung, B-03191-99-16)", "Flurkarte Geoportal Hessen 24.10.2024 (Flur 1, Flurstück 26/10)"],
+    "fehlend": ["Grundbuchauszug 🔴", "Energieausweis-Original", "Mietvertrag(e)", "Aktueller Bestandsgrundriss", "Sanierungsnachweise"]
+  },
+  "quellen": {
+    "expose": "Beschreibung Ebay Kleinanzeigen.docx (152.100 €, 117 m², 4 Zi., 570 m², BJ 1965, Energie H/341 kWh, Öl-ZH, Provision 3,57 %)",
+    "bauplaene": "2a2b30f3-….pdf (8 S., Scan): Baubeschreibung 1954, Baugenehmigung 1999, Flurkarte, Grundrisse Keller/EG/OG, Ansichten/Schnitt",
+    "flurkarte": "0ce7f76c-….pdf (1 S.): Geoportal Hessen, 24.10.2024"
+  }
+}

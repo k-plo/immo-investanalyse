@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Immobilien-Kalkulationstool</title>
+<style>
+  :root {
+    --bg: #0f1420; --panel: #171e2e; --panel2: #1d2740; --border: #2a3650;
+    --text: #e8edf7; --muted: #93a1bd; --accent: #4f8cff; --accent2: #7ee2b8;
+    --warn: #ffb454; --bad: #ff6b6b; --good: #4cd97b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: "Segoe UI", system-ui, sans-serif; font-size: 14px; line-height: 1.45; }
+  header { padding: 18px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+  header h1 { font-size: 20px; font-weight: 600; }
+  header .sub { color: var(--muted); font-size: 12px; }
+  main { display: grid; grid-template-columns: 380px 1fr; gap: 18px; padding: 18px 24px; max-width: 1500px; margin: 0 auto; }
+  @media (max-width: 1000px) { main { grid-template-columns: 1fr; } }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+  .card h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--accent); margin-bottom: 12px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .field { display: flex; flex-direction: column; gap: 3px; }
+  .field label { font-size: 11.5px; color: var(--muted); }
+  .field input, .field select { background: var(--panel2); border: 1px solid var(--border); color: var(--text); border-radius: 6px; padding: 7px 9px; font-size: 13.5px; width: 100%; }
+  .field input:focus, .field select:focus { outline: none; border-color: var(--accent); }
+  .field .hint { font-size: 10.5px; color: var(--muted); }
+  .full { grid-column: 1 / -1; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; margin-bottom: 16px; }
+  .kpi { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+  .kpi .v { font-size: 20px; font-weight: 700; margin-top: 2px; }
+  .kpi .l { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+  .kpi .s { font-size: 10.5px; color: var(--muted); margin-top: 2px; }
+  .pos { color: var(--good); } .neg { color: var(--bad); } .neu { color: var(--warn); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 7px 9px; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .05em; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .badge { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .b-green { background: rgba(76,217,123,.15); color: var(--good); }
+  .b-yellow { background: rgba(255,180,84,.15); color: var(--warn); }
+  .b-orange { background: rgba(255,140,66,.18); color: #ff9d5c; }
+  .b-red { background: rgba(255,107,107,.15); color: var(--bad); }
+  .b-gray { background: rgba(147,161,189,.15); color: var(--muted); }
+  .note { font-size: 11.5px; color: var(--muted); margin-top: 8px; }
+  .btn { background: var(--accent); color: #fff; border: none; border-radius: 7px; padding: 8px 14px; font-size: 13px; cursor: pointer; font-weight: 600; }
+  .btn.secondary { background: var(--panel2); border: 1px solid var(--border); color: var(--text); font-weight: 500; }
+  .btn:hover { filter: brightness(1.1); }
+  .toolbar { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+  .section-title { font-size: 13px; font-weight: 700; margin: 18px 0 8px; color: var(--text); }
+  .bar { height: 8px; border-radius: 4px; background: var(--panel2); overflow: hidden; margin-top: 4px; }
+  .bar > div { height: 100%; background: var(--accent); }
+  footer { padding: 14px 24px 30px; color: var(--muted); font-size: 11.5px; max-width: 1500px; margin: 0 auto; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🏠 Immobilien-Kalkulationstool</h1>
+  <span class="sub">Wirtschaftlichkeit · Finanzierungsszenarien · Stress-Tests · Break-Even — alle Berechnungen lokal im Browser</span>
+</header>
+
+<main>
+  <!-- ============ EINGABEN ============ -->
+  <div id="inputs">
+
+    <div class="card">
+      <h2>Objekt</h2>
+      <div class="grid2">
+        <div class="field full"><label>Objektname / Adresse</label><input id="objName" placeholder="z. B. Musterstr. 12, Berlin"></div>
+        <div class="field"><label>Wohnfläche (m²)</label><input id="flaeche" type="number" step="0.1" placeholder="72,4"></div>
+        <div class="field"><label>Anzahl Einheiten</label><input id="einheiten" type="number" step="1" value="1"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Kauf &amp; Erwerbskosten</h2>
+      <div class="grid2">
+        <div class="field"><label>Angebotspreis (€)</label><input id="preis" type="number" placeholder="189000"></div>
+        <div class="field"><label>Renovierung (€)</label><input id="renovierung" type="number" placeholder="0"></div>
+        <div class="field"><label>Sanierung (€)</label><input id="sanierung" type="number" placeholder="0"></div>
+        <div class="field"><label>Sonstige Erwerbskosten (€)</label><input id="sonstige" type="number" placeholder="0"></div>
+        <div class="field"><label>Grunderwerbsteuer (%)</label><input id="grESt" type="number" step="0.1" placeholder="6,0"><span class="hint">ANNAHME, falls nicht belegt</span></div>
+        <div class="field"><label>Notar + Grundbuch (%)</label><input id="notar" type="number" step="0.1" placeholder="2,0"><span class="hint">≈ 1,5–2,0 %</span></div>
+        <div class="field"><label>Makler (%)</label><input id="makler" type="number" step="0.1" placeholder="3,57"><span class="hint">Käuferanteil, 0 falls belegt</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Miete &amp; laufende Kosten</h2>
+      <div class="grid2">
+        <div class="field"><label>Kaltmiete ges./Monat (€)</label><input id="kaltmiete" type="number" placeholder="850"></div>
+        <div class="field"><label>Marktübliche Miete (€)</label><input id="marktmiete" type="number" placeholder="0"><span class="hint">0 = unbekannt</span></div>
+        <div class="field"><label>Hausgeld ges./Monat (€)</label><input id="hausgeld" type="number" placeholder="250"><span class="hint">bei ETW; 0 falls nicht zutreffend</span></div>
+        <div class="field"><label>davon nicht umlagefähig (€)</label><input id="hausgeldNichtUml" type="number" placeholder="60"><span class="hint">z. B. Verwaltung, Rücklage</span></div>
+        <div class="field"><label>Verwaltung (% der KM)</label><input id="verwaltung" type="number" step="0.1" placeholder="3"><span class="hint">bei ETW meist im Hausgeld</span></div>
+        <div class="field"><label>Instandhaltung (% der KM)</label><input id="instand" type="number" step="0.1" placeholder="10"><span class="hint">Rückstellung, z. B. 8–15 %</span></div>
+        <div class="field"><label>Leerstand (Wochen/Jahr)</label><input id="leerstand" type="number" step="0.5" placeholder="0"><span class="hint">0 = voll vermietet (belegt)</span></div>
+        <div class="field"><label>Mietrückstände (€)</label><input id="rueckstaende" type="number" placeholder="0"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Finanzierung</h2>
+      <div class="grid2">
+        <div class="field"><label>Eigenkapital (€)</label><input id="ek" type="number" placeholder="50000"></div>
+        <div class="field"><label>Zinssatz (%)</label><input id="zins" type="number" step="0.01" placeholder="3,5"><span class="hint">ANNAHME, falls kein Angebot</span></div>
+        <div class="field"><label>Anfängliche Tilgung (%)</label><input id="tilgung" type="number" step="0.01" placeholder="2,0"></div>
+        <div class="field"><label>Zinsbindung (Jahre)</label><input id="bindung" type="number" placeholder="10"></div>
+        <div class="field"><label>Finanzierungsnebenkosten (€)</label><input id="finNk" type="number" placeholder="0"><span class="hint">z. B. Bürgschaft, Konto</span></div>
+      </div>
+      <div class="note">Beleihungsauslauf: Darlehen = Gesamtinvestition − Eigenkapital (max. 100 % Finanzierung im Modell).</div>
+    </div>
+
+    <div class="card">
+      <h2>WEG (nur Eigentumswohnung)</h2>
+      <div class="grid2">
+        <div class="field"><label>Instandhaltungsrücklage (€)</label><input id="ruecklage" type="number" placeholder="0"></div>
+        <div class="field"><label>Geplante Sonderumlagen (€)</label><input id="sonderumlage" type="number" placeholder="0"></div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <button class="btn" onclick="exportJson()">💾 Kalkulation exportieren (JSON)</button>
+      <button class="btn secondary" onclick="importJson()">📂 JSON laden</button>
+      <button class="btn secondary" onclick="resetAll()">↩︎ Zurücksetzen</button>
+    </div>
+    <input type="file" id="fileInput" accept=".json" style="display:none" onchange="loadFile(event)">
+  </div>
+
+  <!-- ============ ERGEBNISSE ============ -->
+  <div id="results">
+    <div class="kpi-grid" id="kpis"></div>
+
+    <div class="card">
+      <h2>Erwerbsrechnung</h2>
+      <table id="tblErwerb"></table>
+    </div>
+
+    <div class="card">
+      <h2>Rendite &amp; Cashflow (Ist-Zustand)</h2>
+      <table id="tblRendite"></table>
+    </div>
+
+    <div class="card">
+      <h2>Finanzierungsszenarien</h2>
+      <div class="note" style="margin:0 0 8px">A = konservativ (mehr EK, weniger Schulden) · B = ausgewogen · C = hoher Fremdkapitalanteil. Szenario B nutzt deine Eingaben; A/C variieren EK-Anteil ±15 Prozentpunkte.</div>
+      <table id="tblSzenarien"></table>
+    </div>
+
+    <div class="card">
+      <h2>Stress-Tests</h2>
+      <div class="note" style="margin:0 0 8px">Jeweils eine Belastung einzeln, auf Basis deines Basisszenarios. Negativer Cashflow = Zuzahlung pro Monat nötig.</div>
+      <table id="tblStress"></table>
+    </div>
+
+    <div class="card">
+      <h2>Break-Even &amp; Verhandlungsspielraum</h2>
+      <table id="tblBreakeven"></table>
+      <div class="note">Modellrechnung auf Basis deiner Eingaben und Annahmen – kein objektiver „richtiger" Preis. Zielrendite einstellbar:</div>
+      <div class="grid2" style="margin-top:8px">
+        <div class="field"><label>Ziel-Bruttorendite (%)</label><input id="zielBrutto" type="number" step="0.1" value="4.0"></div>
+        <div class="field"><label>Ziel-Cashflow nach Finanzierung (€/Monat)</label><input id="zielCashflow" type="number" step="10" value="0"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Status-Bewertung (automatischer Vorschlag)</h2>
+      <div id="statusBox"></div>
+      <div class="note">Der Status ist ein Vorschlag aus den Zahlen. Dokumentenlage, Widersprüche und offene Punkte (siehe Analyse-Dateien) fließen nicht automatisch ein und können den Status ändern.</div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  ⚠️ Modellrechnung auf Basis der eingegebenen Daten. Keine rechtliche, steuerliche oder finanzielle Beratung – ersetzt keinen Notar, Rechtsanwalt oder Steuerberater. Fehlende Werte sind als ANNAHME gekennzeichnet und vor einer Entscheidung zu verifizieren.
+</footer>
+
+<script>
+"use strict";
+const F = id => parseFloat(String(document.getElementById(id).value).replace(",", ".")) || 0;
+const fmt = (v, d = 0) => v.toLocaleString("de-DE", { minimumFractionDigits: d, maximumFractionDigits: d });
+const eur = v => fmt(v, 0) + " €";
+const pct = v => fmt(v, 2).replace(".", ",") + " %";
+const cls = v => v > 0.005 ? "pos" : v < -0.005 ? "neg" : "neu";
+
+function readInputs() {
+  return {
+    name: document.getElementById("objName").value || "Unbenanntes Objekt",
+    flaeche: F("flaeche"), einheiten: F("einheiten") || 1,
+    preis: F("preis"), renovierung: F("renovierung"), sanierung: F("sanierung"), sonstige: F("sonstige"),
+    grESt: F("grESt"), notar: F("notar"), makler: F("makler"),
+    kaltmiete: F("kaltmiete"), marktmiete: F("marktmiete"),
+    hausgeld: F("hausgeld"), hausgeldNichtUml: F("hausgeldNichtUml"),
+    verwaltung: F("verwaltung"), instand: F("instand"),
+    leerstandWochen: F("leerstand"), rueckstaende: F("rueckstaende"),
+    ek: F("ek"), zins: F("zins"), tilgung: F("tilgung"), bindung: F("bindung"), finNk: F("finNk"),
+    ruecklage: F("ruecklage"), sonderumlage: F("sonderumlage"),
+    zielBrutto: F("zielBrutto") || 4, zielCashflow: F("zielCashflow")
+  };
+}
+
+function annuityRate(loan, zinsPct, tilgPct) {
+  return loan * (zinsPct + tilgPct) / 100 / 12;
+}
+
+function calc(d) {
+  const r = {};
+  // --- Erwerb ---
+  r.grESt = d.preis * d.grESt / 100;
+  r.notarGrB = d.preis * d.notar / 100;
+  r.makler = d.preis * d.makler / 100;
+  r.nebenkosten = r.grESt + r.notarGrB + r.makler + d.sonstige;
+  r.gesamtinvest = d.preis + r.nebenkosten + d.renovierung + d.sanierung;
+  r.kpProM2 = d.flaeche > 0 ? d.preis / d.flaeche : 0;
+  r.giProM2 = d.flaeche > 0 ? r.gesamtinvest / d.flaeche : 0;
+
+  // --- Miete & Kosten ---
+  const jahresKalt = d.kaltmiete * 12;
+  const leerstandFaktor = 1 - (d.leerstandWochen / 52);
+  r.mieteEffektiv = jahresKalt * leerstandFaktor;
+  r.hausgeldUml = Math.max(0, d.hausgeld - d.hausgeldNichtUml) * 12; // umlagefähig: vom Mieter getragen
+  r.hausgeldNichtUmlJahr = d.hausgeldNichtUml * 12;
+  r.verwaltungJahr = d.hausgeld > 0 ? 0 : jahresKalt * d.verwaltung / 100; // bei ETW im Hausgeld enthalten
+  r.instandJahr = jahresKalt * d.instand / 100;
+  r.nettoMiete = r.mieteEffektiv - r.hausgeldNichtUmlJahr - r.verwaltungJahr - r.instandJahr;
+
+  // --- Renditen ---
+  r.bruttoRendite = d.preis > 0 ? jahresKalt / d.preis * 100 : 0;
+  r.nettoRendite = d.preis > 0 ? r.nettoMiete / d.preis * 100 : 0;
+  r.nettoRenditeGI = r.gesamtinvest > 0 ? r.nettoMiete / r.gesamtinvest * 100 : 0;
+
+  // --- Finanzierung (Basis = Eingaben) ---
+  r.darlehen = Math.max(0, r.gesamtinvest - d.ek);
+  r.rateMonat = annuityRate(r.darlehen, d.zins, d.tilgung);
+  r.zinsJahr = r.darlehen * d.zins / 100;
+  r.cashflowVor = r.nettoMiete / 12;
+  r.cashflowNach = r.cashflowVor - r.rateMonat;
+  r.cashflowVorJahr = r.nettoMiete;
+  r.cashflowNachJahr = r.cashflowNach * 12;
+  r.ekRendite = d.ek > 0 ? r.cashflowNachJahr / d.ek * 100 : 0;
+  r.cashOnCash = d.ek > 0 ? (r.cashflowNachJahr + r.tilgungsanteilJahr) / d.ek * 100 : 0;
+  // Tilgungsanteil = Rate − Zinsanteil (Vermögensaufbau)
+  r.tilgungsanteilJahr = Math.max(0, r.rateMonat * 12 - r.zinsJahr);
+  r.cashOnCash = d.ek > 0 ? (r.cashflowNachJahr + r.tilgungsanteilJahr) / d.ek * 100 : 0;
+
+  // --- Break-Even ---
+  r.preisFuerZielBrutto = d.zielBrutto > 0 && jahresKalt > 0 ? jahresKalt / (d.zielBrutto / 100) : 0;
+  // Preis, bei dem Cashflow = Ziel: nettoMiete(p) /12 − annuity(gesamtinvest(p) − ek) = ziel
+  // linear lösen: nettoMiete skaliert mit Preis (Kosten fix angenommen)
+  const solvePrice = () => {
+    if (jahresKalt <= 0) return 0;
+    const nkProPreis = r.nebenkosten / (d.preis || 1); // %-basierte NK je € Kaufpreis
+    const fixInvest = d.renovierung + d.sanierung + d.sonstige; // fixe Investkosten (skalieren nicht mit KP)
+    const ziel = d.zielCashflow;
+    // CF(p) = nettoMiete/12 − (p*(1+nkProPreis) + fixInvest − ek)*zt − ziel = 0
+    // Miete bleibt fix (skaliert NICHT mit dem Preis)
+    const zt = (d.zins + d.tilgung) / 100 / 12;
+    const nenner = (1 + nkProPreis) * zt;
+    const p = nenner !== 0 ? (r.nettoMiete / 12 + (d.ek - fixInvest) * zt - ziel) / nenner : 0;
+    return p > 0 ? p : 0;
+  };
+  r.preisFuerZielCashflow = solvePrice();
+  r.maxPreis = (r.preisFuerZielBrutto > 0 && r.preisFuerZielCashflow > 0)
+    ? Math.min(r.preisFuerZielBrutto, r.preisFuerZielCashflow)
+    : Math.max(r.preisFuerZielBrutto, r.preisFuerZielCashflow);
+
+  // --- Break-Even Miete (Cashflow nach Finanzierung = 0) ---
+  const fixKosten = r.hausgeldNichtUmlJahr + r.verwaltungJahr + r.instandJahr;
+  const lfBE = 1 - d.leerstandWochen / 52;
+  r.breakEvenMiete = lfBE > 0 ? (r.rateMonat * 12 + fixKosten) / lfBE / 12 : 0;
+
+  // --- Stress-Tests (jeweils einzeln) ---
+  const base = { cf: r.cashflowNach, nr: r.nettoRendite };
+  const stress = [];
+  const mk = (name, cf, extra) => stress.push({ name, cf, delta: cf - base.cf, ...extra });
+
+  // 1: Miete 10 % niedriger (Kosten bleiben fix – konservativ)
+  {
+    const km = jahresKalt * 0.9, netto = km * leerstandFaktor - r.hausgeldNichtUmlJahr - r.verwaltungJahr - r.instandJahr;
+    mk("Miete −10 %", netto / 12 - r.rateMonat, {});
+  }
+  // 2: Leerstand +2 Monate (8,7 Wochen)
+  {
+    const lf = 1 - (d.leerstandWochen + 8.7) / 52;
+    const netto = jahresKalt * lf - r.hausgeldNichtUmlJahr - r.verwaltungJahr - r.instandJahr;
+    mk("Leerstand +2 Monate", netto / 12 - r.rateMonat, {});
+  }
+  // 3: Instandhaltung +50 %
+  {
+    const netto = r.mieteEffektiv - r.hausgeldNichtUmlJahr - r.verwaltungJahr - r.instandJahr * 1.5;
+    mk("Instandhaltung +50 %", netto / 12 - r.rateMonat, {});
+  }
+  // 4: Zins +2 Prozentpunkte
+  {
+    const rate = annuityRate(r.darlehen, d.zins + 2, d.tilgung);
+    mk("Zins +2,0 %-Punkte", r.cashflowVor - rate, {});
+  }
+  // 5: Unerwartete Sanierung (10 % des Kaufpreises, finanziert)
+  {
+    const zusatz = d.preis * 0.10;
+    const rate = annuityRate(r.darlehen + zusatz, d.zins, d.tilgung);
+    mk("Sanierung +10 % KP (finanziert)", r.cashflowVor - rate, {});
+  }
+  // 6: Wert −10 % (Buchverlust; Cashflow unverändert, Einmaleffekt separat ausgewiesen)
+  {
+    const wertVerlust = d.preis * 0.10;
+    mk("Wert −10 % (Einmal-Effekt)", r.cashflowNach, { einmalEffekt: -wertVerlust });
+  }
+  r.stress = stress;
+
+  // --- Szenarien A/B/C ---
+  const ekAnteilB = r.gesamtinvest > 0 ? d.ek / r.gesamtinvest : 0;
+  const mkSzenario = (name, ekAnteil) => {
+    const ek = r.gesamtinvest * ekAnteil;
+    const darl = Math.max(0, r.gesamtinvest - ek);
+    const rate = annuityRate(darl, d.zins, d.tilgung);
+    const cf = r.cashflowVor - rate;
+    const cfJahr = cf * 12;
+    return {
+      name, ek, darl, rate, cf, cfJahr,
+      ekRendite: ek > 0 ? (cfJahr + Math.max(0, rate * 12 - darl * d.zins / 100)) / ek * 100 : 0,
+      quote: ekAnteil * 100
+    };
+  };
+  r.szenarien = [
+    mkSzenario("A – konservativ", Math.min(1, ekAnteilB + 0.15)),
+    mkSzenario("B – ausgewogen (Eingaben)", ekAnteilB),
+    mkSzenario("C – hoher FK-Anteil", Math.max(0, ekAnteilB - 0.15))
+  ];
+
+  // --- Status-Vorschlag ---
+  let status, klasse, gruende = [];
+  if (d.preis <= 0 || d.kaltmiete <= 0 || d.flaeche <= 0) {
+    status = "⚪ ZU WENIG DATEN"; klasse = "b-gray";
+    gruende.push("Kaufpreis, Kaltmiete oder Wohnfläche fehlen – keine belastbare Berechnung möglich.");
+  } else if (r.cashflowNach >= 0 && r.bruttoRendite >= d.zielBrutto) {
+    status = "🟢 WEITER PRÜFEN"; klasse = "b-green";
+    gruende.push(`Positiver Cashflow (${eur(r.cashflowNach)}/Monat) und Bruttorendite ${pct(r.bruttoRendite)} ≥ Ziel ${pct(d.zielBrutto)}.`);
+  } else if (r.cashflowNach >= 0) {
+    status = "🟡 NUR MIT KLÄRUNG"; klasse = "b-yellow";
+    gruende.push(`Cashflow neutral/positiv, aber Bruttorendite ${pct(r.bruttoRendite)} unter Ziel ${pct(d.zielBrutto)}.`);
+  } else if (r.bruttoRendite >= d.zielBrutto) {
+    status = "🟠 VERHANDELN"; klasse = "b-orange";
+    gruende.push(`Rendite ${pct(r.bruttoRendite)} erreicht Ziel, aber Cashflow ${eur(r.cashflowNach)}/Monat negativ → Preis oder Finanzierung anpassen.`);
+  } else {
+    status = "🔴 NICHT WEITER VERFOLGEN"; klasse = "b-red";
+    gruende.push(`Weder Rendite (${pct(r.bruttoRendite)} < ${pct(d.zielBrutto)}) noch Cashflow (${eur(r.cashflowNach)}/Monat) erfüllen die Ziele.`);
+  }
+  if (d.rueckstaende > 0) gruende.push(`⚠️ Mietrückstände belegt: ${eur(d.rueckstaende)}.`);
+  if (r.sonderumlage > 0) gruende.push(`⚠️ Geplante Sonderumlage: ${eur(r.sonderumlage)} einpreisen.`);
+  r.status = { status, klasse, gruende };
+  return r;
+}
+
+function row(cells, isHead = false) {
+  const tag = isHead ? "th" : "td";
+  return "<tr>" + cells.map(c => {
+    const num = typeof c === "object";
+    return `<${tag}${num && c.num ? ' class="num"' : ""}>${num ? c.v : c}</${tag}>`;
+  }).join("") + "</tr>";
+}
+
+function render() {
+  const d = readInputs();
+  const r = calc(d);
+
+  // KPIs
+  const kpis = [
+    { l: "Gesamtinvestition", v: eur(r.gesamtinvest), s: d.preis > 0 ? `KP ${eur(d.preis)} + NK ${eur(r.nebenkosten)}` : "" },
+    { l: "Bruttorendite", v: pct(r.bruttoRendite), s: "Kaltmiete / Kaufpreis", c: r.bruttoRendite >= d.zielBrutto ? "pos" : "neg" },
+    { l: "Nettorendite", v: pct(r.nettoRendite), s: "nach Kosten & Leerstand", c: r.nettoRendite >= d.zielBrutto * 0.6 ? "pos" : "neg" },
+    { l: "Cashflow n. Finanz.", v: eur(r.cashflowNach) + "/M", s: `vor Finanzierung: ${eur(r.cashflowVor)}/M`, c: cls(r.cashflowNach) },
+    { l: "Eigenkapitalbedarf", v: eur(d.ek), s: `Darlehen: ${eur(r.darlehen)}` },
+    { l: "EK-Rendite (Cash-on-Cash)", v: pct(r.cashOnCash), s: "(CF + Tilgungsanteil) / EK", c: cls(r.cashOnCash) },
+    { l: "Kaufpreis / m²", v: eur(r.kpProM2), s: d.flaeche > 0 ? `Gesamtinv./m²: ${eur(r.giProM2)}` : "Wohnfläche fehlt" },
+    { l: "Monatsrate", v: eur(r.rateMonat), s: `${pct(d.zins)} Zins + ${pct(d.tilgung)} Tilgung` }
+  ];
+  document.getElementById("kpis").innerHTML = kpis.map(k =>
+    `<div class="kpi"><div class="l">${k.l}</div><div class="v ${k.c || ""}">${k.v}</div><div class="s">${k.s || ""}</div></div>`).join("");
+
+  // Erwerb
+  document.getElementById("tblErwerb").innerHTML =
+    row([{ v: "Position", num: false }, { v: "Wert", num: true }, { v: "Herleitung", num: false }], true) +
+    row(["Kaufpreis (Angebot)", { v: eur(d.preis), num: true }, "BELEGT aus Exposé/Kaufvertrag"]) +
+    row(["Grunderwerbsteuer", { v: eur(r.grESt), num: true }, `${pct(d.grESt)} vom Kaufpreis`]) +
+    row(["Notar + Grundbuch", { v: eur(r.notarGrB), num: true }, `${pct(d.notar)} vom Kaufpreis`]) +
+    row(["Maklerprovision", { v: eur(r.makler), num: true }, `${pct(d.makler)} vom Kaufpreis`]) +
+    row(["Renovierung", { v: eur(d.renovierung), num: true }, "BELEGT/ANNAHME aus Unterlagen"]) +
+    row(["Sanierung", { v: eur(d.sanierung), num: true }, "BELEGT/ANNAHME aus Unterlagen"]) +
+    row(["Sonstige Erwerbskosten", { v: eur(d.sonstige), num: true }, "z. B. Gutachten, Umzug"]) +
+    row(["<b>Gesamtinvestition</b>", { v: "<b>" + eur(r.gesamtinvest) + "</b>", num: true }, "Summe aller Positionen"]) +
+    row(["Gesamtinvestition / m²", { v: eur(r.giProM2), num: true }, d.flaeche > 0 ? `${fmt(d.flaeche, 1)} m²` : "—"]);
+
+  // Rendite
+  document.getElementById("tblRendite").innerHTML =
+    row([{ v: "Position", num: false }, { v: "pro Monat", num: true }, { v: "pro Jahr", num: true }], true) +
+    row(["Kaltmiete (effektiv, abgl. Leerstand)", { v: eur(r.mieteEffektiv / 12), num: true }, { v: eur(r.mieteEffektiv), num: true }]) +
+    row(["− Hausgeld, nicht umlagefähig", { v: "−" + eur(r.hausgeldNichtUmlJahr / 12), num: true }, { v: "−" + eur(r.hausgeldNichtUmlJahr), num: true }]) +
+    row(["− Verwaltung", { v: "−" + eur(r.verwaltungJahr / 12), num: true }, { v: "−" + eur(r.verwaltungJahr), num: true }]) +
+    row(["− Instandhaltungsrückstellung", { v: "−" + eur(r.instandJahr / 12), num: true }, { v: "−" + eur(r.instandJahr), num: true }]) +
+    row(["<b>= Netto-Mieteinnahmen</b>", { v: "<b>" + eur(r.nettoMiete / 12) + "</b>", num: true }, { v: "<b>" + eur(r.nettoMiete) + "</b>", num: true }]) +
+    row(["− Finanzierungsrate (Zins + Tilgung)", { v: "−" + eur(r.rateMonat), num: true }, { v: "−" + eur(r.rateMonat * 12), num: true }]) +
+    row(["<b>= Cashflow nach Finanzierung</b>", { v: `<b class="${cls(r.cashflowNach)}">${eur(r.cashflowNach)}</b>`, num: true }, { v: `<b class="${cls(r.cashflowNach)}">${eur(r.cashflowNachJahr)}</b>`, num: true }]) +
+    row(["Bruttomietrendite", { v: pct(r.bruttoRendite), num: true }, { v: "Kaltmiete / Kaufpreis", num: false }]) +
+    row(["Nettomietrendite", { v: pct(r.nettoRendite), num: true }, { v: "Netto / Kaufpreis", num: false }]) +
+    row(["EK-Rendite inkl. Tilgung (CoC)", { v: pct(r.cashOnCash), num: true }, { v: "(CF + Tilgungsanteil) / EK", num: false }]);
+
+  // Szenarien
+  document.getElementById("tblSzenarien").innerHTML =
+    row([{ v: "Szenario", num: false }, { v: "EK-Quote", num: true }, { v: "Eigenkapital", num: true }, { v: "Darlehen", num: true }, { v: "Rate/Monat", num: true }, { v: "Cashflow/Monat", num: true }, { v: "EK-Rendite", num: true }], true) +
+    r.szenarien.map(s => row([
+      s.name, { v: pct(s.quote), num: true }, { v: eur(s.ek), num: true }, { v: eur(s.darl), num: true },
+      { v: eur(s.rate), num: true }, { v: `<span class="${cls(s.cf)}">${eur(s.cf)}</span>`, num: true },
+      { v: pct(s.ekRendite), num: true }
+    ])).join("");
+
+  // Stress
+  document.getElementById("tblStress").innerHTML =
+    row([{ v: "Szenario", num: false }, { v: "Cashflow/Monat", num: true }, { v: "Δ zum Basisfall", num: true }, { v: "Bewertung", num: false }], true) +
+    r.stress.map(s => {
+      const keinCfEffekt = Math.abs(s.delta) < 0.005; // z. B. Wertverlust: Cashflow unverändert
+      const b = keinCfEffekt ? "b-gray" : s.cf < -50 ? "b-red" : s.cf < 0 ? "b-orange" : s.delta < -100 ? "b-yellow" : "b-green";
+      const label = keinCfEffekt ? "kein Cashflow-Effekt" : s.cf < -50 ? "kritisch" : s.cf < 0 ? "Zuzahlung nötig" : s.delta < -100 ? "spürbar belastet" : "verkraftbar";
+      return row([s.name, { v: `<span class="${cls(s.cf)}">${eur(s.cf)}</span>`, num: true },
+        { v: `<span class="${cls(s.delta)}">${s.delta >= 0 ? "+" : ""}${eur(s.delta)}</span>`, num: true },
+        { v: `<span class="badge ${b}">${label}</span>`, num: false }]);
+    }).join("");
+
+  // Break-Even
+  const zielP = r.preisFuerZielBrutto, zielC = r.preisFuerZielCashflow;
+  const maxP = r.maxPreis;
+  const verh = d.preis > 0 ? (maxP - d.preis) : 0;
+  document.getElementById("tblBreakeven").innerHTML =
+    row([{ v: "Kennzahl", num: false }, { v: "Wert", num: true }, { v: "Erläuterung", num: false }], true) +
+    row(["Preis bei Ziel-Bruttorendite", { v: zielP > 0 ? eur(zielP) : "—", num: true }, `${pct(d.zielBrutto)} Ziel → Kaltmiete / Ziel`]) +
+    row(["Preis bei Ziel-Cashflow", { v: zielC > 0 ? eur(zielC) : "—", num: true }, `Cashflow ≥ ${eur(d.zielCashflow)}/Monat`]) +
+    row(["<b>Maximal sinnvoller Kaufpreis</b>", { v: "<b>" + (maxP > 0 ? eur(maxP) : "—") + "</b>", num: true }, "Min/Max der beiden Zielpreise"]) +
+    row(["Angebotspreis", { v: eur(d.preis), num: true }, "BELEGT"]) +
+    row(["Spielraum ggü. Angebot", { v: `<span class="${cls(verh)}">${verh >= 0 ? "+" : ""}${eur(verh)}</span>`, num: true }, verh >= 0 ? "Angebot liegt unter Maximalpreis" : "Angebot übersteigt Maximalpreis um diesen Betrag"]) +
+    row(["Break-Even Miete (CF = 0)", { v: eur(r.breakEvenMiete), num: true }, "Kaltmiete, ab der Cashflow neutral"]);
+
+  // Status
+  document.getElementById("statusBox").innerHTML =
+    `<span class="badge ${r.status.klasse}" style="font-size:14px">${r.status.status}</span>` +
+    `<ul style="margin:10px 0 0 18px; font-size:12.5px; color:var(--muted)">` +
+    r.status.gruende.map(g => `<li>${g}</li>`).join("") + `</ul>`;
+}
+
+// ---------- Export / Import ----------
+function collectState() {
+  const ids = ["objName","flaeche","einheiten","preis","renovierung","sanierung","sonstige","grESt","notar","makler",
+    "kaltmiete","marktmiete","hausgeld","hausgeldNichtUml","verwaltung","instand","leerstand","rueckstaende",
+    "ek","zins","tilgung","bindung","finNk","ruecklage","sonderumlage","zielBrutto","zielCashflow"];
+  const s = { _tool: "immo-kalkulation", _version: 1 };
+  ids.forEach(id => s[id] = document.getElementById(id).value);
+  return s;
+}
+function applyState(s) {
+  Object.keys(s).forEach(k => { const el = document.getElementById(k); if (el) el.value = s[k]; });
+  render();
+}
+function exportJson() {
+  const blob = new Blob([JSON.stringify(collectState(), null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "03_kalkulation_" + (document.getElementById("objName").value || "objekt").replace(/[^\w\- ]+/g, "").trim().replace(/\s+/g, "_") + ".json";
+  a.click(); URL.revokeObjectURL(a.href);
+}
+function importJson() { document.getElementById("fileInput").click(); }
+function loadFile(ev) {
+  const f = ev.target.files[0]; if (!f) return;
+  const rd = new FileReader();
+  rd.onload = e => { try { applyState(JSON.parse(e.target.result)); } catch (err) { alert("Datei konnte nicht gelesen werden: " + err.message); } };
+  rd.readAsText(f);
+}
+function resetAll() { document.querySelectorAll("#inputs input").forEach(i => i.value = ""); render(); }
+
+// Live-Recalculation
+document.querySelectorAll("#inputs input").forEach(i => i.addEventListener("input", render));
+render();
+</script>
+</body>
+</html>

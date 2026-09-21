@@ -1,0 +1,109 @@
+{
+  "objekt": {
+    "name": "Haarhausen – Borken (Objekt ES450)",
+    "adresse": "34582 Borken / Haarhausen (Straße unbekannt)",
+    "objektart": "Einfamilienhaus (2 Etagen) mit zwei Stall-/Scheunengebäuden",
+    "baujahr": 1900,
+    "baujahr_sanierung": 2023,
+    "wohnflaeche_m2": 170.0,
+    "nutzflaeche_m2": 76.0,
+    "grundstuecksflaeche_m2": 697.0,
+    "anzahl_einheiten": 1,
+    "zimmer": 6,
+    "etage": 2,
+    "stellplaetze": 4,
+    "energieklasse": "Bedarfsausweis 287 kWh/(m2*a) – Klasse G-Niveau; 'in Vorbereitung' (Widerspruch)",
+    "heizung": "Elektroheizung (Zentralheizung, elektrisch); PV möglich"
+  },
+  "kauf": {
+    "angebotspreis_eur": 189000.0,
+    "grunderwerbsteuer_prozent": 6.0,
+    "notar_prozent": 2.0,
+    "grundbuch_prozent": 0.0,
+    "makler_prozent": 3.57,
+    "makler_anteil_verkaeufer_prozent": 0,
+    "renovierung_eur": 15000.0,
+    "sanierung_eur": 0.0,
+    "sonstige_erwerbskosten_eur": 0.0,
+    "renovierung_sanierung_status": "ANNAHME: Reno 15.000 EUR (Restarbeiten nach Sanierung 2023); Sanierung 0 EUR (2023 saniert, Umfang unbekannt) – nach Besichtigung anpassen"
+  },
+  "miete": {
+    "kaltmiete_monatlich_eur": 1360.0,
+    "nebenkosten_monatlich_eur": 0.0,
+    "leerstand_wochen_pro_jahr": 4,
+    "marktuebliche_miete_eur": 1360.0,
+    "mietrueckstaende_eur": 0.0,
+    "nebengebaeude_vermietet": "Teil der Stall-/Scheunengebäude vermietet – Mieter/Miete/Laufzeit UNBEKANNT (Zusatzeinnahme, nicht in Rechnung)",
+    "mietempfehlung": {
+      "empfohlene_kaltmiete_eur": 1360.0,
+      "spanne_eur": [1275.0, 1445.0],
+      "eur_pro_m2": 8.0,
+      "status": "ABGELEITET (Regionalvergleich: Immowelt-Markttrend Borken 8 EUR/m2 + EFH-Angebote Region)",
+      "begruendung": "Borken Haus-Ø 8 EUR/m2 (Immowelt 17.09.2026). VORBEHALT: Elektroheizung (≈17.000 EUR/Jahr Heizstrom) drückt erzielbare Miete ohne PV auf 7,00-7,50 EUR/m2",
+      "details": "siehe analyse/05_mietempfehlung.md"
+    }
+  },
+  "laufende_kosten": {
+    "hausgeld_monatlich_eur": 0.0,
+    "verwaltung_prozent_von_miete": 0.0,
+    "instandhaltung_prozent_von_miete": 10.0,
+    "nicht_umlagefaehige_kosten_monatlich_eur": 0.0,
+    "status": "EFH ohne WEG: Hausgeld 0 (Tool rechnet 3 % Verwaltungspauschale); Instandhaltung 10 % = NUTZER-VORGABE",
+    "heizstrom_schaetzung": {
+      "verbrauch_kwh_jahr": 48790.0,
+      "berechnung": "287 kWh/(m2*a) × 170 m2",
+      "kosten_jahr_bei_035_eur": 17076.5,
+      "status": "ANNAHME zur Orientierung – Strompreis variabel; ohne PV wirtschaftlich kritisch"
+    }
+  },
+  "finanzierung": {
+    "eigenkapital_eur": 20000.0,
+    "zinssatz_prozent": 3.5,
+    "tilgung_prozent": 2.0,
+    "zinsbindung_jahre": 10,
+    "finanzierungsnebenkosten_eur": 0.0,
+    "ek_status": "NUTZER-VORGABE: EK 20.000 EUR, Tilgung 2,0 % (verbindlich)",
+    "zinsrecherche": {
+      "quelle": "CHECK24 Baufinanzierung (Beispielrechnung 150.000 EUR, 10 J. Sollzinsbindung)",
+      "spanne_prozent": [3.02, 3.77],
+      "abgerufen": "2026-09-16",
+      "status": "BELEGT (extern)"
+    }
+  },
+  "weg": {
+    "zutreffend": false,
+    "hinweis": "Einfamilienhaus – kein Wohnungseigentum erkennbar"
+  },
+  "annahmen": [
+    "BELEGT: Grunderwerbsteuer 6,0 % (Hessen-Satz).",
+    "BELEGT: Notar+Grundbuch 2,0 % (übliche Größenordnung).",
+    "BELEGT: Makler 3,57 % inkl. MwSt. (Exposé S. 2).",
+    "BELEGT (extern): Zinsspanne 3,02–3,77 % bei 10 J. Festzins (CHECK24, 16.09.2026).",
+    "AUSSTEHEND: Renovierung/Sanierung – 'Restarbeiten' ohne Kostendetail.",
+    "AUSSTEHEND: Kaltmiete – Haus frei; Elektroheizung macht Vermietung ohne PV fraglich.",
+    "AUSSTEHEND: Verwaltung/Instandhaltung/Leerstand – Nutzer-Eingabe.",
+    "AUSSTEHEND: Eigenkapital & Tilgung – Nutzer-Vorgabe ausstehend.",
+    "ANNAHME (Orientierung): Heizstrom ≈48.800 kWh/Jahr × 0,35 €/kWh ≈ 17.000 €/Jahr – kritisch!",
+    "⚠️ Konsequenz: Ohne diese Werte sind Rendite/Cashflow/Maximalpreis NICHT berechenbar. Die Übersicht zeigt 'ausstehend' statt erfundener Zahlen."
+  ],
+  "quellen": [
+    { "information": "Angebotspreis", "wert": "189.000 €", "quelle": "Exposé ES450, S. 2", "status": "BELEGT" },
+    { "information": "Wohnfläche", "wert": "ca. 170 m² (2 × 89 m²)", "quelle": "Exposé S. 2", "status": "BELEGT" },
+    { "information": "Grundstücksfläche", "wert": "ca. 697 m²", "quelle": "Exposé S. 2", "status": "BELEGT" },
+    { "information": "Baujahr", "wert": "ca. 1900 (Sanierung 2023)", "quelle": "Exposé S. 2", "status": "BELEGT" },
+    { "information": "Energie", "wert": "Bedarfsausweis 287 kWh/(m²·a), Elektro", "quelle": "Exposé S. 2", "status": "BELEGT" },
+    { "information": "Zustand", "wert": "Modernisiert 2023, Restarbeiten offen, 'mittlerer Eindruck'", "quelle": "Exposé S. 2–3", "status": "BELEGT" },
+    { "information": "Maklerprovision", "wert": "3,57 % inkl. MwSt.", "quelle": "Exposé S. 2", "status": "BELEGT" },
+    { "information": "Nebengebäude", "wert": "2 Stall-/Scheunengebäude, teils vermietet", "quelle": "Exposé S. 2–3", "status": "BELEGT" },
+    { "information": "Kaltmiete", "wert": "UNBEKANNT – Haus frei", "quelle": "Exposé S. 2", "status": "UNBEKANNT" },
+    { "information": "Miete Nebengebäude", "wert": "UNBEKANNT – Details fehlen", "quelle": "Exposé S. 3", "status": "UNBEKANNT" },
+    { "information": "Grundbuch", "wert": "UNBEKANNT – kein Auszug", "quelle": "–", "status": "UNBEKANNT" }
+  ],
+  "widersprueche": [
+    "PLZ: 34582 (S. 2) vs. 34592 (S. 3) – korrekt ist 34582.",
+    "Baujahr: 1900 (Gebäude) vs. 2023 (lt. Energieausweis = Sanierung) – klären.",
+    "Energieausweis: Werte genannt (287 kWh) vs. 'in Vorbereitung' (S. 3).",
+    "Wohnfläche: 170 m² vs. 2 × 89 = 178 m².",
+    "Zustand: 'Modernisiert' vs. 'mittlerer Eindruck' + 'Innenausbau nicht fertig'."
+  ]
+}

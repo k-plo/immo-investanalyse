@@ -1,0 +1,59 @@
+{
+  "objekt": {
+    "name": "<OBJEKTNAME>",
+    "adresse": "",
+    "objektart": "",
+    "baujahr": null,
+    "wohnflaeche_m2": null,
+    "nutzflaeche_m2": null,
+    "grundstuecksflaeche_m2": null,
+    "anzahl_einheiten": null,
+    "zimmer": null,
+    "etage": null,
+    "stellplaetze": null,
+    "energieklasse": "",
+    "heizung": ""
+  },
+  "kauf": {
+    "angebotspreis_eur": null,
+    "grunderwerbsteuer_prozent": null,
+    "notar_prozent": null,
+    "grundbuch_prozent": null,
+    "makler_prozent": null,
+    "makler_anteil_verkaeufer_prozent": 0,
+    "renovierung_eur": null,
+    "sanierung_eur": null,
+    "sonstige_erwerbskosten_eur": null
+  },
+  "miete": {
+    "kaltmiete_monatlich_eur": null,
+    "nebenkosten_monatlich_eur": null,
+    "leerstand_wochen_pro_jahr": 0,
+    "marktuebliche_miete_eur": null,
+    "mietrueckstaende_eur": null
+  },
+  "laufende_kosten": {
+    "hausgeld_monatlich_eur": null,
+    "verwaltung_prozent_von_miete": null,
+    "instandhaltung_prozent_von_miete": null,
+    "nicht_umlagefaehige_kosten_monatlich_eur": null
+  },
+  "finanzierung": {
+    "eigenkapital_eur": null,
+    "zinssatz_prozent": null,
+    "tilgung_prozent": null,
+    "zinsbindung_jahre": null,
+    "finanzierungsnebenkosten_eur": null
+  },
+  "weg": {
+    "instandhaltungsruecklage_eur": null,
+    "geplante_sonderumlagen_eur": null
+  },
+  "annahmen": [
+    "Beispiel: Grunderwerbsteuer 6,0 % (ANNAHME, Bundesland nicht bekannt) – durch belegten Wert ersetzen."
+  ],
+  "quellen": [
+    { "information": "Beispiel: Kaufpreis", "wert": "189.000 EUR", "quelle": "Exposé S. 1", "status": "BELEGT" }
+  ],
+  "widersprueche": []
+}
