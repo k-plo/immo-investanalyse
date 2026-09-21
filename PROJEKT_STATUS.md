@@ -8,7 +8,7 @@
 ## 🕐 Letzter Stand
 
 **Datum:** 21.09.2026
-**Letzte Aktion:** Standard-Analyse-Struktur als verbindliche Konvention dokumentiert (README.md Abschnitt 2 + hier): 5 Dateien pro Objekt (01–05), Muster = Haarhausen. Bestehende Dateien bleiben unverändert (User-Wunsch). Zuvor: Git/GitHub eingerichtet (Repo `k-plo/immo-investanalyse`, alle Änderungen werden committed + gepusht).
+**Letzte Aktion:** Gombeth neu analysiert und die fünf Analyse-Dateien nach Haarhausen-Schema angelegt. Kritisch: Kaufpreiswiderspruch 109.000 € vs. 134.000 €, zwei ungeklärte Versicherungsfälle, fehlende WEG-/Mietunterlagen. Zuvor: Standard-Analyse-Struktur als verbindliche Konvention dokumentiert.
 
 ---
 
@@ -18,6 +18,7 @@
 |---|---|---|---|---|
 | **Haarhausen** | `objekte/Haarhausen/` | ✅ Analysiert, Übersicht aktiv | **B (82)** | KP 179.000 € · BruttoR 9,12 % · CF +140 €/M · KM 1.360 € · EK 20.000 € |
 | **Kerstenhausen** | `objekte/Kerstenhausen/` | ✅ Analysiert (18.09.), Übersicht aktiv | **D (41)** | KP 152.100 € · BruttoR 6,31 % · CF −350 €/M · KM 800 € (ANNAHME) · Status 🟠 VERHANDELN · 🔴 Grundbuch/Miete fehlen |
+| **Gombeth** | `objekte/Gombeth/` | 🟡 Vorläufig analysiert | – | 107 m² ETW, 6 Zi., Istmiete 7.500 €/Jahr; KP 109.000 € vs. 134.000 € widersprüchlich · WEG-/Versicherungsrisiken offen |
 | ~~Arnsbach (Kerstenhausener Str.)~~ | ❌ gelöscht (18.09.) | aus DB per `prune` entfernt | war B (83) | Analyse-Daten ggf. aus Chat-Transkript rekonstruierbar |
 | _VORLAGE | `objekte/_VORLAGE/` | Vorlage für neue Objekte | – | Übersicht + Analyse-MDs generisch |
 
@@ -68,6 +69,7 @@
 
 ## ⏭️ Offene Punkte / Nächste Schritte
 
+- [ ] **Gombeth:** 🔴 gültigen Kaufpreis bestätigen (109.000 € vs. 134.000 €) · 🔴 zwei Versicherungsfälle und Kostenfolgen klären · 🔴 Mietvertrag/Mietkonto prüfen · 🔴 WEG-Unterlagen, Hausgeld und Rücklage anfordern · 🟠 Grundbuch/Teilungserklärung prüfen · 🟡 Besichtigung nach ca. 10.10.2026
 - [ ] **Kerstenhausen:** 🔴 Grundbuchauszug anfordern · 🔴 Miet-/Nutzungssituation + Einliegerwohnung klären · 🟠 Besichtigung (Renovierungsumfang, Öl-Tank) · 🟠 Baujahr/Wohnfläche-Widersprüche klären · 🟡 Bankgespräch mit frischen Zinsen (Live-Recherche 18.09. deutet auf > 4,5 %)
 - [ ] Optional: Sync-Status-Indikator in den Übersichten (zeigt, ob Auto-Sync wirklich geschrieben hat)
 

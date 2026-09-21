@@ -1,0 +1,100 @@
+{
+  "objekt": {
+    "name": "Gombeth – Grubenweg 1",
+    "adresse": "Grubenweg 1, 34582 Borken-Gombeth",
+    "objektart": "Eigentumswohnung im Mehrfamilienhaus",
+    "baujahr": 1962,
+    "baujahr_sanierung": null,
+    "wohnflaeche_m2": 107.0,
+    "nutzflaeche_m2": null,
+    "grundstuecksflaeche_m2": 1242.0,
+    "anzahl_einheiten": null,
+    "zimmer": 6,
+    "etage": "1. Obergeschoss",
+    "stellplaetze": 1,
+    "energieklasse": "H",
+    "heizung": "Zentralheizung, Energietraeger Oel"
+  },
+  "kauf": {
+    "angebotspreis_eur": null,
+    "preis_szenarien_eur": [109000.0, 134000.0],
+    "grunderwerbsteuer_prozent": 6.0,
+    "notar_prozent": 2.0,
+    "grundbuch_prozent": 0.0,
+    "makler_prozent": 3.57,
+    "makler_anteil_verkaeufer_prozent": null,
+    "renovierung_eur": null,
+    "sanierung_eur": null,
+    "sonstige_erwerbskosten_eur": null,
+    "status": "UNBEKANNT wegen Preiswiderspruch 109.000 EUR vs. 134.000 EUR"
+  },
+  "miete": {
+    "kaltmiete_monatlich_eur": 625.0,
+    "jahreskaltmiete_eur": 7500.0,
+    "nebenkosten_monatlich_eur": null,
+    "leerstand_wochen_pro_jahr": 4,
+    "marktuebliche_miete_eur": null,
+    "mietrueckstaende_eur": null,
+    "mietempfehlung": {
+      "empfohlene_kaltmiete_eur": 625.0,
+      "spanne_eur": null,
+      "eur_pro_m2": 5.84,
+      "status": "BELEGT als aktuelle Istmiete; Marktvergleich noch offen",
+      "begruendung": "7.500 EUR p.a. laut Verkaufsunterlagen geteilt durch 12; keine Neuvermietungsbewertung",
+      "details": "siehe analyse/05_mietempfehlung.md"
+    }
+  },
+  "laufende_kosten": {
+    "hausgeld_monatlich_eur": null,
+    "verwaltung_prozent_von_miete": null,
+    "instandhaltung_prozent_von_miete": 10.0,
+    "nicht_umlagefaehige_kosten_monatlich_eur": null,
+    "status": "Hausgeld, nicht umlagefaehiger Anteil und Ruecklage unbekannt",
+    "heizkosten": {
+      "wert": null,
+      "status": "UNBEKANNT; Oelverbrauch und Kostenunterlagen fehlen"
+    }
+  },
+  "finanzierung": {
+    "eigenkapital_eur": 20000.0,
+    "zinssatz_prozent": 3.5,
+    "tilgung_prozent": 2.0,
+    "zinsbindung_jahre": null,
+    "finanzierungsnebenkosten_eur": null,
+    "ek_status": "NUTZER-VORGABE: EK 20.000 EUR; Tilgung 2,0 %",
+    "zinsrecherche": {
+      "quelle": null,
+      "spanne_prozent": null,
+      "abgerufen": null,
+      "status": "UNBEKANNT – aktuelle Kondition für dieses Objekt noch recherchieren"
+    }
+  },
+  "weg": {
+    "zutreffend": true,
+    "hinweis": "Eigentumswohnung; Teilungserklaerung, Wirtschaftsplan, Ruecklage und Protokolle fehlen"
+  },
+  "annahmen": [
+    "ANNAHME: Grunderwerbsteuer 6,0 % fuer Hessen.",
+    "ANNAHME: Notar/Grundbuch zusammen 2,0 %.",
+    "BELEGT: Maklerprovision 3,57 % inkl. MwSt.",
+    "NUTZER-VORGABE: Eigenkapital 20.000 EUR und Tilgung 2,0 %.",
+    "NUTZER-VORGABE: Instandhaltung 10 % und Leerstand 4 Wochen/Jahr.",
+    "AUSSTEHEND: Kaufpreis, da 109.000 EUR und 134.000 EUR in den Quellen stehen.",
+    "AUSSTEHEND: Hausgeld, nicht umlagefaehige Kosten, WEG-Ruecklage, Versicherungsfolgen und Renovierungs-/Sanierungskosten.",
+    "Keine belastbare Cashflow- und Maximalpreisberechnung, solange WEG- und Preisangaben fehlen."
+  ],
+  "quellen": [
+    {"information": "Objektadresse", "wert": "Grubenweg 1, 34582 Borken-Gombeth", "quelle": "Expose_659918.pdf S. 1", "status": "BELEGT"},
+    {"information": "Wohnflaeche", "wert": "ca. 107 m2", "quelle": "PlanetHome-Expose und Immowelt-Auszug", "status": "BELEGT"},
+    {"information": "Kaufpreis A", "wert": "134.000 EUR", "quelle": "Expose_659918.pdf S. 1", "status": "BELEGT"},
+    {"information": "Kaufpreis B", "wert": "109.000 EUR", "quelle": "Immowelt-Auszug S. 1–2", "status": "BELEGT"},
+    {"information": "Istmiete", "wert": "7.500 EUR p.a. zzgl. Nebenkosten", "quelle": "PlanetHome-Expose S. 2 und Immowelt-Auszug", "status": "BELEGT"},
+    {"information": "Energie", "wert": "Klasse H, 258,50 kWh/(m2a), Oel-Zentralheizung", "quelle": "PlanetHome-Expose S. 1–2", "status": "BELEGT"},
+    {"information": "Versicherungsfaelle", "wert": "Zwei Angelegenheiten werden geklaert", "quelle": "Makler-E-Mail 21.09.2026", "status": "BELEGT"}
+  ],
+  "widersprueche": [
+    "Kaufpreis 109.000 EUR im Immowelt-Auszug vs. 134.000 EUR im PlanetHome-Expose.",
+    "Besichtigung bis ca. 10.10.2026 ausgesetzt wegen zwei ungeklärter Versicherungsangelegenheiten.",
+    "WEG- und Mietdaten sind in den Verkaufsunterlagen nicht ausreichend belegt."
+  ]
+}
