@@ -1,0 +1,107 @@
+{
+  "objekt": {
+    "name": "Arnsbach – Kerstenhausener Str. 2a, 34582 Borken (Objekt 1116)",
+    "adresse": "Kerstenhausener Straße 2a, 34582 Borken (Hessen)",
+    "objektart": "Bungalow (EFH mit Anbau), geteilt nach WEG (WE 2 von 2)",
+    "baujahr": 1994,
+    "wohnflaeche_m2": 178.0,
+    "nutzflaeche_m2": 40.0,
+    "grundstuecksflaeche_m2": 2114.0,
+    "anzahl_einheiten": 2,
+    "zimmer": 5,
+    "etage": 0,
+    "stellplaetze": 2,
+    "energieklasse": "E (152 kWh/(m2*a), Bedarfsausweis)",
+    "heizung": "Öl-NT-Kessel BJ 1994, 6000 l Tank; Kachelofen (Einsatz nachzurüsten)"
+  },
+  "kauf": {
+    "angebotspreis_eur": 159000.0,
+    "grunderwerbsteuer_prozent": 6.0,
+    "notar_prozent": 2.0,
+    "grundbuch_prozent": 0.0,
+    "makler_prozent": 3.57,
+    "makler_anteil_verkaeufer_prozent": 0,
+    "renovierung_eur": null,
+    "sanierung_eur": null,
+    "sonstige_erwerbskosten_eur": 0.0,
+    "renovierung_sanierung_status": "AUSSTEHEND – keine belastbare Kostenschätzung vorhanden; Verkäufer nennt nur 'sanierungsbedürftig'. Wird nach Besichtigung/Gutachten eingetragen."
+  },
+  "miete": {
+    "kaltmiete_monatlich_eur": null,
+    "nebenkosten_monatlich_eur": 0.0,
+    "leerstand_wochen_pro_jahr": null,
+    "marktuebliche_miete_eur": null,
+    "mietrueckstaende_eur": 0.0,
+    "mietempfehlung": {
+      "empfohlene_kaltmiete_eur": 1050.0,
+      "spanne_eur": [1000.0, 1100.0],
+      "eur_pro_m2": 5.90,
+      "status": "ABGELEITET – HYPOTHESE, nicht belegt",
+      "begruendung": "Mittleres Regionalsegment (5,5-8,8 EUR/m2 laut Homeday-Preisatlas fuer Nachbarorte) minus Zustands-/Energieabschlag. HINWEIS: Die fruehere Tragfaehigkeitsrechnung nutzte ANNAHMEN (Hausgeld, Renovierung etc.), die der Nutzer nicht vorgegeben hat – daher ist die Empfehlung nur als ORIENTIERUNG zu verstehen, nicht als belastbare Zahl.",
+      "details": "siehe analyse/05_mietempfehlung.md"
+    }
+  },
+  "laufende_kosten": {
+    "hausgeld_monatlich_eur": null,
+    "verwaltung_prozent_von_miete": 0.0,
+    "instandhaltung_prozent_von_miete": null,
+    "nicht_umlagefaehige_kosten_monatlich_eur": null,
+    "status": "AUSSTEHEND – kein Wirtschaftsplan/Hausgeldabrechnung vorhanden; WEG-Unterlagen fehlen komplett"
+  },
+  "finanzierung": {
+    "eigenkapital_eur": null,
+    "zinssatz_prozent": 3.5,
+    "tilgung_prozent": null,
+    "zinsbindung_jahre": 10,
+    "finanzierungsnebenkosten_eur": 0.0,
+    "ek_status": "AUSSTEHEND – Nutzer-Vorgabe steht noch aus. Zur Orientierung: Break-Even-EK bei Zins 3,77 % lag in der Modellrechnung (mit ANNAHMEN) bei ca. 58.000 EUR – diese Zahl ist ohne die ANNAHMEN nicht belastbar.",
+    "zinsrecherche": {
+      "quelle": "CHECK24 Baufinanzierung (Beispielrechnung 150.000 EUR, 10 J. Sollzinsbindung)",
+      "spanne_prozent": [3.02, 3.77],
+      "abgerufen": "2026-09-16",
+      "status": "BELEGT (extern)",
+      "hinweis": "Individuelle Konditionen abweichend (Beleihungsauslauf, Bonität)."
+    }
+  },
+  "weg": {
+    "instandhaltungsruecklage_eur": 0.0,
+    "geplante_sonderumlagen_eur": 0.0
+  },
+  "annahmen": [
+    "BELEGT: Grunderwerbsteuer 6,0 % (Hessen-Satz, Bundesland aus Adresse abgeleitet).",
+    "BELEGT: Notar+Grundbuch 2,0 % (übliche Größenordnung, kein Kostenbeleg).",
+    "BELEGT: Makler 3,57 % inkl. MwSt. (Exposé S. 5).",
+    "BELEGT (extern): Zinsspanne 3,02–3,77 % bei 10 J. Festzins (CHECK24, 16.09.2026).",
+    "AUSSTEHEND: Renovierung & Sanierung – keine belastbare Kostenschätzung vorhanden ('sanierungsbedürftig' ohne Detail). Wird nach Besichtigung/Gutachten eingetragen.",
+    "AUSSTEHEND: Kaltmiete – Objekt ist frei, keine belegte Miete. Die Empfehlung (1.050 €/M) in 05_mietempfehlung.md ist eine ORIENTIERUNG aus dem Regionalvergleich, keine belastbare Zahl.",
+    "AUSSTEHEND: Hausgeld, Instandhaltungsrückstellung, Leerstand – keine WEG-Unterlagen vorhanden.",
+    "AUSSTEHEND: Eigenkapital & Tilgung – Nutzer-Vorgabe steht aus.",
+    "⚠️ Konsequenz: Ohne diese Werte sind Bruttorendite, Nettorendite, Cashflow, Maximalpreis und EK-Empfehlung NICHT berechenbar. Die interaktive Übersicht (06_entscheidungsuebersicht.html) zeigt solange 'ausstehend' statt erfundener Zahlen."
+  ],
+  "quellen": [
+    { "information": "Angebotspreis", "wert": "159.000 €", "quelle": "Exposé Objekt 1116, S. 1", "status": "BELEGT" },
+    { "information": "Wohnfläche", "wert": "178,00 m²", "quelle": "Exposé S. 1, 2; TE S. 8", "status": "BELEGT" },
+    { "information": "Grundstücksfläche", "wert": "ca. 2.114 m² (WEG gesamt)", "quelle": "Exposé S. 2, 5", "status": "BELEGT" },
+    { "information": "Baujahr", "wert": "1994 (Anbau-Fenster 1982)", "quelle": "Exposé S. 2, 5", "status": "BELEGT" },
+    { "information": "Energieklasse", "wert": "E, 152 kWh/(m²·a), Öl/Holz", "quelle": "Exposé S. 2", "status": "BELEGT" },
+    { "information": "Objektzustand", "wert": "Sanierungsbedürftig", "quelle": "Exposé S. 2", "status": "BELEGT" },
+    { "information": "Maklerprovision", "wert": "3,57 % inkl. MwSt.", "quelle": "Exposé S. 5", "status": "BELEGT" },
+    { "information": "Eigentümer Abt. I", "wert": "Friese, Jens-Peter (Zuschlag 2012); Urff-Friese, Saskia (Erbschein 2025)", "quelle": "Grundbuch Abt. I, S. 4 (Abdruck 26.05.2026)", "status": "BELEGT" },
+    { "information": "Grundschuld Nr. 5", "wert": "54.000 € Bausparkasse Schwäbisch Hall (2012)", "quelle": "Grundbuch Abt. III, S. 8", "status": "BELEGT" },
+    { "information": "Grundschuld Nr. 6", "wert": "26.000 € Bausparkasse Schwäbisch Hall (2014)", "quelle": "Grundbuch Abt. III, S. 8", "status": "BELEGT" },
+    { "information": "Sicherungshypotheken Nr. 3+4", "wert": "3.811,03 € + 30.912,75 €", "quelle": "Grundbuch Abt. III, S. 7", "status": "BELEGT" },
+    { "information": "Zwangsversteigerung/Zwangsverwaltung", "wert": "angeordnet 2009, Zuschlag 2012, teils gelöscht", "quelle": "Grundbuch Abt. II, S. 5–6", "status": "BELEGT" },
+    { "information": "WEG-Struktur", "wert": "2 WE, MAnteile 543/457, WE1 211,5 m² / WE2 178 m²", "quelle": "Teilungserklärung UR-Nr. 1152/1993, S. 5–8", "status": "BELEGT" },
+    { "information": "Zustimmungsvorbehalt Veräußerung", "wert": "schriftliche Zustimmung des anderen WE erforderlich", "quelle": "TE S. 11", "status": "BELEGT" },
+    { "information": "Kaltmiete", "wert": "UNBEKANNT – Objekt frei; Empfehlung 1.050 €/M nur als ORIENTIERUNG (Regionalvergleich)", "quelle": "Exposé S. 3 ('Frei werdend') + 05_mietempfehlung.md", "status": "UNBEKANNT" },
+    { "information": "Renovierung/Sanierung", "wert": "UNBEKANNT – 'sanierungsbedürftig' ohne Kostendetail", "quelle": "Exposé S. 2", "status": "UNBEKANNT" },
+    { "information": "Hausgeld/Rücklage", "wert": "UNBEKANNT – keine WEG-Unterlagen", "quelle": "–", "status": "UNBEKANNT" },
+    { "information": "Eigenkapital/Tilgung", "wert": "UNBEKANNT – Nutzer-Vorgabe steht aus", "quelle": "–", "status": "UNBEKANNT" }
+  ],
+  "widersprueche": [
+    "Adresse: Exposé 'Kerstenhausener Str. 2a' vs. TE/Grundbuch 'Kerstenhausener Str. 2' (TE nennt zusätzlich 'Borkener Straße 2').",
+    "Grundstücksfläche: Exposé 2.114 m² vs. TE Flurstück 78/3 = 1.882 m² (+ 77/2, 81/2 unlesbar) – Summe offen.",
+    "Energieausweis: Ausstelldatum 07.05.2026, verweist aber auf EnEV 2014 / 'ausgestellt ab 01.05.14'.",
+    "Zimmer: Exposé 5 Zimmer vs. TE-Raumliste WE 2 nicht 1:1 deckungsgleich."
+  ]
+}
