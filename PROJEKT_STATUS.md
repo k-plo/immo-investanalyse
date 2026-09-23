@@ -19,7 +19,7 @@
 | **Haarhausen** | `objekte/Haarhausen/` | ✅ Analysiert, Übersicht aktiv | **B (82)** | KP 179.000 € · BruttoR 9,12 % · CF +140 €/M · KM 1.360 € · EK 20.000 € |
 | **Kerstenhausen** | `objekte/Kerstenhausen/` | ✅ Analysiert (18.09.), Übersicht aktiv | **D (41)** | KP 152.100 € · BruttoR 6,31 % · CF −350 €/M · KM 800 € (ANNAHME) · Status 🟠 VERHANDELN · 🔴 Grundbuch/Miete fehlen |
 | **Gombeth** | `objekte/Gombeth/` | 🟡 Vorläufig analysiert | – | 107 m² ETW, 6 Zi., Istmiete 7.500 €/Jahr; KP 109.000 € vs. 134.000 € widersprüchlich · WEG-/Versicherungsrisiken offen |
-| ~~Arnsbach (Kerstenhausener Str.)~~ | ❌ gelöscht (18.09.) | aus DB per `prune` entfernt | war B (83) | Analyse-Daten ggf. aus Chat-Transkript rekonstruierbar |
+| **Arnsbach** | `objekte/Arnsbach/` | 🟡 Analysiert, keine Übersicht/State-Datei | – | 178 m² Bungalow/WEG, KP 159.000 € · Grundbuchlasten nominal 114.724 € und Sanierungsumfang offen · Status 🟡 NUR MIT KLÄRUNG |
 | _VORLAGE | `objekte/_VORLAGE/` | Vorlage für neue Objekte | – | Übersicht + Analyse-MDs generisch |
 
 ---
@@ -30,7 +30,7 @@
 - README-Prozess (16-stufiger Workflow), `_VORLAGE`-Struktur, `tools/kalkulation.html` (offline Tool), `tools/rechenkern.py` (identische Logik in Python, gegenseitig verifiziert)
 
 ### Objekt-Analysen (16.–17.09.)
-- **Arnsbach** (16.09., 17.09. gelöscht): Vollanalyse mit Grundbuch-Risiken (≈114.724 € Belastungen!), Mietempfehlung 1.050 € (ABGELEITET), Status 🟡
+- **Arnsbach** (16.09. analysiert, am 23.09. wieder unter `objekte/Arnsbach/` eingeordnet): Analyse-Dateien 01–05 neu abgelegt. Grundbuchrisiken von nominal ca. 114.724 €, Sanierungs- und WEG-Kosten offen; Mietorientierung 1.050 € nur als Hypothese. Status 🟡
 - **Haarhausen** (17.09.): EFH BJ 1900, ⚡ Elektroheizung kritisch (Klasse G, ~17.000 €/Jahr Heizstrom ohne PV!), Status 🟢 WEITER PRÜFEN
 
 ### Objekt-Übersichten (Hybrid-Dateien, 17.09.)

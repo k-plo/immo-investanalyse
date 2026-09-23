@@ -1,0 +1,86 @@
+{
+  "objekt": {
+    "name": "Arnsbach",
+    "adresse": "Kerstenhausener Strasse 2a, 34582 Borken (Hessen), OT Arnsbach",
+    "objektart": "Bungalow/EFH, WEG-Einheit 2 von 2",
+    "baujahr": 1994,
+    "wohnflaeche_m2": 178.0,
+    "nutzflaeche_m2": 40.0,
+    "grundstuecksflaeche_m2": 2114.0,
+    "anzahl_einheiten": 2,
+    "zimmer": 5,
+    "etage": 0,
+    "stellplaetze": 2,
+    "energieklasse": "E (152 kWh/(m2*a), Bedarfsausweis)",
+    "heizung": "Oel-Niedertemperaturkessel Baujahr 1994, 6000-l-Tanks, Kachelofen",
+    "status": "Nur mit Klaerung"
+  },
+  "kauf": {
+    "angebotspreis_eur": 159000.0,
+    "kaufpreis_pro_m2_eur": 893.26,
+    "grunderwerbsteuer_prozent": 6.0,
+    "notar_prozent": 2.0,
+    "grundbuch_prozent": 0.0,
+    "makler_prozent": 3.57,
+    "makler_anteil_verkaeufer_prozent": 0.0,
+    "erwerbsnebenkosten_eur": 18396.30,
+    "renovierung_eur": null,
+    "sanierung_eur": null,
+    "sonstige_erwerbskosten_eur": null,
+    "gesamtinvestition_vor_sanierung_eur": 177396.30
+  },
+  "miete": {
+    "kaltmiete_monatlich_eur": null,
+    "nebenkosten_monatlich_eur": null,
+    "leerstand_wochen_pro_jahr": null,
+    "marktuebliche_miete_eur": null,
+    "mietempfehlung": {
+      "orientierung_kaltmiete_monatlich_eur": 1050.0,
+      "spanne_eur": [1000.0, 1100.0],
+      "orientierung_eur_pro_m2": 5.90,
+      "status": "ABGELEITETE HYPOTHESE, nicht belastbar",
+      "quelle": "Regionale Vergleichswerte; siehe 05_mietempfehlung.md"
+    }
+  },
+  "laufende_kosten": {
+    "hausgeld_monatlich_eur": null,
+    "verwaltung_prozent_von_miete": null,
+    "instandhaltung_prozent_von_miete": null,
+    "nicht_umlagefaehige_kosten_monatlich_eur": null,
+    "status": "WEG-Unterlagen fehlen"
+  },
+  "finanzierung": {
+    "eigenkapital_eur": null,
+    "zinssatz_prozent": null,
+    "tilgung_prozent": null,
+    "zinsbindung_jahre": null,
+    "finanzierungsnebenkosten_eur": null,
+    "status": "Finanzierungsdaten fehlen"
+  },
+  "weg": {
+    "miteigentumsanteile": "543/1000 (WE 1) und 457/1000 (WE 2)",
+    "instandhaltungsruecklage_eur": null,
+    "geplante_sonderumlagen_eur": null,
+    "hausgeld_eur": null
+  },
+  "annahmen": [
+    "6,0 Prozent Grunderwerbsteuer fuer Hessen.",
+    "2,0 Prozent fuer Notar und Grundbuch als vorlaeufige Groessenordnung; nicht belegt.",
+    "1.050 EUR Kaltmiete monatlich ist nur eine regionale Orientierungs-Hypothese.",
+    "Renovierung, Sanierung, Hausgeld, Leerstand, Eigenkapital, Zins und Tilgung bleiben null, weil keine belastbaren Belege vorliegen."
+  ],
+  "quellen": [
+    {"information": "Angebotspreis", "wert": "159.000 EUR", "quelle": "Expose Objekt 1116, S. 1", "status": "BELEGT"},
+    {"information": "Wohnflaeche", "wert": "ca. 178 m2", "quelle": "Expose S. 1-2; Teilungserklaerung S. 8", "status": "BELEGT"},
+    {"information": "Grundstueck", "wert": "ca. 2.114 m2 WEG gesamt", "quelle": "Expose S. 2, 5", "status": "BELEGT, amtliche Summe offen"},
+    {"information": "Makler", "wert": "3,57 Prozent inkl. MwSt.", "quelle": "Expose S. 5", "status": "BELEGT"},
+    {"information": "Grundbuchbelastungen", "wert": "nominal 114.723,78 EUR in vier Positionen", "quelle": "Grundbuch Abdruck 26.05.2026, Abteilung III S. 7-9", "status": "BELEGT, Loeschung offen"},
+    {"information": "Energie", "wert": "Klasse E, 152 kWh/(m2*a)", "quelle": "Expose S. 2", "status": "BELEGT, Original fehlt"}
+  ],
+  "widersprueche": [
+    "Adresse: Kerstenhausener Strasse 2a gegen Strasse 2 bzw. Borkener Strasse 2.",
+    "Grundstueck: Expose 2.114 m2 gegen TE 1.882 m2 fuer Flurstueck 78/3 plus weitere unlesbare Teilflaechen.",
+    "Energieausweis: Ausstelldatum 07.05.2026 und Verweis auf EnEV 2014.",
+    "Zimmerzahl: Expose 5 Zimmer und nicht deckungsgleiche Raumliste der Teilungserklaerung."
+  ]
+}
