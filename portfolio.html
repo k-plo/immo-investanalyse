@@ -42,7 +42,7 @@
 <body>
 <div class="wrap">
   <h1>🏠 Immobilien-Portfolio</h1>
-  <div class="sub" id="stand">Übersicht aller analysierten Objekte · Stand: 23.09.2026 22:14 · Quelle: immo_datenbank.db</div>
+  <div class="sub" id="stand">Übersicht aller analysierten Objekte · Stand: 23.09.2026 22:19 · Quelle: immo_datenbank.db</div>
 
   <div class="filter">
     <button class="aktiv" onclick="filtern('alle', this)">Alle</button>
@@ -79,29 +79,6 @@
         <div><span class="l">Finanzierung</span><span class="v">20.000 € EK · 3,50 % · 2,00 % Tilg.</span></div>
       </div>
     </div>
-    <div class="karte" onclick="window.location.href=encodeURIComponent('objekte/Arnsbach/Arnsbach_Übersicht.html').replace(/%2F/g, '/')" style="cursor:pointer">
-      <div class="karte-head">
-        <div class="karte-name">Arnsbach</div>
-        <div class="rating-badge" style="background:#e8f5e9;color:#2e7d32">B</div>
-      </div>
-      <div class="karte-sub">Bungalow/EFH, WEG-Einheit 2 von 2 · Kerstenhausener Strasse 2a, 34582 Borken (Hessen), OT Arnsbach</div>
-      <div class="karte-details">
-        <span>📐 178 m²</span>
-        <span>📅 BJ 1994</span>
-        <span>🛏 5 Zi.</span>
-        <span>🌳 2.114 m²</span>
-      </div>
-      <div class="karte-kpis">
-        <div><span class="l">Kaufpreis</span><span class="v">159.000 €</span><span class="s">893 € /m²</span></div>
-        <div><span class="l">Gesamtinvest</span><span class="v">177.396 €</span><span class="s">997 € /m²</span></div>
-        <div><span class="l">BruttoR</span><span class="v">7,92 %</span></div>
-        <div><span class="l">CF/M</span><span class="v">51 €</span></div>
-      </div>
-      <div class="karte-fin">
-        <div><span class="l">Miete/Monat</span><span class="v">1.050 €</span><span class="s">≈ 5,90 €/m²</span></div>
-        <div><span class="l">Finanzierung</span><span class="v">20.000 € EK · 3,96 % · 2,00 % Tilg.</span></div>
-      </div>
-    </div>
     <div class="karte" onclick="window.location.href=encodeURIComponent('objekte/Kerstenhausen/Kerstenhausen_Übersicht.html').replace(/%2F/g, '/')" style="cursor:pointer">
       <div class="karte-head">
         <div class="karte-name">Kerstenhausen</div>
@@ -125,6 +102,29 @@
         <div><span class="l">Finanzierung</span><span class="v">20.000 € EK · 4,30 % · 2,00 % Tilg.</span></div>
       </div>
     </div>
+    <div class="karte" onclick="window.location.href=encodeURIComponent('objekte/Arnsbach/Arnsbach_Übersicht.html').replace(/%2F/g, '/')" style="cursor:pointer">
+      <div class="karte-head">
+        <div class="karte-name">Arnsbach</div>
+        <div class="rating-badge" style="background:#fde2e0;color:#c0392b">F</div>
+      </div>
+      <div class="karte-sub">Bungalow/EFH, WEG-Einheit 2 von 2 · Kerstenhausener Strasse 2a, 34582 Borken (Hessen), OT Arnsbach</div>
+      <div class="karte-details">
+        <span>📐 178 m²</span>
+        <span>📅 BJ 1994</span>
+        <span>🛏 5 Zi.</span>
+        <span>🌳 2.114 m²</span>
+      </div>
+      <div class="karte-kpis">
+        <div><span class="l">Kaufpreis</span><span class="v">159.000 €</span><span class="s">893 € /m²</span></div>
+        <div><span class="l">Gesamtinvest</span><span class="v">–</span><span class="s">– /m²</span></div>
+        <div><span class="l">BruttoR</span><span class="v">–</span></div>
+        <div><span class="l">CF/M</span><span class="v">–</span></div>
+      </div>
+      <div class="karte-fin">
+        <div><span class="l">Miete/Monat</span><span class="v">1.050 €</span><span class="s">≈ 5,90 €/m²</span></div>
+        <div><span class="l">Finanzierung</span><span class="v">20.000 € EK · 3,96 % · 2,00 % Tilg.</span></div>
+      </div>
+    </div>
   </div>
 
   <footer>
@@ -132,7 +132,7 @@
   </footer>
 </div>
 <script>
-const GENERATED_ISO = "2026-09-23T22:14:52";
+const GENERATED_ISO = "2026-09-23T22:19:42";
 function filtern(rating, btn) {
   document.querySelectorAll('.filter button').forEach(b => b.classList.remove('aktiv'));
   btn.classList.add('aktiv');
@@ -227,14 +227,18 @@ function noteDatenqualitaet(s) {
 }
 function berechneRatingJs(s, risiken) {
   const km = num(s.kaltmiete), preis = num(s.preis);
-  const brutto = (km && preis) ? km * 12 / preis * 100 : null;
+  const felder = ["preis", "flaeche", "renovierung", "sanierung", "grESt", "notar",
+    "makler", "sonstige", "kaltmiete", "hausgeld", "hausgeldNichtUml",
+    "instand", "leerstand", "ek", "zins", "tilgung"];
+  const vollstaendig = felder.every(feld => num(s[feld]) !== null);
+  const brutto = vollstaendig && preis > 0 ? km * 12 / preis * 100 : null;
   const ek = num(s.ek), zins = num(s.zins), tilg = num(s.tilgung);
   const lf = 1 - (num(s.leerstand) || 0) / 52;
   const hg = num(s.hausgeldNichtUml) || 0;
   const hgTotal = num(s.hausgeld) || 0;
   const inst = (num(s.instand) || 0) / 100;
   let cfNach = null, coc = null, gesamtinvest = null;
-  if (km && preis && ek !== null && zins !== null && tilg !== null) {
+  if (vollstaendig && preis > 0 && num(s.flaeche) > 0) {
     const nk = (num(s.grESt) || 0) + (num(s.notar) || 0) + (num(s.makler) || 0);
     const fix = (num(s.renovierung) || 0) + (num(s.sanierung) || 0) + (num(s.sonstige) || 0);
     const nettoJahr = km * 12 * lf - hg * 12 - (hgTotal > 0 ? 0 : km * 12 * 0.03) - km * 12 * inst;

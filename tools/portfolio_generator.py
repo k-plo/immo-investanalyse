@@ -275,14 +275,18 @@ function noteDatenqualitaet(s) {{
 }}
 function berechneRatingJs(s, risiken) {{
   const km = num(s.kaltmiete), preis = num(s.preis);
-  const brutto = (km && preis) ? km * 12 / preis * 100 : null;
+  const felder = ["preis", "flaeche", "renovierung", "sanierung", "grESt", "notar",
+    "makler", "sonstige", "kaltmiete", "hausgeld", "hausgeldNichtUml",
+    "instand", "leerstand", "ek", "zins", "tilgung"];
+  const vollstaendig = felder.every(feld => num(s[feld]) !== null);
+  const brutto = vollstaendig && preis > 0 ? km * 12 / preis * 100 : null;
   const ek = num(s.ek), zins = num(s.zins), tilg = num(s.tilgung);
   const lf = 1 - (num(s.leerstand) || 0) / 52;
   const hg = num(s.hausgeldNichtUml) || 0;
   const hgTotal = num(s.hausgeld) || 0;
   const inst = (num(s.instand) || 0) / 100;
   let cfNach = null, coc = null, gesamtinvest = null;
-  if (km && preis && ek !== null && zins !== null && tilg !== null) {{
+  if (vollstaendig && preis > 0 && num(s.flaeche) > 0) {{
     const nk = (num(s.grESt) || 0) + (num(s.notar) || 0) + (num(s.makler) || 0);
     const fix = (num(s.renovierung) || 0) + (num(s.sanierung) || 0) + (num(s.sonstige) || 0);
     const nettoJahr = km * 12 * lf - hg * 12 - (hgTotal > 0 ? 0 : km * 12 * 0.03) - km * 12 * inst;

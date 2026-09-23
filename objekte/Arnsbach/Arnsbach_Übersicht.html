@@ -737,6 +737,7 @@ function saveState() {
       const n = document.getElementById("savedNote");
       n.classList.add("show");
       setTimeout(() => n.classList.remove("show"), 1200);
+      schreibeDbUndJson();
     } catch (e) { /* localStorage nicht verfügbar */ }
   }, 400);
 }

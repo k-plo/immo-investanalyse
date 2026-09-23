@@ -194,24 +194,23 @@ def berechne_rating(state: dict, risiken: list) -> dict:
             return float(x) if x not in (None, "") else None
         except (ValueError, TypeError):
             return None
-    brutto = None
-    # Bruttorendite aus Kalkulation ableiten (KM*12/preis)
-    km, preis = f(state.get("kaltmiete")), f(state.get("preis"))
-    if km and preis:
-        brutto = km * 12 / preis * 100
+    felder = ["preis", "flaeche", "renovierung", "sanierung", "grESt", "notar",
+              "makler", "sonstige", "kaltmiete", "hausgeld", "hausgeldNichtUml",
+              "instand", "leerstand", "ek", "zins", "tilgung"]
+    werte = {feld: f(state.get(feld)) for feld in felder}
+    vollstaendig = all(werte[feld] is not None for feld in felder)
+    km, preis = werte["kaltmiete"], werte["preis"]
+    brutto = km * 12 / preis * 100 if vollstaendig and preis > 0 else None
     cf_nach = None
-    # CF nach Finanzierung grob rekonstruieren (vereinfacht, ohne Hausgeld-Logik):
-    # Hier nutzen wir die gespeicherten Werte, falls vorhanden
     n1, p1 = note_rendite(brutto)
-    # Cashflow: aus Rate und CF-vor (Vereinfachung: CF-nach = KM*12*lf - Rate)
-    ek, tilg, zins = f(state.get("ek")), f(state.get("tilgung")), f(state.get("zins"))
-    lf = 1 - (f(state.get("leerstand")) or 0) / 52
-    hg = f(state.get("hausgeldNichtUml")) or 0
-    inst = (f(state.get("instand")) or 0) / 100
-    hg_total = f(state.get("hausgeld")) or 0
-    if km and preis and ek is not None and zins is not None and tilg is not None:
-        nk_proz = (d := f(state.get("grESt")) or 0) + (f(state.get("notar")) or 0) + (f(state.get("makler")) or 0)
-        fix = (f(state.get("renovierung")) or 0) + (f(state.get("sanierung")) or 0) + (f(state.get("sonstige")) or 0)
+    if vollstaendig and preis > 0 and werte["flaeche"] > 0:
+        ek, tilg, zins = werte["ek"], werte["tilgung"], werte["zins"]
+        lf = 1 - werte["leerstand"] / 52
+        hg = werte["hausgeldNichtUml"]
+        inst = werte["instand"] / 100
+        hg_total = werte["hausgeld"]
+        nk_proz = werte["grESt"] + werte["notar"] + werte["makler"]
+        fix = werte["renovierung"] + werte["sanierung"] + werte["sonstige"]
         netto_jahr = km * 12 * lf - hg * 12 - (0 if hg_total > 0 else km * 12 * 0.03) - km * 12 * inst
         cf_vor = netto_jahr / 12
         gesamt = preis * (1 + nk_proz / 100) + fix
@@ -220,7 +219,7 @@ def berechne_rating(state: dict, risiken: list) -> dict:
         cf_nach = cf_vor - rate
     n2, p2 = note_cashflow(cf_nach)
     coc = None
-    if ek and cf_nach is not None:
+    if vollstaendig and werte["ek"] and cf_nach is not None:
         zins_jahr = darlehen * zins / 100
         tilg_jahr = max(0, rate * 12 - zins_jahr)
         coc = (cf_nach * 12 + tilg_jahr) / ek * 100
@@ -239,7 +238,7 @@ def berechne_rating(state: dict, risiken: list) -> dict:
         "risiko_note": n4, "datenqualitaet_note": n5,
         "punkte": round(gesamt_punkte, 1), "gesamt_rating": g,
         "brutto_rendite": brutto, "cf_nach": cf_nach, "coc": coc,
-        "gesamtinvest": (gesamt if (km and preis and ek is not None and zins is not None and tilg is not None) else None),
+        "gesamtinvest": (gesamt if vollstaendig and preis > 0 and werte["flaeche"] > 0 else None),
     }
 
 def f(x):
