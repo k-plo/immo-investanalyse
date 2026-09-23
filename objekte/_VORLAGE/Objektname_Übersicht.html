@@ -281,7 +281,7 @@ function readInputs() {
   const d = {};
   IDS.forEach(id => {
     const raw = String(document.getElementById(id).value).trim();
-    d[id] = raw === "" ? null : (parseFloat(raw.replace(",", ".")) || 0);
+    d[id] = raw === "" ? 0 : (parseFloat(raw.replace(",", ".")) || 0);
   });
   // Welche Pflichtwerte fehlen für eine vollständige Rechnung?
   d.fehlend = IDS.filter(id => d[id] === null);

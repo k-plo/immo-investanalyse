@@ -197,13 +197,13 @@ def berechne_rating(state: dict, risiken: list) -> dict:
     felder = ["preis", "flaeche", "renovierung", "sanierung", "grESt", "notar",
               "makler", "sonstige", "kaltmiete", "hausgeld", "hausgeldNichtUml",
               "instand", "leerstand", "ek", "zins", "tilgung"]
-    werte = {feld: f(state.get(feld)) for feld in felder}
-    vollstaendig = all(werte[feld] is not None for feld in felder)
+    werte = {feld: f(state.get(feld)) or 0 for feld in felder}
+    vollstaendig = True
     km, preis = werte["kaltmiete"], werte["preis"]
-    brutto = km * 12 / preis * 100 if vollstaendig and preis > 0 else None
+    brutto = km * 12 / preis * 100 if preis > 0 else None
     cf_nach = None
     n1, p1 = note_rendite(brutto)
-    if vollstaendig and preis > 0 and werte["flaeche"] > 0:
+    if preis > 0 and werte["flaeche"] > 0:
         ek, tilg, zins = werte["ek"], werte["tilgung"], werte["zins"]
         lf = 1 - werte["leerstand"] / 52
         hg = werte["hausgeldNichtUml"]
@@ -219,7 +219,7 @@ def berechne_rating(state: dict, risiken: list) -> dict:
         cf_nach = cf_vor - rate
     n2, p2 = note_cashflow(cf_nach)
     coc = None
-    if vollstaendig and werte["ek"] and cf_nach is not None:
+    if werte["ek"] and cf_nach is not None:
         zins_jahr = darlehen * zins / 100
         tilg_jahr = max(0, rate * 12 - zins_jahr)
         coc = (cf_nach * 12 + tilg_jahr) / ek * 100
@@ -238,7 +238,7 @@ def berechne_rating(state: dict, risiken: list) -> dict:
         "risiko_note": n4, "datenqualitaet_note": n5,
         "punkte": round(gesamt_punkte, 1), "gesamt_rating": g,
         "brutto_rendite": brutto, "cf_nach": cf_nach, "coc": coc,
-        "gesamtinvest": (gesamt if vollstaendig and preis > 0 and werte["flaeche"] > 0 else None),
+        "gesamtinvest": (gesamt if preis > 0 and werte["flaeche"] > 0 else None),
     }
 
 def f(x):

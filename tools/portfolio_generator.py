@@ -278,17 +278,17 @@ function berechneRatingJs(s, risiken) {{
   const felder = ["preis", "flaeche", "renovierung", "sanierung", "grESt", "notar",
     "makler", "sonstige", "kaltmiete", "hausgeld", "hausgeldNichtUml",
     "instand", "leerstand", "ek", "zins", "tilgung"];
-  const vollstaendig = felder.every(feld => num(s[feld]) !== null);
-  const brutto = vollstaendig && preis > 0 ? km * 12 / preis * 100 : null;
+  const wert = feld => num(s[feld]) ?? 0;
+  const brutto = preis > 0 ? km * 12 / preis * 100 : null;
   const ek = num(s.ek), zins = num(s.zins), tilg = num(s.tilgung);
-  const lf = 1 - (num(s.leerstand) || 0) / 52;
-  const hg = num(s.hausgeldNichtUml) || 0;
-  const hgTotal = num(s.hausgeld) || 0;
-  const inst = (num(s.instand) || 0) / 100;
+  const lf = 1 - wert("leerstand") / 52;
+  const hg = wert("hausgeldNichtUml");
+  const hgTotal = wert("hausgeld");
+  const inst = wert("instand") / 100;
   let cfNach = null, coc = null, gesamtinvest = null;
-  if (vollstaendig && preis > 0 && num(s.flaeche) > 0) {{
-    const nk = (num(s.grESt) || 0) + (num(s.notar) || 0) + (num(s.makler) || 0);
-    const fix = (num(s.renovierung) || 0) + (num(s.sanierung) || 0) + (num(s.sonstige) || 0);
+  if (preis > 0 && wert("flaeche") > 0) {{
+    const nk = wert("grESt") + wert("notar") + wert("makler");
+    const fix = wert("renovierung") + wert("sanierung") + wert("sonstige");
     const nettoJahr = km * 12 * lf - hg * 12 - (hgTotal > 0 ? 0 : km * 12 * 0.03) - km * 12 * inst;
     const cfVor = nettoJahr / 12;
     const gesamt = preis * (1 + nk / 100) + fix;
