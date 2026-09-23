@@ -19,7 +19,7 @@
 | **Haarhausen** | `objekte/Haarhausen/` | ✅ Analysiert, Übersicht aktiv | **B (82)** | KP 179.000 € · BruttoR 9,12 % · CF +140 €/M · KM 1.360 € · EK 20.000 € |
 | **Kerstenhausen** | `objekte/Kerstenhausen/` | ✅ Analysiert (18.09.), Übersicht aktiv | **D (41)** | KP 152.100 € · BruttoR 6,31 % · CF −350 €/M · KM 800 € (ANNAHME) · Status 🟠 VERHANDELN · 🔴 Grundbuch/Miete fehlen |
 | **Gombeth** | `objekte/Gombeth/` | 🟡 Vorläufig analysiert | – | 107 m² ETW, 6 Zi., Istmiete 7.500 €/Jahr; KP 109.000 € vs. 134.000 € widersprüchlich · WEG-/Versicherungsrisiken offen |
-| **Arnsbach** | `objekte/Arnsbach/` | 🟡 Analysiert, keine Übersicht/State-Datei | – | 178 m² Bungalow/WEG, KP 159.000 € · Grundbuchlasten nominal 114.724 € und Sanierungsumfang offen · Status 🟡 NUR MIT KLÄRUNG |
+| **Arnsbach** | `objekte/Arnsbach/` | 🟡 Analysiert, Übersicht aktiv | – | 178 m² Bungalow/WEG, KP 159.000 € · Grundbuchlasten nominal 114.724 € und Sanierungsumfang offen · Status 🟡 NUR MIT KLÄRUNG |
 | _VORLAGE | `objekte/_VORLAGE/` | Vorlage für neue Objekte | – | Übersicht + Analyse-MDs generisch |
 
 ---
@@ -35,6 +35,8 @@
 
 ### Objekt-Übersichten (Hybrid-Dateien, 17.09.)
 - `<Objektname>_Übersicht.html` direkt im Objektordner: Eingaben oben, Ergebnisse live darunter
+- **Verbindliche Regel (23.09.):** Jede neue Objektanalyse erzeugt immer die fünf Analyse-Dateien unter `analyse/` **plus** eine eigene `<Objektname>_Übersicht.html` direkt im Objektordner. Bei vorhandenen belastbaren Eingabewerten wird zusätzlich die passende `<Objektname>_Übersicht_State.json` angelegt; fehlende Werte bleiben leer bzw. ausstehend.
+- **Arnsbach nachgezogen (23.09.):** `objekte/Arnsbach/Arnsbach_Übersicht.html` und `Arnsbach_Übersicht_State.json` erstellt; bekannte Werte aus Exposé/Analyse eingetragen, Miet-, WEG- und Finanzierungswerte bewusst offen gelassen.
 - Auto-Sync: State-JSON in den Objektordner per File System Access API (Handle in IndexedDB `immo-fs-handles`/`immo-root`)
 - Tooltips (TIPS-Objekt), Risiko-Tabelle editierbar, localStorage-Autosave, Reset/Export
 - ✏️ **Editierbare Erklärungs-Tags** (18.09.): die 16 `.tag`-Spans unter den Eingabefeldern sind `contenteditable` + `data-persist="tag-<feld>"` → Quellen/Notizen direkt editierbar, ohne Hervorhebung; Persistenz über das data-persist-Muster (localStorage + State-JSON + DB-Sync)

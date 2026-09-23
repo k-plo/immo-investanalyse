@@ -56,9 +56,11 @@ Dokumente importieren
 **Ablauf in der Praxis:**
 
 1. **Ordner befüllen** – Lege unter `objekte/<objektname>/unterlagen/` alle Dokumente ab (PDF, Fotos, Scans). Nutze die Vorlage `objekte/_VORLAGE/unterlagen/README.md` als Checkliste.
-2. **Analyse starten** – Sag mir: *„Analysiere das Objekt `<objektname>`"*. Ich lese sämtliche Dokumente vollständig und fülle `analyse/01_datenbasis.md` (inkl. Quellenverzeichnis) und `analyse/02_dokumentenpruefung.md` aus.
+2. **Analyse starten** – Sag mir: *„Analysiere das Objekt `<objektname>`"*. Ich lese sämtliche Dokumente vollständig, fülle `analyse/01_datenbasis.md` (inkl. Quellenverzeichnis) und `analyse/02_dokumentenpruefung.md` aus und erstelle im Objektordner immer `<Objektname>_Übersicht.html` als interaktive Objektübersicht.
 3. **Kalkulation** – Ich trage alle belegten Zahlen in `tools/kalkulation.html` ein (oder du selbst im Browser) und sichere das Ergebnis als `analyse/03_kalkulation.json` + `analyse/04_investmentbericht.md` + `analyse/05_mietempfehlung.md` (Standard-Struktur, siehe Abschnitt 2).
 4. **Ergebnis** – Du erhältst den Investmentbericht im Standardformat (siehe unten) mit Ampel-Status.
+
+**Verbindliche Regel für neue Objekte:** Eine neue Analyse umfasst immer die fünf Dateien unter `analyse/` **plus** die interaktive `<Objektname>_Übersicht.html` direkt im Objektordner. Wenn bereits belastbare Eingabewerte vorliegen, wird zusätzlich `<Objektname>_Übersicht_State.json` als Fail-Safe-Kopie angelegt. Fehlende Werte bleiben leer bzw. „ausstehend"; es werden keine Zahlen erfunden.
 
 ---
 
