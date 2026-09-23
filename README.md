@@ -80,7 +80,7 @@ Immo/
 │   │       ├── 03_kalkulation.json
 │   │       ├── 04_investmentbericht.md
 │   │       └── 05_mietempfehlung.md
-│   ├── Arnsbach (Kerstenhausener Str.)/
+│   ├── Arnsbach/
 │   │   ├── Arnsbach_..._Übersicht.html      ← interaktive Übersicht
 │   │   ├── Arnsbach_..._Übersicht_State.json ← Fail-Safe-Kopie
 │   │   ├── unterlagen/                      ← Dokumente

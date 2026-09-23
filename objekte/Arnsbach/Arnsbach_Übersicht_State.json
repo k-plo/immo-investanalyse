@@ -14,5 +14,12 @@
   "leerstand": "",
   "ek": "",
   "zins": "",
-  "tilgung": ""
+  "tilgung": "",
+  "_risiken": [
+    ["🔴 Grundbuchbelastungen", "rechtlich", "🔴", "Vier Positionen mit nominal ca. 114.723,78 EUR sind nicht eindeutig gelöscht. Löschungsbewilligungen vor Kauf sichern."],
+    ["🔴 Sanierungsbedarf", "technisch", "🔴", "Heizung Baujahr 1994, 6.000-l-Tanks, Fenster und Kachelofen prüfen; Kosten unbekannt."],
+    ["🔴 WEG-Unterlagen fehlen", "WEG", "🔴", "Hausgeld, Rücklage, Protokolle, Verwalter und Sonderumlagen sind unbekannt."],
+    ["🟠 Dokumentenwidersprüche", "Dokumentation", "🟠", "Adresse, Grundstücksfläche, Zimmerliste und Energieausweis müssen geklärt werden."],
+    ["🟡 Vermietbarkeit", "Miete", "🟡", "Kaltmiete und lokale Vergleichsangebote für 178 m2 fehlen."]
+  ]
 }
