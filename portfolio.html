@@ -42,7 +42,7 @@
 <body>
 <div class="wrap">
   <h1>🏠 Immobilien-Portfolio</h1>
-  <div class="sub" id="stand">Übersicht aller analysierten Objekte · Stand: 23.09.2026 22:13 · Quelle: immo_datenbank.db</div>
+  <div class="sub" id="stand">Übersicht aller analysierten Objekte · Stand: 23.09.2026 22:14 · Quelle: immo_datenbank.db</div>
 
   <div class="filter">
     <button class="aktiv" onclick="filtern('alle', this)">Alle</button>
@@ -132,7 +132,7 @@
   </footer>
 </div>
 <script>
-const GENERATED_ISO = "2026-09-23T22:13:13";
+const GENERATED_ISO = "2026-09-23T22:14:52";
 function filtern(rating, btn) {
   document.querySelectorAll('.filter button').forEach(b => b.classList.remove('aktiv'));
   btn.classList.add('aktiv');
@@ -436,6 +436,15 @@ async function getRootDir() {
   await idbSet("immo-root", h);
   return rootHandle;
 }
+async function autoPortfolioAktualisieren() {
+  if (!window.showDirectoryPicker) return;
+  try {
+    const saved = await idbGet("immo-root");
+    if (!saved || await saved.queryPermission({ mode: "read" }) !== "granted") return;
+    await portfolioAktualisieren(document.querySelector("button.sync"));
+  } catch (e) { /* Manuelle Aktualisierung bleibt verfügbar. */ }
+}
+autoPortfolioAktualisieren();
 </script>
 </body>
 </html>

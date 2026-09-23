@@ -15,14 +15,14 @@
 
 **Workflow nach Änderungen in einer Objekt-Übersicht:**
 ```
-python tools/db_manager.py sync-json objekte     ← JSONs → DB
-python tools/portfolio_generator.py              ← DB → portfolio.html
+python tools/db_manager.py sync                 ← State-JSONs → DB → portfolio.html
 ```
+Beim Öffnen von `portfolio.html` wird zusätzlich automatisch aus dem bereits freigegebenen `objekte/`-Ordner gelesen. Dadurch erscheinen neue Objekte mit vorhandener State-JSON auch ohne vorherige manuelle Neugenerierung. Nach einem Browser-Neustart kann einmalig erneut die Ordnerberechtigung nötig sein.
 
 **DB-Befehle:**
 | Befehl | Wirkung |
 |---|---|
-| `python tools/db_manager.py sync-json objekte` | Alle State-JSONs einlesen → DB aktualisieren |
+| `python tools/db_manager.py sync` | Alle State-JSONs einlesen → DB und Portfolio aktualisieren |
 | `python tools/db_manager.py list` | Objekte mit Kerndaten + Rating anzeigen |
 | `python tools/db_manager.py check` | Konsistenzprüfung DB vs. JSON |
 | `python tools/db_manager.py export-json <name>` | DB → JSON zurück schreiben (Restore) |

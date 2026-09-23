@@ -484,6 +484,15 @@ async function getRootDir() {{
   await idbSet("immo-root", h);
   return rootHandle;
 }}
+async function autoPortfolioAktualisieren() {{
+  if (!window.showDirectoryPicker) return;
+  try {{
+    const saved = await idbGet("immo-root");
+    if (!saved || await saved.queryPermission({{ mode: "read" }}) !== "granted") return;
+    await portfolioAktualisieren(document.querySelector("button.sync"));
+  }} catch (e) {{ /* Manuelle Aktualisierung bleibt verfügbar. */ }}
+}}
+autoPortfolioAktualisieren();
 </script>
 </body>
 </html>"""
