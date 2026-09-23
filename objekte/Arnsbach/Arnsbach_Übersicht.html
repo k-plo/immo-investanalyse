@@ -264,8 +264,8 @@ const getZinsSzenarien = zins => ZINS_OFFSETS.map(({ offset, label }) => ({
 const DEFAULTS = {
   preis: 159000, flaeche: 178, renovierung: null, sanierung: null,
   grESt: 6.0, notar: 2.0, makler: 3.57, sonstige: 0,
-  kaltmiete: null, hausgeld: null, hausgeldNichtUml: null, instand: null, leerstand: null,
-  ek: null, zins: null, tilgung: null
+  kaltmiete: 1050, hausgeld: null, hausgeldNichtUml: null, instand: 10, leerstand: 4,
+  ek: 20000, zins: 3.96, tilgung: 2.0
 };
 const IDS = Object.keys(DEFAULTS);
 // Lesbare Namen für "ausstehend"-Meldungen
@@ -545,8 +545,8 @@ function render() {
   dq.push([`Kaufpreis ${eur(d.preis)}, Wohnfläche ${d.flaeche ? fmt(d.flaeche, 1) + " m²" : "–"}`, "BELEGT", "Quelle eintragen (z. B. Exposé S. 2)"]);
   dq.push(["Bungalow/WEG-Einheit 2 von 2, Baujahr 1994, Energieklasse E, 2.114 m² WEG-Gesamtfläche", "BELEGT", "Exposé S. 2; Teilungserklärung S. 5-8"]);
   dq.push(["Zinssätze (aktuelles Marktniveau recherchieren)", "BELEGT (extern)", "z. B. CHECK24, Datum eintragen"]);
-  dq.push([d.kaltmiete === null ? "Kaltmiete: ausstehend" : `Kaltmiete ${eur(d.kaltmiete)}/M (${d.flaeche > 0 ? eur(d.kaltmiete / d.flaeche) : "–"}/m²)`, d.kaltmiete === null ? "AUSSTEHEND" : "EINGABE", d.kaltmiete === null ? "Bitte eingeben – Regionalvergleich recherchieren" : "Deine Eingabe"]);
-  dq.push([d.ek === null ? "Eigenkapital: ausstehend" : `Eigenkapital ${eur(d.ek)}`, d.ek === null ? "AUSSTEHEND" : "EINGABE", d.ek === null ? "Bitte eingeben" : "Deine Eingabe"]);
+  dq.push([d.kaltmiete === null ? "Kaltmiete: ausstehend" : `Kaltmiete ${eur(d.kaltmiete)}/M (${d.flaeche > 0 ? eur(d.kaltmiete / d.flaeche) : "–"}/m²)`, d.kaltmiete === null ? "AUSSTEHEND" : "ABGELEITET", d.kaltmiete === null ? "Bitte eingeben – Regionalvergleich recherchieren" : "05_mietempfehlung.md: regionale Orientierung, Spanne 1.000–1.100 €"]);
+  dq.push([d.ek === null ? "Eigenkapital: ausstehend" : `Eigenkapital ${eur(d.ek)}`, d.ek === null ? "AUSSTEHEND" : "NUTZER-VORGABE", d.ek === null ? "Bitte eingeben" : "Vorgabe des Nutzers"]);
   const annahmeListe = [];
   if (d.renovierung === null) annahmeListe.push("Renovierung");
   else annahmeListe.push("Renovierung " + eur(d.renovierung));
@@ -556,9 +556,10 @@ function render() {
   else annahmeListe.push("Tilgung " + pct(d.tilgung));
   if (d.leerstand === null) annahmeListe.push("Leerstand");
   else annahmeListe.push("Leerstand " + fmt(d.leerstand, 1) + " Wo.");
-  dq.push([annahmeListe.join(", "), "ANNAHME", "Platzhalter – nicht belegt"]);
+  dq.push([annahmeListe.join(", "), "ANNAHME/NUTZER-VORGABE", "Instandhaltung, Leerstand und Tilgung: Vorgaben des Nutzers; Renovierung/Sanierung: noch offen"]);
   dq.push(["Objekt-spezifische Annahmen hier eintragen (z. B. Heizstrom-Schätzung)", "ANNAHME (Orientierung)", "Rechenweg dokumentieren"]);
-  dq.push(["Grundbuch, Mietverträge, Sanierungsnachweise, tatsächliche Vergleichsmiete", "UNBEKANNT", "Muss geklärt werden"]);
+  dq.push(["Hausgeld, nicht umlagefähige Kosten, Sanierungsnachweise, tatsächliche Vergleichsmiete", "UNBEKANNT", "WEG-Unterlagen/Besichtigung erforderlich"]);
+  dq.push([`Zins ${pct(d.zins)} · 10 Jahre Sollzinsbindung`, d.zins === null ? "AUSSTEHEND" : "BELEGT (extern)", d.zins === null ? "Bankangebot recherchieren" : "Dr. Klein Zinschart, abgerufen 23.09.2026"]);
   document.getElementById("tblDatenqualitaet").innerHTML =
     row([{ v: "Wert", num: false }, { v: "Status", num: true }, { v: "Quelle", num: false }], true) +
     dq.map(([w, s, q]) => {

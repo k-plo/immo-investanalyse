@@ -30,9 +30,9 @@
     "gesamtinvestition_vor_sanierung_eur": 177396.30
   },
   "miete": {
-    "kaltmiete_monatlich_eur": null,
+    "kaltmiete_monatlich_eur": 1050.0,
     "nebenkosten_monatlich_eur": null,
-    "leerstand_wochen_pro_jahr": null,
+    "leerstand_wochen_pro_jahr": 4.0,
     "marktuebliche_miete_eur": null,
     "mietempfehlung": {
       "orientierung_kaltmiete_monatlich_eur": 1050.0,
@@ -45,15 +45,15 @@
   "laufende_kosten": {
     "hausgeld_monatlich_eur": null,
     "verwaltung_prozent_von_miete": null,
-    "instandhaltung_prozent_von_miete": null,
+    "instandhaltung_prozent_von_miete": 10.0,
     "nicht_umlagefaehige_kosten_monatlich_eur": null,
     "status": "WEG-Unterlagen fehlen"
   },
   "finanzierung": {
-    "eigenkapital_eur": null,
-    "zinssatz_prozent": null,
-    "tilgung_prozent": null,
-    "zinsbindung_jahre": null,
+    "eigenkapital_eur": 20000.0,
+    "zinssatz_prozent": 3.96,
+    "tilgung_prozent": 2.0,
+    "zinsbindung_jahre": 10,
     "finanzierungsnebenkosten_eur": null,
     "status": "Finanzierungsdaten fehlen"
   },
@@ -66,8 +66,10 @@
   "annahmen": [
     "6,0 Prozent Grunderwerbsteuer fuer Hessen.",
     "2,0 Prozent fuer Notar und Grundbuch als vorlaeufige Groessenordnung; nicht belegt.",
-    "1.050 EUR Kaltmiete monatlich ist nur eine regionale Orientierungs-Hypothese.",
-    "Renovierung, Sanierung, Hausgeld, Leerstand, Eigenkapital, Zins und Tilgung bleiben null, weil keine belastbaren Belege vorliegen."
+    "1.050 EUR Kaltmiete monatlich ist nur eine regionale Orientierungs-Hypothese und wurde als Startwert eingetragen.",
+    "Instandhaltung 10 Prozent, Leerstand 4 Wochen/Jahr, Eigenkapital 20.000 EUR und Tilgung 2,0 Prozent sind Nutzer-Vorgaben.",
+    "Der Zinssatz 3,96 Prozent ist ein externer Recherchewert für 10 Jahre Sollzinsbindung vom 23.09.2026; ein individuelles Bankangebot steht aus.",
+    "Renovierung, Sanierung, Hausgeld und nicht umlagefähige Kosten bleiben null/unbekannt, weil keine belastbaren Belege vorliegen."
   ],
   "quellen": [
     {"information": "Angebotspreis", "wert": "159.000 EUR", "quelle": "Expose Objekt 1116, S. 1", "status": "BELEGT"},
@@ -76,6 +78,8 @@
     {"information": "Makler", "wert": "3,57 Prozent inkl. MwSt.", "quelle": "Expose S. 5", "status": "BELEGT"},
     {"information": "Grundbuchbelastungen", "wert": "nominal 114.723,78 EUR in vier Positionen", "quelle": "Grundbuch Abdruck 26.05.2026, Abteilung III S. 7-9", "status": "BELEGT, Loeschung offen"},
     {"information": "Energie", "wert": "Klasse E, 152 kWh/(m2*a)", "quelle": "Expose S. 2", "status": "BELEGT, Original fehlt"}
+    ,{"information": "Kaltmiete", "wert": "1.050 EUR/Monat (5,90 EUR/m2)", "quelle": "05_mietempfehlung.md; regionale Orientierung, keine lokalen Vergleichsangebote", "status": "ABGELEITET, nicht belastbar"}
+    ,{"information": "Bauzins", "wert": "3,96 Prozent Sollzins bei 10 Jahren Bindung", "quelle": "Dr. Klein Zinschart, abgerufen 23.09.2026", "status": "BELEGT (extern), individuelles Angebot offen"}
   ],
   "widersprueche": [
     "Adresse: Kerstenhausener Strasse 2a gegen Strasse 2 bzw. Borkener Strasse 2.",

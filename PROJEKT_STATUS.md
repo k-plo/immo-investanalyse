@@ -8,7 +8,7 @@
 ## 🕐 Letzter Stand
 
 **Datum:** 23.09.2026
-**Letzte Aktion:** Portfolio-Karten und Generator erweitert: Grundstücksfläche bzw. Objekttyp, Kaufpreis €/m², Gesamtinvestition €/m² sowie Button zur Erkennung neuer Objektordner ergänzt. „Letzte Änderung“ und Stellplatzanzeige aus den Karten entfernt. `db_manager.py`-Syntaxfehler repariert; Python- und HTML-Prüfungen erfolgreich.
+**Letzte Aktion:** Arnsbach-Übersicht mit recherchierter Kaltmiete (1.050 €/M), aktuellem 10-Jahres-Zins (3,96 % am 23.09.2026) und den verbindlichen Nutzer-Vorgaben (Instandhaltung 10 %, Leerstand 4 Wochen, EK 20.000 €, Tilgung 2 %) vorbelegt; State-JSON und Kalkulations-JSON synchronisiert.
 
 ---
 
@@ -37,6 +37,7 @@
 - `<Objektname>_Übersicht.html` direkt im Objektordner: Eingaben oben, Ergebnisse live darunter
 - **Verbindliche Regel (23.09.):** Jede neue Objektanalyse erzeugt immer die fünf Analyse-Dateien unter `analyse/` **plus** eine eigene `<Objektname>_Übersicht.html` direkt im Objektordner. Bei vorhandenen belastbaren Eingabewerten wird zusätzlich die passende `<Objektname>_Übersicht_State.json` angelegt; fehlende Werte bleiben leer bzw. ausstehend.
 - **Arnsbach nachgezogen (23.09.):** `objekte/Arnsbach/Arnsbach_Übersicht.html` und `Arnsbach_Übersicht_State.json` erstellt; bekannte Werte aus Exposé/Analyse eingetragen, Miet-, WEG- und Finanzierungswerte bewusst offen gelassen.
+- **Arnsbach Werte ergänzt (23.09.):** Kaltmiete 1.050 €/M als abgeleitete Orientierung, Zins 3,96 % für 10 Jahre Sollzinsbindung nach Dr.-Klein-Recherche vom 23.09.2026 sowie Nutzer-Vorgaben direkt in Übersicht, State und `03_kalkulation.json` eingetragen. Hausgeld, nicht umlagefähige Kosten, Renovierung und Sanierung bleiben offen.
 - Auto-Sync: State-JSON in den Objektordner per File System Access API (Handle in IndexedDB `immo-fs-handles`/`immo-root`)
 - Tooltips (TIPS-Objekt), Risiko-Tabelle editierbar, localStorage-Autosave, Reset/Export
 - ✏️ **Editierbare Erklärungs-Tags** (18.09.): die 16 `.tag`-Spans unter den Eingabefeldern sind `contenteditable` + `data-persist="tag-<feld>"` → Quellen/Notizen direkt editierbar, ohne Hervorhebung; Persistenz über das data-persist-Muster (localStorage + State-JSON + DB-Sync)
@@ -73,6 +74,7 @@
 - Playwright-Tests: input-Events nach value-Setzung manuell dispatchen; Script-Scope-Funktionen sind nicht auf `window`
 - **Dynamische Tag-Texte unter Eingabefeldern: VERWORFEN** (18.09.) – statische, editierbare Tags genügen; nicht wieder vorschlagen
 - **📈 Zins-Recherche-Regel** (18.09., Goldene Regel 12 in README.md): KEINE Beispiel-/Werbezahlen von Vergleichsportalen (CHECK24-Beispielrechnungen) als Kalkulationsbasis! Stattdessen echte Marktkonditionen recherchieren (konkrete Angebote: Vergleich.de/Dr. Klein, FMH, Bankkonditionen), Spanne bestes–schlechtestes dokumentieren + Bindungsdauer nennen. Realität 18.09.: 4,67–5,55 % (12/20 J.) vs. CHECK24-Beispiel 3,02–3,77 % (10 J.). Bei Recalc > 7 Tage alt: frisch prüfen; innerhalb 7 Tage: Wert weiterverwenden. Immer Datum + Quelle in der Datenqualität-Tabelle
+- **🧾 Werte-Eintragsregel (23.09., verbindlich):** Recherchierte Werte werden immer direkt in die entsprechenden Eingabefelder sowie State-/Kalkulationsdateien eingetragen. Kaltmiete und Zins erhalten Quelle, Datum und Status; die Nutzer-Vorgaben Instandhaltung 10 %, Leerstand 4 Wochen/Jahr, EK 20.000 € und Tilgung 2,0 % werden als Startwerte gesetzt. Unbekannte objektbezogene Werte bleiben leer/ausstehend.
 
 ---
 
