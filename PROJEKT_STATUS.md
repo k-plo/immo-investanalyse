@@ -7,8 +7,8 @@
 
 ## 🕐 Letzter Stand
 
-**Datum:** 21.09.2026
-**Letzte Aktion:** Gombeth neu analysiert und die fünf Analyse-Dateien nach Haarhausen-Schema angelegt. Kritisch: Kaufpreiswiderspruch 109.000 € vs. 134.000 €, zwei ungeklärte Versicherungsfälle, fehlende WEG-/Mietunterlagen. Zuvor: Standard-Analyse-Struktur als verbindliche Konvention dokumentiert.
+**Datum:** 23.09.2026
+**Letzte Aktion:** Portfolio-Karten und Generator erweitert: Grundstücksfläche bzw. Objekttyp, Kaufpreis €/m², Gesamtinvestition €/m² sowie Button zur Erkennung neuer Objektordner ergänzt. „Letzte Änderung“ und Stellplatzanzeige aus den Karten entfernt. `db_manager.py`-Syntaxfehler repariert; Python- und HTML-Prüfungen erfolgreich.
 
 ---
 
@@ -51,6 +51,13 @@
 - 🔑 **Handle-Merken**: Directory-Handle in IndexedDB (gleiche DB/Key wie Übersichten) → kein Picker mehr bei jedem Klick
 - 📅 **BJ-Fix**: 1900 statt 1.900 (jahr()-Helper)
 - 💾 **BruttoR/CF in DB**: import_json speichert sie jetzt in kalkulation-Tabelle (vorher immer „–")
+
+### Portfolio-Erweiterung (23.09.)
+- 🆕 **Neue Objekte analysieren**: Button prüft den festen Ordner `objekte/`, überspringt bereits importierte Objektordner mit State-JSON und erkennt neue Ordner mit Unterlagen. Der vorhandene Dokumenten-/KI-Analyseprozess muss weiterhin manuell durchgeführt werden; nach Erstellung des State-JSON übernimmt „Aktualisieren“ den bestehenden Importpfad.
+- 🏡 **Objektbezogene Kartendetails**: Häuser zeigen die positive Grundstücksfläche aus `analyse/03_kalkulation.json`; Wohnungen zeigen stattdessen den Objekttyp, damit WEG-Gesamtflächen nicht irreführend als eigene Grundstücksfläche erscheinen.
+- 💰 **Preiskennzahlen**: Kaufpreis und Gesamtinvestition zeigen zusätzlich den jeweiligen Wert pro Wohnfläche. Die bestehende Mietpreis-€/m²-Anzeige bleibt erhalten.
+- 🧹 **Kartenbereinigung**: „Letzte Änderung“ und Stellplätze werden nicht mehr in den Karten angezeigt; Datenbankfelder und Importdaten bleiben unverändert.
+- 🔧 **Generator/Validierung**: `tools/portfolio_generator.py` und `tools/db_manager.py` kompilieren fehlerfrei; `portfolio.html` wurde erfolgreich neu generiert und ohne HTML-/JavaScript-Diagnosefehler geprüft.
 
 ---
 
@@ -95,4 +102,4 @@
 
 ---
 
-*Diese Datei wird nach jeder Session aktualisiert. Letztes Update: 21.09.2026*
+*Diese Datei wird nach jeder Session aktualisiert. Letztes Update: 23.09.2026*

@@ -91,6 +91,22 @@ CREATE TABLE IF NOT EXISTS rating (
 CREATE TABLE IF NOT EXISTS meta (
     key TEXT PRIMARY KEY, value TEXT
 );
+-- --- Hinzugefügt: 2026-09-22 ---
+CREATE TABLE IF NOT EXISTS notizen (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    objekt_id INTEGER REFERENCES objekte(id),
+    text TEXT NOT NULL,
+    erstell_am TEXT DEFAULT CURRENT_TIMESTAMP,
+    geaendert_am TEXT DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE IF NOT EXISTS archivierungsgruenden (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL UNIQUE
+);
+INSERT OR IGNORE INTO archivierungsgruenden (name) VALUES
+('purchase_price_too_high'), ('low_yield'), ('negative_cashflow'),
+('technical_risk'), ('legal_risk'), ('location'), ('financing'),
+('missing_documents'), ('sold'), ('withdrawn'), ('other');
 """
 
 # ---------------------------------------------------------------- Helpers ---
@@ -395,9 +411,31 @@ def sync_portfolio() -> None:
     spec.loader.exec_module(mod)
     mod.main()
 
-def prune(auto_yes: bool = False) -> None:
-    """Löscht DB-Einträge, deren Objektordner nicht mehr existiert.
+# ---------------------------------------------------------------- Backfill ---
+def backfill_status():
+    """Sättigt leere status-Felder mit 'aktiv' für bestehende Objekte."""
+    conn = db()
+    conn.execute("UPDATE objekte SET status = 'aktiv' WHERE status IS NULL")
+    conn.commit()
+    conn.close()
+    print("✓ Backfilled: status='aktiv' für alle Objekte")
 
+def backfill_notizen():
+    """Löscht alte leere Notizen-Tabelle (falls existiert)."""
+    conn = db()
+    # Prüfen ob Tabelle existiert und leer ist
+    cursor = conn.execute(
+        "SELECT COUNT(*) FROM sqlite_master WHERE name='notizen'", ()
+    )
+    exists, _ = cursor.fetchone()
+    if exists:
+        # Leere Notizen löschen (falls vorhanden)
+        conn.execute("DELETE FROM notizen")
+        conn.commit()
+    conn.close()
+
+def prune(auto_yes: bool = False) -> None:
+    """
     Ablauf: Objektordner löschen -> 'python db_manager.py prune' -> 'sync'
     (sync generiert portfolio.html neu, ohne das gelöschte Objekt).
     """

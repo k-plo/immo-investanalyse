@@ -45,6 +45,21 @@ def mieteProM2(o):
         return ""
     return f"≈ {km / fl:.2f} €/m²".replace(".", ",")
 
+def eurProM2(value, flaeche):
+    """Preiswert pro m²; bei unvollständigen Daten kein irreführendes Ergebnis."""
+    if value is None or flaeche is None or flaeche <= 0:
+        return "–"
+    return eur(value / flaeche)
+
+def objektDetails(objektart, grundstueck):
+    """Zeigt Grundstück bei grundstücksbezogenen Objekten, sonst den Objekttyp."""
+    art = (objektart or "").lower()
+    if any(begriff in art for begriff in ("wohnung", "etw", "apartment")):
+      return f"🏢 {objektart}"
+    if grundstueck is not None and grundstueck > 0:
+        return f"🌳 {fmt(grundstueck, 0)} m²"
+    return f"🏠 {objektart}" if objektart else ""
+
 def main():
     generated_iso = datetime.now().isoformat(timespec="seconds")
     generated_str = datetime.now().strftime("%d.%m.%Y %H:%M")
@@ -66,6 +81,15 @@ def main():
         g = o["gesamt_rating"] or "?"
         farbe = RATING_FARBE.get(g, "#5a6a85")
         bg = RATING_BG.get(g, "#e8ecf3")
+        meta = {}
+        try:
+            import json
+            meta_path = Path(o["json_pfad"]).parent / "analyse" / "03_kalkulation.json"
+            if meta_path.exists():
+                meta = json.loads(meta_path.read_text(encoding="utf-8")).get("objekt", {})
+        except (OSError, ValueError, TypeError):
+            pass
+        details = objektDetails(o["objektart"], meta.get("grundstuecksflaeche_m2"))
         karten.append(f"""
     <div class="karte" onclick="window.location.href=encodeURIComponent('objekte/{o['name']}/{Path(o['html_pfad']).name if o['html_pfad'] else ''}').replace(/%2F/g, '/')" style="cursor:pointer">
       <div class="karte-head">
@@ -77,11 +101,11 @@ def main():
         <span>📐 {fmt(o['wohnflaeche'], 0)} m²</span>
         <span>📅 BJ {jahr(o['baujahr'])}</span>
         <span>🛏 {fmt(o['zimmer'], 0)} Zi.</span>
-        <span>🚗 {fmt(o['stellplaetze'], 0)} Stellp.</span>
+        <span>{details}</span>
       </div>
       <div class="karte-kpis">
-        <div><span class="l">Kaufpreis</span><span class="v">{eur(o['kaufpreis'])}</span></div>
-        <div><span class="l">Gesamtinvest</span><span class="v">{eur(o['gesamtinvest'])}</span></div>
+        <div><span class="l">Kaufpreis</span><span class="v">{eur(o['kaufpreis'])}</span><span class="s">{eurProM2(o['kaufpreis'], o['wohnflaeche'])} /m²</span></div>
+        <div><span class="l">Gesamtinvest</span><span class="v">{eur(o['gesamtinvest'])}</span><span class="s">{eurProM2(o['gesamtinvest'], o['wohnflaeche'])} /m²</span></div>
         <div><span class="l">BruttoR</span><span class="v">{pct(o['brutto_rendite'])}</span></div>
         <div><span class="l">CF/M</span><span class="v">{eur(o['cf_nach'])}</span></div>
       </div>
@@ -89,7 +113,6 @@ def main():
         <div><span class="l">Miete/Monat</span><span class="v">{eur(o['kaltmiete'])}</span><span class="s">{mieteProM2(o)}</span></div>
         <div><span class="l">Finanzierung</span><span class="v">{eur(o['ek'])} EK · {pct(o['zins'])} · {pct(o['tilgung'])} Tilg.</span></div>
       </div>
-      <div class="karte-datum">Letzte Änderung: {o['geaendert_am'] or '–'}</div>
     </div>""")
 
     html = f"""<!DOCTYPE html>
@@ -109,6 +132,7 @@ def main():
   .filter button.aktiv {{ background: #1a4fa0; color: #fff; border-color: #1a4fa0; }}
   .filter button.sync {{ background: #1a4fa0; color: #fff; border-color: #1a4fa0; margin-left: auto; font-weight: 600; }}
   .filter button.sync:disabled {{ opacity: .55; cursor: wait; }}
+  .filter button.analyse {{ flex-basis: 100%; text-align: left; }}
   .grid {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }}
   .karte {{ background: #fff; border-radius: 12px; padding: 18px 20px; box-shadow: 0 3px 12px rgba(15,20,32,.10); transition: transform .15s; }}
   .karte:hover {{ transform: translateY(-3px); box-shadow: 0 6px 18px rgba(15,20,32,.15); }}
@@ -144,6 +168,7 @@ def main():
     <button onclick="filtern('C', this)">Rating C</button>
     <button onclick="filtern('DF', this)">Rating D/F</button>
     <button class="sync" onclick="portfolioAktualisieren(this)">🔄 Aktualisieren</button>
+    <button class="analyse" onclick="neueObjekteAnalysieren(this)">➕ Neue Objekte analysieren</button>
   </div>
 
   <div class="grid" id="grid">
@@ -189,6 +214,16 @@ function pctJs(v) {{
 function mieteProM2Js(o) {{
   if (o.kaltmiete == null || !o.wohnflaeche) return "";
   return "≈ " + (o.kaltmiete / o.wohnflaeche).toLocaleString("de-DE", {{ minimumFractionDigits: 2, maximumFractionDigits: 2 }}) + " €/m²";
+}}
+function eurProM2Js(value, flaeche) {{
+  if (value === null || value === undefined || flaeche === null || flaeche === undefined || flaeche <= 0) return "–";
+  return eurJs(value / flaeche);
+}}
+function objektDetailsJs(objektart, grundstueck) {{
+  const art = (objektart || "").toLowerCase();
+  if (["wohnung", "etw", "apartment"].some(begriff => art.includes(begriff))) return "🏢 " + objektart;
+  if (grundstueck !== null && grundstueck !== undefined && grundstueck > 0) return "🌳 " + Math.round(grundstueck).toLocaleString("de-DE") + " m²";
+  return objektart ? "🏠 " + objektart : "";
 }}
 function noteRendite(v) {{
   if (v === null) return ["F", 0];
@@ -276,7 +311,6 @@ function karteHtml(o) {{
   const bg = RATING_BG[o.g] || "#e8ecf3";
   const jahrTxt = o.baujahr != null ? String(Math.round(o.baujahr)) : "–";
   const zi = o.zimmer != null ? Math.round(o.zimmer) : "–";
-  const st = o.stellplaetze != null ? Math.round(o.stellplaetze) : "–";
   const wm = o.wohnflaeche != null ? Math.round(o.wohnflaeche) : "–";
   const href = encodeURIComponent('objekte/' + o.name + '/' + (o.htmlName || '')).replace(/%2F/g, '/');
   return `
@@ -290,11 +324,11 @@ function karteHtml(o) {{
         <span>📐 ${{wm}} m²</span>
         <span>📅 BJ ${{jahrTxt}}</span>
         <span>🛏 ${{zi}} Zi.</span>
-        <span>🚗 ${{st}} Stellp.</span>
+        <span>${{objektDetailsJs(o.objektart, o.grundstuecksflaeche)}}</span>
       </div>
       <div class="karte-kpis">
-        <div><span class="l">Kaufpreis</span><span class="v">${{eurJs(o.kaufpreis)}}</span></div>
-        <div><span class="l">Gesamtinvest</span><span class="v">${{eurJs(o.gesamtinvest)}}</span></div>
+        <div><span class="l">Kaufpreis</span><span class="v">${{eurJs(o.kaufpreis)}}</span><span class="s">${{eurProM2Js(o.kaufpreis, o.wohnflaeche)}} /m²</span></div>
+        <div><span class="l">Gesamtinvest</span><span class="v">${{eurJs(o.gesamtinvest)}}</span><span class="s">${{eurProM2Js(o.gesamtinvest, o.wohnflaeche)}} /m²</span></div>
         <div><span class="l">BruttoR</span><span class="v">${{pctJs(o.brutto)}}</span></div>
         <div><span class="l">CF/M</span><span class="v">${{eurJs(o.cfNach)}}</span></div>
       </div>
@@ -302,9 +336,41 @@ function karteHtml(o) {{
         <div><span class="l">Miete/Monat</span><span class="v">${{eurJs(o.kaltmiete)}}</span><span class="s">${{mieteProM2Js(o)}}</span></div>
         <div><span class="l">Finanzierung</span><span class="v">${{eurJs(o.ek)}} EK · ${{pctJs(o.zins)}} · ${{pctJs(o.tilgung)}} Tilg.</span></div>
       </div>
-      <div class="karte-datum">Letzte Änderung: ${{o.geaendert || '–'}}</div>
     </div>`;
 }}
+async function neueObjekteAnalysieren(btn) {{
+  if (!window.showDirectoryPicker) {{
+    alert("Dein Browser unterstützt die Ordnerauswahl nicht. Bitte Chrome oder Edge verwenden.");
+    return;
+  }}
+  btn.disabled = true;
+  try {{
+    const root = await getRootDir();
+    const objekteDir = await root.getDirectoryHandle("objekte", {{ create: false }});
+    const neu = [];
+    for await (const [name, handle] of objekteDir.entries()) {{
+      if (handle.kind !== "directory" || name.startsWith("_")) continue;
+      let hatState = false, unterlagen = [];
+      for await (const [fn, fh] of handle.entries()) {{
+        if (fh.kind === "file" && fn.endsWith("_Übersicht_State.json")) hatState = true;
+        if (fh.kind === "directory" && fn === "unterlagen") {{
+          for await (const [docName, docHandle] of fh.entries()) if (docHandle.kind === "file") unterlagen.push(docName);
+        }}
+      }}
+      if (!hatState && unterlagen.length) neu.push(name + " (" + unterlagen.length + " Unterlage(n))");
+    }}
+    if (!neu.length) {{
+      alert("Keine neuen Objektordner mit Unterlagen gefunden. Bereits importierte Objekte werden über ihr State-JSON übersprungen.");
+    }} else {{
+      alert("Neue Objektordner erkannt:\\n\\n" + neu.join("\\n") + "\\n\\nBitte den bestehenden Dokumenten-/KI-Analyseprozess für diese Ordner durchführen. Nach dem erzeugten State-JSON übernimmt 'Aktualisieren' den bestehenden Import-, Berechnungs- und Ratingpfad.");
+    }}
+  }} catch (e) {{
+    if (e.name !== "AbortError") alert("Ordnerprüfung fehlgeschlagen: " + e.message);
+  }} finally {{
+    btn.disabled = false;
+  }}
+}}
+
 async function portfolioAktualisieren(btn) {{
   if (!window.showDirectoryPicker) {{
     alert("Dein Browser unterstützt die File System Access API nicht (nur Chrome/Edge).\\n\\nAlternativ: python tools/db_manager.py sync im Terminal.");
@@ -341,6 +407,7 @@ async function portfolioAktualisieren(btn) {{
       objekte.push({{
         name, htmlName,
         objektart: meta.objektart || "", adresse: meta.adresse || "",
+        grundstuecksflaeche: num(meta.grundstuecksflaeche_m2),
         baujahr: num(meta.baujahr), zimmer: num(meta.zimmer), stellplaetze: num(meta.stellplaetze),
         kaufpreis: preis, wohnflaeche: fl,
         gesamtinvest: r.gesamtinvest,
