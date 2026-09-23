@@ -42,7 +42,7 @@
 <body>
 <div class="wrap">
   <h1>🏠 Immobilien-Portfolio</h1>
-  <div class="sub" id="stand">Übersicht aller analysierten Objekte · Stand: 23.09.2026 21:14 · Quelle: immo_datenbank.db</div>
+  <div class="sub" id="stand">Übersicht aller analysierten Objekte · Stand: 23.09.2026 22:13 · Quelle: immo_datenbank.db</div>
 
   <div class="filter">
     <button class="aktiv" onclick="filtern('alle', this)">Alle</button>
@@ -71,12 +71,35 @@
       <div class="karte-kpis">
         <div><span class="l">Kaufpreis</span><span class="v">179.000 €</span><span class="s">1.053 € /m²</span></div>
         <div><span class="l">Gesamtinvest</span><span class="v">224.710 €</span><span class="s">1.322 € /m²</span></div>
-        <div><span class="l">BruttoR</span><span class="v">9,12 %</span></div>
-        <div><span class="l">CF/M</span><span class="v">140 €</span></div>
+        <div><span class="l">BruttoR</span><span class="v">8,72 %</span></div>
+        <div><span class="l">CF/M</span><span class="v">93 €</span></div>
       </div>
       <div class="karte-fin">
-        <div><span class="l">Miete/Monat</span><span class="v">1.360 €</span><span class="s">≈ 8,00 €/m²</span></div>
+        <div><span class="l">Miete/Monat</span><span class="v">1.300 €</span><span class="s">≈ 7,65 €/m²</span></div>
         <div><span class="l">Finanzierung</span><span class="v">20.000 € EK · 3,50 % · 2,00 % Tilg.</span></div>
+      </div>
+    </div>
+    <div class="karte" onclick="window.location.href=encodeURIComponent('objekte/Arnsbach/Arnsbach_Übersicht.html').replace(/%2F/g, '/')" style="cursor:pointer">
+      <div class="karte-head">
+        <div class="karte-name">Arnsbach</div>
+        <div class="rating-badge" style="background:#e8f5e9;color:#2e7d32">B</div>
+      </div>
+      <div class="karte-sub">Bungalow/EFH, WEG-Einheit 2 von 2 · Kerstenhausener Strasse 2a, 34582 Borken (Hessen), OT Arnsbach</div>
+      <div class="karte-details">
+        <span>📐 178 m²</span>
+        <span>📅 BJ 1994</span>
+        <span>🛏 5 Zi.</span>
+        <span>🌳 2.114 m²</span>
+      </div>
+      <div class="karte-kpis">
+        <div><span class="l">Kaufpreis</span><span class="v">159.000 €</span><span class="s">893 € /m²</span></div>
+        <div><span class="l">Gesamtinvest</span><span class="v">177.396 €</span><span class="s">997 € /m²</span></div>
+        <div><span class="l">BruttoR</span><span class="v">7,92 %</span></div>
+        <div><span class="l">CF/M</span><span class="v">51 €</span></div>
+      </div>
+      <div class="karte-fin">
+        <div><span class="l">Miete/Monat</span><span class="v">1.050 €</span><span class="s">≈ 5,90 €/m²</span></div>
+        <div><span class="l">Finanzierung</span><span class="v">20.000 € EK · 3,96 % · 2,00 % Tilg.</span></div>
       </div>
     </div>
     <div class="karte" onclick="window.location.href=encodeURIComponent('objekte/Kerstenhausen/Kerstenhausen_Übersicht.html').replace(/%2F/g, '/')" style="cursor:pointer">
@@ -93,13 +116,13 @@
       </div>
       <div class="karte-kpis">
         <div><span class="l">Kaufpreis</span><span class="v">152.100 €</span><span class="s">1.300 € /m²</span></div>
-        <div><span class="l">Gesamtinvest</span><span class="v">234.698 €</span><span class="s">2.006 € /m²</span></div>
-        <div><span class="l">BruttoR</span><span class="v">6,31 %</span></div>
-        <div><span class="l">CF/M</span><span class="v">-350 €</span></div>
+        <div><span class="l">Gesamtinvest</span><span class="v">224.698 €</span><span class="s">1.920 € /m²</span></div>
+        <div><span class="l">BruttoR</span><span class="v">6,71 %</span></div>
+        <div><span class="l">CF/M</span><span class="v">-401 €</span></div>
       </div>
       <div class="karte-fin">
-        <div><span class="l">Miete/Monat</span><span class="v">800 €</span><span class="s">≈ 6,84 €/m²</span></div>
-        <div><span class="l">Finanzierung</span><span class="v">20.000 € EK · 3,50 % · 2,00 % Tilg.</span></div>
+        <div><span class="l">Miete/Monat</span><span class="v">850 €</span><span class="s">≈ 7,26 €/m²</span></div>
+        <div><span class="l">Finanzierung</span><span class="v">20.000 € EK · 4,30 % · 2,00 % Tilg.</span></div>
       </div>
     </div>
   </div>
@@ -109,7 +132,7 @@
   </footer>
 </div>
 <script>
-const GENERATED_ISO = "2026-09-23T21:14:12";
+const GENERATED_ISO = "2026-09-23T22:13:13";
 function filtern(rating, btn) {
   document.querySelectorAll('.filter button').forEach(b => b.classList.remove('aktiv'));
   btn.classList.add('aktiv');
