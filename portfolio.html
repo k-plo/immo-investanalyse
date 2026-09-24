@@ -42,7 +42,7 @@
 <body>
 <div class="wrap">
   <h1>🏠 Immobilien-Portfolio</h1>
-  <div class="sub" id="stand">Übersicht aller analysierten Objekte · Stand: 24.09.2026 17:54 · Quelle: immo_datenbank.db</div>
+  <div class="sub" id="stand">Übersicht aller analysierten Objekte · Stand: 24.09.2026 20:18 · Quelle: immo_datenbank.db</div>
 
   <div class="filter">
     <button class="aktiv" onclick="filtern('alle', this)">Alle</button>
@@ -56,29 +56,6 @@
 
   <div class="grid" id="grid">
     
-    <div class="karte" onclick="window.location.href=encodeURIComponent('objekte/Haarhausen/Haarhausen_Übersicht.html').replace(/%2F/g, '/')" style="cursor:pointer">
-      <div class="karte-head">
-        <div class="karte-name">Haarhausen</div>
-        <div class="rating-badge" style="background:#e8f5e9;color:#2e7d32">B</div>
-      </div>
-      <div class="karte-sub">Einfamilienhaus (2 Etagen) mit zwei Stall-/Scheunengebäuden · 34582 Borken / Haarhausen (Straße unbekannt)</div>
-      <div class="karte-details">
-        <span>📐 170 m²</span>
-        <span>📅 BJ 1900</span>
-        <span>🛏 6 Zi.</span>
-        <span>🌳 697 m²</span>
-      </div>
-      <div class="karte-kpis">
-        <div><span class="l">Kaufpreis</span><span class="v">179.000 €</span><span class="s">1.053 € /m²</span></div>
-        <div><span class="l">Gesamtinvest</span><span class="v">224.710 €</span><span class="s">1.322 € /m²</span></div>
-        <div><span class="l">BruttoR</span><span class="v">8,72 %</span></div>
-        <div><span class="l">CF/M</span><span class="v">93 €</span></div>
-      </div>
-      <div class="karte-fin">
-        <div><span class="l">Miete/Monat</span><span class="v">1.300 €</span><span class="s">≈ 7,65 €/m²</span></div>
-        <div><span class="l">Finanzierung</span><span class="v">20.000 € EK · 3,50 % · 2,00 % Tilg.</span></div>
-      </div>
-    </div>
     <div class="karte" onclick="window.location.href=encodeURIComponent('objekte/Kerstenhausen/Kerstenhausen_Übersicht.html').replace(/%2F/g, '/')" style="cursor:pointer">
       <div class="karte-head">
         <div class="karte-name">Kerstenhausen</div>
@@ -132,7 +109,7 @@
   </footer>
 </div>
 <script>
-const GENERATED_ISO = "2026-09-24T17:54:19";
+const GENERATED_ISO = "2026-09-24T20:18:35";
 function filtern(rating, btn) {
   document.querySelectorAll('.filter button').forEach(b => b.classList.remove('aktiv'));
   btn.classList.add('aktiv');
