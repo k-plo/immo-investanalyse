@@ -62,6 +62,11 @@
   .footer { margin-top: 10px; padding-top: 8px; border-top: 1px solid #d7deea; font-size: 9px; color: #7a879c; }
   .print-btn { position: fixed; top: 16px; right: 16px; z-index: 10; background: #1a4fa0; color: #fff; border: none; border-radius: 8px; padding: 10px 16px; font-size: 12.5px; font-weight: 600; cursor: pointer; box-shadow: 0 3px 10px rgba(26,79,160,.35); }
   .print-btn:hover { background: #143c7a; }
+  .external-link { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 10px 0 4px; padding: 8px 10px; background: #f0f5fa; border: 1px solid #d6e0ea; border-radius: 8px; }
+  .external-link label { font-weight: 700; color: #29445e; }
+  .external-link input { min-width: 180px; flex: 1 1 220px; padding: 7px 9px; border: 1px solid #bdcbd7; border-radius: 5px; font: inherit; }
+  .external-link button { padding: 7px 10px; border: 0; border-radius: 5px; background: #1a4fa0; color: #fff; cursor: pointer; }
+  .external-link button:disabled { background: #9aa8b4; cursor: not-allowed; }
   .saved-note { position: fixed; bottom: 16px; right: 16px; background: #1a7f4b; color: #fff; border-radius: 8px; padding: 8px 14px; font-size: 12px; opacity: 0; transition: opacity .3s; pointer-events: none; z-index: 10; }
   .saved-note.show { opacity: 1; }
   /* Tooltips */
@@ -92,6 +97,7 @@
   <div class="card">
     <h1>🏠 Arnsbach</h1>
     <div class="sub">Bungalow/EFH, WEG-Einheit 2 von 2 · Kerstenhausener Straße 2a · 178 m² · BJ 1994 · Energieklasse E</div>
+    <div class="external-link"><label for="externeQuelle">Objektanzeige:</label><input id="externeQuelle" type="text" data-persist="externeQuelle" placeholder="z. B. eBay, Immowelt, ImmoScout24"><input id="externeUrl" type="url" data-persist="externeUrl" placeholder="https://..." aria-label="URL der Objektanzeige"><button id="externeLinkBtn" type="button" onclick="oeffneExterneObjektseite()" disabled>🔗 Öffnen</button></div>
 
     <div class="toolbar">
       <button class="btn" onclick="zumPortfolio()">🏠 Zum Portfolio</button>
@@ -704,7 +710,7 @@ function collectState() {
   const s = { _tool: "immo-objekt-uebersicht", _version: 1, _objekt_ordner: OBJEKT_ORDNER };
   IDS.forEach(id => s[id] = document.getElementById(id).value);
   document.querySelectorAll("[data-persist]").forEach(el => {
-    s["p_" + el.dataset.persist] = el.type === "checkbox" ? el.checked : el.innerHTML;
+    s["p_" + el.dataset.persist] = el.type === "checkbox" ? el.checked : (el.matches("input, textarea, select") ? el.value : el.innerHTML);
   });
   document.querySelectorAll("[data-list-persist]").forEach(el => {
     s["_list_" + el.dataset.listPersist] = el.innerHTML;
@@ -725,11 +731,24 @@ function applyState(s) {
     const el = document.querySelector(`[data-persist="${k.slice(2)}"]`);
     if (!el) return;
     if (el.type === "checkbox") { el.checked = s[k]; const li = el.closest("li"); if (li) li.classList.toggle("done", s[k]); }
+    else if (el.matches("input, textarea, select")) el.value = s[k];
     else el.innerHTML = s[k];
   });
   if (s._risiken) renderRisiken(s._risiken);
+  aktualisiereExterneLink();
   render();
   try { localStorage.setItem(LS_KEY, JSON.stringify(collectState())); } catch (e) { }
+}
+function aktualisiereExterneLink() {
+  const url = document.getElementById("externeUrl");
+  const button = document.getElementById("externeLinkBtn");
+  if (!url || !button) return;
+  button.disabled = !/^https?:\/\/\S+$/i.test(url.value.trim());
+}
+function oeffneExterneObjektseite() {
+  const url = document.getElementById("externeUrl")?.value.trim() || "";
+  if (!/^https?:\/\/\S+$/i.test(url)) { alert("Bitte zuerst eine gültige http(s)-URL eintragen."); return; }
+  window.open(url, "_blank", "noopener");
 }
 let saveTimer = null;
 function saveState() {
@@ -946,6 +965,7 @@ function loadFile(ev) {
   render();
   document.addEventListener("input", e => {
     if (e.target.matches && e.target.matches(".inputs input")) { render(); saveState(); }
+    if (e.target.id === "externeUrl" || e.target.id === "externeQuelle") { aktualisiereExterneLink(); saveState(); }
   });
   document.addEventListener("input", e => { if (e.target.closest && e.target.closest("[contenteditable]")) saveState(); });
   document.addEventListener("change", e => {

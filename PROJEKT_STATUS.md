@@ -8,7 +8,7 @@
 ## 🕐 Letzter Stand
 
 **Datum:** 24.09.2026
-**Letzte Aktion:** Archivierungs-Workflow geprüft und alte Haarhausen-Archivkopie korrigiert: Die Übersicht unter `objekte/_ARCHIV/Haarhausen/` zeigt jetzt zuverlässig „Reaktivieren“ statt „Archivieren“.
+**Letzte Aktion:** Editierbare externe Objektanzeigen ergänzt: Vorlage, aktive Übersichten und Archivkopie haben jetzt gespeicherte Felder für Quellenname und URL sowie einen validierten Öffnen-Button. Vorhandene URLs wurden nicht erfunden; die Felder bleiben leer, wenn keine Original-URL belegt ist.
 
 ---
 
