@@ -8,7 +8,7 @@
 ## 🕐 Letzter Stand
 
 **Datum:** 24.09.2026
-**Letzte Aktion:** Archivierungs-Workflow ergänzt: Objektübersichten verschieben vollständige Objektordner sicher nach `objekte/_ARCHIV/<Name>/`; archivierte Pfade bleiben beim DB-Sync erhalten, werden aber aus dem aktiven Portfolio und zukünftigen aktiven Scans ausgeschlossen. Archivierte Übersichten zeigen jetzt automatisch „Reaktivieren“.
+**Letzte Aktion:** Archivierungs-Workflow geprüft und alte Haarhausen-Archivkopie korrigiert: Die Übersicht unter `objekte/_ARCHIV/Haarhausen/` zeigt jetzt zuverlässig „Reaktivieren“ statt „Archivieren“.
 
 ---
 
