@@ -97,7 +97,7 @@
       <button class="btn" onclick="zumPortfolio()">🏠 Zum Portfolio</button>
       <button class="btn secondary" onclick="exportJson()">💾 State speichern (Download)</button>
       <button class="btn secondary" onclick="document.getElementById('fileInput').click()">📂 State laden</button>
-      <button class="btn secondary" onclick="archiviereObjekt()">🗄️ Archivieren</button>
+      <button id="archiveBtn" class="btn secondary" onclick="archiviereObjekt()">🗄️ Archivieren</button>
       <span class="edit-hint" style="margin-left:6px">Änderungen werden automatisch im Browser gespeichert. „State speichern" lädt eine Backup-Datei für dauerhafte Sicherung oder Weitergabe herunter.</span>
     </div>
     <input type="file" id="fileInput" accept=".json" style="display:none" onchange="loadFile(event)">
@@ -847,6 +847,42 @@ async function archiviereObjekt() {
     if (e.name !== "AbortError") alert("Archivierung fehlgeschlagen: " + e.message);
   }
 }
+async function reaktiviereObjekt() {
+  if (!location.pathname.includes("/_ARCHIV/")) {
+    alert("Dieses Objekt ist bereits aktiv.");
+    return;
+  }
+  if (!confirm(`'${OBJEKT_ORDNER}' aus dem Archiv reaktivieren?`)) return;
+  try {
+    const dir = await getDbDir();
+    if (!dir) return;
+    const objekteDir = await dir.getDirectoryHandle("objekte", { create: false });
+    const archiv = await objekteDir.getDirectoryHandle("_ARCHIV", { create: false });
+    const quelle = await archiv.getDirectoryHandle(OBJEKT_ORDNER, { create: false });
+    try {
+      await objekteDir.getDirectoryHandle(OBJEKT_ORDNER, { create: false });
+      alert("Im aktiven Ordner existiert bereits ein Objekt mit diesem Namen. Nichts wurde verschoben.");
+      return;
+    } catch (e) {
+      if (e.name !== "NotFoundError") throw e;
+    }
+    const ziel = await objekteDir.getDirectoryHandle(OBJEKT_ORDNER, { create: true });
+    await kopiereOrdner(quelle, ziel);
+    await archiv.removeEntry(OBJEKT_ORDNER, { recursive: true });
+    alert("Objekt wurde reaktiviert.");
+    zumPortfolio();
+  } catch (e) {
+    if (e.name !== "AbortError") alert("Reaktivierung fehlgeschlagen: " + e.message);
+  }
+}
+function aktualisiereArchivButton() {
+  const button = document.getElementById("archiveBtn");
+  if (!button) return;
+  const archiviert = location.pathname.includes("/_ARCHIV/");
+  button.textContent = archiviert ? "↩️ Reaktivieren" : "🗄️ Archivieren";
+  button.onclick = archiviert ? reaktiviereObjekt : archiviereObjekt;
+}
+aktualisiereArchivButton();
 async function schreibeDbUndJson() {
   // Schreibt State-JSON in den Objektordner (Fail-Safe) – überschreibt die bestehende Datei.
   // Die SQLite-DB wird vom db_manager.py aus den JSONs synchronisiert:

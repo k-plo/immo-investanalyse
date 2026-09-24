@@ -8,7 +8,7 @@
 ## 🕐 Letzter Stand
 
 **Datum:** 24.09.2026
-**Letzte Aktion:** Archivierungs-Workflow ergänzt: Objektübersichten verschieben vollständige Objektordner sicher nach `objekte/_ARCHIV/<Name>/`; archivierte Pfade bleiben beim DB-Sync erhalten, werden aber aus dem aktiven Portfolio und zukünftigen aktiven Scans ausgeschlossen.
+**Letzte Aktion:** Archivierungs-Workflow ergänzt: Objektübersichten verschieben vollständige Objektordner sicher nach `objekte/_ARCHIV/<Name>/`; archivierte Pfade bleiben beim DB-Sync erhalten, werden aber aus dem aktiven Portfolio und zukünftigen aktiven Scans ausgeschlossen. Archivierte Übersichten zeigen jetzt automatisch „Reaktivieren“.
 
 ---
 
@@ -64,6 +64,7 @@
 - 🔄 **Portfolio-Auto-Sync (23.09.)**: `portfolio.html` gleicht beim Öffnen automatisch mit dem bereits freigegebenen Objektordner ab; `tools/portfolio_generator.py` erzeugt diesen Mechanismus bei jeder Neugenerierung mit. Neue Objekte mit State-JSON können dadurch nicht mehr nur wegen einer veralteten statischen Portfolio-Datei fehlen.
 - 🔄 **Live-Synchronisation (24.09.)**: Ursache der Abweichungen war der parallele browsergebundene `localStorage`-State gegenüber der statischen DB-Kopie in `portfolio.html`. Übersichten senden ihren State jetzt per `BroadcastChannel`; das Portfolio aktualisiert die betroffene Karte sofort und übernimmt beim Start vorhandene States mit Objektordner-Kennung. Generator und Vorlage enthalten denselben Datenfluss.
 - 🗄️ **Archivieren (24.09.)**: Jede Objektübersicht hat neben den vorhandenen Kopf-Buttons einen Archivieren-Button. Nach Bestätigung wird der komplette Ordner rekursiv nach `objekte/_ARCHIV/<Name>/` kopiert und erst danach aus dem aktiven Ordner entfernt. Der DB-Sync erkennt den Archivpfad, setzt `status='archiviert'`, `prune` schützt ihn und der Portfolio-Generator filtert ihn aus. Archivierte Übersichten bleiben unverändert und werden nicht von aktiven Formatänderungen erfasst.
+- ↩️ **Reaktivieren (24.09.)**: Übersichten im `_ARCHIV`-Pfad schalten denselben Button automatisch auf „Reaktivieren“. Der vollständige Ordner wird nach Prüfung eines freien aktiven Pfads zurückverschoben; der Archivordner wird erst nach erfolgreichem Kopieren entfernt.
 - 🧮 **Einheitliche Portfolio-Rechnung (23.09.)**: `db_manager.py`, der Live-Rechner in `portfolio.html` und die Objektübersicht verwenden dieselben Formeln. Nach Nutzerentscheidung werden leere Eingabefelder in allen drei Rechenpfaden als 0 behandelt; Arnsbach und die Vorlage schreiben Änderungen zusätzlich automatisch in den State-JSON.
 
 ---
