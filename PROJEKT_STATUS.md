@@ -8,7 +8,7 @@
 ## 🕐 Letzter Stand
 
 **Datum:** 24.09.2026
-**Letzte Aktion:** Editierbare externe Objektanzeigen ergänzt: Vorlage, aktive Übersichten und Archivkopie haben jetzt gespeicherte Felder für Quellenname und URL sowie einen validierten Öffnen-Button. Vorhandene URLs wurden nicht erfunden; die Felder bleiben leer, wenn keine Original-URL belegt ist.
+**Letzte Aktion:** Externe Objektanzeige reduziert: In Vorlage, Übersichten und Archivkopie gibt es nur noch das editierbare URL-Feld mit direkt folgendem Öffnen-Button; das Quellenfeld wurde entfernt und die Abstände symmetrisch gesetzt.
 
 ---
 
