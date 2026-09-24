@@ -7,8 +7,8 @@
 
 ## 🕐 Letzter Stand
 
-**Datum:** 23.09.2026
-**Letzte Aktion:** Arnsbach-Übersicht mit recherchierter Kaltmiete (1.050 €/M), aktuellem 10-Jahres-Zins (3,96 % am 23.09.2026) und den verbindlichen Nutzer-Vorgaben (Instandhaltung 10 %, Leerstand 4 Wochen, EK 20.000 €, Tilgung 2 %) vorbelegt; State-JSON und Kalkulations-JSON synchronisiert.
+**Datum:** 24.09.2026
+**Letzte Aktion:** Portfolio-Synchronisation repariert: Browser-State wird beim Öffnen und bei Eingaben live an die Portfolio-Karte übertragen; statischer DB-Stand bleibt als Fallback erhalten. State, Portfolio und Generator ohne Diagnosefehler geprüft.
 
 ---
 
@@ -62,6 +62,7 @@
 - 🧹 **Kartenbereinigung**: „Letzte Änderung“ und Stellplätze werden nicht mehr in den Karten angezeigt; Datenbankfelder und Importdaten bleiben unverändert.
 - 🔧 **Generator/Validierung**: `tools/portfolio_generator.py` und `tools/db_manager.py` kompilieren fehlerfrei; `portfolio.html` wurde erfolgreich neu generiert und ohne HTML-/JavaScript-Diagnosefehler geprüft.
 - 🔄 **Portfolio-Auto-Sync (23.09.)**: `portfolio.html` gleicht beim Öffnen automatisch mit dem bereits freigegebenen Objektordner ab; `tools/portfolio_generator.py` erzeugt diesen Mechanismus bei jeder Neugenerierung mit. Neue Objekte mit State-JSON können dadurch nicht mehr nur wegen einer veralteten statischen Portfolio-Datei fehlen.
+- 🔄 **Live-Synchronisation (24.09.)**: Ursache der Abweichungen war der parallele browsergebundene `localStorage`-State gegenüber der statischen DB-Kopie in `portfolio.html`. Übersichten senden ihren State jetzt per `BroadcastChannel`; das Portfolio aktualisiert die betroffene Karte sofort und übernimmt beim Start vorhandene States mit Objektordner-Kennung. Generator und Vorlage enthalten denselben Datenfluss.
 - 🧮 **Einheitliche Portfolio-Rechnung (23.09.)**: `db_manager.py`, der Live-Rechner in `portfolio.html` und die Objektübersicht verwenden dieselben Formeln. Nach Nutzerentscheidung werden leere Eingabefelder in allen drei Rechenpfaden als 0 behandelt; Arnsbach und die Vorlage schreiben Änderungen zusätzlich automatisch in den State-JSON.
 
 ---

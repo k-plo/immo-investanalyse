@@ -658,7 +658,7 @@ function getRisiken() {
 
 // ---------- Speichern ----------
 function collectState() {
-  const s = { _tool: "immo-arnsbach-uebersicht", _version: 1 };
+  const s = { _tool: "immo-arnsbach-uebersicht", _version: 1, _objekt_ordner: OBJEKT_ORDNER };
   IDS.forEach(id => s[id] = document.getElementById(id).value);
   document.querySelectorAll("[data-persist]").forEach(el => {
     s["p_" + el.dataset.persist] = el.type === "checkbox" ? el.checked : el.innerHTML;
@@ -666,6 +666,7 @@ function collectState() {
   s._risiken = getRisiken();
   return s;
 }
+const LIVE_CHANNEL = "BroadcastChannel" in window ? new BroadcastChannel("immo-live-state") : null;
 function applyState(s) {
   IDS.forEach(id => { if (s[id] !== undefined) document.getElementById(id).value = s[id]; });
   Object.keys(s).forEach(k => {
@@ -677,6 +678,7 @@ function applyState(s) {
   });
   if (s._risiken) renderRisiken(s._risiken);
   render();
+  try { localStorage.setItem(LS_KEY, JSON.stringify(collectState())); } catch (e) { }
 }
 let saveTimer = null;
 function saveState() {
@@ -684,6 +686,7 @@ function saveState() {
   saveTimer = setTimeout(() => {
     try {
       localStorage.setItem(LS_KEY, JSON.stringify(collectState()));
+      if (LIVE_CHANNEL) LIVE_CHANNEL.postMessage({ folder: OBJEKT_ORDNER, state: collectState() });
       const n = document.getElementById("savedNote");
       n.classList.add("show");
       setTimeout(() => n.classList.remove("show"), 1200);

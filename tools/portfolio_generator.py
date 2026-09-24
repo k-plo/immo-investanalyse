@@ -342,6 +342,51 @@ function karteHtml(o) {{
       </div>
     </div>`;
 }}
+const LIVE_CHANNEL = "BroadcastChannel" in window ? new BroadcastChannel("immo-live-state") : null;
+function liveKarteAktualisieren(folder, state) {{
+  const karte = [...document.querySelectorAll(".karte")].find(el =>
+    el.querySelector(".karte-name")?.textContent.trim() === folder);
+  if (!karte) return;
+  const r = berechneRatingJs(state, state._risiken || []);
+  const kpis = karte.querySelectorAll(".karte-kpis > div");
+  if (kpis.length >= 4) {{
+    kpis[0].querySelector(".v").textContent = eurJs(num(state.preis));
+    kpis[1].querySelector(".v").textContent = eurJs(r.gesamtinvest);
+    kpis[2].querySelector(".v").textContent = pctJs(r.brutto);
+    kpis[3].querySelector(".v").textContent = eurJs(r.cfNach);
+  }}
+  const finanzierung = karte.querySelector(".karte-fin > div:nth-child(2) .v");
+  if (finanzierung) finanzierung.textContent = `${{eurJs(num(state.ek))}} EK · ${{pctJs(num(state.zins))}} · ${{pctJs(num(state.tilgung))}} Tilg.`;
+  const miete = karte.querySelector(".karte-fin > div:first-child .v");
+  const mieteProM2 = karte.querySelector(".karte-fin > div:first-child .s");
+  if (miete) miete.textContent = eurJs(num(state.kaltmiete));
+  if (mieteProM2) {{
+    const flaeche = num(state.flaeche), kaltmiete = num(state.kaltmiete);
+    mieteProM2.textContent = kaltmiete != null && flaeche > 0
+      ? `≈ ${{(kaltmiete / flaeche).toLocaleString("de-DE", {{ minimumFractionDigits: 2, maximumFractionDigits: 2 }})}} €/m²`
+      : "";
+  }}
+  const badge = karte.querySelector(".rating-badge");
+  if (badge) {{
+    badge.textContent = r.g;
+    badge.style.background = RATING_BG[r.g] || "#e8ecf3";
+    badge.style.color = RATING_FARBE[r.g] || "#5a6a85";
+  }}
+}}
+if (LIVE_CHANNEL) LIVE_CHANNEL.onmessage = event => {{
+  if (event.data?.folder && event.data?.state) liveKarteAktualisieren(event.data.folder, event.data.state);
+}};
+function liveLocalStorageAktualisieren() {{
+  for (let i = 0; i < localStorage.length; i++) {{
+    const key = localStorage.key(i);
+    if (!key || !key.startsWith("immo-")) continue;
+    try {{
+      const state = JSON.parse(localStorage.getItem(key));
+      if (state?._objekt_ordner) liveKarteAktualisieren(state._objekt_ordner, state);
+    }} catch (e) {{ /* Ungültige Browserdaten ignorieren */ }}
+  }}
+}}
+liveLocalStorageAktualisieren();
 async function neueObjekteAnalysieren(btn) {{
   if (!window.showDirectoryPicker) {{
     alert("Dein Browser unterstützt die Ordnerauswahl nicht. Bitte Chrome oder Edge verwenden.");
