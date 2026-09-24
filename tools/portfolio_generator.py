@@ -73,6 +73,7 @@ def main():
         FROM objekte o
         LEFT JOIN kalkulation k ON k.objekt_id = o.id
         LEFT JOIN rating r ON r.objekt_id = o.id
+        WHERE COALESCE(o.status, 'aktiv') <> 'archiviert'
         ORDER BY r.punkte DESC
     """).fetchall()
 

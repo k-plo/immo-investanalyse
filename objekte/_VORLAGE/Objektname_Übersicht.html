@@ -94,9 +94,10 @@
     <div class="sub">Kalkulationstool + Entscheidungsübersicht · Objektart · Adresse · Wohnfläche · Baujahr · Energie</div>
 
     <div class="toolbar">
-      <button class="btn" onclick="window.location.href='../../portfolio.html'">🏠 Zum Portfolio</button>
+      <button class="btn" onclick="zumPortfolio()">🏠 Zum Portfolio</button>
       <button class="btn secondary" onclick="exportJson()">💾 State speichern (Download)</button>
       <button class="btn secondary" onclick="document.getElementById('fileInput').click()">📂 State laden</button>
+      <button class="btn secondary" onclick="archiviereObjekt()">🗄️ Archivieren</button>
       <span class="edit-hint" style="margin-left:6px">Änderungen werden automatisch im Browser gespeichert. „State speichern" lädt eine Backup-Datei für dauerhafte Sicherung oder Weitergabe herunter.</span>
     </div>
     <input type="file" id="fileInput" accept=".json" style="display:none" onchange="loadFile(event)">
@@ -798,6 +799,52 @@ async function getDbDir() {
       alert("❌ Falscher Ordner gewählt!\n\nBitte wähle den Hauptordner 'Immo' (der, der die Unterordner 'objekte' und 'tools' enthält).\n\nGewählter Ordner hat keinen 'objekte'-Unterordner.");
     }
     return null;
+  }
+}
+function zumPortfolio() {
+  window.location.href = location.pathname.includes("/_ARCHIV/") ? "../../../portfolio.html" : "../../portfolio.html";
+}
+async function kopiereOrdner(quelle, ziel) {
+  for await (const [name, handle] of quelle.entries()) {
+    if (handle.kind === "file") {
+      const quelleDatei = await handle.getFile();
+      const zielDatei = await ziel.getFileHandle(name, { create: true });
+      const writable = await zielDatei.createWritable();
+      await writable.write(await quelleDatei.arrayBuffer());
+      await writable.close();
+    } else {
+      const zielOrdner = await ziel.getDirectoryHandle(name, { create: true });
+      await kopiereOrdner(handle, zielOrdner);
+    }
+  }
+}
+async function archiviereObjekt() {
+  if (location.pathname.includes("/_ARCHIV/")) {
+    alert("Dieses Objekt liegt bereits im Archiv.");
+    return;
+  }
+  if (!confirm(`'${OBJEKT_ORDNER}' vollständig nach objekte/_ARCHIV verschieben?`)) return;
+  try {
+    const dir = await getDbDir();
+    if (!dir) return;
+    await schreibeDbUndJson();
+    const objekteDir = await dir.getDirectoryHandle("objekte", { create: false });
+    const quelle = await objekteDir.getDirectoryHandle(OBJEKT_ORDNER, { create: false });
+    const archiv = await objekteDir.getDirectoryHandle("_ARCHIV", { create: true });
+    try {
+      await archiv.getDirectoryHandle(OBJEKT_ORDNER, { create: false });
+      alert("Im Archiv existiert bereits ein Ordner mit diesem Namen. Nichts wurde verschoben.");
+      return;
+    } catch (e) {
+      if (e.name !== "NotFoundError") throw e;
+    }
+    const ziel = await archiv.getDirectoryHandle(OBJEKT_ORDNER, { create: true });
+    await kopiereOrdner(quelle, ziel);
+    await objekteDir.removeEntry(OBJEKT_ORDNER, { recursive: true });
+    alert("Objekt wurde archiviert. Die Archivdateien bleiben unverändert erhalten.");
+    zumPortfolio();
+  } catch (e) {
+    if (e.name !== "AbortError") alert("Archivierung fehlgeschlagen: " + e.message);
   }
 }
 async function schreibeDbUndJson() {

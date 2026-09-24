@@ -253,6 +253,8 @@ def import_json(path: str) -> None:
     p = Path(path)
     state = json.loads(p.read_text(encoding="utf-8"))
     name = p.parent.name  # Objektordner-Name
+    archiviert = "_ARCHIV" in p.parts
+    rel_objekt = p.parent.relative_to(BASE).as_posix()
     # Objekt-Metadaten aus der 03_kalkulation.json lesen (Objektart, Baujahr, Zimmer …)
     meta = {}
     kal_path = p.parent / "analyse" / "03_kalkulation.json"
@@ -280,8 +282,9 @@ def import_json(path: str) -> None:
                   (f(state.get("preis")) / f(state.get("flaeche"))) if f(state.get("preis")) and f(state.get("flaeche")) else None,
                   meta.get("adresse", ""), meta.get("objektart", ""),
                   f(meta.get("baujahr")), f(meta.get("zimmer")), f(meta.get("stellplaetze")),
-                  f"objekte/{name}/{html_name}",
+                  f"{rel_objekt}/{html_name}",
                   str(p), now(), obj_id))
+    conn.execute("UPDATE objekte SET status=? WHERE id=?", ("archiviert" if archiviert else "aktiv", obj_id))
     # Rating VOR der Kalkulation berechnen (brutto_rendite/cf_nach/coc werden
     # dort mitgespeichert, damit portfolio.html sie anzeigen kann)
     risiken_state = [(r[0], r[1], r[2], r[3]) for r in state.get("_risiken", [])]
@@ -341,6 +344,13 @@ def sync_json(objekte_root: str) -> None:
         for j in ordner.glob("*_Übersicht_State.json"):
             import_json(str(j))
             gefunden += 1
+    archiv_root = root / "_ARCHIV"
+    if archiv_root.is_dir():
+        for ordner in sorted(archiv_root.iterdir()):
+            if not ordner.is_dir():
+                continue
+            for j in ordner.glob("*_Übersicht_State.json"):
+                import_json(str(j))
     print(f"✓ {gefunden} Objekt(e) synchronisiert.")
 
 def export_json(objektname: str) -> None:
@@ -388,6 +398,7 @@ def list_objekte() -> None:
         FROM objekte o
         LEFT JOIN kalkulation k ON k.objekt_id = o.id
         LEFT JOIN rating r ON r.objekt_id = o.id
+        WHERE COALESCE(o.status, 'aktiv') <> 'archiviert'
         ORDER BY r.punkte DESC
     """).fetchall()
     print(f"{'Objekt':<40}{'KP':>12}{'€/m²':>9}{'BruttoR':>9}{'CF/M':>9}{'Rating':>8}")
@@ -441,7 +452,8 @@ def prune(auto_yes: bool = False) -> None:
     objekte_root = BASE / "objekte"
     conn = db()
     rows = conn.execute("SELECT id, name FROM objekte ORDER BY name").fetchall()
-    verwaist = [r for r in rows if not (objekte_root / r["name"]).is_dir()]
+    verwaist = [r for r in rows if not (objekte_root / r["name"]).is_dir()
+                and not (objekte_root / "_ARCHIV" / r["name"]).is_dir()]
     if not verwaist:
         print("✓ Keine verwaisten DB-Einträge – alle Objekte haben einen Ordner.")
         conn.close()
