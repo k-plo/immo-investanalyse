@@ -8,7 +8,7 @@
 ## 🕐 Letzter Stand
 
 **Datum:** 25.09.2026
-**Letzte Aktion:** Hausgeldfeld fachlich zu „Hausgeld/Betriebskosten“ erweitert. Umlagefähige Betriebskosten können nun auch bei EFH erfasst werden; `0` bleibt `0`, die automatische 3-%-Verwaltungspauschale wurde aus Übersichten, Rechenkern, Portfolio und DB-Rating entfernt. Richtwert: ca. 1,00 €/m²/Monat als markierte Annahme.
+**Letzte Aktion:** EFH-Regel für „Hausgeld/Betriebskosten“ konkretisiert: Betriebskosten werden mit 1,00 €/m² Wohnfläche plus 25 € monatlichem Verwaltungsaufwand angesetzt. Der Gesamtbetrag wird im Hausgeld/Betriebskosten-Feld geführt, 25 € davon als nicht umlagefähig. ETW/WEG-Objekte verwenden weiterhin ihre tatsächlichen Hausgeldwerte.
 
 ---
 
