@@ -13,7 +13,12 @@ END = "<!-- SHARED-DESIGN:END -->"
 def main():
     css = (BASE / "assets/dashboard.css").read_text(encoding="utf-8")
     theme = (BASE / "assets/theme.js").read_text(encoding="utf-8")
-    block = f'{START}\n<style>\n{css}</style>\n<script data-dashboard-theme>\n{theme}</script>\n{END}'
+    print_css = (BASE / "assets/print_report.css").read_text(encoding="utf-8")
+    print_js = (BASE / "assets/print_report.js").read_text(encoding="utf-8")
+    block = (f'{START}\n<style>\n{css}</style>\n'
+             f'<style>\n{print_css}</style>\n'
+             f'<script data-dashboard-theme>\n{theme}</script>\n'
+             f'<script data-print-report>\n{print_js}</script>\n{END}')
     for path in sorted((BASE / "objekte").glob("*/*_Übersicht.html")):
         source = path.read_text(encoding="utf-8")
         if START in source:

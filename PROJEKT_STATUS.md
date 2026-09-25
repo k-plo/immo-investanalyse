@@ -78,11 +78,13 @@
 ## 🔧 Bekannte Eigenheiten / Wichtige Regeln
 
 - **Designstandard (25.09.):** Portfolio, aktive Objektübersichten und `_VORLAGE` verwenden das gemeinsame responsive Navy-/Petrol-Design aus `assets/dashboard.css`. Pflege über `tools/design_sync.py` und anschließende Portfolio-Generierung. Verbindliche Struktur und Abnahme: `DESIGN_GUIDE.md`. Archivierte Übersichten bleiben unverändert. Tabellen sind separat scrollbar; Styles werden für eigenständige HTML-Dateien eingebettet. Beim visuellen Test wurde zusätzlich ein blockierender Zugriff auf das nicht vorhandene `nkAnteile` in Kerstenhausen durch die äquivalente Prozentrechnung ersetzt.
+- **Live-Gesamtinvest (25.09.):** Der Portfolio-Rechner übernimmt die berechnete Gesamtinvestition jetzt in den Rückgabewert. Live-Karten aktualisieren Kaufpreis und Gesamtinvestition einschließlich €/m². Im Browser mit Kerstenhausen geprüft: 133.884 € Gesamtinvestition, 1.144 €/m².
+- **Zweiseitiger PDF-Druck (25.09.):** Aktive Objektübersichten und Vorlage erzeugen über den vorhandenen Druckknopf eine kompakte A4-Zusammenfassung aus den aktuellen Eingaben. Seite 1 enthält Kennzahlen, Kosten, Risiken und ein großes Notizfeld; Seite 2 enthält eine kumulierte Zehnjahresgrafik und die Jahreswerte für Einnahmen, laufende Kosten, Kreditrate und Cashflow. Unbelegte Felder sind als rechnerische Null-Annahmen markiert. Gemeinsame Quellen: `assets/print_report.css` und `assets/print_report.js`, eingebettet durch `tools/design_sync.py`. Kerstenhausen und Arnsbach als PDF gerendert und mit je genau zwei A4-Seiten visuell geprüft.
 
 - **📐 Standard-Analyse-Struktur (21.09., verbindlich für NEUE Objekte):** genau 5 Dateien in `objekte/<Name>/analyse/` – `01_datenbasis.md` · `02_dokumentenpruefung.md` · `03_kalkulation.json` · `04_investmentbericht.md` · `05_mietempfehlung.md`. Muster = Haarhausen. `03_kalkulation.json` im Haarhausen-Schema (Metadaten adresse/objektart/baujahr/zimmer/stellplaetze im `objekt`-Block sind Pflicht – DB + Portfolio lesen sie daraus). ⚠️ Bestehende Dateien NICHT ändern (User-Wunsch 21.09.) – Kerstenhausen hat bewusst kein 05 + eigenes JSON-Schema, bleibt so
 - **NIEMALS `localStorage.clear()`** auf User-Daten (hat einmal User-State zerstört)
-- Chrome: Directory-Handle-Berechtigungen verfallen nach Browser-Neustart → 1 kurze Nachfrage nötig (nicht umgehbar)
-- Übersichten schreiben State-JSON nur bei Eingabe-Events; ohne Ordner-Berechtigung läuft Auto-Sync still ins Leere
+- Chrome: Directory-Handle-Berechtigungen können nach Browser-Neustart verfallen. Eine erneute Freigabe erfolgt nur über „Ordner verbinden“.
+- Übersichten schreiben State-JSON nur bei Eingabe-Events und erteilter Ordner-Berechtigung; ohne sie bleibt der Browser-State erhalten, ohne Dialoge zu öffnen.
 - JS-Falle: deutsche Anführungszeichen „…" in JS-Strings → SyntaxError; einfache '…' verwenden
 - Playwright-Tests: input-Events nach value-Setzung manuell dispatchen; Script-Scope-Funktionen sind nicht auf `window`
 - **Dynamische Tag-Texte unter Eingabefeldern: VERWORFEN** (18.09.) – statische, editierbare Tags genügen; nicht wieder vorschlagen
@@ -95,7 +97,7 @@
 
 - [ ] **Gombeth:** 🔴 gültigen Kaufpreis bestätigen (109.000 € vs. 134.000 €) · 🔴 zwei Versicherungsfälle und Kostenfolgen klären · 🔴 Mietvertrag/Mietkonto prüfen · 🔴 WEG-Unterlagen, Hausgeld und Rücklage anfordern · 🟠 Grundbuch/Teilungserklärung prüfen · 🟡 Besichtigung nach ca. 10.10.2026
 - [ ] **Kerstenhausen:** 🔴 Grundbuchauszug anfordern · 🔴 Miet-/Nutzungssituation + Einliegerwohnung klären · 🟠 Besichtigung (Renovierungsumfang, Öl-Tank) · 🟠 Baujahr/Wohnfläche-Widersprüche klären · 🟡 Bankgespräch mit frischen Zinsen (Live-Recherche 18.09. deutet auf > 4,5 %)
-- [ ] Optional: Sync-Status-Indikator in den Übersichten (zeigt, ob Auto-Sync wirklich geschrieben hat)
+- [x] Ordnerverbindung in den Übersichten zeigt beim manuellen Verbinden Erfolg oder Sync-Fehler an.
 
 **❌ Verworfen (nicht wieder vorschlagen):**
 - ~~Dynamische Tag-Texte unter den Eingabefeldern („Deine Eingabe · ursprünglich: X")~~ – User 18.09.: „so wie jetzt reicht es" – die statischen, editierbaren Tags genügen

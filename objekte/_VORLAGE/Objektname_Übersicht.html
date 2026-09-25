@@ -201,6 +201,57 @@ li{margin-bottom:8px}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;scroll-behavior:auto!important}.karte:hover{transform:none}}
 @media print{body{background:#fff;padding:0;font-size:10px}.wrap{max-width:none}.wrap::before{display:none}.card{border:0;border-radius:0;box-shadow:none;padding:10px 0}.card:first-child{border-top:0}.print-btn,.toolbar,.saved-note,.edit-hint,.filter{display:none!important}.inputs,.kpis{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.field input{min-height:0;padding:0;border:0;background:none;font-size:11px}.field label{min-height:0;font-size:9px}.kpi{padding:8px}.kpi .v{font-size:17px}.table-scroll{overflow:visible;border:0}.table-scroll table{min-width:0;font-size:10px}th,td{padding:5px}.box{padding:10px}h2{margin-top:20px;font-size:13px}.tipbox{display:none!important}.grid{grid-template-columns:1fr 1fr}.karte{break-inside:avoid}.karte::after{display:none}}
 </style>
+<style>
+/* Screen UI stays unchanged; this document exists only for printing. */
+.print-report{display:none}
+@media print{
+  @page{size:A4 portrait;margin:12mm}
+  html,body{width:auto!important;height:auto!important;margin:0!important;padding:0!important;background:#fff!important;color:#152d39!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+  body>*:not(.print-report){display:none!important}
+  .print-report{display:block!important;font:9pt/1.38 Arial,Helvetica,sans-serif;color:#152d39}
+  .print-sheet{box-sizing:border-box;height:240mm;display:flex;flex-direction:column;break-inside:avoid;break-after:page;page-break-after:always}
+  .print-sheet:last-child{break-after:auto;page-break-after:auto}
+  .print-report *{box-sizing:border-box}
+  .print-report h1{font:700 22pt/1.12 Arial,sans-serif;letter-spacing:-.025em;margin:0 0 4mm;color:#152d39}
+  .print-report h2{font:700 11pt/1.3 Arial,sans-serif;letter-spacing:0;text-transform:none;color:#152d39;border:0;margin:0 0 3mm;padding:0}
+  .print-report p{margin:0}
+  .print-report .pr-kicker{font-size:7pt;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#116d72;margin-bottom:3mm}
+  .print-report .pr-meta{color:#5b6d76;font-size:8pt;line-height:1.4;margin-bottom:5mm}
+  .print-report .pr-status{border-left:2mm solid #116d72;background:#f1f6f6;padding:3mm 4mm;margin-bottom:5mm;font-size:8.5pt}
+  .print-report .pr-status.alert{border-color:#b36b2b;background:#fff7e9}
+  .print-report .pr-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:2.5mm;margin-bottom:6mm}
+  .print-report .pr-kpi{background:#eef5f5;border-radius:2mm;padding:3mm;min-width:0}
+  .print-report .pr-kpi small{display:block;font-size:6.5pt;color:#5b6d76;text-transform:uppercase;letter-spacing:.06em;margin-bottom:1mm}
+  .print-report .pr-kpi strong{display:block;font-size:13pt;line-height:1.15;white-space:nowrap}
+  .print-report .pr-grid{display:grid;grid-template-columns:1fr 1fr;gap:7mm;margin-bottom:5mm}
+  .print-report .pr-section{break-inside:avoid}
+  .print-report .pr-table{width:100%;border-collapse:collapse;font-size:8pt;line-height:1.3;margin:0}
+  .print-report .pr-table th,.print-report .pr-table td{border-bottom:.2mm solid #dce5e8;padding:1.6mm 0;background:none;color:#152d39;text-align:left;text-transform:none;letter-spacing:0;font-size:8pt}
+  .print-report .pr-table th:last-child,.print-report .pr-table td:last-child{text-align:right;white-space:nowrap}
+  .print-report .pr-table .total td{font-weight:700;border-top:.4mm solid #116d72}
+  .print-report .pr-list{margin:0;padding-left:4mm;font-size:8pt;line-height:1.35}
+  .print-report .pr-list li{margin:0 0 1.7mm;break-inside:avoid}
+  .print-report .pr-foot{position:static;margin-top:auto;display:flex;justify-content:space-between;border-top:.2mm solid #dce5e8;padding-top:2.5mm;font-size:7pt;color:#64747c}
+  .print-report .pr-inspection{border-top:.4mm solid #116d72;padding-top:3mm;margin:1mm 0 4mm;break-inside:avoid}
+  .print-report .pr-visit-grid{display:grid;grid-template-columns:1fr 1fr;gap:6mm}
+  .print-report .pr-visit-grid h3{font-size:8.2pt;margin:0 0 2mm;color:#116d72}
+  .print-report .pr-visit-grid ul,.print-report .pr-visit-grid ol{margin:0;padding-left:4mm;font-size:7.4pt;line-height:1.28}
+  .print-report .pr-visit-grid li{margin-bottom:1.2mm;break-inside:avoid}
+  .print-report .pr-assumptions{font-size:7pt;color:#536873;margin:0 0 4mm}
+  .print-report .pr-chart{width:100%;height:67mm;display:block;border:.2mm solid #dce5e8;border-radius:2mm;background:#fff;margin:1mm 0 4mm}
+  .print-report .pr-chart-empty{display:flex;align-items:center;justify-content:center;color:#5b6d76;font-size:9pt;text-align:center;padding:8mm}
+  .print-report .pr-chart text{font-family:Arial,Helvetica,sans-serif;fill:#536873;font-size:10px}
+  .print-report .pr-chart .grid{stroke:#dce5e8;stroke-width:1}
+  .print-report .pr-legend{display:flex;gap:6mm;align-items:center;font-size:7.5pt;color:#536873;margin-bottom:2mm}
+  .print-report .pr-dot{display:inline-block;width:2.5mm;height:2.5mm;border-radius:50%;margin-right:1.5mm}
+  .print-report .pr-note{font-size:7.5pt;color:#536873;margin:2mm 0 4mm}
+  .print-report .pr-year-table{font-size:7pt}
+  .print-report .pr-year-table th,.print-report .pr-year-table td{font-size:7pt;padding:1mm 0}
+  .print-report .pr-year-table th:not(:first-child),.print-report .pr-year-table td:not(:first-child){text-align:right}
+  .print-report .pr-notes{margin-top:5mm;break-inside:avoid}
+  .print-report .pr-notes .line{height:6mm;border-bottom:.2mm solid #aabac0}
+}
+</style>
 <script data-dashboard-theme>
 /* Presentation only: separate key, no access to property state or sync. */
 (() => {
@@ -244,12 +295,145 @@ li{margin-bottom:8px}
   });
 })();
 </script>
+<script data-print-report>
+/* A compact, two-page print summary derived from the current live calculation. */
+(() => {
+  const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const money = v => Number.isFinite(v) ? `${Math.round(v).toLocaleString('de-DE')} €` : '–';
+  const signed = v => Number.isFinite(v) ? `${v < 0 ? '−' : ''}${money(Math.abs(v))}` : '–';
+  const row = (name, value, total = false) => `<tr${total ? ' class="total"' : ''}><td>${esc(name)}</td><td>${esc(value)}</td></tr>`;
+  const field = id => document.getElementById(id);
+  const isEmpty = id => !field(id) || String(field(id).value).trim() === '';
+  const unique = items => [...new Set(items.map(s => s.trim()).filter(Boolean))];
+
+  function chart(years) {
+    const w = 700, h = 235, left = 62, right = 16, top = 16, bottom = 32;
+    const values = years.flatMap(y => [y.cumIncome, y.cumExpense, y.cumCashflow]);
+    const min = Math.min(0, ...values), max = Math.max(0, ...values);
+    const range = Math.max(1, max - min);
+    const x = i => left + i * (w - left - right) / 10;
+    const y = value => top + (max - value) * (h - top - bottom) / range;
+    const grid = Array.from({length:5}, (_,i) => {
+      const val = min + range * i / 4, yy = y(val);
+      return `<line class="grid" x1="${left}" y1="${yy}" x2="${w-right}" y2="${yy}"/><text x="${left-7}" y="${yy+3}" text-anchor="end">${Math.round(val/1000).toLocaleString('de-DE')}k</text>`;
+    }).join('');
+    const path = key => `M ${x(0)} ${y(0)} ` + years.map((item, i) => `L ${x(i+1)} ${y(item[key])}`).join(' ');
+    const ticks = Array.from({length:11},(_,i) => `<text x="${x(i)}" y="${h-9}" text-anchor="middle">${i}</text>`).join('');
+    return `<svg class="pr-chart" viewBox="0 0 ${w} ${h}" role="img" aria-label="Kumulierte Einnahmen, Ausgaben und Cashflow über zehn Jahre">${grid}<line x1="${left}" y1="${y(0)}" x2="${w-right}" y2="${y(0)}" stroke="#859aa2" stroke-width="1.2"/>${ticks}<path d="${path('cumIncome')}" fill="none" stroke="#177f75" stroke-width="2.7"/><path d="${path('cumExpense')}" fill="none" stroke="#b67b37" stroke-width="2.7"/><path d="${path('cumCashflow')}" fill="none" stroke="#b8474e" stroke-width="2.7"/></svg>`;
+  }
+
+  function buildReport() {
+    const data = readInputs();
+    const result = calc(data);
+    const heading = document.querySelector('.wrap h1')?.textContent.replace(/^\s*🏠\s*/, '').trim() || 'Immobilienanalyse';
+    const meta = document.querySelector('.wrap .sub')?.textContent.trim() || '';
+    const date = new Date().toLocaleDateString('de-DE');
+    const missing = ['renovierung','sanierung','kaltmiete','hausgeld','hausgeldNichtUml'].filter(isEmpty);
+    const rentMissing = isEmpty('kaltmiete');
+    const canCalculate = Boolean(result.berechenbar);
+    const income = data.kaltmiete * 12 * (1 - data.leerstand / 52);
+    const operating = data.hausgeldNichtUml * 12 + data.flaeche * data.instand;
+    let balance = canCalculate ? result.darlehen : 0;
+    let cumIncome = 0, cumExpense = 0;
+    const years = Array.from({length:10}, (_,i) => {
+      let debt = 0;
+      for (let month = 0; month < 12 && balance > 0; month++) {
+        const interest = balance * data.zins / 100 / 12;
+        const payment = Math.min(result.rate, balance + interest);
+        debt += payment;
+        balance = Math.max(0, balance - (payment - interest));
+      }
+      const expense = operating + debt;
+      const annual = income - expense;
+      cumIncome += income;
+      cumExpense += expense;
+      return {year:i+1,income,operating,debt,expense,annual,cumIncome,cumExpense,cumCashflow:cumIncome-cumExpense};
+    });
+    const acquisition = canCalculate ? [
+      row('Erwerbsnebenkosten',money(result.nk)),
+      row('Renovierung und Sanierung',money(data.renovierung+data.sanierung)),
+      row('Zusatzkosten gesamt',money(result.nk+data.renovierung+data.sanierung),true)
+    ].join('') : row('Gesamtinvestition','Noch nicht berechenbar');
+    const operations = [
+      row('Kaltmiete / Monat',money(data.kaltmiete)),
+      row('Leerstand / Jahr',`${data.leerstand.toLocaleString('de-DE')} Wochen`),
+      row('Nicht umlagefähige Kosten / Monat',money(data.hausgeldNichtUml)),
+      row('Instandhaltung / Jahr',money(data.flaeche*data.instand)),
+      row('Kreditrate / Monat',canCalculate?money(result.rate):'–')
+    ].join('');
+    const riskCells = [...document.querySelectorAll('#tblRisiken tr')].slice(1).map(tr => {
+      const cells = tr.querySelectorAll('td');
+      const amp = cells[2]?.querySelector('select')?.value || cells[2]?.textContent || '';
+      return {name:cells[0]?.textContent.trim() || '',amp};
+    }).filter(r => r.name && /🔴|🟠/.test(r.amp)).slice(0,3).map(r => r.name);
+    let inspection = {checks:[],questions:[]};
+    try { inspection = JSON.parse(document.getElementById('inspectionData')?.textContent || '{}'); } catch (_) {}
+    const checks = Array.isArray(inspection.checks) ? inspection.checks.slice(0,3) : [];
+    const questions = Array.isArray(inspection.questions) ? inspection.questions.slice(0,4) : [];
+    const visitItems = unique([...riskCells.slice(0,2), ...checks]);
+    const assumptions = unique([
+      `Zins ${data.zins.toLocaleString('de-DE')} % · Tilgung ${data.tilgung.toLocaleString('de-DE')} %`,
+      'Zehnjahresrechnung in heutigen Euro, ohne Miet- und Kostensteigerung; Zins über zehn Jahre konstant. Kreditrate endet bei vollständiger Tilgung.',
+      ...(missing.length ? [`Leere Felder als 0 € gerechnet: ${missing.map(id => FELDLABEL[id] || id).join(', ')}.`] : [])
+    ]);
+    const warning = !canCalculate ? 'Kaufpreis oder Wohnfläche fehlen. Eine Zehnjahresrechnung ist mit diesen Eingaben nicht möglich.' : rentMissing ? 'Kaltmiete nicht belegt. Die Grafik setzt das leere Feld rechnerisch mit 0 € an und ist keine belastbare Ertragsprognose.' :
+      missing.length ? 'Einige nicht belegte Kosten sind rechnerisch mit 0 € angesetzt. Vor einer Entscheidung prüfen.' : 'Modellrechnung mit den aktuellen Eingaben.';
+    const yearRows = years.map(y => `<tr><td>${y.year}</td><td>${canCalculate?money(y.income):'–'}</td><td>${canCalculate?money(y.operating):'–'}</td><td>${canCalculate?money(y.debt):'–'}</td><td>${canCalculate?signed(y.annual):'–'}</td><td>${canCalculate?signed(y.cumCashflow):'–'}</td></tr>`).join('');
+    return `<div class="print-report" aria-label="Zweiseitige Investment-Zusammenfassung">
+      <section class="print-sheet">
+        <div class="pr-kicker">Immobilienportfolio · Investment-Überblick</div>
+        <h1>${esc(heading)}</h1><p class="pr-meta">${esc(meta)} · Stand ${esc(date)}</p>
+        <div class="pr-status ${missing.length?'alert':''}">${esc(warning)}</div>
+        <div class="pr-kpis">
+          <div class="pr-kpi"><small>Kaufpreis</small><strong>${money(data.preis)}</strong></div>
+          <div class="pr-kpi"><small>Gesamtinvestition</small><strong>${canCalculate?money(result.gesamt):'–'}</strong></div>
+          <div class="pr-kpi"><small>Eigenkapital</small><strong>${money(data.ek)}</strong></div>
+          <div class="pr-kpi"><small>Cashflow / Monat</small><strong>${canCalculate?signed(result.cf):'–'}</strong></div>
+        </div>
+        <div class="pr-grid"><div class="pr-section"><h2>Investition</h2><table class="pr-table">${acquisition}</table></div>
+        <div class="pr-section"><h2>Laufende Rechnung</h2><table class="pr-table">${operations}</table></div></div>
+        <p class="pr-assumptions">${assumptions.map(esc).join(' · ')}</p>
+        <div class="pr-inspection"><h2>Besichtigung – auf einen Blick</h2><div class="pr-visit-grid">
+          <div><h3>Wichtig / vor Ort prüfen</h3><ul>${(visitItems.length?visitItems:['Zustand und Unterlagen vor Ort prüfen.']).map(v=>`<li>${esc(v)}</li>`).join('')}</ul></div>
+          <div><h3>Verkäufer fragen / Unterlagen</h3><ol>${(questions.length?questions:['Welche Unterlagen und Nachweise liegen vor?']).map(v=>`<li>${esc(v)}</li>`).join('')}</ol></div>
+        </div></div>
+        <div class="pr-notes"><h2>Notizen zur Besichtigung</h2>${'<div class="line"></div>'.repeat(5)}</div>
+        <div class="pr-foot"><span>Modellrechnung · Angaben und Belege prüfen</span><span>1 / ${canCalculate?2:1}</span></div>
+      </section>
+      ${canCalculate?`<section class="print-sheet">
+        <div class="pr-kicker">Immobilienportfolio · Zehnjahresblick</div>
+        <h1>Cashflow über 10 Jahre</h1><p class="pr-meta">${esc(heading)} · Kumulierte Beträge in Euro · Stand ${esc(date)}</p>
+        <div class="pr-legend"><span><i class="pr-dot" style="background:#177f75"></i>Einnahmen</span><span><i class="pr-dot" style="background:#b67b37"></i>Ausgaben inklusive Kreditrate</span><span><i class="pr-dot" style="background:#b8474e"></i>Cashflow</span></div>
+        ${canCalculate?chart(years):'<div class="pr-chart pr-chart-empty">Zehnjahresgrafik nach Eingabe von Kaufpreis und Wohnfläche verfügbar.</div>'}
+        <p class="pr-note">${esc(warning)} Konstante Nominalwerte; kein Verkaufserlös, keine Steuer- oder Wertentwicklung enthalten.</p>
+        <table class="pr-table pr-year-table"><thead><tr><th>Jahr</th><th>Einnahmen</th><th>Laufende Kosten</th><th>Kreditrate</th><th>Cashflow</th><th>Cashflow kumuliert</th></tr></thead><tbody>${yearRows}</tbody></table>
+        <div class="pr-foot"><span>Jahreswerte auf ganze Euro gerundet · keine Prognosegarantie</span><span>2 / 2</span></div>
+      </section>`:''}</div>`;
+  }
+
+  document.addEventListener('click', event => {
+    if (!event.target.closest('.print-btn')) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    document.querySelector('.print-report')?.remove();
+    document.body.insertAdjacentHTML('beforeend', buildReport());
+    window.print();
+  }, true);
+  // Direct, read-only print preview for QA and repeatable PDF exports.
+  if (location.hash === '#print-report') {
+    document.addEventListener('DOMContentLoaded', () => {
+      document.body.insertAdjacentHTML('beforeend', buildReport());
+    });
+  }
+})();
+</script>
 <!-- SHARED-DESIGN:END -->
 </head>
 <body>
 
 <button class="print-btn" onclick="window.print()">🖨️ Als PDF drucken</button>
 <div class="saved-note" id="savedNote">✓ Gespeichert</div>
+<script type="application/json" id="inspectionData">{"checks":["Dach, Fenster, Heizung, Feuchtigkeit und Elektroinstallation vor Ort dokumentieren.","Wohnfläche, Raumaufteilung und genehmigte Nutzung mit den Unterlagen abgleichen.","Erkennbaren Renovierungs- und Sanierungsbedarf für die Kalkulation notieren."],"questions":["Welche Unterlagen belegen Baujahr und Wohnfläche?","Gibt es bekannte Schäden oder bereits beschlossene Sanierungen?","Welche Mietverträge, Betriebskosten und Wartungsnachweise liegen vor?","Gibt es Grundbuchlasten, Dienstbarkeiten oder weitere Rechte Dritter?"]}</script>
 
 <div class="wrap">
 
@@ -264,7 +448,8 @@ li{margin-bottom:8px}
       <button class="btn secondary" onclick="exportJson()">💾 State speichern (Download)</button>
       <button class="btn secondary" onclick="document.getElementById('fileInput').click()">📂 State laden</button>
       <button id="archiveBtn" class="btn secondary" onclick="archiviereObjekt()">🗄️ Archivieren</button>
-      <span class="edit-hint" style="margin-left:6px">Änderungen werden automatisch im Browser gespeichert. „State speichern" lädt eine Backup-Datei für dauerhafte Sicherung oder Weitergabe herunter.</span>
+      <button id="syncConnectBtn" class="btn secondary" type="button" onclick="verbindeAutoSync(this)">🔗 Ordner verbinden</button>
+      <span class="edit-hint" style="margin-left:6px">Änderungen bleiben im Browser gespeichert. Nach „Ordner verbinden“ wird zusätzlich die State-JSON im Objektordner synchronisiert. „State speichern“ lädt ein Backup herunter.</span>
     </div>
     <input type="file" id="fileInput" accept=".json" style="display:none" onchange="loadFile(event)">
 
@@ -975,7 +1160,7 @@ async function idbGet(key) {
   });
 }
 let dbDirHandle = null;
-async function getDbDir() {
+async function getDbDir(interactive = false) {
   if (dbDirHandle) return dbDirHandle;
   if (!window.showDirectoryPicker) return null;
   // 1. Gespeicherten Handle aus IndexedDB laden
@@ -983,9 +1168,13 @@ async function getDbDir() {
   if (saved) {
     const perm = await saved.queryPermission({ mode: "readwrite" });
     if (perm === "granted") { dbDirHandle = saved; return dbDirHandle; }
-    const req = await saved.requestPermission({ mode: "readwrite" });
-    if (req === "granted") { dbDirHandle = saved; return dbDirHandle; }
+    if (interactive) {
+      const req = await saved.requestPermission({ mode: "readwrite" });
+      if (req === "granted") { dbDirHandle = saved; return dbDirHandle; }
+    }
   }
+  // Automatisches Speichern darf keinen Ordner-/Berechtigungsdialog öffnen.
+  if (!interactive) return null;
   // 2. Neuen Handle anfordern – User muss den IMMO-Hauptordner wählen
   try {
     const h = await window.showDirectoryPicker({
@@ -1005,6 +1194,14 @@ async function getDbDir() {
     return null;
   }
 }
+async function verbindeAutoSync(button) {
+  const dir = await getDbDir(true);
+  if (!dir) return;
+  button.textContent = await schreibeDbUndJson() ? "✓ Ordner verbunden" : "⚠ Sync fehlgeschlagen";
+}
+document.addEventListener("DOMContentLoaded", async () => {
+  if (await getDbDir()) document.getElementById("syncConnectBtn").textContent = "✓ Ordner verbunden";
+});
 function zumPortfolio() {
   window.location.href = location.pathname.includes("/_ARCHIV/") ? "../../../portfolio.html" : "../../portfolio.html";
 }
@@ -1029,7 +1226,7 @@ async function archiviereObjekt() {
   }
   if (!confirm(`'${OBJEKT_ORDNER}' vollständig nach objekte/_ARCHIV verschieben?`)) return;
   try {
-    const dir = await getDbDir();
+    const dir = await getDbDir(true);
     if (!dir) return;
     await schreibeDbUndJson();
     const objekteDir = await dir.getDirectoryHandle("objekte", { create: false });
@@ -1058,7 +1255,7 @@ async function reaktiviereObjekt() {
   }
   if (!confirm(`'${OBJEKT_ORDNER}' aus dem Archiv reaktivieren?`)) return;
   try {
-    const dir = await getDbDir();
+    const dir = await getDbDir(true);
     if (!dir) return;
     const objekteDir = await dir.getDirectoryHandle("objekte", { create: false });
     const archiv = await objekteDir.getDirectoryHandle("_ARCHIV", { create: false });
@@ -1093,7 +1290,7 @@ async function schreibeDbUndJson() {
   //   python tools/db_manager.py sync
   try {
     const dir = await getDbDir();
-    if (!dir) return;
+    if (!dir) return false;
     const objekteDir = await dir.getDirectoryHandle("objekte", { create: false }); // NICHT anlegen – muss existieren!
     const objDir = await objekteDir.getDirectoryHandle(OBJEKT_ORDNER, { create: false }); // muss existieren!
     const jsonFile = await objDir.getFileHandle(STATE_DATEINAME, { create: true });
@@ -1101,12 +1298,14 @@ async function schreibeDbUndJson() {
     await writable.write(JSON.stringify(collectState(), null, 2));
     await writable.close();
     console.log("✓ State-JSON überschrieben: objekte/" + OBJEKT_ORDNER + "/" + STATE_DATEINAME);
+    return true;
   } catch (e) {
     if (e.name === "NotFoundError") {
       console.warn("Sync übersprungen: Objektordner 'objekte/" + OBJEKT_ORDNER + "' im gewählten Verzeichnis nicht gefunden.");
     } else {
       console.warn("DB/JSON-Sync übersprungen:", e.message);
     }
+    return false;
   }
 }
 function resetAll() {

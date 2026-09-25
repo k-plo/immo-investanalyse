@@ -307,8 +307,8 @@ function berechneRatingJs(s, risiken) {{
     const fix = wert("renovierung") + wert("sanierung") + wert("sonstige");
     const nettoJahr = km * 12 * lf - hg * 12 - instJahr;
     const cfVor = nettoJahr / 12;
-    const gesamt = preis * (1 + nk / 100) + fix;
-    const darlehen = Math.max(0, gesamt - ek);
+    gesamtinvest = preis * (1 + nk / 100) + fix;
+    const darlehen = Math.max(0, gesamtinvest - ek);
     const rate = darlehen * (zins + tilg) / 100 / 12;
     cfNach = cfVor - rate;
     if (ek) {{
@@ -371,7 +371,9 @@ function liveKarteAktualisieren(folder, state) {{
   const kpis = karte.querySelectorAll(".karte-kpis > div");
   if (kpis.length >= 4) {{
     kpis[0].querySelector(".v").textContent = eurJs(num(state.preis));
+    kpis[0].querySelector(".s").textContent = `${{eurProM2Js(num(state.preis), num(state.flaeche))}} /m²`;
     kpis[1].querySelector(".v").textContent = eurJs(r.gesamtinvest);
+    kpis[1].querySelector(".s").textContent = `${{eurProM2Js(r.gesamtinvest, num(state.flaeche))}} /m²`;
     kpis[2].querySelector(".v").textContent = pctJs(r.brutto);
     kpis[3].querySelector(".v").textContent = eurJs(r.cfNach);
   }}

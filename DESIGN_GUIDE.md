@@ -15,6 +15,19 @@ für Designänderungen umbenennen oder ersetzen. Fehlende Werte nicht erfinden.
 Basisgestaltung bleibt als Rückfallebene erhalten. Der gemeinsame Styleblock
 überschreibt sie und wird direkt in jede HTML-Datei eingebettet: keine externen
 Fonts, CDN-Abhängigkeiten oder beim Archivieren brechenden Stylesheet-Pfade.
+Die zweitseitige Druckzusammenfassung liegt in `assets/print_report.css` und
+`assets/print_report.js`. Der vorhandene Druckknopf erzeugt sie aus den aktuellen
+Eingaben; `#print-report` an der Objekt-URL baut dieselbe Ansicht ohne Dialog
+für die PDF-Qualitätsprüfung auf. Seite 1 enthält die wichtigsten Kennzahlen,
+objektspezifische Prüfpunkte und Verkäuferfragen sowie handschriftliche Notizen.
+Die Prüfpunkte und Fragen stehen im JSON-Block `inspectionData` der jeweiligen
+Übersicht (`checks`: maximal 3, `questions`: maximal 4). Pro neuem Objekt anhand
+der belegten Chancen/Risiken und Unterlagen konkretisieren; keine Fakten erfinden
+und keine längeren Fließtexte eintragen. Die zwei vorrangigen rot/orange bewerteten
+Risiken werden zusätzlich automatisch als Prüfpunkte übernommen. Seite 2 enthält
+die Zehnjahresrechnung mit Grafik und Jahrestabelle. Sie nutzt konstante Nominalwerte, einen festen
+Zins und eine monatliche Tilgung bis zur vollständigen Rückzahlung. Leere
+Eingaben werden ausdrücklich als 0-Annahme gekennzeichnet.
 
 Nach CSS-Änderungen vom Projektordner aus ausführen:
 
@@ -52,6 +65,12 @@ nicht verschachteln. CSS-Änderungen nach diesen Befehlen sind reproduzierbar.
 - Objekte: vier Eingabe-/KPI-Spalten auf Desktop, zwei bis 1050 px. Auf sehr schmalen Geräten Aktionsbuttons und Finanzierung untereinander.
 - Tabellen innerhalb `.table-scroll` horizontal scrollen, niemals die ganze Seite. Hülle per Tab erreichbar; Tabellenüberschriften und numerische Ausrichtung behalten.
 - Tooltips auf schmalen Displays als viewportgebundene Hinweise, damit sie nicht außerhalb des Bildschirms liegen.
-- PDF-Druck: Aktionen ausblenden, Tabellen vollständig und ohne Scroll-Clipping ausgeben.
+- PDF-Druck: höchstens zwei A4-Seiten mit Investment-Überblick, Besichtigungsfragen,
+  Zehnjahresgrafik, Jahrestabelle und Notizfeld; Browser-Kopf-/Fußzeilen in der Druckmaske
+  deaktivieren, falls der Browser sie zusätzlich einblendet.
+- Auto-Sync darf bei Eingaben niemals eine Ordnerauswahl/Berechtigungsfrage öffnen.
+  Die State-JSON wird nur mit bereits freigegebenem Handle geschrieben. Neue oder
+  abgelaufene Berechtigungen ausschließlich über „Ordner verbinden“ einholen;
+  „State speichern“ ist ein bewusster Download für Backup/Weitergabe.
 - Prüfen: 1440, 768, 390 und 320 px; Portfoliofilter und Objektwechsel; gefüllte KPI-/Ergebnistabellen beider aktiver Objekte; Konsolenfehler. Keine echten Nutzerwerte, Checklisten oder Sync-Berechtigungen für einen reinen Design-Test verändern.
 - Keine GitHub-Aktionen: alle Änderungen lokal im Projektordner.
