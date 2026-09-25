@@ -8,7 +8,7 @@
 ## 🕐 Letzter Stand
 
 **Datum:** 25.09.2026
-**Letzte Aktion:** Lokaler Bugfix-Durchlauf für Rechenkern, HTML-Kalkulation und DB-Sync. Projektpfade sind nun plattformunabhängig; SQLite-Sync und Portfolio-Generator laufen im aktuellen Projektordner. JSON-Schemata werden kompatibel verarbeitet, Finanzierungsnebenkosten/Sonderumlagen eingerechnet, dynamische Listen vollständig synchronisiert, DB-Restore und Hash-Konsistenzprüfung vervollständigt sowie importierte HTML-Inhalte abgesichert.
+**Letzte Aktion:** Besichtigungsunterlage für Arnsbach erstellt: druckfreundliche HTML-Checkliste und 3-seitige PDF mit priorisierten Fragen zu Grundbuch, WEG, Genehmigungen, Technik, Sanierung und Vermietbarkeit.
 
 ---
 

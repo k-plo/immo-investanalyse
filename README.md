@@ -19,6 +19,14 @@ python tools/db_manager.py sync                 ← State-JSONs → DB → portf
 ```
 Beim Öffnen von `portfolio.html` wird zusätzlich automatisch aus dem bereits freigegebenen `objekte/`-Ordner gelesen. Dadurch erscheinen neue Objekte mit vorhandener State-JSON auch ohne vorherige manuelle Neugenerierung. Nach einem Browser-Neustart kann einmalig erneut die Ordnerberechtigung nötig sein.
 
+**Lokale Web-App starten:**
+
+```powershell
+.\start_portfolio.ps1
+```
+
+Das Skript startet mit `python3` den dependency-freien lokalen Python-Server auf `http://127.0.0.1:8000/` und öffnet die Portfolioübersicht direkt in Chrome. Der Server stellt zusätzlich `/api/health` und `/api/portfolio` bereit. Ein bereits laufender Server wird wiederverwendet.
+
 **DB-Befehle:**
 | Befehl | Wirkung |
 |---|---|
