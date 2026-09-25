@@ -54,11 +54,11 @@
     }
   },
   "laufende_kosten": {
-    "hausgeld_monatlich_eur": 142.0,
+    "hausgeld_monatlich_eur": 0.0,
     "verwaltung_prozent_von_miete": 0.0,
     "instandhaltung_eur_pro_m2_jahr": 25.0,
-    "nicht_umlagefaehige_kosten_monatlich_eur": 25.0,
-    "status": "EFH ohne WEG: Betriebskosten 117 EUR/Monat (1,00 EUR/m² bei 117 m²) plus 25 EUR Verwaltung; Gesamtbetrag 142 EUR, davon 25 EUR nicht umlagefähig; Instandhaltung 25 EUR/m²/Jahr wegen Baujahr 1954, Energieklasse H und offenem Sanierungsbedarf = objektbezogene Bewertung"
+    "nicht_umlagefaehige_kosten_monatlich_eur": 0.0,
+    "status": "EFH ohne WEG: umlagefähige Betriebskosten als Startannahme 117 EUR/Monat (1,00 EUR/m² bei 117 m²); keine automatische Verwaltungspauschale; Instandhaltung 25 EUR/m²/Jahr wegen Baujahr 1954, Energieklasse H und offenem Sanierungsbedarf = objektbezogene Bewertung"
   },
   "finanzierung": {
     "eigenkapital_eur": 20000.0,

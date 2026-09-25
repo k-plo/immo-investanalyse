@@ -14,7 +14,7 @@
 | Notar/Grundbuch | 2,0 % | ANNAHME |
 | Makler | 3,57 % | BELEGT (Ebay, inkl. MwSt.) |
 | Kaltmiete | 800 €/M (6,84 €/m²) | ABGELEITET – Regionalvergleich, NICHT belegt |
-| Hausgeld/Betriebskosten | 142 €/Monat: 117 € Betriebskosten + 25 € Verwaltung, davon 25 € nicht umlagefähig | ANNAHME |
+| Umlagefähige Betriebskosten | 117 €/Monat als Startannahme (1,00 €/m² bei 117 m²); keine automatische Verwaltungspauschale | ANNAHME |
 | EK | 20.000 € | NUTZER-VORGABE |
 | Zins | 3,5 % | ANNAHME (Marktmitte; ⚠️ Live-Recherche 18.09. deutet auf höheres Niveau) |
 | Tilgung | 2,0 % | NUTZER-VORGABE |

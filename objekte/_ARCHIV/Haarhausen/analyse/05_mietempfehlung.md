@@ -65,7 +65,7 @@
 | **1.360 €** | **8,00** | **+135 €** | **8,63 %** | **6,85 %** | **215.405 €** |
 | 1.500 € | 8,82 | +325 € | 9,52 % | 7,66 % | 244.155 € |
 
-*(Annahmen: EK 20 T€, Zins 3,5 %, Tilgung 2,0 %, Reno 15 T€, Hausgeld/Betriebskosten 195 € monatlich inkl. 25 € Verwaltung, davon 25 € nicht umlagefähig, Leerstand 4 Wo., Instandhaltung 25 €/m²/Jahr)*
+*(Annahmen: EK 20 T€, Zins 3,5 %, Tilgung 2,0 %, Reno 15 T€, Hausgeld 0 € → Verwaltung 3 %, Leerstand 4 Wo., Instandhaltung 25 €/m²/Jahr)*
 
 **Ergebnis bei 1.360 €/M:** CF +135 €/M · Maximalpreis 215.405 € → Angebot 189.000 € liegt **26.405 € darunter** ✅
 

@@ -462,8 +462,8 @@ li{margin-bottom:8px}
       <div class="field"><label class="tip" data-tip="makler">Makler (%)<span class="tipbox"></span></label><input id="makler" type="number" step="0.01"><span class="tag" contenteditable="true" data-persist="tag-makler">BELEGT · Ebay 3,57 % inkl. MwSt.</span></div>
       <div class="field"><label class="tip" data-tip="sonstige">Sonstige Erwerbskosten (€)<span class="tipbox"></span></label><input id="sonstige" type="number" step="500"><span class="tag" contenteditable="true" data-persist="tag-sonstige">z. B. Gutachten</span></div>
       <div class="field"><label class="tip" data-tip="kaltmiete">Kaltmiete/Monat (€)<span class="tipbox"></span></label><input id="kaltmiete" type="number" step="10"><span class="tag" contenteditable="true" data-persist="tag-kaltmiete">AUSSTEHEND · recherchieren</span></div>
-      <div class="field"><label class="tip" data-tip="hausgeld">Hausgeld/Betriebskosten/Monat (€)</label><input id="hausgeld" type="number" step="10"><span class="tag" contenteditable="true" data-persist="tag-hausgeld">ANNAHME · 1,00 €/m² × 117 m² + 25 € Verwaltung</span></div>
-      <div class="field"><label class="tip" data-tip="hausgeldNichtUml">davon nicht umlagefähig (€)<span class="tipbox"></span></label><input id="hausgeldNichtUml" type="number" step="5"><span class="tag" contenteditable="true" data-persist="tag-hausgeldNichtUml">ANNAHME · Verwaltungspauschale 25 €</span></div>
+      <div class="field"><label class="tip" data-tip="hausgeld">Hausgeld/Betriebskosten/Monat (€)</label><input id="hausgeld" type="number" step="10"><span class="tag" contenteditable="true" data-persist="tag-hausgeld">ANNAHME · Richtwert ca. 1,00 €/m²/Monat</span></div>
+      <div class="field"><label class="tip" data-tip="hausgeldNichtUml">davon nicht umlagefähig (€)<span class="tipbox"></span></label><input id="hausgeldNichtUml" type="number" step="5"><span class="tag" contenteditable="true" data-persist="tag-hausgeldNichtUml">Verwaltung, Rücklage</span></div>
       <div class="field"><label class="tip" data-tip="instand">Instandhaltung (€/m²/Jahr)<span class="tipbox"></span></label><input id="instand" type="number" step="0.5"><span class="tag" contenteditable="true" data-persist="tag-instand">BEWERTET: 25 €/m²/Jahr · Baujahr 1954, Sanierungsbedarf</span></div>
       <div class="field"><label class="tip" data-tip="leerstand">Leerstand (Wochen/Jahr)<span class="tipbox"></span></label><input id="leerstand" type="number" step="0.5"><span class="tag" contenteditable="true" data-persist="tag-leerstand">NUTZER-VORGABE: 4 Wo.</span></div>
       <div class="field"><label class="tip" data-tip="ek">Eigenkapital (€)<span class="tipbox"></span></label><input id="ek" type="number" step="1000"><span class="tag" contenteditable="true" data-persist="tag-ek">NUTZER-VORGABE: 20.000 €</span></div>
@@ -481,10 +481,7 @@ li{margin-bottom:8px}
     <h2>1 · Erwerbsrechnung</h2>
     <div class="table-scroll" tabindex="0" role="region" aria-label="Analysetabelle – horizontal scrollbar"><table id="tblErwerb"></table></div>
 
-    <h2>2 · Monatliche Einnahmen und Kosten</h2>
-    <table id="tblMonatlich"></table>
-
-    <h2>3 · Eigenkapital-Ermittlung (3 Grenzen)</h2>
+    <h2>2 · Eigenkapital-Ermittlung (3 Grenzen)</h2>
     <div class="box green" id="ekEmpfehlung"></div>
     <div class="table-scroll" tabindex="0" role="region" aria-label="Analysetabelle – horizontal scrollbar"><table id="tblEkStufen"></table></div>
 
@@ -494,7 +491,7 @@ li{margin-bottom:8px}
     <h2>4 · Zinsszenarien</h2>
     <div class="table-scroll" tabindex="0" role="region" aria-label="Analysetabelle – horizontal scrollbar"><table id="tblZins"></table></div>
 
-    <h2>6 · Sanierungs-Sensitivität</h2>
+    <h2>5 · Sanierungs-Sensitivität</h2>
     <div class="box yellow">
       <b>Sensitivität:</b> Jedes ±10.000 € Sanierungskosten verschiebt den Maximalpreis um ≈ ±13.000 €.
       <div class="table-scroll" tabindex="0" role="region" aria-label="Analysetabelle – horizontal scrollbar"><table id="tblSens" style="margin-top:5px"></table></div>
@@ -510,7 +507,7 @@ li{margin-bottom:8px}
 
   <!-- ================= EDITIERBARE BEREICHE ================= -->
   <div class="card">
-    <h2>9 · Chancen <span class="edit-hint">(klicken &amp; tippen zum Bearbeiten)</span></h2>
+    <h2>8 · Chancen <span class="edit-hint">(klicken &amp; tippen zum Bearbeiten)</span></h2>
     <div class="box green">
       <b>✅ Nachgewiesen:</b>
       <ul contenteditable="true" data-persist="chancenNachgewiesen">
@@ -534,7 +531,7 @@ li{margin-bottom:8px}
     </table></div>
     <button class="btn secondary" onclick="addRisiko()">+ Risiko hinzufügen</button>
 
-    <h2>11 · Offene Punkte <span class="edit-hint">(abhaken – Status wird gespeichert)</span></h2>
+    <h2>10 · Offene Punkte <span class="edit-hint">(abhaken – Status wird gespeichert)</span></h2>
     <ul id="offenePunkte">
       <li class="chk-li"><input type="checkbox" class="chk" data-persist="op1"><span class="txt" contenteditable="true" data-persist="op1t">🔴 Grundbuchauszug anfordern (Eigentümer, Lasten, Dienstbarkeiten)</span></li>
       <li class="chk-li"><input type="checkbox" class="chk" data-persist="op2"><span class="txt" contenteditable="true" data-persist="op2t">🔴 Miet-/Nutzungssituation klären (vermietet? Einliegerwohnung? Kaltmiete?)</span></li>
@@ -545,7 +542,7 @@ li{margin-bottom:8px}
       <li class="chk-li"><input type="checkbox" class="chk" data-persist="op6"><span class="txt" contenteditable="true" data-persist="op6t">🟡 Renovierungsumfang bei Besichtigung bewerten (Elektro, Fenster, Bäder, Dach)</span></li>
     </ul>
 
-    <h2>12 · Nächste Schritte <span class="edit-hint">(abhaken)</span></h2>
+    <h2>11 · Nächste Schritte <span class="edit-hint">(abhaken)</span></h2>
     <ul id="schritte">
       <li class="chk-li"><input type="checkbox" class="chk" data-persist="ns1"><span class="txt" contenteditable="true" data-persist="ns1t">1. Fragenliste an Makler senden</span></li>
       <li class="chk-li"><input type="checkbox" class="chk" data-persist="ns2"><span class="txt" contenteditable="true" data-persist="ns2t">2. Besichtigung durchführen</span></li>
@@ -559,7 +556,7 @@ li{margin-bottom:8px}
 
     <div class="box red" id="finalStatus"></div>
 
-    <h2>14 · So nutzt du diese Datei für mehrere Immobilien</h2>
+    <h2>13 · So nutzt du diese Datei für mehrere Immobilien</h2>
     <div class="box blue">
       <b>Grundprinzip:</b> Jede Immobilie hat <b>einen eigenen Objektordner</b> mit <b>einer eigenen HTML-Datei</b> direkt darin. Die Datei speichert deine Änderungen automatisch im Browser (pro Datei ein eigener Speicher – keine Überschneidung zwischen Immobilien).
       <div class="table-scroll" tabindex="0" role="region" aria-label="Analysetabelle – horizontal scrollbar"><table style="margin-top:6px">
@@ -801,26 +798,6 @@ function render() {
     row(["<b>Gesamtinvestition</b>", { v: r.berechenbar ? "<b>" + eur(r.gesamt) + "</b>" : AUSSTEHEND, num: true }, "ABGELEITET"]) +
     row(["Gesamtinvestition / m²", { v: r.berechenbar ? eur(r.giProM2) : AUSSTEHEND, num: true }, d.flaeche > 0 ? fmt(d.flaeche, 1) + " m²" : "—"]);
 
-  const hausgeldGesamtMonat = d.hausgeld;
-  const hausgeldNichtUmlMonat = d.hausgeldNichtUml;
-  const hausgeldUmlMonat = Math.max(0, hausgeldGesamtMonat - hausgeldNichtUmlMonat);
-  const leerstandMonat = d.kaltmiete * d.leerstand / 52;
-  document.getElementById("tblMonatlich").innerHTML = r.berechenbar
-    ? row([{ v: "Position", num: false }, { v: "Monatlich", num: true }, { v: "Hinweis", num: false }], true) +
-      row(["Kaltmiete", { v: "+" + eur(d.kaltmiete), num: true }, "Einnahme"]) +
-      row(["Leerstand (4 Wochen/Jahr)", { v: "−" + eur(leerstandMonat), num: true }, "rechnerischer Jahresanteil"]) +
-      row(["Effektive Mieteinnahmen", { v: eur(r.mieteEffektiv / 12), num: true }, "nach Leerstand"]) +
-      row(["Umlagefähige Betriebskosten-Erstattung", { v: "+" + eur(hausgeldUmlMonat), num: true }, "durch Mieter getragen; kein Eigentümerkostenanteil"]) +
-      row(["Hausgeld/Betriebskosten gesamt", { v: "−" + eur(hausgeldGesamtMonat), num: true }, "inkl. umlagefähigem und nicht umlagefähigem Anteil"]) +
-      row(["davon nicht umlagefähig", { v: "−" + eur(hausgeldNichtUmlMonat), num: true }, "vom Eigentümer zu tragen"]) +
-      row(["Verwaltung", { v: "−" + eur(r.verwaltungJahr / 12), num: true }, "separater Ansatz"]) +
-      row(["Instandhaltung", { v: "−" + eur(r.instandJahr / 12), num: true }, fmt(d.instand, 2) + " €/m²/Jahr"]) +
-      row(["<b>Cashflow vor Finanzierung</b>", { v: "<b>" + eur(r.cfVor) + "/M</b>", num: true }, "vor Zins und Tilgung"]) +
-      row(["Kreditrate", { v: "−" + eur(r.rate) + "/M", num: true }, "Zins + Tilgung"]) +
-      row(["<b>Cashflow nach Finanzierung</b>", { v: `<b class="${cls(r.cf)}">${eur(r.cf)}/M</b>`, num: true }, "nach Kreditrate"])
-    : row([{ v: "Position", num: false }, { v: "Monatlich", num: true }, { v: "Hinweis", num: false }], true) +
-      row(["Berechnung ausstehend", { v: AUSSTEHEND, num: true }, "Bitte fehlende Eingaben oben ausfüllen"]);
-
   document.getElementById("ekEmpfehlung").innerHTML = r.berechenbar
     ? `<b>💡 ${tip("Empfohlenes Eigenkapital", "ekBE")}: ${eur(Math.ceil(r.ekBE[3.77] / 1000) * 1000)} (aufgerundet auf 1.000 €)</b><br>` +
       `<span class="small">Das ist das Minimum, bei dem der Cashflow <b>auch im schlechtesten Zinsszenario (3,77 %)</b> neutral bleibt. ` +
@@ -907,7 +884,7 @@ function render() {
   document.getElementById("finalStatus").innerHTML =
     `<b>INVESTMENT-STATUS: ${r.status.status}</b><br>` +
     (r.berechenbar
-      ? `Rechnerische Basis: ${eur(r.kpProM2)}/m², ${pct(r.bruttoR)} brutto, CF ${eur(r.cf)}/M bei EK ${eur(d.ek)}. Offene Klärungen (siehe Abschnitt 11) bestimmen das endgültige Urteil.`
+      ? `Rechnerische Basis: ${eur(r.kpProM2)}/m², ${pct(r.bruttoR)} brutto, CF ${eur(r.cf)}/M bei EK ${eur(d.ek)}. Offene Klärungen (siehe Abschnitt 10) bestimmen das endgültige Urteil.`
       : `Berechnung ausstehend – es fehlen: ${d.fehlend.map(f => FELDLABEL[f] || f).join(", ")}.`);
 
   // Datenqualität: live aus den Eingaben (Objekt-spezifische BELEGT-Zeilen hier anpassen!)
@@ -950,7 +927,7 @@ const TIPS = {
   makler: "Provision des Immobilienmaklers bei Kauf (hier 3,57 % inkl. MwSt., laut Exposé vom Käufer zu zahlen). In manchen Bundesländern teilt sich Käufer/Verkäufer.",
   sonstige: "Weitere Einmalkosten: Gutachten, Umzug, Möbel, Notgroschen-Polster. Meist klein, aber einplanen.",
   kaltmiete: "Die Miete OHNE Nebenkosten, die der Mieter monatlich zahlt. Basis für alle Rendite-Berechnungen. Aktuell eine Empfehlung (ABGELEITET aus Regionalvergleich) – nicht belegt!",
-  hausgeld: "Gesamtbetrag für Hausgeld/Betriebskosten. Bei einem EFH ohne Hausgeld: 1,00 €/m² Wohnfläche plus 25 € Verwaltung pro Monat; der Gesamtbetrag wird hier eingetragen. Bei einer ETW gelten die tatsächlichen Hausgeldwerte.",
+  hausgeld: "Gesamtbetrag für Hausgeld/Betriebskosten. Bei einem EFH z. B. Grundsteuer, Gebäudeversicherung und Müllgebühren. Richtwert als Startannahme: ca. 1,00 €/m² Wohnfläche pro Monat. 0 bleibt 0; Verwaltung wird nicht automatisch ergänzt.",
   hausgeldNichtUml: "Der Teil des Hausgelds, den der Mieter NICHT übernehmen kann: Verwaltungskosten, Instandhaltungsrücklage. Das frisst deine Miete direkt – je höher, desto schlechter für den Cashflow.",
   instand: "Bewerteter Ansatz: 25 €/m²/Jahr. Das Baujahr 1954, Energieklasse H, die Öl-Zentralheizung und der offene Sanierungsbedarf rechtfertigen einen Zuschlag über den Richtwert von 18,62 €/m²/Jahr für Gebäude ab 32 Jahren. Vergleich: 12 €/m²/Jahr Mindestansatz, 14,58 €/m² ab 22 Jahren, 18,62 €/m² ab 32 Jahren. Berechnung: Wohnfläche × Eingabe.",
   leerstand: "Zeit pro Jahr, in der die Wohnung leer steht (Umzüge, Mietersuche). Jede Woche kostet Miete – der Rechner zieht sie anteilig ab. Realistisch: 2–6 Wochen/Jahr.",

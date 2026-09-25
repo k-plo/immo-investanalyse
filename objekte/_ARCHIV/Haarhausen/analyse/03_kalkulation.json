@@ -44,11 +44,11 @@
     }
   },
   "laufende_kosten": {
-    "hausgeld_monatlich_eur": 195.0,
+    "hausgeld_monatlich_eur": 0.0,
     "verwaltung_prozent_von_miete": 0.0,
     "instandhaltung_eur_pro_m2_jahr": 25.0,
-    "nicht_umlagefaehige_kosten_monatlich_eur": 25.0,
-    "status": "EFH ohne WEG: Betriebskosten 170 EUR/Monat (1,00 EUR/m² bei 170 m²) plus 25 EUR Verwaltung; Gesamtbetrag 195 EUR, davon 25 EUR nicht umlagefähig; Instandhaltung 25 EUR/m²/Jahr wegen Baujahr 1900, Elektroheizung und technischer Risiken = objektbezogene Bewertung",
+    "nicht_umlagefaehige_kosten_monatlich_eur": 0.0,
+    "status": "EFH ohne WEG: umlagefähige Betriebskosten als Startannahme 170 EUR/Monat (1,00 EUR/m² bei 170 m²); keine automatische Verwaltungspauschale; Instandhaltung 25 EUR/m²/Jahr wegen Baujahr 1900, Elektroheizung und technischer Risiken = objektbezogene Bewertung",
     "heizstrom_schaetzung": {
       "verbrauch_kwh_jahr": 48790.0,
       "berechnung": "287 kWh/(m2*a) × 170 m2",
