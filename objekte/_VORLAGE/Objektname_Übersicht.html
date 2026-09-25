@@ -120,7 +120,7 @@
       <div class="field"><label class="tip" data-tip="kaltmiete">Kaltmiete/Monat (€)<span class="tipbox"></span></label><input id="kaltmiete" type="number" step="10"><span class="tag" contenteditable="true" data-persist="tag-kaltmiete">ABGELEITET · recherchiert</span></div>
       <div class="field"><label class="tip" data-tip="hausgeld">Hausgeld/Monat (€)<span class="tipbox"></span></label><input id="hausgeld" type="number" step="10"><span class="tag" contenteditable="true" data-persist="tag-hausgeld">bei EFH: 0 = Verwaltung 3 %</span></div>
       <div class="field"><label class="tip" data-tip="hausgeldNichtUml">davon nicht umlagefähig (€)<span class="tipbox"></span></label><input id="hausgeldNichtUml" type="number" step="5"><span class="tag" contenteditable="true" data-persist="tag-hausgeldNichtUml">Verwaltung, Rücklage</span></div>
-      <div class="field"><label class="tip" data-tip="instand">Instandhaltung (€/m²/Jahr)<span class="tipbox"></span></label><input id="instand" type="number" step="0.5"><span class="tag" contenteditable="true" data-persist="tag-instand">NUTZER-VORGABE: 10 €/m²/Jahr</span></div>
+      <div class="field"><label class="tip" data-tip="instand">Instandhaltung (€/m²/Jahr)<span class="tipbox"></span></label><input id="instand" type="number" step="0.5"><span class="tag" contenteditable="true" data-persist="tag-instand">OBJEKTBEWERTUNG: nach Baualter und Zustand</span></div>
       <div class="field"><label class="tip" data-tip="leerstand">Leerstand (Wochen/Jahr)<span class="tipbox"></span></label><input id="leerstand" type="number" step="0.5"><span class="tag" contenteditable="true" data-persist="tag-leerstand">NUTZER-VORGABE: 4 Wo.</span></div>
       <div class="field"><label class="tip" data-tip="ek">Eigenkapital (€)<span class="tipbox"></span></label><input id="ek" type="number" step="1000"><span class="tag" contenteditable="true" data-persist="tag-ek">NUTZER-VORGABE: 20.000 €</span></div>
       <div class="field"><label class="tip" data-tip="zins">Zinssatz (%)<span class="tipbox"></span></label><input id="zins" type="number" step="0.01"><span class="tag" contenteditable="true" data-persist="tag-zins">z. B. BELEGT · Bankangebot</span></div>
@@ -270,7 +270,7 @@ const getZinsSzenarien = zins => ZINS_OFFSETS.map(({ offset, label }) => ({
 const DEFAULTS = {
   preis: null, flaeche: null, renovierung: null, sanierung: null,
   grESt: 6.0, notar: 2.0, makler: null, sonstige: 0,
-  kaltmiete: null, hausgeld: null, hausgeldNichtUml: null, instand: 10, leerstand: 4,
+  kaltmiete: null, hausgeld: null, hausgeldNichtUml: null, instand: null, leerstand: 4,
   ek: 20000, zins: 3.5, tilgung: 2.0
 };
 const IDS = Object.keys(DEFAULTS);
@@ -603,7 +603,7 @@ const TIPS = {
   kaltmiete: "Die Miete OHNE Nebenkosten, die der Mieter monatlich zahlt. Basis für alle Rendite-Berechnungen. Aktuell eine Empfehlung (ABGELEITET aus Regionalvergleich) – nicht belegt!",
   hausgeld: "Monatliche Zahlung an die WEG (Verwaltung, Rücklage, gemeinsame Kosten) bei Eigentumswohnungen. Ein Teil ist umlagefähig (Mieter zahlt), ein Teil nicht (du zahlst). ⚠️ WICHTIG: Wenn du hier 0 einträgst, rechnet das Tool automatisch eine Verwaltungspauschale von 3 % der Kaltmiete (Annahme: kein WEG, Selbstverwaltung). Bei einem WEG-Objekt trage das echte Hausgeld ein!",
   hausgeldNichtUml: "Der Teil des Hausgelds, den der Mieter NICHT übernehmen kann: Verwaltungskosten, Instandhaltungsrücklage. Das frisst deine Miete direkt – je höher, desto schlechter für den Cashflow.",
-  instand: "Jährliche Rückstellung für Reparaturen (Dach, Heizung, Maler …). Berechnung: Wohnfläche × Eingabe in €/m²/Jahr. Als Startwert sind 10 €/m²/Jahr hinterlegt; der Betrag wird vom Cashflow abgezogen.",
+  instand: "Objektbezogen bewerten: mindestens 12 €/m²/Jahr als grober Mindestansatz, 14,58 €/m²/Jahr ab 22 Jahren und 18,62 €/m²/Jahr ab 32 Jahren. Bei erkennbarem Sanierungsstau oder technischen Risiken höher ansetzen. Berechnung: Wohnfläche × Eingabe.",
   leerstand: "Zeit pro Jahr, in der die Wohnung leer steht (Umzüge, Mietersuche). Jede Woche kostet Miete – der Rechner zieht sie anteilig ab. Realistisch: 2–6 Wochen/Jahr.",
   ek: "Eigenkapital = dein eigenes Geld, das du einbringst. Mehr EK = kleinere Rate, aber weniger Rendite auf dein Geld. Weniger EK = größere Rate, höheres Risiko. Das Tool berechnet unten Break-Even-EK je Zinsszenario.",
   zins: "Der jährliche Zinssatz des Darlehens. Aktuelles Marktniveau recherchieren (z. B. CHECK24/FMH) und hier als Quelle eintragen. Bei hohem Beleihungsauslauf verlangen Banken mehr.",

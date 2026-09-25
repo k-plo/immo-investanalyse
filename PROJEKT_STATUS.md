@@ -79,7 +79,7 @@
 - Playwright-Tests: input-Events nach value-Setzung manuell dispatchen; Script-Scope-Funktionen sind nicht auf `window`
 - **Dynamische Tag-Texte unter Eingabefeldern: VERWORFEN** (18.09.) – statische, editierbare Tags genügen; nicht wieder vorschlagen
 - **📈 Zins-Recherche-Regel** (18.09., Goldene Regel 12 in README.md): KEINE Beispiel-/Werbezahlen von Vergleichsportalen (CHECK24-Beispielrechnungen) als Kalkulationsbasis! Stattdessen echte Marktkonditionen recherchieren (konkrete Angebote: Vergleich.de/Dr. Klein, FMH, Bankkonditionen), Spanne bestes–schlechtestes dokumentieren + Bindungsdauer nennen. Realität 18.09.: 4,67–5,55 % (12/20 J.) vs. CHECK24-Beispiel 3,02–3,77 % (10 J.). Bei Recalc > 7 Tage alt: frisch prüfen; innerhalb 7 Tage: Wert weiterverwenden. Immer Datum + Quelle in der Datenqualität-Tabelle
-- **🧾 Werte-Eintragsregel (23.09., verbindlich):** Recherchierte Werte werden immer direkt in die entsprechenden Eingabefelder sowie State-/Kalkulationsdateien eingetragen. Kaltmiete und Zins erhalten Quelle, Datum und Status; die Nutzer-Vorgaben Instandhaltung 10 €/m²/Jahr, Leerstand 4 Wochen/Jahr, EK 20.000 € und Tilgung 2,0 % werden als Startwerte gesetzt. Unbekannte objektbezogene Werte bleiben leer/ausstehend.
+- **🧾 Werte-Eintragsregel (23.09., verbindlich):** Recherchierte Werte werden immer direkt in die entsprechenden Eingabefelder sowie State-/Kalkulationsdateien eingetragen. Kaltmiete und Zins erhalten Quelle, Datum und Status; Instandhaltung wird künftig objektbezogen nach Baualter, Zustand und Sanierungsbedarf bewertet. Leerstand 4 Wochen/Jahr, EK 20.000 € und Tilgung 2,0 % bleiben Nutzer-Vorgaben. Unbekannte objektbezogene Werte bleiben leer/ausstehend.
 
 ---
 

@@ -56,9 +56,9 @@
   "laufende_kosten": {
     "hausgeld_monatlich_eur": 0.0,
     "verwaltung_prozent_von_miete": 0.0,
-    "instandhaltung_eur_pro_m2_jahr": 10.0,
+    "instandhaltung_eur_pro_m2_jahr": 25.0,
     "nicht_umlagefaehige_kosten_monatlich_eur": 0.0,
-    "status": "EFH ohne WEG: Hausgeld 0 (Tool rechnet 3 % Verwaltungspauschale); Instandhaltung 10 EUR/m²/Jahr = NUTZER-VORGABE"
+    "status": "EFH ohne WEG: Hausgeld 0 (Tool rechnet 3 % Verwaltungspauschale); Instandhaltung 25 EUR/m²/Jahr wegen Baujahr 1954, Energieklasse H und offenem Sanierungsbedarf = objektbezogene Bewertung"
   },
   "finanzierung": {
     "eigenkapital_eur": 20000.0,

@@ -45,7 +45,7 @@
   "laufende_kosten": {
     "hausgeld_monatlich_eur": null,
     "verwaltung_prozent_von_miete": null,
-    "instandhaltung_eur_pro_m2_jahr": 10.0,
+    "instandhaltung_eur_pro_m2_jahr": 18.62,
     "nicht_umlagefaehige_kosten_monatlich_eur": null,
     "status": "WEG-Unterlagen fehlen"
   },
@@ -67,7 +67,7 @@
     "6,0 Prozent Grunderwerbsteuer fuer Hessen.",
     "2,0 Prozent fuer Notar und Grundbuch als vorlaeufige Groessenordnung; nicht belegt.",
     "1.050 EUR Kaltmiete monatlich ist nur eine regionale Orientierungs-Hypothese und wurde als Startwert eingetragen.",
-    "Instandhaltung 10 EUR/m²/Jahr, Leerstand 4 Wochen/Jahr, Eigenkapital 20.000 EUR und Tilgung 2,0 Prozent sind Nutzer-Vorgaben.",
+    "Instandhaltung 18,62 EUR/m²/Jahr (Bewertung: Baujahr 1994, Richtwert ab 32 Jahren), Leerstand 4 Wochen/Jahr, Eigenkapital 20.000 EUR und Tilgung 2,0 Prozent sind Nutzer-Vorgaben.",
     "Der Zinssatz 3,96 Prozent ist ein externer Recherchewert für 10 Jahre Sollzinsbindung vom 23.09.2026; ein individuelles Bankangebot steht aus.",
     "Renovierung, Sanierung, Hausgeld und nicht umlagefähige Kosten bleiben null/unbekannt, weil keine belastbaren Belege vorliegen."
   ],

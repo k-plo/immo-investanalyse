@@ -18,7 +18,7 @@
 | EK | 20.000 € | NUTZER-VORGABE |
 | Zins | 3,5 % | ANNAHME (Marktmitte; ⚠️ Live-Recherche 18.09. deutet auf höheres Niveau) |
 | Tilgung | 2,0 % | NUTZER-VORGABE |
-| Instandhaltung | 10 €/m²/Jahr | NUTZER-VORGABE |
+| Instandhaltung | 25 €/m²/Jahr | OBJEKTBEWERTUNG: Baujahr 1954, Energieklasse H, Sanierungsbedarf |
 | Leerstand | 4 Wo./Jahr | NUTZER-VORGABE |
 
 ## Ergebnis (Modellrechnung)

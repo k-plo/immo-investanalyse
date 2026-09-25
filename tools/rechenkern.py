@@ -41,7 +41,7 @@ def default_data() -> dict:
             "hausgeld_monatlich_eur": 250.0,
             "nicht_umlagefaehige_kosten_monatlich_eur": 60.0,
             "verwaltung_prozent_von_miete": 0.0,   # bei ETW im Hausgeld
-            "instandhaltung_eur_pro_m2_jahr": 10.0,
+            "instandhaltung_eur_pro_m2_jahr": None,
         },
         "finanzierung": {
             "eigenkapital_eur": 50000.0,
