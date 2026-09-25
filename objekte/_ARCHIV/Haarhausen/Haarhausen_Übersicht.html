@@ -138,33 +138,36 @@
     <h2>1 · Erwerbsrechnung</h2>
     <table id="tblErwerb"></table>
 
-    <h2>2 · Eigenkapital-Ermittlung (3 Grenzen)</h2>
+    <h2>2 · Monatliche Einnahmen und Kosten</h2>
+    <table id="tblMonatlich"></table>
+
+    <h2>3 · Eigenkapital-Ermittlung (3 Grenzen)</h2>
     <div class="box green" id="ekEmpfehlung"></div>
     <table id="tblEkStufen"></table>
 
-    <h2>3 · Wirtschaftlichkeit</h2>
+    <h2>4 · Wirtschaftlichkeit</h2>
     <table id="tblWirt"></table>
 
-    <h2>4 · Zinsszenarien</h2>
+    <h2>5 · Zinsszenarien</h2>
     <table id="tblZins"></table>
 
-    <h2>5 · Sanierungs-Sensitivität</h2>
+    <h2>6 · Sanierungs-Sensitivität</h2>
     <div class="box yellow">
       <b>Sensitivität:</b> Jedes ±10.000 € Sanierungskosten verschiebt den Maximalpreis um ≈ ±13.000 €.
       <table id="tblSens" style="margin-top:5px"></table>
     </div>
 
-    <h2>6 · Stress-Tests</h2>
+    <h2>7 · Stress-Tests</h2>
     <table id="tblStress"></table>
 
-    <h2>7 · Verhandlung</h2>
+    <h2>8 · Verhandlung</h2>
     <table id="tblVerh"></table>
     <div class="box green" id="verhBox"></div>
   </div>
 
   <!-- ================= EDITIERBARE BEREICHE ================= -->
   <div class="card">
-    <h2>8 · Chancen <span class="edit-hint">(klicken &amp; tippen zum Bearbeiten)</span></h2>
+    <h2>9 · Chancen <span class="edit-hint">(klicken &amp; tippen zum Bearbeiten)</span></h2>
     <div class="box green">
       <b>✅ Nachgewiesen:</b>
       <ul contenteditable="true" data-persist="chancenNachgewiesen">
@@ -185,13 +188,13 @@
       </ul>
     </div>
 
-    <h2>9 · Risiken <span class="edit-hint">(Text editierbar · Ampel umstellbar)</span></h2>
+    <h2>10 · Risiken <span class="edit-hint">(Text editierbar · Ampel umstellbar)</span></h2>
     <table id="tblRisiken">
       <tr><th style="width:34%">Risiko</th><th style="width:14%">Kategorie</th><th style="width:9%">Ampel</th><th>Begründung</th></tr>
     </table>
     <button class="btn secondary" onclick="addRisiko()">+ Risiko hinzufügen</button>
 
-    <h2>10 · Offene Punkte <span class="edit-hint">(abhaken – Status wird gespeichert)</span></h2>
+    <h2>11 · Offene Punkte <span class="edit-hint">(abhaken – Status wird gespeichert)</span></h2>
     <ul id="offenePunkte">
       <li class="chk-li"><input type="checkbox" class="chk" data-persist="op1"><span class="txt" contenteditable="true" data-persist="op1t">🔴 Elektroheizung/PV: Stromkosten real ermitteln + PV-Wirtschaftlichkeit rechnen (entscheidet über Bewertung)</span></li>
       <li class="chk-li"><input type="checkbox" class="chk" data-persist="op2"><span class="txt" contenteditable="true" data-persist="op2t">🔴 Grundbuchauszug (Abt. I–III) anfordern</span></li>
@@ -202,7 +205,7 @@
       <li class="chk-li"><input type="checkbox" class="chk" data-persist="op7"><span class="txt" contenteditable="true" data-persist="op7t">🟢 Vergleichsangebote, Gutachten (optional)</span></li>
     </ul>
 
-    <h2>11 · Nächste Schritte <span class="edit-hint">(abhaken)</span></h2>
+    <h2>12 · Nächste Schritte <span class="edit-hint">(abhaken)</span></h2>
     <ul id="schritte">
       <li class="chk-li"><input type="checkbox" class="chk" data-persist="ns1"><span class="txt" contenteditable="true" data-persist="ns1t">1. Fragenliste (12 Fragen, 02_dokumentenpruefung.md) an Makler senden – Fokus Elektroheizung/PV</span></li>
       <li class="chk-li"><input type="checkbox" class="chk" data-persist="ns2"><span class="txt" contenteditable="true" data-persist="ns2t">2. Besichtigung: Innenausbau-Stand, Elektroinstallation, Dach (PV-Tauglichkeit), Feuchtigkeit</span></li>
@@ -212,12 +215,12 @@
       <li class="chk-li"><input type="checkbox" class="chk" data-persist="ns6"><span class="txt" contenteditable="true" data-persist="ns6t">6. Eigene Zahlen in diese Übersicht eintragen → Rechnung läuft mit belastbaren Werten</span></li>
     </ul>
 
-    <h2>12 · Datenqualität <span class="edit-hint">(aktualisiert sich mit deinen Eingaben)</span></h2>
+    <h2>13 · Datenqualität <span class="edit-hint">(aktualisiert sich mit deinen Eingaben)</span></h2>
     <table id="tblDatenqualitaet"></table>
 
     <div class="box red" id="finalStatus"></div>
 
-    <h2>13 · So nutzt du diese Datei für mehrere Immobilien</h2>
+    <h2>14 · So nutzt du diese Datei für mehrere Immobilien</h2>
     <div class="box blue">
       <b>Grundprinzip:</b> Jede Immobilie hat <b>einen eigenen Objektordner</b> mit <b>einer eigenen HTML-Datei</b> direkt darin. Die Datei speichert deine Änderungen automatisch im Browser (pro Datei ein eigener Speicher – keine Überschneidung zwischen Immobilien).
       <table style="margin-top:6px">
@@ -456,6 +459,25 @@ function render() {
     row(["<b>Gesamtinvestition</b>", { v: r.berechenbar ? "<b>" + eur(r.gesamt) + "</b>" : AUSSTEHEND, num: true }, "ABGELEITET"]) +
     row(["Gesamtinvestition / m²", { v: r.berechenbar ? eur(r.giProM2) : AUSSTEHEND, num: true }, d.flaeche > 0 ? fmt(d.flaeche, 1) + " m²" : "—"]);
 
+  const hausgeldGesamtMonat = d.hausgeld;
+  const hausgeldNichtUmlMonat = d.hausgeldNichtUml;
+  const hausgeldUmlMonat = Math.max(0, hausgeldGesamtMonat - hausgeldNichtUmlMonat);
+  const leerstandMonat = d.kaltmiete * d.leerstand / 52;
+  document.getElementById("tblMonatlich").innerHTML = r.berechenbar
+    ? row([{ v: "Position", num: false }, { v: "Monatlich", num: true }, { v: "Hinweis", num: false }], true) +
+      row(["Kaltmiete", { v: "+" + eur(d.kaltmiete), num: true }, "Einnahme"]) +
+      row(["Leerstand (4 Wochen/Jahr)", { v: "−" + eur(leerstandMonat), num: true }, "rechnerischer Jahresanteil"]) +
+      row(["Effektive Mieteinnahmen", { v: eur(r.mieteEffektiv / 12), num: true }, "nach Leerstand"]) +
+      row(["Hausgeld/Betriebskosten gesamt", { v: "−" + eur(hausgeldGesamtMonat), num: true }, "umlagefähiger Anteil: " + eur(hausgeldUmlMonat)]) +
+      row(["davon nicht umlagefähig", { v: "−" + eur(hausgeldNichtUmlMonat), num: true }, "vom Eigentümer zu tragen"]) +
+      row(["Verwaltung", { v: "−" + eur(r.verwaltungJahr / 12), num: true }, "separater Ansatz"]) +
+      row(["Instandhaltung", { v: "−" + eur(r.instandJahr / 12), num: true }, fmt(d.instand, 2) + " €/m²/Jahr"]) +
+      row(["<b>Cashflow vor Finanzierung</b>", { v: "<b>" + eur(r.cfVor) + "/M</b>", num: true }, "vor Zins und Tilgung"]) +
+      row(["Kreditrate", { v: "−" + eur(r.rate) + "/M", num: true }, "Zins + Tilgung"]) +
+      row(["<b>Cashflow nach Finanzierung</b>", { v: `<b class="${cls(r.cf)}">${eur(r.cf)}/M</b>`, num: true }, "nach Kreditrate"])
+    : row([{ v: "Position", num: false }, { v: "Monatlich", num: true }, { v: "Hinweis", num: false }], true) +
+      row(["Berechnung ausstehend", { v: AUSSTEHEND, num: true }, "Bitte fehlende Eingaben oben ausfüllen"]);
+
   document.getElementById("ekEmpfehlung").innerHTML = r.berechenbar
     ? `<b>💡 ${tip("Empfohlenes Eigenkapital", "ekBE")}: ${eur(Math.ceil(r.ekBE[3.77] / 1000) * 1000)} (aufgerundet auf 1.000 €)</b><br>` +
       `<span class="small">Das ist das Minimum, bei dem der Cashflow <b>auch im schlechtesten Zinsszenario (3,77 %)</b> neutral bleibt. ` +
@@ -542,7 +564,7 @@ function render() {
   document.getElementById("finalStatus").innerHTML =
     `<b>INVESTMENT-STATUS: ${r.status.status}</b><br>` +
     (r.berechenbar
-      ? `Rechnerische Basis: ${eur(r.kpProM2)}/m², ${pct(r.bruttoR)} brutto, CF ${eur(r.cf)}/M bei EK ${eur(d.ek)}. Offene Klärungen (siehe Abschnitt 10) bestimmen das endgültige Urteil.`
+      ? `Rechnerische Basis: ${eur(r.kpProM2)}/m², ${pct(r.bruttoR)} brutto, CF ${eur(r.cf)}/M bei EK ${eur(d.ek)}. Offene Klärungen (siehe Abschnitt 11) bestimmen das endgültige Urteil.`
       : `Berechnung ausstehend – es fehlen: ${d.fehlend.map(f => FELDLABEL[f] || f).join(", ")}.`);
 
   // Datenqualität: live aus den Eingaben
