@@ -260,6 +260,9 @@ const LS_KEY = "immo-" + OBJEKT_KEY + "-v1";
 const STATE_DATEINAME = "Haarhausen_Übersicht_State.json";
 const F = id => parseFloat(String(document.getElementById(id).value).replace(",", ".")) || 0;
 const fmt = (v, d = 0) => (v === null || v === undefined || isNaN(v) ? "–" : v.toLocaleString("de-DE", { minimumFractionDigits: d, maximumFractionDigits: d }));
+const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, c => ({
+  "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+})[c]);
 const eur = v => (v === null || v === undefined ? "–" : fmt(v, 0) + " €");
 const pct = v => (v === null || v === undefined ? "–" : fmt(v, 2).replace(".", ",") + " %");
 const cls = v => v > 0.005 ? "pos" : v < -0.005 ? "neg" : "neu";
@@ -287,8 +290,8 @@ function readInputs() {
     const raw = String(document.getElementById(id).value).trim();
     d[id] = raw === "" ? 0 : (parseFloat(raw.replace(",", ".")) || 0);
   });
-  // Welche Pflichtwerte fehlen für eine vollständige Rechnung?
-  d.fehlend = IDS.filter(id => d[id] === null);
+  // Leere optionale Felder gelten als 0; nur die Rechengrundlage ist zwingend.
+  d.fehlend = ["preis", "flaeche"].filter(id => d[id] <= 0);
   d.vollstaendig = d.fehlend.length === 0;
   return d;
 }
@@ -348,7 +351,7 @@ function calc(d) {
   // die %-Nebenkosten (GrESt/Notar/Makler) skalieren mit dem Kaufpreis.
   // CF(p) = cfVor − (p*(1+nkPro) + fixInvest − ek)*zt = 0  →  p = (cfVor + (ek − fixInvest)*zt) / ((1+nkPro)*zt)
   const fixInvest = d.renovierung + d.sanierung + d.sonstige;
-  const nkPro = d.preis > 0 ? r.nk / d.preis : 0;
+  const nkPro = d.preis > 0 ? (r.nkAnteile.grESt + r.nkAnteile.notar + r.nkAnteile.makler) / d.preis : 0;
   r.maxPreis = zt > 0 ? Math.max(0, (r.cfVor + (d.ek - fixInvest) * zt) / ((1 + nkPro) * zt)) : 0;
   r.breakEvenMiete = lf > 0 ? (r.rate * 12 + r.hgNichtUmlJahr + r.verwaltungJahr + r.instandJahr) / lf / 12 : 0;
   r.spielraum = r.maxPreis - d.preis;
@@ -371,7 +374,7 @@ function calc(d) {
     const darlehen2 = Math.max(0, gesamt2 - d.ek);
     const rate2 = darlehen2 * zt;
     const cf2 = r.cfVor - rate2;
-    const p2 = zt > 0 ? Math.max(0, (r.cfVor + (d.ek - san) * zt) / ((1 + nkPro) * zt)) : 0;
+    const p2 = zt > 0 ? Math.max(0, (r.cfVor + (d.ek - san - d.sonstige) * zt) / ((1 + nkPro) * zt)) : 0;
     return [san, gesamt2, rate2, cf2, p2];
   });
 
@@ -636,10 +639,10 @@ function renderRisiken(risiken) {
   const tbl = document.getElementById("tblRisiken");
   tbl.innerHTML = '<tr><th style="width:34%">Risiko</th><th style="width:14%">Kategorie</th><th style="width:9%">Ampel</th><th>Begründung</th></tr>' +
     risiken.map((r, i) =>
-      `<tr><td contenteditable="true" data-persist="ris${i}a">${r[0]}</td>` +
-      `<td contenteditable="true" data-persist="ris${i}b">${r[1]}</td>` +
+      `<tr><td contenteditable="true" data-persist="ris${i}a">${escapeHtml(r[0])}</td>` +
+      `<td contenteditable="true" data-persist="ris${i}b">${escapeHtml(r[1])}</td>` +
       `<td><select class="ampel" data-persist="ris${i}c" onchange="saveState()">${["🟢", "🟡", "🟠", "🔴"].map(a => `<option ${a === r[2] ? "selected" : ""}>${a}</option>`).join("")}</select></td>` +
-      `<td contenteditable="true" data-persist="ris${i}d">${r[3]}</td></tr>`).join("");
+      `<td contenteditable="true" data-persist="ris${i}d">${escapeHtml(r[3])}</td></tr>`).join("");
 }
 function addRisiko() {
   const risiken = getRisiken();
@@ -652,10 +655,10 @@ function getRisiken() {
   let i = 0;
   while (document.querySelector(`[data-persist="ris${i}a"]`)) {
     out.push([
-      document.querySelector(`[data-persist="ris${i}a"]`).innerHTML,
-      document.querySelector(`[data-persist="ris${i}b"]`).innerHTML,
+      document.querySelector(`[data-persist="ris${i}a"]`).textContent,
+      document.querySelector(`[data-persist="ris${i}b"]`).textContent,
       document.querySelector(`[data-persist="ris${i}c"]`).value,
-      document.querySelector(`[data-persist="ris${i}d"]`).innerHTML
+      document.querySelector(`[data-persist="ris${i}d"]`).textContent
     ]);
     i++;
   }
@@ -667,7 +670,7 @@ function collectState() {
   const s = { _tool: "immo-arnsbach-uebersicht", _version: 1, _objekt_ordner: OBJEKT_ORDNER };
   IDS.forEach(id => s[id] = document.getElementById(id).value);
   document.querySelectorAll("[data-persist]").forEach(el => {
-    s["p_" + el.dataset.persist] = el.type === "checkbox" ? el.checked : (el.matches("input, textarea, select") ? el.value : el.innerHTML);
+    s["p_" + el.dataset.persist] = el.type === "checkbox" ? el.checked : (el.matches("input, textarea, select") ? el.value : el.textContent);
   });
   s._risiken = getRisiken();
   return s;
@@ -681,7 +684,7 @@ function applyState(s) {
     if (!el) return;
     if (el.type === "checkbox") { el.checked = s[k]; const li = el.closest("li"); if (li) li.classList.toggle("done", s[k]); }
     else if (el.matches("input, textarea, select")) el.value = s[k];
-    else el.innerHTML = s[k];
+    else el.textContent = s[k];
   });
   if (s._risiken) renderRisiken(s._risiken);
   aktualisiereExterneLink();

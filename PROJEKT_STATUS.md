@@ -8,18 +8,17 @@
 ## 🕐 Letzter Stand
 
 **Datum:** 25.09.2026
-**Letzte Aktion:** Hausgeldfeld fachlich zu „Hausgeld/Betriebskosten“ erweitert. Umlagefähige Betriebskosten können nun auch bei EFH erfasst werden; `0` bleibt `0`, die automatische 3-%-Verwaltungspauschale wurde aus Übersichten, Rechenkern, Portfolio und DB-Rating entfernt. Richtwert: ca. 1,00 €/m²/Monat als markierte Annahme.
+**Letzte Aktion:** Lokaler Bugfix-Durchlauf für Rechenkern, HTML-Kalkulation und DB-Sync. Projektpfade sind nun plattformunabhängig; SQLite-Sync und Portfolio-Generator laufen im aktuellen Projektordner. JSON-Schemata werden kompatibel verarbeitet, Finanzierungsnebenkosten/Sonderumlagen eingerechnet, dynamische Listen vollständig synchronisiert, DB-Restore und Hash-Konsistenzprüfung vervollständigt sowie importierte HTML-Inhalte abgesichert.
 
 ---
 
-## 📁 Objekte (Stand 18.09.2026)
+## 📁 Objekte (Stand 25.09.2026)
 
 | Objekt | Ordner | Status | Rating | Bemerkung |
 |---|---|---|---|---|
-| **Haarhausen** | `objekte/Haarhausen/` | ✅ Analysiert, Übersicht aktiv | **B (82)** | KP 179.000 € · BruttoR 9,12 % · CF +140 €/M · KM 1.360 € · EK 20.000 € |
-| **Kerstenhausen** | `objekte/Kerstenhausen/` | ✅ Analysiert (18.09.), Übersicht aktiv | **D (41)** | KP 152.100 € · BruttoR 6,31 % · CF −350 €/M · KM 800 € (ANNAHME) · Status 🟠 VERHANDELN · 🔴 Grundbuch/Miete fehlen |
-| **Gombeth** | `objekte/Gombeth/` | 🟡 Vorläufig analysiert | – | 107 m² ETW, 6 Zi., Istmiete 7.500 €/Jahr; KP 109.000 € vs. 134.000 € widersprüchlich · WEG-/Versicherungsrisiken offen |
-| **Arnsbach** | `objekte/Arnsbach/` | 🟡 Analysiert, Übersicht aktiv | – | 178 m² Bungalow/WEG, KP 159.000 € · Grundbuchlasten nominal 114.724 € und Sanierungsumfang offen · Status 🟡 NUR MIT KLÄRUNG |
+| **Haarhausen** | `objekte/_ARCHIV/Haarhausen/` | 🗄️ Analysiert, archiviert | **C (61)** | Aus aktivem Portfolio ausgeblendet; State und Analyse bleiben erhalten |
+| **Kerstenhausen** | `objekte/Kerstenhausen/` | ✅ Analysiert, Übersicht aktiv | **C (56)** | KP 152.100 € · BruttoR 7,89 % · CF −53 €/M · KM 1.000 € · 🔴 Grundbuch/Miete weiterhin zu klären |
+| **Arnsbach** | `objekte/Arnsbach/` | 🟡 Analysiert, Übersicht aktiv | **D (47)** | KP 159.000 € · BruttoR 7,92 % · CF −188 €/M · Grundbuch- und WEG-Risiken offen |
 | _VORLAGE | `objekte/_VORLAGE/` | Vorlage für neue Objekte | – | Übersicht + Analyse-MDs generisch |
 
 ---
@@ -67,9 +66,18 @@
 - ↩️ **Reaktivieren (24.09.)**: Übersichten im `_ARCHIV`-Pfad schalten denselben Button automatisch auf „Reaktivieren“. Der vollständige Ordner wird nach Prüfung eines freien aktiven Pfads zurückverschoben; der Archivordner wird erst nach erfolgreichem Kopieren entfernt.
 - 🧮 **Einheitliche Portfolio-Rechnung (23.09.)**: `db_manager.py`, der Live-Rechner in `portfolio.html` und die Objektübersicht verwenden dieselben Formeln. Nach Nutzerentscheidung werden leere Eingabefelder in allen drei Rechenpfaden als 0 behandelt; Arnsbach und die Vorlage schreiben Änderungen zusätzlich automatisch in den State-JSON.
 
+### Lokale Stabilisierung (25.09.)
+- 🛠️ **Plattformunabhängige Pfade:** Python-Tools und Extraktionshelfer leiten den Projektordner aus `__file__` ab; keine fest codierten Windows-Pfade mehr.
+- 🗄️ **DB-Sync/Restore:** SQLite speichert Roh-State und JSON-Hash, importiert auch dynamische offene Punkte/Schritte und exportiert nur bei exaktem Objektnamen an den gespeicherten Pfad zurück. `check` vergleicht nun tatsächlich Datei- und DB-Hash.
+- 🧮 **Rechenkern/HTML:** Flache und verschachtelte JSON-Dateien sind kompatibel. Finanzierungsnebenkosten und geplante Sonderumlagen fließen in Gesamtinvestition, Darlehen und Rate ein.
+- 🔐 **Sichere Darstellung:** Importierte Texte und Portfolio-Metadaten werden nicht mehr ungefiltert als ausführbares HTML eingesetzt.
+- ✅ **Verifikation:** Lokaler Sync mit Arnsbach, Kerstenhausen und archiviertem Haarhausen; Python-/JavaScript-Syntax, Rechenwirkung, dynamische Listen, Restore und Konsistenzprüfung getestet.
+
 ---
 
 ## 🔧 Bekannte Eigenheiten / Wichtige Regeln
+
+- **Designstandard (25.09.):** Portfolio, aktive Objektübersichten und `_VORLAGE` verwenden das gemeinsame responsive Navy-/Petrol-Design aus `assets/dashboard.css`. Pflege über `tools/design_sync.py` und anschließende Portfolio-Generierung. Verbindliche Struktur und Abnahme: `DESIGN_GUIDE.md`. Archivierte Übersichten bleiben unverändert. Tabellen sind separat scrollbar; Styles werden für eigenständige HTML-Dateien eingebettet. Beim visuellen Test wurde zusätzlich ein blockierender Zugriff auf das nicht vorhandene `nkAnteile` in Kerstenhausen durch die äquivalente Prozentrechnung ersetzt.
 
 - **📐 Standard-Analyse-Struktur (21.09., verbindlich für NEUE Objekte):** genau 5 Dateien in `objekte/<Name>/analyse/` – `01_datenbasis.md` · `02_dokumentenpruefung.md` · `03_kalkulation.json` · `04_investmentbericht.md` · `05_mietempfehlung.md`. Muster = Haarhausen. `03_kalkulation.json` im Haarhausen-Schema (Metadaten adresse/objektart/baujahr/zimmer/stellplaetze im `objekt`-Block sind Pflicht – DB + Portfolio lesen sie daraus). ⚠️ Bestehende Dateien NICHT ändern (User-Wunsch 21.09.) – Kerstenhausen hat bewusst kein 05 + eigenes JSON-Schema, bleibt so
 - **NIEMALS `localStorage.clear()`** auf User-Daten (hat einmal User-State zerstört)

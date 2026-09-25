@@ -210,7 +210,9 @@ function calc(d) {
   r.notarGrB = d.preis * d.notar / 100;
   r.makler = d.preis * d.makler / 100;
   r.nebenkosten = r.grESt + r.notarGrB + r.makler + d.sonstige;
-  r.gesamtinvest = d.preis + r.nebenkosten + d.renovierung + d.sanierung;
+  r.sonderumlage = d.sonderumlage;
+  r.finanzierungsnebenkosten = d.finNk;
+  r.gesamtinvest = d.preis + r.nebenkosten + d.renovierung + d.sanierung + r.finanzierungsnebenkosten + r.sonderumlage;
   r.kpProM2 = d.flaeche > 0 ? d.preis / d.flaeche : 0;
   r.giProM2 = d.flaeche > 0 ? r.gesamtinvest / d.flaeche : 0;
 
@@ -238,7 +240,6 @@ function calc(d) {
   r.cashflowVorJahr = r.nettoMiete;
   r.cashflowNachJahr = r.cashflowNach * 12;
   r.ekRendite = d.ek > 0 ? r.cashflowNachJahr / d.ek * 100 : 0;
-  r.cashOnCash = d.ek > 0 ? (r.cashflowNachJahr + r.tilgungsanteilJahr) / d.ek * 100 : 0;
   // Tilgungsanteil = Rate − Zinsanteil (Vermögensaufbau)
   r.tilgungsanteilJahr = Math.max(0, r.rateMonat * 12 - r.zinsJahr);
   r.cashOnCash = d.ek > 0 ? (r.cashflowNachJahr + r.tilgungsanteilJahr) / d.ek * 100 : 0;
@@ -249,8 +250,8 @@ function calc(d) {
   // linear lösen: nettoMiete skaliert mit Preis (Kosten fix angenommen)
   const solvePrice = () => {
     if (jahresKalt <= 0) return 0;
-    const nkProPreis = r.nebenkosten / (d.preis || 1); // %-basierte NK je € Kaufpreis
-    const fixInvest = d.renovierung + d.sanierung + d.sonstige; // fixe Investkosten (skalieren nicht mit KP)
+    const nkProPreis = (r.grESt + r.notarGrB + r.makler) / (d.preis || 1); // nur %-basierte NK je € Kaufpreis
+    const fixInvest = d.renovierung + d.sanierung + d.sonstige + d.finNk + d.sonderumlage; // fixe Investkosten
     const ziel = d.zielCashflow;
     // CF(p) = nettoMiete/12 − (p*(1+nkProPreis) + fixInvest − ek)*zt − ziel = 0
     // Miete bleibt fix (skaliert NICHT mit dem Preis)
@@ -347,7 +348,7 @@ function calc(d) {
     gruende.push(`Weder Rendite (${pct(r.bruttoRendite)} < ${pct(d.zielBrutto)}) noch Cashflow (${eur(r.cashflowNach)}/Monat) erfüllen die Ziele.`);
   }
   if (d.rueckstaende > 0) gruende.push(`⚠️ Mietrückstände belegt: ${eur(d.rueckstaende)}.`);
-  if (r.sonderumlage > 0) gruende.push(`⚠️ Geplante Sonderumlage: ${eur(r.sonderumlage)} einpreisen.`);
+  if (d.sonderumlage > 0) gruende.push(`⚠️ Geplante Sonderumlage: ${eur(d.sonderumlage)} ist eingepreist.`);
   r.status = { status, klasse, gruende };
   return r;
 }
@@ -388,6 +389,8 @@ function render() {
     row(["Renovierung", { v: eur(d.renovierung), num: true }, "BELEGT/ANNAHME aus Unterlagen"]) +
     row(["Sanierung", { v: eur(d.sanierung), num: true }, "BELEGT/ANNAHME aus Unterlagen"]) +
     row(["Sonstige Erwerbskosten", { v: eur(d.sonstige), num: true }, "z. B. Gutachten, Umzug"]) +
+    row(["Finanzierungsnebenkosten", { v: eur(d.finNk), num: true }, "z. B. Bürgschaft, Konto"]) +
+    row(["Geplante Sonderumlagen", { v: eur(d.sonderumlage), num: true }, "WEG-Sonderumlagen"]) +
     row(["<b>Gesamtinvestition</b>", { v: "<b>" + eur(r.gesamtinvest) + "</b>", num: true }, "Summe aller Positionen"]) +
     row(["Gesamtinvestition / m²", { v: eur(r.giProM2), num: true }, d.flaeche > 0 ? `${fmt(d.flaeche, 1)} m²` : "—"]);
 
@@ -451,12 +454,57 @@ function collectState() {
   const ids = ["objName","flaeche","einheiten","preis","renovierung","sanierung","sonstige","grESt","notar","makler",
     "kaltmiete","marktmiete","hausgeld","hausgeldNichtUml","verwaltung","instand","leerstand","rueckstaende",
     "ek","zins","tilgung","bindung","finNk","ruecklage","sonderumlage","zielBrutto","zielCashflow"];
-  const s = { _tool: "immo-kalkulation", _version: 1 };
-  ids.forEach(id => s[id] = document.getElementById(id).value);
-  return s;
+  const raw = {};
+  ids.forEach(id => raw[id] = document.getElementById(id).value);
+  const d = readInputs();
+  return {
+    _tool: "immo-kalkulation", _version: 2, tool_state: raw,
+    objekt: { name: d.name, wohnflaeche_m2: d.flaeche, anzahl_einheiten: d.einheiten },
+    kauf: {
+      angebotspreis_eur: d.preis, grunderwerbsteuer_prozent: d.grESt,
+      notar_prozent: d.notar, grundbuch_prozent: 0, makler_prozent: d.makler,
+      renovierung_eur: d.renovierung, sanierung_eur: d.sanierung,
+      sonstige_erwerbskosten_eur: d.sonstige
+    },
+    miete: {
+      kaltmiete_monatlich_eur: d.kaltmiete, marktuebliche_miete_eur: d.marktmiete,
+      leerstand_wochen_pro_jahr: d.leerstandWochen, mietrueckstaende_eur: d.rueckstaende
+    },
+    laufende_kosten: {
+      hausgeld_monatlich_eur: d.hausgeld,
+      nicht_umlagefaehige_kosten_monatlich_eur: d.hausgeldNichtUml,
+      verwaltung_prozent_von_miete: d.verwaltung,
+      instandhaltung_eur_pro_m2_jahr: d.instand
+    },
+    finanzierung: {
+      eigenkapital_eur: d.ek, zinssatz_prozent: d.zins, tilgung_prozent: d.tilgung,
+      zinsbindung_jahre: d.bindung, finanzierungsnebenkosten_eur: d.finNk
+    },
+    weg: { instandhaltungsruecklage_eur: d.ruecklage, geplante_sonderumlagen_eur: d.sonderumlage },
+    annahmen: [], quellen: [], widersprueche: []
+  };
 }
 function applyState(s) {
-  Object.keys(s).forEach(k => { const el = document.getElementById(k); if (el) el.value = s[k]; });
+  let raw = s.tool_state || s;
+  if (!s.tool_state && s.kauf) {
+    raw = {
+      objName: s.objekt?.name, flaeche: s.objekt?.wohnflaeche_m2, einheiten: s.objekt?.anzahl_einheiten,
+      preis: s.kauf?.angebotspreis_eur, renovierung: s.kauf?.renovierung_eur,
+      sanierung: s.kauf?.sanierung_eur, sonstige: s.kauf?.sonstige_erwerbskosten_eur,
+      grESt: s.kauf?.grunderwerbsteuer_prozent, notar: s.kauf?.notar_prozent, makler: s.kauf?.makler_prozent,
+      kaltmiete: s.miete?.kaltmiete_monatlich_eur, marktmiete: s.miete?.marktuebliche_miete_eur,
+      leerstand: s.miete?.leerstand_wochen_pro_jahr, rueckstaende: s.miete?.mietrueckstaende_eur,
+      hausgeld: s.laufende_kosten?.hausgeld_monatlich_eur,
+      hausgeldNichtUml: s.laufende_kosten?.nicht_umlagefaehige_kosten_monatlich_eur,
+      verwaltung: s.laufende_kosten?.verwaltung_prozent_von_miete,
+      instand: s.laufende_kosten?.instandhaltung_eur_pro_m2_jahr,
+      ek: s.finanzierung?.eigenkapital_eur, zins: s.finanzierung?.zinssatz_prozent ?? s.finanzierung?.zins_prozent,
+      tilgung: s.finanzierung?.tilgung_prozent, bindung: s.finanzierung?.zinsbindung_jahre,
+      finNk: s.finanzierung?.finanzierungsnebenkosten_eur,
+      ruecklage: s.weg?.instandhaltungsruecklage_eur, sonderumlage: s.weg?.geplante_sonderumlagen_eur
+    };
+  }
+  Object.keys(raw).forEach(k => { const el = document.getElementById(k); if (el && raw[k] != null) el.value = raw[k]; });
   render();
 }
 function exportJson() {

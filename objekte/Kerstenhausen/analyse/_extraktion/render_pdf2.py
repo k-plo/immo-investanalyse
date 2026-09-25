@@ -3,8 +3,8 @@
 from pathlib import Path
 import fitz  # pymupdf
 
-BASE = Path(r"c:\Users\User\Meine Ablage\Immo\VS Code\Immo\objekte\Kerstenhausen\unterlagen")
-OUT = Path(r"c:\Users\User\Meine Ablage\Immo\VS Code\Immo\objekte\Kerstenhausen\analyse\_extraktion")
+BASE = Path(__file__).resolve().parents[2] / "unterlagen"
+OUT = Path(__file__).resolve().parent
 
 pdf = next(p for p in BASE.glob("*.pdf") if p.name.startswith("2a2b"))
 doc = fitz.open(str(pdf))

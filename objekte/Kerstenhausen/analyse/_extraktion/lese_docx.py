@@ -4,7 +4,7 @@ from pathlib import Path
 import zipfile
 import re
 
-p = Path(r"c:\Users\User\Meine Ablage\Immo\VS Code\Immo\objekte\Kerstenhausen\unterlagen\Beschreibung Ebay Kleinanzeigen.docx")
+p = Path(__file__).resolve().parents[2] / "unterlagen" / "Beschreibung Ebay Kleinanzeigen.docx"
 with zipfile.ZipFile(p) as z:
     xml = z.read("word/document.xml").decode("utf-8")
 # Absätze trennen

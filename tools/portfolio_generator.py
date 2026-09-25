@@ -7,10 +7,12 @@ Verwendung:
     python portfolio_generator.py
 """
 import sqlite3
+import html as html_lib
+import json
 from datetime import datetime
 from pathlib import Path
 
-BASE = Path(r"c:\Users\User\Meine Ablage\Immo\VS Code\Immo")
+BASE = Path(__file__).resolve().parent.parent
 DB_PATH = BASE / "immo_datenbank.db"
 OUT = BASE / "portfolio.html"
 
@@ -61,6 +63,8 @@ def objektDetails(objektart, grundstueck):
     return f"🏠 {objektart}" if objektart else ""
 
 def main():
+    dashboard_css = (BASE / "assets" / "dashboard.css").read_text(encoding="utf-8")
+    theme_js = (BASE / "assets" / "theme.js").read_text(encoding="utf-8")
     generated_iso = datetime.now().isoformat(timespec="seconds")
     generated_str = datetime.now().strftime("%d.%m.%Y %H:%M")
     conn = sqlite3.connect(DB_PATH)
@@ -84,20 +88,25 @@ def main():
         bg = RATING_BG.get(g, "#e8ecf3")
         meta = {}
         try:
-            import json
             meta_path = Path(o["json_pfad"]).parent / "analyse" / "03_kalkulation.json"
             if meta_path.exists():
                 meta = json.loads(meta_path.read_text(encoding="utf-8")).get("objekt", {})
         except (OSError, ValueError, TypeError):
             pass
         details = objektDetails(o["objektart"], meta.get("grundstuecksflaeche_m2"))
+        objektname = html_lib.escape(o["name"] or "")
+        objektart = html_lib.escape(o["objektart"] or "")
+        adresse = html_lib.escape(o["adresse"] or "")
+        details = html_lib.escape(details)
+        href = "objekte/" + (o["name"] or "") + "/" + (Path(o["html_pfad"]).name if o["html_pfad"] else "")
+        href_json = json.dumps(href, ensure_ascii=False)
         karten.append(f"""
-    <div class="karte" onclick="window.location.href=encodeURIComponent('objekte/{o['name']}/{Path(o['html_pfad']).name if o['html_pfad'] else ''}').replace(/%2F/g, '/')" style="cursor:pointer">
+    <div class="karte" onclick='window.location.href=encodeURIComponent({html_lib.escape(href_json, quote=True)}).replace(/%2F/g, "/")' style="cursor:pointer">
       <div class="karte-head">
-        <div class="karte-name">{o['name']}</div>
+        <div class="karte-name">{objektname}</div>
         <div class="rating-badge" style="background:{bg};color:{farbe}">{g}</div>
       </div>
-      <div class="karte-sub">{o['objektart'] or ''} · {o['adresse'] or ''}</div>
+      <div class="karte-sub">{objektart} · {adresse}</div>
       <div class="karte-details">
         <span>📐 {fmt(o['wohnflaeche'], 0)} m²</span>
         <span>📅 BJ {jahr(o['baujahr'])}</span>
@@ -156,6 +165,8 @@ def main():
   .karte-datum {{ font-size: 9px; color: #a5b1c4; margin-top: 6px; }}
   footer {{ margin-top: 24px; color: #7a879c; font-size: 10px; }}
 </style>
+<style>{dashboard_css}</style>
+<script data-dashboard-theme>{theme_js}</script>
 </head>
 <body>
 <div class="wrap">
@@ -203,6 +214,11 @@ function num(x) {{
   if (x === null || x === undefined || x === "") return null;
   const v = parseFloat(x);
   return isNaN(v) ? null : v;
+}}
+function escapeHtml(value) {{
+  return String(value ?? "").replace(/[&<>"']/g, c => ({{
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  }})[c]);
 }}
 function eurJs(v) {{
   if (v === null || v === undefined) return "–";
@@ -262,8 +278,7 @@ function noteDatenqualitaet(s) {{
   const felder = ["preis", "flaeche", "renovierung", "sanierung", "grESt", "notar",
     "makler", "kaltmiete", "hausgeld", "hausgeldNichtUml", "instand",
     "leerstand", "ek", "zins", "tilgung"];
-  const belegt = new Set(["preis", "flaeche", "grESt", "notar", "makler", "zins"]);
-  const gefuellt = felder.filter(f => (s[f] !== null && s[f] !== undefined && s[f] !== "" && s[f] !== "0") || belegt.has(f)).length;
+  const gefuellt = felder.filter(f => Object.prototype.hasOwnProperty.call(s, f) && s[f] !== null && s[f] !== undefined && s[f] !== "").length;
   let p = gefuellt / felder.length * 100;
   const offeneRot = Object.keys(s).filter(k => k.startsWith("p_op") && k.endsWith("t")
     && String(s[k]).includes("🔴") && !s[k.slice(0, -1)]).length;
@@ -318,18 +333,22 @@ function karteHtml(o) {{
   const zi = o.zimmer != null ? Math.round(o.zimmer) : "–";
   const wm = o.wohnflaeche != null ? Math.round(o.wohnflaeche) : "–";
   const href = encodeURIComponent('objekte/' + o.name + '/' + (o.htmlName || '')).replace(/%2F/g, '/');
+  const name = escapeHtml(o.name);
+  const objektart = escapeHtml(o.objektart);
+  const adresse = escapeHtml(o.adresse);
+  const details = escapeHtml(objektDetailsJs(o.objektart, o.grundstuecksflaeche));
   return `
     <div class="karte" onclick="window.location.href='${{href}}'" style="cursor:pointer">
       <div class="karte-head">
-        <div class="karte-name">${{o.name}}</div>
+        <div class="karte-name">${{name}}</div>
         <div class="rating-badge" style="background:${{bg}};color:${{farbe}}">${{o.g}}</div>
       </div>
-      <div class="karte-sub">${{o.objektart || ''}} · ${{o.adresse || ''}}</div>
+      <div class="karte-sub">${{objektart}} · ${{adresse}}</div>
       <div class="karte-details">
         <span>📐 ${{wm}} m²</span>
         <span>📅 BJ ${{jahrTxt}}</span>
         <span>🛏 ${{zi}} Zi.</span>
-        <span>${{objektDetailsJs(o.objektart, o.grundstuecksflaeche)}}</span>
+        <span>${{details}}</span>
       </div>
       <div class="karte-kpis">
         <div><span class="l">Kaufpreis</span><span class="v">${{eurJs(o.kaufpreis)}}</span><span class="s">${{eurProM2Js(o.kaufpreis, o.wohnflaeche)}} /m²</span></div>

@@ -3,8 +3,9 @@
 from pathlib import Path
 import pypdf
 
-BASE = Path(r"c:\Users\User\Meine Ablage\Immo\VS Code\Immo\objekte\Kerstenhausen\unterlagen")
-OUT = Path(r"c:\Users\User\Meine Ablage\Immo\VS Code\Immo\objekte\Kerstenhausen\analyse\_extraktion")
+OBJEKT = Path(__file__).resolve().parents[2]
+BASE = OBJEKT / "unterlagen"
+OUT = Path(__file__).resolve().parent
 
 for pdf in sorted(BASE.glob("*.pdf")):
     r = pypdf.PdfReader(str(pdf))
