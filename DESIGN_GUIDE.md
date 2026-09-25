@@ -47,7 +47,7 @@ nicht verschachteln. CSS-Änderungen nach diesen Befehlen sind reproduzierbar.
 
 - Portfolio: Titel und Datenstand → vorhandene Filter/Aktionen → Objektkarten → Hinweise.
 - Karte: Name/Rating → Adresse → Eckdaten → Kaufpreis/Gesamtinvest/Bruttorendite/Cashflow → Miete/Finanzierung.
-- Objekt: Titel/Metadaten → Anzeigenlink und Aktionen → Eingaben → Kennzahlen/Status → Analyseabschnitte 1–8 einschließlich monatlicher Einnahmen/Kosten → Chancen, Risiken, offene Punkte, nächste Schritte, Datenqualität, Nutzungshinweise (9–14).
+- Objekt: Titel/Metadaten → Anzeigenlink und Aktionen → Eingaben → Kennzahlen/Status → Analyseabschnitte 1–7 → Chancen, Risiken, offene Punkte, nächste Schritte, Datenqualität, Nutzungshinweise (8–13).
 - Keine erfundenen Charts, zusätzlichen Kennzahlen, ausgeblendeten Eingaben oder neuen Navigationskonzepte. Darstellung und Rechenmodell getrennt halten.
 
 ## Visuelle Regeln
