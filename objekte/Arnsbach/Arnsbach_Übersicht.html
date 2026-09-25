@@ -118,7 +118,7 @@
       <div class="field"><label class="tip" data-tip="makler">Makler (%)<span class="tipbox"></span></label><input id="makler" type="number" step="0.01"><span class="tag" contenteditable="true" data-persist="tag-makler">BELEGT · Exposé S. 5</span></div>
       <div class="field"><label class="tip" data-tip="sonstige">Sonstige Erwerbskosten (€)<span class="tipbox"></span></label><input id="sonstige" type="number" step="500"><span class="tag" contenteditable="true" data-persist="tag-sonstige">z. B. Gutachten</span></div>
       <div class="field"><label class="tip" data-tip="kaltmiete">Kaltmiete/Monat (€)<span class="tipbox"></span></label><input id="kaltmiete" type="number" step="10"><span class="tag" contenteditable="true" data-persist="tag-kaltmiete">UNBEKANNT · Orientierung 1.050 €</span></div>
-      <div class="field"><label class="tip" data-tip="hausgeld">Hausgeld / umlagefähige Betriebskosten/Monat (€)<span class="tipbox"></span></label><input id="hausgeld" type="number" step="10"><span class="tag" contenteditable="true" data-persist="tag-hausgeld">ANNAHME · Richtwert ca. 1,00 €/m²/Monat</span></div>
+      <div class="field"><label class="tip" data-tip="hausgeld">Hausgeld/Betriebskosten/Monat (€)<span class="tipbox"></span></label><input id="hausgeld" type="number" step="10"><span class="tag" contenteditable="true" data-persist="tag-hausgeld">ANNAHME · Richtwert ca. 1,00 €/m²/Monat</span></div>
       <div class="field"><label class="tip" data-tip="hausgeldNichtUml">davon nicht umlagefähig (€)<span class="tipbox"></span></label><input id="hausgeldNichtUml" type="number" step="5"><span class="tag" contenteditable="true" data-persist="tag-hausgeldNichtUml">UNBEKANNT · Rücklage fehlt</span></div>
       <div class="field"><label class="tip" data-tip="instand">Instandhaltung (€/m²/Jahr)<span class="tipbox"></span></label><input id="instand" type="number" step="0.5"><span class="tag" contenteditable="true" data-persist="tag-instand">BEWERTET: 18,62 €/m²/Jahr · Baujahr 1994</span></div>
       <div class="field"><label class="tip" data-tip="leerstand">Leerstand (Wochen/Jahr)<span class="tipbox"></span></label><input id="leerstand" type="number" step="0.5"><span class="tag" contenteditable="true" data-persist="tag-leerstand">NUTZER-VORGABE: 4 Wo.</span></div>
@@ -127,7 +127,6 @@
       <div class="field"><label class="tip" data-tip="tilgung">Tilgung (%)<span class="tipbox"></span></label><input id="tilgung" type="number" step="0.1"><span class="tag" contenteditable="true" data-persist="tag-tilgung">NUTZER-VORGABE: 2,0 %</span></div>
     </div>
     <div class="box yellow" style="margin-top:10px">
-      <b>💡 Hinweis zu Hausgeld / Betriebskosten:</b> Bei einem EFH kannst du hier umlagefähige Betriebskosten wie Grundsteuer, Gebäudeversicherung und Müllgebühren eintragen. Als grober Startwert gelten ca. <b>1,00 €/m² Wohnfläche pro Monat</b>. Bei einer ETW trägst du das gesamte Hausgeld und den davon nicht umlagefähigen Anteil ein. <b>0 bleibt 0</b>; eine Verwaltung wird nicht automatisch ergänzt.
     </div>
   </div>
 
@@ -277,7 +276,7 @@ const IDS = Object.keys(DEFAULTS);
 // Lesbare Namen für "ausstehend"-Meldungen
 const FELDLABEL = {
   renovierung: "Renovierung", sanierung: "Sanierung", kaltmiete: "Kaltmiete",
-  hausgeld: "Hausgeld / umlagefähige Betriebskosten", hausgeldNichtUml: "Hausgeld (nicht umlagefähig)",
+  hausgeld: "Hausgeld/Betriebskosten", hausgeldNichtUml: "Hausgeld (nicht umlagefähig)",
   instand: "Instandhaltung €/m²/Jahr", leerstand: "Leerstand", ek: "Eigenkapital",
   tilgung: "Tilgung", preis: "Kaufpreis", flaeche: "Wohnfläche",
   grESt: "Grunderwerbsteuer", notar: "Notar/Grundbuch", makler: "Makler", sonstige: "Sonstige Kosten", zins: "Zinssatz"
@@ -602,7 +601,7 @@ const TIPS = {
   makler: "Provision des Immobilienmaklers bei Kauf (hier 3,57 % inkl. MwSt., laut Exposé vom Käufer zu zahlen). In manchen Bundesländern teilt sich Käufer/Verkäufer.",
   sonstige: "Weitere Einmalkosten: Gutachten, Umzug, Möbel, Notgroschen-Polster. Meist klein, aber einplanen.",
   kaltmiete: "Die Miete OHNE Nebenkosten, die der Mieter monatlich zahlt. Basis für alle Rendite-Berechnungen. Aktuell eine Empfehlung (ABGELEITET aus Regionalvergleich) – nicht belegt!",
-  hausgeld: "Gesamtbetrag für Hausgeld bzw. umlagefähige Betriebskosten. Bei einem EFH z. B. Grundsteuer, Gebäudeversicherung und Müllgebühren. Richtwert als Startannahme: ca. 1,00 €/m² Wohnfläche pro Monat. 0 bleibt 0; Verwaltung wird nicht automatisch ergänzt.",
+  hausgeld: "Gesamtbetrag für Hausgeld/Betriebskosten. Bei einem EFH z. B. Grundsteuer, Gebäudeversicherung und Müllgebühren. Richtwert als Startannahme: ca. 1,00 €/m² Wohnfläche pro Monat. 0 bleibt 0; Verwaltung wird nicht automatisch ergänzt.",
   hausgeldNichtUml: "Der Teil des Hausgelds, den der Mieter NICHT übernehmen kann: Verwaltungskosten, Instandhaltungsrücklage. Das frisst deine Miete direkt – je höher, desto schlechter für den Cashflow.",
   instand: "Bewerteter Ansatz: 18,62 €/m²/Jahr. Richtwert für Gebäude ab 32 Jahren; bei Baujahr 1994 wird wegen Bestandsalter und möglichem Instandhaltungsbedarf konservativ gerechnet. Vergleich: 12 €/m²/Jahr Mindestansatz, 14,58 €/m² ab 22 Jahren, 18,62 €/m² ab 32 Jahren. Berechnung: Wohnfläche × Eingabe.",
   leerstand: "Zeit pro Jahr, in der die Wohnung leer steht (Umzüge, Mietersuche). Jede Woche kostet Miete – der Rechner zieht sie anteilig ab. Realistisch: 2–6 Wochen/Jahr.",
