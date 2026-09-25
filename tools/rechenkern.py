@@ -41,7 +41,7 @@ def default_data() -> dict:
             "hausgeld_monatlich_eur": 250.0,
             "nicht_umlagefaehige_kosten_monatlich_eur": 60.0,
             "verwaltung_prozent_von_miete": 0.0,   # bei ETW im Hausgeld
-            "instandhaltung_prozent_von_miete": 10.0,
+            "instandhaltung_eur_pro_m2_jahr": 10.0,
         },
         "finanzierung": {
             "eigenkapital_eur": 50000.0,
@@ -100,8 +100,8 @@ def berechne(d: dict) -> dict:
         fehlend.append("Hausgeld")
     if lk.get("nicht_umlagefaehige_kosten_monatlich_eur") is None:
         fehlend.append("Hausgeld (nicht umlagefähig)")
-    if lk.get("instandhaltung_prozent_von_miete") is None:
-        fehlend.append("Instandhaltung %")
+    if lk.get("instandhaltung_eur_pro_m2_jahr") is None:
+        fehlend.append("Instandhaltung €/m²/Jahr")
     if fin.get("eigenkapital_eur") is None:
         fehlend.append("Eigenkapital")
     if fin.get("tilgung_prozent") is None:
@@ -129,7 +129,7 @@ def berechne(d: dict) -> dict:
     r["hausgeld_umlagefaehig_jahr"] = max(0.0, hg - hg_nicht_uml) * 12.0  # trägt der Mieter
     r["hausgeld_nicht_uml_jahr"] = hg_nicht_uml * 12.0
     r["verwaltung_jahr"] = 0.0 if hg > 0 else jahres_kalt * lk["verwaltung_prozent_von_miete"] / 100.0
-    r["instandhaltung_jahr"] = jahres_kalt * lk["instandhaltung_prozent_von_miete"] / 100.0
+    r["instandhaltung_jahr"] = flaeche * lk["instandhaltung_eur_pro_m2_jahr"]
     r["netto_miete"] = (r["miete_effektiv"] - r["hausgeld_nicht_uml_jahr"]
                         - r["verwaltung_jahr"] - r["instandhaltung_jahr"])
 

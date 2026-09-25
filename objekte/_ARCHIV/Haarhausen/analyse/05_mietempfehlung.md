@@ -1,7 +1,7 @@
 # Mietempfehlung – Haarhausen, Borken (Objekt ES450)
 
 > **Stand: 17.09.2026** · Ergänzung zum Investmentbericht (`04_investmentbericht.md`)
-> **Nutzer-Vorgaben (verbindlich):** Instandhaltung 10 % der KM · Leerstand 4 Wochen/Jahr · Eigenkapital 20.000 € · Tilgung 2,0 %
+> **Nutzer-Vorgaben (verbindlich):** Instandhaltung 10 €/m²/Jahr · Leerstand 4 Wochen/Jahr · Eigenkapital 20.000 € · Tilgung 2,0 %
 > ⚠️ Die Miete selbst ist **nicht belegt** (Haus ist frei) – die Empfehlung stützt sich auf Regionalvergleichswerte (siehe Quellen).
 
 ---
@@ -57,7 +57,7 @@
 
 ### c) Rechnerische Tragfähigkeit (mit Nutzer-Vorgaben)
 
-**Eingaben:** KM 1.360 € · Instandhaltung 10 % · Leerstand 4 Wo. · EK 20.000 € · Tilgung 2,0 % · Zins 3,5 % · Reno 15.000 € · Sanierung 0 € (2023 saniert)
+**Eingaben:** KM 1.360 € · Instandhaltung 10 €/m²/Jahr · Leerstand 4 Wo. · EK 20.000 € · Tilgung 2,0 % · Zins 3,5 % · Reno 15.000 € · Sanierung 0 € (2023 saniert)
 
 | Kaltmiete | €/m² | Cashflow/M | Bruttorendite | Nettorendite | Maximalpreis (CF≥0) |
 |---|---|---|---|---|---|
@@ -65,7 +65,7 @@
 | **1.360 €** | **8,00** | **+135 €** | **8,63 %** | **6,85 %** | **215.405 €** |
 | 1.500 € | 8,82 | +325 € | 9,52 % | 7,66 % | 244.155 € |
 
-*(Annahmen: EK 20 T€, Zins 3,5 %, Tilgung 2,0 %, Reno 15 T€, Hausgeld 0 € → Verwaltung 3 %, Leerstand 4 Wo., Instandhaltung 10 %)*
+*(Annahmen: EK 20 T€, Zins 3,5 %, Tilgung 2,0 %, Reno 15 T€, Hausgeld 0 € → Verwaltung 3 %, Leerstand 4 Wo., Instandhaltung 10 €/m²/Jahr)*
 
 **Ergebnis bei 1.360 €/M:** CF +135 €/M · Maximalpreis 215.405 € → Angebot 189.000 € liegt **26.405 € darunter** ✅
 
@@ -95,7 +95,7 @@
 | Homeday-Nachbarorte 5,5–8,8 €/m² | – | BELEGT (extern) | Homeday-Preisatlas, 16.09.2026 |
 | **Empfohlene KM 1.360 €** | – | **ABGELEITET** (Regionalvergleich) | dieses Dokument |
 | Reno 15 T€, Sanierung 0 € | – | ANNAHME | Restarbeiten-Schätzung |
-| Instandhaltung 10 %, Leerstand 4 Wo., EK 20 T€, Tilgung 2 % | – | **NUTZER-VORGABE** | verbindlich |
+| Instandhaltung 10 €/m²/Jahr, Leerstand 4 Wo., EK 20 T€, Tilgung 2 % | – | **NUTZER-VORGABE** | verbindlich |
 | Elektroheizung: ~17.000 €/Jahr Heizstrom | – | ANNAHME (Orientierung) | 287 kWh × 170 m² × 0,35 € |
 
 **Verbleibende Unsicherheit (vor Vermietung klären):**

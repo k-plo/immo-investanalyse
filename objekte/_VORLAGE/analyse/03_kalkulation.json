@@ -35,7 +35,7 @@
   "laufende_kosten": {
     "hausgeld_monatlich_eur": null,
     "verwaltung_prozent_von_miete": null,
-    "instandhaltung_prozent_von_miete": null,
+    "instandhaltung_eur_pro_m2_jahr": null,
     "nicht_umlagefaehige_kosten_monatlich_eur": null
   },
   "finanzierung": {

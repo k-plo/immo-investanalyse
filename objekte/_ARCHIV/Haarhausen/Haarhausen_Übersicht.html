@@ -118,7 +118,7 @@
       <div class="field"><label class="tip" data-tip="kaltmiete">Kaltmiete/Monat (€)<span class="tipbox"></span></label><input id="kaltmiete" type="number" step="10"><span class="tag" contenteditable="true" data-persist="tag-kaltmiete">AUSSTEHEND · Haus frei</span></div>
       <div class="field"><label class="tip" data-tip="hausgeld">Hausgeld/Monat (€)<span class="tipbox"></span></label><input id="hausgeld" type="number" step="10"><span class="tag" contenteditable="true" data-persist="tag-hausgeld">kein WEG (EFH) → 0 = Verwaltung 3 %</span></div>
       <div class="field"><label class="tip" data-tip="hausgeldNichtUml">davon nicht umlagefähig (€)<span class="tipbox"></span></label><input id="hausgeldNichtUml" type="number" step="5"><span class="tag" contenteditable="true" data-persist="tag-hausgeldNichtUml">bei EFH: 0</span></div>
-      <div class="field"><label class="tip" data-tip="instand">Instandhaltung (% der KM)<span class="tipbox"></span></label><input id="instand" type="number" step="0.5"><span class="tag" contenteditable="true" data-persist="tag-instand">Rückstellung 8–15 %</span></div>
+      <div class="field"><label class="tip" data-tip="instand">Instandhaltung (€/m²/Jahr)<span class="tipbox"></span></label><input id="instand" type="number" step="0.5"><span class="tag" contenteditable="true" data-persist="tag-instand">NUTZER-VORGABE: 10 €/m²/Jahr</span></div>
       <div class="field"><label class="tip" data-tip="leerstand">Leerstand (Wochen/Jahr)<span class="tipbox"></span></label><input id="leerstand" type="number" step="0.5"><span class="tag" contenteditable="true" data-persist="tag-leerstand">AUSSTEHEND</span></div>
       <div class="field"><label class="tip" data-tip="ek">Eigenkapital (€)<span class="tipbox"></span></label><input id="ek" type="number" step="1000"><span class="tag" contenteditable="true" data-persist="tag-ek">AUSSTEHEND · deine Vorgabe</span></div>
       <div class="field"><label class="tip" data-tip="zins">Zinssatz (%)<span class="tipbox"></span></label><input id="zins" type="number" step="0.01"><span class="tag" contenteditable="true" data-persist="tag-zins">BELEGT · CHECK24 3,02–3,77 %</span></div>
@@ -279,7 +279,7 @@ const IDS = Object.keys(DEFAULTS);
 const FELDLABEL = {
   renovierung: "Renovierung", sanierung: "Sanierung", kaltmiete: "Kaltmiete",
   hausgeld: "Hausgeld", hausgeldNichtUml: "Hausgeld (nicht umlagefähig)",
-  instand: "Instandhaltung %", leerstand: "Leerstand", ek: "Eigenkapital",
+  instand: "Instandhaltung €/m²/Jahr", leerstand: "Leerstand", ek: "Eigenkapital",
   tilgung: "Tilgung", preis: "Kaufpreis", flaeche: "Wohnfläche",
   grESt: "Grunderwerbsteuer", notar: "Notar/Grundbuch", makler: "Makler", sonstige: "Sonstige Kosten", zins: "Zinssatz"
 };
@@ -323,7 +323,7 @@ function calc(d) {
   r.mieteEffektiv = jahresKalt * lf;
   r.hgNichtUmlJahr = d.hausgeldNichtUml * 12;
   r.verwaltungJahr = d.hausgeld > 0 ? 0 : jahresKalt * 0.03;
-  r.instandJahr = jahresKalt * d.instand / 100;
+  r.instandJahr = d.flaeche * d.instand;
   r.netto = r.mieteEffektiv - r.hgNichtUmlJahr - r.verwaltungJahr - r.instandJahr;
   r.cfVor = r.netto / 12;
 
@@ -588,7 +588,7 @@ const TIPS = {
   kaltmiete: "Die Miete OHNE Nebenkosten, die der Mieter monatlich zahlt. Basis für alle Rendite-Berechnungen. Aktuell eine Empfehlung (ABGELEITET aus Regionalvergleich) – nicht belegt!",
   hausgeld: "Monatliche Zahlung an die WEG (Verwaltung, Rücklage, gemeinsame Kosten) bei Eigentumswohnungen. Ein Teil ist umlagefähig (Mieter zahlt), ein Teil nicht (du zahlst). ⚠️ WICHTIG: Wenn du hier 0 einträgst, rechnet das Tool automatisch eine Verwaltungspauschale von 3 % der Kaltmiete (Annahme: kein WEG, Selbstverwaltung). Bei einem WEG-Objekt trage das echte Hausgeld ein!",
   hausgeldNichtUml: "Der Teil des Hausgelds, den der Mieter NICHT übernehmen kann: Verwaltungskosten, Instandhaltungsrücklage. Das frisst deine Miete direkt – je höher, desto schlechter für den Cashflow.",
-  instand: "Jährliche Rückstellung für Reparaturen (Dach, Heizung, Maler …). Faustregel: 8–15 % der Kaltmiete pro Jahr. Wird vom Cashflow abgezogen, damit dich unvorhergesehene Reparaturen nicht überraschen.",
+  instand: "Jährliche Rückstellung für Reparaturen (Dach, Heizung, Maler …). Berechnung: Wohnfläche × Eingabe in €/m²/Jahr. Als Startwert sind 10 €/m²/Jahr hinterlegt; der Betrag wird vom Cashflow abgezogen.",
   leerstand: "Zeit pro Jahr, in der die Wohnung leer steht (Umzüge, Mietersuche). Jede Woche kostet Miete – der Rechner zieht sie anteilig ab. Realistisch: 2–6 Wochen/Jahr.",
   ek: "Eigenkapital = dein eigenes Geld, das du einbringst. Mehr EK = kleinere Rate, aber weniger Rendite auf dein Geld. Weniger EK = größere Rate, höheres Risiko. Empfehlung hier: 58.000 € (Break-Even bei Zins 3,77 %).",
   zins: "Der jährliche Zinssatz des Darlehens. Aktuelles Marktniveau (CHECK24, 16.09.2026): 3,02–3,77 % bei 10 Jahren Festzinsbindung. Bei hohem Beleihungsauslauf verlangen Banken mehr.",

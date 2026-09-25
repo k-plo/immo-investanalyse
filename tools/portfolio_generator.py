@@ -285,12 +285,12 @@ function berechneRatingJs(s, risiken) {{
   const lf = 1 - wert("leerstand") / 52;
   const hg = wert("hausgeldNichtUml");
   const hgTotal = wert("hausgeld");
-  const inst = wert("instand") / 100;
+  const instJahr = wert("flaeche") * wert("instand");
   let cfNach = null, coc = null, gesamtinvest = null;
   if (preis > 0 && wert("flaeche") > 0) {{
     const nk = wert("grESt") + wert("notar") + wert("makler");
     const fix = wert("renovierung") + wert("sanierung") + wert("sonstige");
-    const nettoJahr = km * 12 * lf - hg * 12 - (hgTotal > 0 ? 0 : km * 12 * 0.03) - km * 12 * inst;
+    const nettoJahr = km * 12 * lf - hg * 12 - (hgTotal > 0 ? 0 : km * 12 * 0.03) - instJahr;
     const cfVor = nettoJahr / 12;
     const gesamt = preis * (1 + nk / 100) + fix;
     const darlehen = Math.max(0, gesamt - ek);

@@ -46,9 +46,9 @@
   "laufende_kosten": {
     "hausgeld_monatlich_eur": 0.0,
     "verwaltung_prozent_von_miete": 0.0,
-    "instandhaltung_prozent_von_miete": 10.0,
+    "instandhaltung_eur_pro_m2_jahr": 10.0,
     "nicht_umlagefaehige_kosten_monatlich_eur": 0.0,
-    "status": "EFH ohne WEG: Hausgeld 0 (Tool rechnet 3 % Verwaltungspauschale); Instandhaltung 10 % = NUTZER-VORGABE",
+    "status": "EFH ohne WEG: Hausgeld 0 (Tool rechnet 3 % Verwaltungspauschale); Instandhaltung 10 EUR/m²/Jahr = NUTZER-VORGABE",
     "heizstrom_schaetzung": {
       "verbrauch_kwh_jahr": 48790.0,
       "berechnung": "287 kWh/(m2*a) × 170 m2",

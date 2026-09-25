@@ -93,7 +93,7 @@
         <div class="field"><label>Hausgeld ges./Monat (€)</label><input id="hausgeld" type="number" placeholder="250"><span class="hint">bei ETW; 0 falls nicht zutreffend</span></div>
         <div class="field"><label>davon nicht umlagefähig (€)</label><input id="hausgeldNichtUml" type="number" placeholder="60"><span class="hint">z. B. Verwaltung, Rücklage</span></div>
         <div class="field"><label>Verwaltung (% der KM)</label><input id="verwaltung" type="number" step="0.1" placeholder="3"><span class="hint">bei ETW meist im Hausgeld</span></div>
-        <div class="field"><label>Instandhaltung (% der KM)</label><input id="instand" type="number" step="0.1" placeholder="10"><span class="hint">Rückstellung, z. B. 8–15 %</span></div>
+        <div class="field"><label>Instandhaltung (€/m²/Jahr)</label><input id="instand" type="number" step="0.1" placeholder="10"><span class="hint">Wohnfläche × Eingabe; Startwert 10 €/m²/Jahr</span></div>
         <div class="field"><label>Leerstand (Wochen/Jahr)</label><input id="leerstand" type="number" step="0.5" placeholder="0"><span class="hint">0 = voll vermietet (belegt)</span></div>
         <div class="field"><label>Mietrückstände (€)</label><input id="rueckstaende" type="number" placeholder="0"></div>
       </div>
@@ -221,7 +221,7 @@ function calc(d) {
   r.hausgeldUml = Math.max(0, d.hausgeld - d.hausgeldNichtUml) * 12; // umlagefähig: vom Mieter getragen
   r.hausgeldNichtUmlJahr = d.hausgeldNichtUml * 12;
   r.verwaltungJahr = d.hausgeld > 0 ? 0 : jahresKalt * d.verwaltung / 100; // bei ETW im Hausgeld enthalten
-  r.instandJahr = jahresKalt * d.instand / 100;
+  r.instandJahr = d.flaeche * d.instand;
   r.nettoMiete = r.mieteEffektiv - r.hausgeldNichtUmlJahr - r.verwaltungJahr - r.instandJahr;
 
   // --- Renditen ---

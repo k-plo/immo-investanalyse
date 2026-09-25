@@ -207,11 +207,11 @@ def berechne_rating(state: dict, risiken: list) -> dict:
         ek, tilg, zins = werte["ek"], werte["tilgung"], werte["zins"]
         lf = 1 - werte["leerstand"] / 52
         hg = werte["hausgeldNichtUml"]
-        inst = werte["instand"] / 100
+        inst_jahr = werte["flaeche"] * werte["instand"]
         hg_total = werte["hausgeld"]
         nk_proz = werte["grESt"] + werte["notar"] + werte["makler"]
         fix = werte["renovierung"] + werte["sanierung"] + werte["sonstige"]
-        netto_jahr = km * 12 * lf - hg * 12 - (0 if hg_total > 0 else km * 12 * 0.03) - km * 12 * inst
+        netto_jahr = km * 12 * lf - hg * 12 - (0 if hg_total > 0 else km * 12 * 0.03) - inst_jahr
         cf_vor = netto_jahr / 12
         gesamt = preis * (1 + nk_proz / 100) + fix
         darlehen = max(0, gesamt - ek)
