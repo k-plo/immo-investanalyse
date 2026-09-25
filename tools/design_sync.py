@@ -26,10 +26,16 @@ def main():
         else:
             source = source.replace("</head>", block + "\n</head>", 1)
         # Only static markup, never the JavaScript that populates these tables.
-        markup, script = source.split("<script>", 1)
-        if 'class="table-scroll"' not in markup:
-            markup = re.sub(r"<table\b[^>]*>.*?</table>", lambda m: '<div class="table-scroll" tabindex="0" role="region" aria-label="Analysetabelle – horizontal scrollbar">' + m[0] + '</div>', markup, flags=re.S)
-        path.write_text(markup + "<script>" + script, encoding="utf-8")
+        head, body = source.split("</head>", 1)
+        markup, script = body.split("<script>", 1)
+        def wrap_table(match):
+            # Existing tables may already be wrapped; new sections still need a wrapper.
+            previous_tag = markup[markup.rfind("<", 0, match.start()):match.start()]
+            if re.fullmatch(r'<div\s+class="table-scroll"[^>]*>\s*', previous_tag):
+                return match[0]
+            return '<div class="table-scroll" tabindex="0" role="region" aria-label="Analysetabelle – horizontal scrollbar">' + match[0] + '</div>'
+        markup = re.sub(r"<table\b[^>]*>.*?</table>", wrap_table, markup, flags=re.S)
+        path.write_text(head + "</head>" + markup + "<script>" + script, encoding="utf-8")
         print(path.relative_to(BASE))
 
 if __name__ == "__main__":
