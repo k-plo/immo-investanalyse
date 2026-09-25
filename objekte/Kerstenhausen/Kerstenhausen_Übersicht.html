@@ -461,7 +461,8 @@ function render() {
       row(["Kaltmiete", { v: "+" + eur(d.kaltmiete), num: true }, "Einnahme"]) +
       row(["Leerstand (4 Wochen/Jahr)", { v: "−" + eur(leerstandMonat), num: true }, "rechnerischer Jahresanteil"]) +
       row(["Effektive Mieteinnahmen", { v: eur(r.mieteEffektiv / 12), num: true }, "nach Leerstand"]) +
-      row(["Hausgeld/Betriebskosten gesamt", { v: "−" + eur(hausgeldGesamtMonat), num: true }, "umlagefähiger Anteil: " + eur(hausgeldUmlMonat)]) +
+      row(["Umlagefähige Betriebskosten-Erstattung", { v: "+" + eur(hausgeldUmlMonat), num: true }, "durch Mieter getragen; kein Eigentümerkostenanteil"]) +
+      row(["Hausgeld/Betriebskosten gesamt", { v: "−" + eur(hausgeldGesamtMonat), num: true }, "inkl. umlagefähigem und nicht umlagefähigem Anteil"]) +
       row(["davon nicht umlagefähig", { v: "−" + eur(hausgeldNichtUmlMonat), num: true }, "vom Eigentümer zu tragen"]) +
       row(["Verwaltung", { v: "−" + eur(r.verwaltungJahr / 12), num: true }, "separater Ansatz"]) +
       row(["Instandhaltung", { v: "−" + eur(r.instandJahr / 12), num: true }, fmt(d.instand, 2) + " €/m²/Jahr"]) +
