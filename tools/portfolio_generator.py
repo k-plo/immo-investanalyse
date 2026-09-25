@@ -290,7 +290,7 @@ function berechneRatingJs(s, risiken) {{
   if (preis > 0 && wert("flaeche") > 0) {{
     const nk = wert("grESt") + wert("notar") + wert("makler");
     const fix = wert("renovierung") + wert("sanierung") + wert("sonstige");
-    const nettoJahr = km * 12 * lf - hg * 12 - (hgTotal > 0 ? 0 : km * 12 * 0.03) - instJahr;
+    const nettoJahr = km * 12 * lf - hg * 12 - instJahr;
     const cfVor = nettoJahr / 12;
     const gesamt = preis * (1 + nk / 100) + fix;
     const darlehen = Math.max(0, gesamt - ek);

@@ -128,7 +128,7 @@ def berechne(d: dict) -> dict:
     hg_nicht_uml = lk["nicht_umlagefaehige_kosten_monatlich_eur"]
     r["hausgeld_umlagefaehig_jahr"] = max(0.0, hg - hg_nicht_uml) * 12.0  # trägt der Mieter
     r["hausgeld_nicht_uml_jahr"] = hg_nicht_uml * 12.0
-    r["verwaltung_jahr"] = 0.0 if hg > 0 else jahres_kalt * lk["verwaltung_prozent_von_miete"] / 100.0
+    r["verwaltung_jahr"] = jahres_kalt * lk["verwaltung_prozent_von_miete"] / 100.0
     r["instandhaltung_jahr"] = flaeche * lk["instandhaltung_eur_pro_m2_jahr"]
     r["netto_miete"] = (r["miete_effektiv"] - r["hausgeld_nicht_uml_jahr"]
                         - r["verwaltung_jahr"] - r["instandhaltung_jahr"])

@@ -7,8 +7,8 @@
 
 ## 🕐 Letzter Stand
 
-**Datum:** 24.09.2026
-**Letzte Aktion:** Externe Objektanzeige reduziert: In Vorlage, Übersichten und Archivkopie gibt es nur noch das editierbare URL-Feld mit direkt folgendem Öffnen-Button; das Quellenfeld wurde entfernt und die Abstände symmetrisch gesetzt.
+**Datum:** 25.09.2026
+**Letzte Aktion:** Hausgeldfeld fachlich zu „Hausgeld / umlagefähige Betriebskosten“ erweitert. Umlagefähige Betriebskosten können nun auch bei EFH erfasst werden; `0` bleibt `0`, die automatische 3-%-Verwaltungspauschale wurde aus Übersichten, Rechenkern, Portfolio und DB-Rating entfernt. Richtwert: ca. 1,00 €/m²/Monat als markierte Annahme.
 
 ---
 
