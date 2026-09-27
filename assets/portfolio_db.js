@@ -22,6 +22,7 @@
   function card(item) {
     const rating = item.gesamt_rating || '?';
     const preliminary = ['quellenpruefung_offen','abruf_blockiert'].includes(item.analysis_status);
+    const hideDerived = item.analysis_status === 'abruf_blockiert';
     const file = (item.html_pfad || '').split('/').pop();
     const href = 'objekte/' + encodeURIComponent(item.name) + '/' + encodeURIComponent(file);
     const rentPerArea = item.kaltmiete != null && item.wohnflaeche
@@ -33,8 +34,8 @@
       <div class="karte-sub">${esc(item.objektart)} · ${esc(item.adresse)}<br><small>Objekt-ID: ${esc(item.public_id)}</small></div>
       <div class="karte-details"><span>📐 ${item.wohnflaeche == null ? '–' : Math.round(item.wohnflaeche)} m²</span><span>📅 BJ ${item.baujahr == null ? '–' : Math.round(item.baujahr)}</span><span>🛏 ${item.zimmer == null ? '–' : Math.round(item.zimmer)} Zi.</span><span>${esc(detail(item))}</span></div>
       <div class="karte-kpis"><div><span class="l">Kaufpreis</span><span class="v">${eur(item.kaufpreis)}</span><span class="s">${perM2(item.kaufpreis,item.wohnflaeche)} /m²</span></div>
-      <div><span class="l">Gesamtinvest</span><span class="v">${preliminary ? '–' : eur(item.gesamtinvest)}</span><span class="s">${preliminary ? 'Unterlagen offen' : perM2(item.gesamtinvest,item.wohnflaeche) + ' /m²'}</span></div>
-      <div><span class="l">BruttoR</span><span class="v">${preliminary ? '–' : pct(item.brutto_rendite)}</span></div><div><span class="l">CF/M</span><span class="v">${preliminary ? '–' : eur(item.cf_nach)}</span></div></div>
+      <div><span class="l">Gesamtinvest</span><span class="v">${hideDerived ? '–' : eur(item.gesamtinvest)}</span><span class="s">${hideDerived ? 'Unterlagen offen' : perM2(item.gesamtinvest,item.wohnflaeche) + ' /m²'}</span></div>
+      <div><span class="l">BruttoR</span><span class="v">${hideDerived ? '–' : pct(item.brutto_rendite)}</span></div><div><span class="l">CF/M</span><span class="v">${hideDerived ? '–' : eur(item.cf_nach)}</span></div></div>
       <div class="karte-fin"><div><span class="l">Miete/Monat</span><span class="v">${eur(item.kaltmiete)}</span><span class="s">${rentPerArea}</span></div>
       <div><span class="l">Finanzierung</span><span class="v">${eur(item.ek)} EK · ${pct(item.zins)} · ${pct(item.tilgung)} Tilg.</span></div></div></a>`;
   }

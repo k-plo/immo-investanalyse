@@ -140,6 +140,9 @@ h2{font-size:16px;line-height:1.6;letter-spacing:-.015em;text-transform:none;col
 h2 .edit-hint{display:block;margin-top:6px}
 .external-link{gap:10px;background:#f6f9fa;border-color:var(--line);border-radius:12px;padding:12px}
 .external-link input{min-width:0;flex:1 1 240px;min-height:44px;font-size:14px;padding:10px 12px;border-radius:8px;border-color:var(--line);background:#fff}
+[data-theme="dark"] .input-group{background:#14232e;border-color:var(--line)}
+[data-theme="dark"] .field input,[data-theme="dark"] .external-link input{background:#1b333e;color:var(--ink);border-color:#365261}
+[data-theme="dark"] .field input:focus,[data-theme="dark"] .external-link input:focus{background:#23404a;border-color:var(--accent)}
 .print-btn{position:static;display:block;margin:0 max(0px,calc((100% - 1240px)/2)) 20px auto;box-shadow:none}
 .kpis{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:24px}
 .kpi{padding:20px;border:0;border-radius:14px;background:#eef5f5;min-width:0}
@@ -253,6 +256,6 @@ li{margin-bottom:8px}
     ⚠️ Modellrechnungen – keine rechtliche, steuerliche oder finanzielle Beratung. 🔄 <b>Aktualisieren</b> liest aktuelle Werte direkt aus der Datenbank.
   </footer>
 </div>
-<script src="assets/portfolio_db.js"></script>
+<script src="assets/portfolio_db.js?v=3"></script>
 </body>
 </html>
