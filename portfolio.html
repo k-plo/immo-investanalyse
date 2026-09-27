@@ -175,6 +175,11 @@ li{margin-bottom:8px}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;scroll-behavior:auto!important}.karte:hover{transform:none}}
 @media print{body{background:#fff;padding:0;font-size:10px}.wrap{max-width:none}.wrap::before{display:none}.card{border:0;border-radius:0;box-shadow:none;padding:10px 0}.card:first-child{border-top:0}.print-btn,.toolbar,.saved-note,.edit-hint,.filter{display:none!important}.inputs,.kpis{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.field input{min-height:0;padding:0;border:0;background:none;font-size:11px}.field label{min-height:0;font-size:9px}.kpi{padding:8px}.kpi .v{font-size:17px}.table-scroll{overflow:visible;border:0}.table-scroll table{min-width:0;font-size:10px}th,td{padding:5px}.box{padding:10px}h2{margin-top:20px;font-size:13px}.tipbox{display:none!important}.grid{grid-template-columns:1fr 1fr}.karte{break-inside:avoid}.karte::after{display:none}}
 </style>
+<style>
+  .appearance-controls.has-brand { position: absolute; top: 78px; right: max(14px, calc((100vw - 1240px) / 2)); flex-direction: row-reverse; align-items: center; gap: 12px; margin: 0; }
+  .appearance-controls.has-brand .portfolio-brand { width: 220px; height: 100px; }
+  @media (max-width: 760px) { .appearance-controls.has-brand { top: 54px; right: 14px; } .appearance-controls.has-brand .portfolio-brand { width: 150px; height: 82px; } }
+</style>
 <script data-dashboard-theme>/* Presentation only: separate key, no access to property state or sync. */
 (() => {
   const key = 'immo-dashboard-theme';
@@ -229,7 +234,7 @@ li{margin-bottom:8px}
 <body>
 <img class="portfolio-brand" src="assets/kp-immobilien-logo.png" alt="KP Immobilien" width="164" height="109">
 <div class="wrap">
-  <h1>🏠 Immobilien-Portfolio</h1>
+  <h1>Immobilien-Portfolio</h1>
   <div class="sub" id="stand">Übersicht aller analysierten Objekte · Quelle: immo_datenbank.db · Live-Werte werden geladen</div>
 
   <div class="filter">

@@ -14,7 +14,7 @@ Die folgenden Einträge dokumentieren frühere Stände und sind nicht als aktuel
 ## 🕐 Vorheriger Stand
 
 **Datum:** 27.09.2026
-**Letzte Aktion:** Neues Objekt `objekt-4c4d374f` aus Immowelt-Exposé angelegt, analysiert, in DB/Portfolio synchronisiert und mit DB-, JSON- und JavaScript-Prüfungen validiert.
+**Letzte Aktion:** Neues Objekt `Vermietete Dachgeschosswohnung Treysa` aus Immowelt-Exposé angelegt, analysiert, in DB/Portfolio synchronisiert und mit DB-, JSON- und JavaScript-Prüfungen validiert.
 
 ---
 
@@ -26,7 +26,7 @@ Die folgenden Einträge dokumentieren frühere Stände und sind nicht als aktuel
 | **Kerstenhausen** | `objekte/Kerstenhausen/` | ✅ Analysiert, Übersicht aktiv | **C (56)** | KP 152.100 € · BruttoR 7,89 % · CF −53 €/M · KM 1.000 € · 🔴 Grundbuch/Miete weiterhin zu klären |
 | **Arnsbach** | `objekte/Arnsbach/` | 🟡 Analysiert, Übersicht aktiv | **D (47)** | KP 159.000 € · BruttoR 7,92 % · CF −188 €/M · Grundbuch- und WEG-Risiken offen |
 | **Schwalmstadt-Treysa Amselweg** | `objekte/Schwalmstadt-Treysa_Amselweg/` | ⚪ Erstprüfung, Übersicht aktiv | **B (78)** | KP 179.000 € · BruttoR 4,32 % · Ist-Miete 645 €/M · WEG-, Miet- und Finanzierungsunterlagen offen |
-| **Vermietete Dachgeschosswohnung Treysa** | `objekte/objekt-4c4d374f/` | ⚪ Erstprüfung, Übersicht aktiv | **?** | KP 159.000 € · 75,44 m² · Ist-Miete 750 €/M · Mietniveau, WEG, Grundbuch und Finanzierung offen |
+| **Vermietete Dachgeschosswohnung Treysa** | `objekte/Vermietete Dachgeschosswohnung Treysa/` | ⚪ Erstprüfung, Übersicht aktiv | **?** | KP 159.000 € · 75,44 m² · Ist-Miete 750 €/M · Mietniveau, WEG, Grundbuch und Finanzierung offen |
 | _VORLAGE | `objekte/_VORLAGE/` | Vorlage für neue Objekte | – | Übersicht + Analyse-MDs generisch |
 
 ---
@@ -83,7 +83,7 @@ Die folgenden Einträge dokumentieren frühere Stände und sind nicht als aktuel
 
 ### Neues Objekt Vermietete Dachgeschosswohnung Treysa (27.09.)
 - Immowelt-Exposé erfasst: 3-Zimmer-Dachgeschosswohnung in Treysa, 75,44 m², Baujahr 1995, Energieklasse D, Kaufpreis 159.000 €, Ist-Kaltmiete 750 €/M, Balkon/Keller/Gäste-WC.
-- Neue Objektstruktur `objekte/objekt-4c4d374f/` mit Übersicht, SQLite-State, fünf Analyse-Dateien und Unterlagen-README angelegt.
+- Neue Objektstruktur `objekte/Vermietete Dachgeschosswohnung Treysa/` mit Übersicht, SQLite-State, fünf Analyse-Dateien und Unterlagen-README angelegt.
 - Mietrecherche: Immowelt weist für Wohnungen in Schwalmstadt 6,96 €/m² aus (aktualisiert 01.09.2026); Ist-Miete liegt bei 9,94 €/m² und muss mit Mietvertrag verifiziert werden.
 - Zinsstartwert 4,20 % für 10 Jahre aus Interhyp-Konditionsspanne 4,08–4,49 % (14.–20.09.2026) eingetragen; kein individuelles Bankangebot.
 - Erststatus ⚪ **ZU WENIG DATEN**: Mietvertrag, Hausgeldaufteilung, WEG-Unterlagen, Grundbuch, genaue Adresse und Bankangebot fehlen.

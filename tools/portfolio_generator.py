@@ -56,12 +56,17 @@ def main():
   footer {{ margin-top: 24px; color: #7a879c; font-size: 10px; }}
 </style>
 <style>{dashboard_css}</style>
+<style>
+  .appearance-controls.has-brand {{ position: absolute; top: 78px; right: max(14px, calc((100vw - 1240px) / 2)); flex-direction: row-reverse; align-items: center; gap: 12px; margin: 0; }}
+  .appearance-controls.has-brand .portfolio-brand {{ width: 220px; height: 100px; }}
+  @media (max-width: 760px) {{ .appearance-controls.has-brand {{ top: 54px; right: 14px; }} .appearance-controls.has-brand .portfolio-brand {{ width: 150px; height: 82px; }} }}
+</style>
 <script data-dashboard-theme>{theme_js}</script>
 </head>
 <body>
 <img class="portfolio-brand" src="assets/kp-immobilien-logo.png" alt="KP Immobilien" width="164" height="109">
 <div class="wrap">
-  <h1>🏠 Immobilien-Portfolio</h1>
+  <h1>Immobilien-Portfolio</h1>
   <div class="sub" id="stand">Übersicht aller analysierten Objekte · Quelle: immo_datenbank.db · Live-Werte werden geladen</div>
 
   <div class="filter">
