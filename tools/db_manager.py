@@ -320,7 +320,7 @@ def import_json(path: str) -> None:
                      kaltmiete, hausgeld, nebenkostenVorauszahlung, hausgeldNichtUml, instand, leerstand, ek, zins, tilgung,
                      gesamtinvest, brutto_rendite, netto_rendite, cf_vor, cf_nach, rate, coc,
                      darlehen, ltv, break_even_miete, max_preis, spielraum, geaendert_am)
-                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
                  (obj_id, f(state.get("preis")), f(state.get("flaeche")), f(state.get("renovierung")),
                   f(state.get("sanierung")), f(state.get("grESt")), f(state.get("notar")),
                   f(state.get("makler")), f(state.get("sonstige")), f(state.get("kaltmiete")),

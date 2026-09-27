@@ -7,8 +7,8 @@
 
 ## 🕐 Letzter Stand
 
-**Datum:** 25.09.2026
-**Letzte Aktion:** Besichtigungsunterlage für Arnsbach erstellt: druckfreundliche HTML-Checkliste und 3-seitige PDF mit priorisierten Fragen zu Grundbuch, WEG, Genehmigungen, Technik, Sanierung und Vermietbarkeit.
+**Datum:** 27.09.2026
+**Letzte Aktion:** Neues Objekt Schwalmstadt-Treysa Amselweg aus Immowelt-Exposé angelegt, analysiert, in DB/Portfolio synchronisiert und über den lokalen Webdienst geprüft.
 
 ---
 
@@ -19,6 +19,7 @@
 | **Haarhausen** | `objekte/_ARCHIV/Haarhausen/` | 🗄️ Analysiert, archiviert | **C (61)** | Aus aktivem Portfolio ausgeblendet; State und Analyse bleiben erhalten |
 | **Kerstenhausen** | `objekte/Kerstenhausen/` | ✅ Analysiert, Übersicht aktiv | **C (56)** | KP 152.100 € · BruttoR 7,89 % · CF −53 €/M · KM 1.000 € · 🔴 Grundbuch/Miete weiterhin zu klären |
 | **Arnsbach** | `objekte/Arnsbach/` | 🟡 Analysiert, Übersicht aktiv | **D (47)** | KP 159.000 € · BruttoR 7,92 % · CF −188 €/M · Grundbuch- und WEG-Risiken offen |
+| **Schwalmstadt-Treysa Amselweg** | `objekte/Schwalmstadt-Treysa_Amselweg/` | ⚪ Erstprüfung, Übersicht aktiv | **B (78)** | KP 179.000 € · BruttoR 4,32 % · Ist-Miete 645 €/M · WEG-, Miet- und Finanzierungsunterlagen offen |
 | _VORLAGE | `objekte/_VORLAGE/` | Vorlage für neue Objekte | – | Übersicht + Analyse-MDs generisch |
 
 ---
@@ -66,6 +67,13 @@
 - ↩️ **Reaktivieren (24.09.)**: Übersichten im `_ARCHIV`-Pfad schalten denselben Button automatisch auf „Reaktivieren“. Der vollständige Ordner wird nach Prüfung eines freien aktiven Pfads zurückverschoben; der Archivordner wird erst nach erfolgreichem Kopieren entfernt.
 - 🧮 **Einheitliche Portfolio-Rechnung (23.09.)**: `db_manager.py`, der Live-Rechner in `portfolio.html` und die Objektübersicht verwenden dieselben Formeln. Nach Nutzerentscheidung werden leere Eingabefelder in allen drei Rechenpfaden als 0 behandelt; Arnsbach und die Vorlage schreiben Änderungen zusätzlich automatisch in den State-JSON.
 
+### Neues Objekt Schwalmstadt-Treysa Amselweg (27.09.)
+- Immowelt-Exposé erfasst: vermietete 4-Zimmer-Dachgeschosswohnung, 88 m², Baujahr 1995, Energieklasse C, Kaufpreis 179.000 €, Ist-Kaltmiete 645 €/M, Hausgeld 35 €/M.
+- Vollständige neue Objektstruktur angelegt: Übersicht, State-JSON, Analyse-Dateien 01–05 und Quellenablage unter `unterlagen/01_expose_immowelt.txt`.
+- Mietrecherche: Immowelt weist für Wohnungen in Schwalmstadt 6,96 €/m² aus (Stand 01.09.2026), rechnerisch ca. 612 €/M; Ist-Miete liegt bei 7,33 €/m².
+- Erststatus ⚪ **ZU WENIG DATEN**: Grundbuch, Teilungserklärung, WEG-Abrechnungen, Mietvertrag und frisches Bankangebot fehlen.
+- `db_manager.py`: fehlender SQL-Platzhalter im Kalkulations-Insert ergänzt; Sync importiert nun alle vier aktiven State-Dateien und regeneriert `portfolio.html`.
+
 ### Lokale Stabilisierung (25.09.)
 - 🛠️ **Plattformunabhängige Pfade:** Python-Tools und Extraktionshelfer leiten den Projektordner aus `__file__` ab; keine fest codierten Windows-Pfade mehr.
 - 🗄️ **DB-Sync/Restore:** SQLite speichert Roh-State und JSON-Hash, importiert auch dynamische offene Punkte/Schritte und exportiert nur bei exaktem Objektnamen an den gespeicherten Pfad zurück. `check` vergleicht nun tatsächlich Datei- und DB-Hash.
@@ -97,6 +105,7 @@
 
 - [ ] **Gombeth:** 🔴 gültigen Kaufpreis bestätigen (109.000 € vs. 134.000 €) · 🔴 zwei Versicherungsfälle und Kostenfolgen klären · 🔴 Mietvertrag/Mietkonto prüfen · 🔴 WEG-Unterlagen, Hausgeld und Rücklage anfordern · 🟠 Grundbuch/Teilungserklärung prüfen · 🟡 Besichtigung nach ca. 10.10.2026
 - [ ] **Kerstenhausen:** 🔴 Grundbuchauszug anfordern · 🔴 Miet-/Nutzungssituation + Einliegerwohnung klären · 🟠 Besichtigung (Renovierungsumfang, Öl-Tank) · 🟠 Baujahr/Wohnfläche-Widersprüche klären · 🟡 Bankgespräch mit frischen Zinsen (Live-Recherche 18.09. deutet auf > 4,5 %)
+- [ ] **Schwalmstadt-Treysa Amselweg:** 🔴 Mietvertrag/Nebenkosten und WEG-Unterlagen anfordern · 🔴 Grundbuch/Teilungserklärung prüfen · 🔴 Bankangebot mit aktuellem Zins einholen · 🟡 Besichtigung und Balkon-/Heizungsunterlagen prüfen
 - [x] Ordnerverbindung in den Übersichten zeigt beim manuellen Verbinden Erfolg oder Sync-Fehler an.
 
 **❌ Verworfen (nicht wieder vorschlagen):**
