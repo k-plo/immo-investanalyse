@@ -29,6 +29,11 @@
     controls.append(button);
     const print = document.querySelector('body > .print-btn');
     if (print) controls.append(print);
+    const brand = document.querySelector('body > .portfolio-brand');
+    if (brand) {
+      controls.classList.add('has-brand');
+      controls.append(brand);
+    }
     document.body.prepend(controls);
     apply(document.documentElement.dataset.theme);
   });

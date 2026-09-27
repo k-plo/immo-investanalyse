@@ -59,6 +59,7 @@ def main():
 <script data-dashboard-theme>{theme_js}</script>
 </head>
 <body>
+<img class="portfolio-brand" src="assets/kp-immobilien-logo.png" alt="KP Immobilien" width="164" height="109">
 <div class="wrap">
   <h1>🏠 Immobilien-Portfolio</h1>
   <div class="sub" id="stand">Übersicht aller analysierten Objekte · Quelle: immo_datenbank.db · Live-Werte werden geladen</div>
