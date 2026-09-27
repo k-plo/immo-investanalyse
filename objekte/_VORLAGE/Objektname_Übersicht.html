@@ -34,6 +34,13 @@
   .box.yellow { border-left: 3px solid #b9770e; background: #fdfaf2; }
   .box.green { border-left: 3px solid #1a7f4b; background: #f3faf6; }
   .box.blue { border-left: 3px solid #1a4fa0; background: #f4f8fd; }
+  #tblErwerb th:nth-child(1), #tblErwerb td:nth-child(1) { width: 38%; }
+  #tblErwerb th:nth-child(2), #tblErwerb td:nth-child(2), #tblErwerb th:nth-child(3), #tblErwerb td:nth-child(3) { width: 16%; }
+  #tblErwerb th:nth-child(4), #tblErwerb td:nth-child(4) { width: 8%; }
+  #tblErwerb th:nth-child(5), #tblErwerb td:nth-child(5) { width: 22%; }
+  #tblCashflow th:nth-child(1), #tblCashflow td:nth-child(1) { width: 28%; }
+  #tblCashflow th:nth-child(2), #tblCashflow td:nth-child(2), #tblCashflow th:nth-child(3), #tblCashflow td:nth-child(3), #tblCashflow th:nth-child(5), #tblCashflow td:nth-child(5), #tblCashflow th:nth-child(6), #tblCashflow td:nth-child(6) { width: 16%; }
+  #tblCashflow th:nth-child(4), #tblCashflow td:nth-child(4) { width: 8%; }
   .small { font-size: 10px; color: #5a6a85; }
   .status-big { font-size: 17px; font-weight: 800; margin: 4px 0; }
   ul { margin: 4px 0 4px 18px; }
@@ -619,7 +626,7 @@ li{margin-bottom:8px}
     <div class="sub" id="objectIdLabel">Objekt-ID wird geladen …</div>
     <figure class="object-hero" id="objectHero" hidden><img id="objectPhoto" alt="Foto der Immobilie"><figcaption>Objektfoto aus der Anzeigenquelle</figcaption></figure>
     <div class="box yellow" id="preliminaryNotice" hidden>Voranalyse aus einer Online-Anzeige: Angaben sind ungeprüft. Mietdaten, Unterlagen, Zustand und Rechtslage fehlen noch; daraus abgeleitete Kennzahlen sind keine belastbare Investmententscheidung.</div>
-    <div class="sub">Kalkulationstool + Entscheidungsübersicht · Objektart · Adresse · Wohnfläche · Baujahr · Energie</div>
+    <div class="sub">Objektart · Adresse · Wohnfläche · Baujahr · Energie</div>
     <div class="external-link"><input id="externeUrl" type="url" data-persist="externeUrl" placeholder="https://..." aria-label="URL der Objektanzeige"><button id="externeLinkBtn" type="button" onclick="oeffneExterneObjektseite()" disabled>🔗 Öffnen</button></div>
 
     <div class="toolbar">
@@ -668,7 +675,7 @@ li{margin-bottom:8px}
     <div class="table-scroll" tabindex="0" role="region" aria-label="Analysetabelle – horizontal scrollbar"><table id="tblZins"></table></div>
 
     <h2>5 · Sanierungs-Sensitivität</h2>
-    <div class="box yellow">
+    <div class="box">
       <b>Sensitivität:</b> Jedes ±10.000 € Sanierungskosten verschiebt den Maximalpreis um ≈ ±13.000 €.
       <div class="table-scroll" tabindex="0" role="region" aria-label="Analysetabelle – horizontal scrollbar"><table id="tblSens" style="margin-top:5px"></table></div>
     </div>
@@ -987,6 +994,8 @@ function row(cells, isHead = false) {
 function render() {
   const d = readInputs();
   const r = calc(d);
+  const d10 = r.berechenbar ? { ...d, preis: d.preis * 0.9 } : null;
+  const r10 = d10 ? calc(d10) : null;
   const AUSSTEHEND = '<span class="badge b-gray">⚠️ ausstehend</span>';
 
   // KPIs: bei fehlenden Werten "–" statt erfundener Zahlen
@@ -1012,37 +1021,37 @@ function render() {
   // Erwerbsrechnung: fehlende Werte als "ausstehend" zeigen
   const w = v => v === null ? AUSSTEHEND : eur(v);
   document.getElementById("tblErwerb").innerHTML =
-    row([{ v: "Position", num: false }, { v: "Wert", num: true }, { v: "Status / Quelle", num: false }], true) +
-    row(["Kaufpreis (Angebot)", { v: eur(d.preis), num: true }, "BELEGT · Quelle eintragen"]) +
-    row(["Grunderwerbsteuer", { v: eur(r.nkAnteile?.grESt), num: true }, pct(d.grESt) + " · ANNAHME (Hessen)"]) +
-    row(["Notar + Grundbuch", { v: eur(r.nkAnteile?.notar), num: true }, pct(d.notar) + " · ANNAHME"]) +
-    row(["Maklerprovision", { v: eur(r.nkAnteile?.makler), num: true }, pct(d.makler) + " · BELEGT Satz"]) +
-    row(["Renovierung", { v: w(d.renovierung), num: true }, d.renovierung === null ? "FEHLT – bitte eingeben" : "ANNAHME ⚠️"]) +
-    row(["Sanierung", { v: w(d.sanierung), num: true }, d.sanierung === null ? "FEHLT – bitte eingeben" : "ANNAHME ⚠️"]) +
-    row(["Sonstige Erwerbskosten", { v: eur(d.sonstige), num: true }, "–"]) +
-    row(["<b>Gesamtinvestition</b>", { v: r.berechenbar ? "<b>" + eur(r.gesamt) + "</b>" : AUSSTEHEND, num: true }, "ABGELEITET"]) +
-    row(["Eigenkapital", { v: eur(d.ek), num: true }, "NUTZER-VORGABE"]) +
-    row(["<b>Darlehensbetrag</b>", { v: r.berechenbar ? "<b>" + eur(r.darlehen) + "</b>" : AUSSTEHEND, num: true }, "Gesamtinvestition − Eigenkapital"]) +
-    row(["Gesamtinvestition / m²", { v: r.berechenbar ? eur(r.giProM2) : AUSSTEHEND, num: true }, d.flaeche > 0 ? fmt(d.flaeche, 1) + " m²" : "—"]);
+    row([{ v: "Position", num: false }, { v: "Aktuell", num: true }, { v: "Kaufpreis −10 %", num: true }, { v: "", num: false }, { v: "Status / Quelle", num: false }], true) +
+    row(["Kaufpreis (Angebot)", { v: eur(d.preis), num: true }, { v: eur(d10?.preis), num: true }, "", "BELEGT · Quelle eintragen"]) +
+    row(["Grunderwerbsteuer", { v: eur(r.nkAnteile?.grESt), num: true }, { v: eur(r10?.nkAnteile?.grESt), num: true }, "", pct(d.grESt) + " · ANNAHME (Hessen)"]) +
+    row(["Notar + Grundbuch", { v: eur(r.nkAnteile?.notar), num: true }, { v: eur(r10?.nkAnteile?.notar), num: true }, "", pct(d.notar) + " · ANNAHME"]) +
+    row(["Maklerprovision", { v: eur(r.nkAnteile?.makler), num: true }, { v: eur(r10?.nkAnteile?.makler), num: true }, "", pct(d.makler) + " · BELEGT Satz"]) +
+    row(["Renovierung", { v: w(d.renovierung), num: true }, { v: w(d.renovierung), num: true }, "", d.renovierung === null ? "FEHLT – bitte eingeben" : "ANNAHME ⚠️"]) +
+    row(["Sanierung", { v: w(d.sanierung), num: true }, { v: w(d.sanierung), num: true }, "", d.sanierung === null ? "FEHLT – bitte eingeben" : "ANNAHME ⚠️"]) +
+    row(["Sonstige Erwerbskosten", { v: eur(d.sonstige), num: true }, { v: eur(d.sonstige), num: true }, "", "–"]) +
+    row(["<b>Gesamtinvestition</b>", { v: r.berechenbar ? "<b>" + eur(r.gesamt) + "</b>" : AUSSTEHEND, num: true }, { v: r10 ? "<b>" + eur(r10.gesamt) + "</b>" : AUSSTEHEND, num: true }, "", "ABGELEITET"]) +
+    row(["Eigenkapital", { v: eur(d.ek), num: true }, { v: eur(d.ek), num: true }, "", "NUTZER-VORGABE"]) +
+    row(["<b>Darlehensbetrag</b>", { v: r.berechenbar ? "<b>" + eur(r.darlehen) + "</b>" : AUSSTEHEND, num: true }, { v: r10 ? "<b>" + eur(r10.darlehen) + "</b>" : AUSSTEHEND, num: true }, "", "Gesamtinvestition − Eigenkapital"]) +
+    row(["Gesamtinvestition / m²", { v: r.berechenbar ? eur(r.giProM2) : AUSSTEHEND, num: true }, { v: r10 ? eur(r10.giProM2) : AUSSTEHEND, num: true }, "", d.flaeche > 0 ? fmt(d.flaeche, 1) + " m²" : "—"]);
 
   const cash = value => value < 0 ? "−" + eur(Math.abs(value)) : eur(value);
   document.getElementById("tblCashflow").innerHTML = r.berechenbar
-    ? row([{ v: "Position", num: false }, { v: "Monatlich", num: true }, { v: "Jährlich", num: true }], true) +
-      row(["Kaltmiete", { v: eur(d.kaltmiete), num: true }, { v: eur(d.kaltmiete * 12), num: true }]) +
-      row(["Leerstand " + pct(d.leerstand), { v: "−" + eur(d.kaltmiete - r.mieteEffektiv / 12), num: true }, { v: "−" + eur(d.kaltmiete * 12 - r.mieteEffektiv), num: true }]) +
-      row(["<b>Effektive Mieteinnahmen</b>", { v: "<b>" + eur(r.mieteEffektiv / 12) + "</b>", num: true }, { v: "<b>" + eur(r.mieteEffektiv) + "</b>", num: true }]) +
-      row(["Nicht umlagefähiges Hausgeld inkl. Verwaltung", { v: "−" + eur(r.hgNichtUmlJahr / 12), num: true }, { v: "−" + eur(r.hgNichtUmlJahr), num: true }]) +
-      row(["Instandhaltung", { v: "−" + eur(r.instandJahr / 12), num: true }, { v: "−" + eur(r.instandJahr), num: true }]) +
-      row(["<b>Cashflow vor Finanzierung</b>", { v: "<b>" + eur(r.cfVor) + "</b>", num: true }, { v: "<b>" + eur(r.cfVor * 12) + "</b>", num: true }]) +
-      row(["Zinsanteil " + pct(d.zins), { v: "−" + eur(r.zinsJahr / 12), num: true }, { v: "−" + eur(r.zinsJahr), num: true }]) +
-      row(["Tilgungsanteil " + pct(d.tilgung), { v: "−" + eur(r.tilgJahr / 12), num: true }, { v: "−" + eur(r.tilgJahr), num: true }]) +
-      row(["<b>Kreditrate gesamt</b>", { v: "<b>−" + eur(r.rate) + "</b>", num: true }, { v: "<b>−" + eur(r.rate * 12) + "</b>", num: true }]) +
-      row(["<b>Cashflow nach Finanzierung</b>", { v: `<b class="${cls(r.cf)}">${cash(r.cf)}</b>`, num: true }, { v: `<b class="${cls(r.cf)}">${cash(r.cf * 12)}</b>`, num: true }])
-    : row([{ v: "Position", num: false }, { v: "Monatlich", num: true }, { v: "Jährlich", num: true }], true) +
-      row(["Berechnung ausstehend", { v: AUSSTEHEND, num: true }, { v: AUSSTEHEND, num: true }]);
+    ? row([{ v: "Position", num: false }, { v: "Aktuell / Monat", num: true }, { v: "−10 % / Monat", num: true }, { v: "", num: false }, { v: "Aktuell / Jahr", num: true }, { v: "−10 % / Jahr", num: true }], true) +
+      row(["Kaltmiete", { v: eur(d.kaltmiete), num: true }, { v: eur(d.kaltmiete), num: true }, "", { v: eur(d.kaltmiete * 12), num: true }, { v: eur(d.kaltmiete * 12), num: true }]) +
+      row(["Leerstand " + pct(d.leerstand), { v: "−" + eur(d.kaltmiete - r.mieteEffektiv / 12), num: true }, { v: "−" + eur(d.kaltmiete - r10.mieteEffektiv / 12), num: true }, "", { v: "−" + eur(d.kaltmiete * 12 - r.mieteEffektiv), num: true }, { v: "−" + eur(d.kaltmiete * 12 - r10.mieteEffektiv), num: true }]) +
+      row(["<b>Effektive Mieteinnahmen</b>", { v: "<b>" + eur(r.mieteEffektiv / 12) + "</b>", num: true }, { v: "<b>" + eur(r10.mieteEffektiv / 12) + "</b>", num: true }, "", { v: "<b>" + eur(r.mieteEffektiv) + "</b>", num: true }, { v: "<b>" + eur(r10.mieteEffektiv) + "</b>", num: true }]) +
+      row(["Nicht umlagefähiges Hausgeld inkl. Verwaltung", { v: "−" + eur(r.hgNichtUmlJahr / 12), num: true }, { v: "−" + eur(r10.hgNichtUmlJahr / 12), num: true }, "", { v: "−" + eur(r.hgNichtUmlJahr), num: true }, { v: "−" + eur(r10.hgNichtUmlJahr), num: true }]) +
+      row(["Instandhaltung", { v: "−" + eur(r.instandJahr / 12), num: true }, { v: "−" + eur(r10.instandJahr / 12), num: true }, "", { v: "−" + eur(r.instandJahr), num: true }, { v: "−" + eur(r10.instandJahr), num: true }]) +
+      row(["<b>Cashflow vor Finanzierung</b>", { v: "<b>" + eur(r.cfVor) + "</b>", num: true }, { v: "<b>" + eur(r10.cfVor) + "</b>", num: true }, "", { v: "<b>" + eur(r.cfVor * 12) + "</b>", num: true }, { v: "<b>" + eur(r10.cfVor * 12) + "</b>", num: true }]) +
+      row(["Zinsanteil " + pct(d.zins), { v: "−" + eur(r.zinsJahr / 12), num: true }, { v: "−" + eur(r10.zinsJahr / 12), num: true }, "", { v: "−" + eur(r.zinsJahr), num: true }, { v: "−" + eur(r10.zinsJahr), num: true }]) +
+      row(["Tilgungsanteil " + pct(d.tilgung), { v: "−" + eur(r.tilgJahr / 12), num: true }, { v: "−" + eur(r10.tilgJahr / 12), num: true }, "", { v: "−" + eur(r.tilgJahr), num: true }, { v: "−" + eur(r10.tilgJahr), num: true }]) +
+      row(["<b>Kreditrate gesamt</b>", { v: "<b>−" + eur(r.rate) + "</b>", num: true }, { v: "<b>−" + eur(r10.rate) + "</b>", num: true }, "", { v: "<b>−" + eur(r.rate * 12) + "</b>", num: true }, { v: "<b>−" + eur(r10.rate * 12) + "</b>", num: true }]) +
+      row(["<b>Cashflow nach Finanzierung</b>", { v: `<b class="${cls(r.cf)}">${cash(r.cf)}</b>`, num: true }, { v: `<b class="${cls(r10.cf)}">${cash(r10.cf)}</b>`, num: true }, "", { v: `<b class="${cls(r.cf)}">${cash(r.cf * 12)}</b>`, num: true }, { v: `<b class="${cls(r10.cf)}">${cash(r10.cf * 12)}</b>`, num: true }])
+    : row([{ v: "Position", num: false }, { v: "Aktuell / Monat", num: true }, { v: "−10 % / Monat", num: true }, { v: "", num: false }, { v: "Aktuell / Jahr", num: true }, { v: "−10 % / Jahr", num: true }], true) +
+      row(["Berechnung ausstehend", { v: AUSSTEHEND, num: true }, { v: AUSSTEHEND, num: true }, "", { v: AUSSTEHEND, num: true }, { v: AUSSTEHEND, num: true }]);
 
   document.getElementById("tblWirt").innerHTML = r.berechenbar
-    ? row([{ v: tip("Kennzahl", "status"), num: false }, { v: "Wert", num: true }], true) +
+    ? row([{ v: "Kennzahl", num: false }, { v: "Wert", num: true }], true) +
       row([tip("Bruttorendite", "bruttoR"), { v: pct(r.bruttoR), num: true }]) +
       row([tip("Nettorendite", "nettoR"), { v: pct(r.nettoR), num: true }]) +
       row([tip("EK-Rendite (Cash-on-Cash, inkl. Tilgung)", "coc"), { v: pct(r.coc), num: true }]) +
@@ -1055,16 +1064,16 @@ function render() {
       row(["Fehlende Eingaben", { v: d.fehlend.map(f => FELDLABEL[f] || f).join(", "), num: false }]);
 
   document.getElementById("tblZins").innerHTML = r.berechenbar
-    ? row([{ v: "Zinssatz", num: false }, { v: "Rate/Monat", num: true }, { v: "Cashflow/Monat", num: true }, { v: tip("Maximalpreis", "maxPreis"), num: true }, { v: "Bewertung", num: false }], true) +
-      r.zinsSzenarien.map(szenario => {
-        const { zins: z, label: lbl, rate, cf, maxPreis: p } = szenario;
-        const badge = cf > 20 ? '<span class="badge b-green">komfortabel</span>' : cf >= 0 ? '<span class="badge b-yellow">Break-Even</span>' : cf > -100 ? '<span class="badge b-orange">Zuzahlung</span>' : '<span class="badge b-red">kritisch</span>';
-        return row([z.toFixed(2).replace(".", ",") + " % · " + lbl, { v: eur(rate), num: true }, { v: `<span class="${cls(cf)}">${eur(cf)}</span>`, num: true }, { v: eur(p), num: true }, { v: badge, num: false }]);
-      }).join("")
-    : row([{ v: "Zinssatz", num: false }, { v: "Rate/Monat", num: true }, { v: "Cashflow/Monat", num: true }, { v: tip("Maximalpreis", "maxPreis"), num: true }, { v: "Bewertung", num: false }], true) +
-      row(["Berechnung ausstehend", { v: AUSSTEHEND, num: true }, { v: AUSSTEHEND, num: true }, { v: AUSSTEHEND, num: true }, { v: "", num: false }]);
-
-  document.getElementById("tblSens").innerHTML = r.berechenbar
+    ? row([{ v: "Kennzahl", num: false }, { v: "Aktuell", num: true }, { v: "Kaufpreis −10 %", num: true }], true) +
+      row([tip("Bruttorendite", "bruttoR"), { v: pct(r.bruttoR), num: true }, { v: pct(r10.bruttoR), num: true }]) +
+      row([tip("Nettorendite", "nettoR"), { v: pct(r.nettoR), num: true }, { v: pct(r10.nettoR), num: true }]) +
+      row([tip("EK-Rendite (Cash-on-Cash, inkl. Tilgung)", "coc"), { v: pct(r.coc), num: true }, { v: pct(r10.coc), num: true }]) +
+      row([tip("Darlehen (Beleihungsauslauf " + pct(r.ltv) + " des KP)", "darlehen"), { v: eur(r.darlehen), num: true }, { v: eur(r10.darlehen), num: true }]) +
+      row([tip("Break-Even-Miete (CF = 0)", "breakEvenMiete"), { v: eur(r.breakEvenMiete) + "/M", num: true }, { v: eur(r10.breakEvenMiete) + "/M", num: true }]) +
+      row([tip("Maximaler Kaufpreis", "maxPreis"), { v: eur(r.maxPreis), num: true }, { v: eur(r10.maxPreis), num: true }]) +
+      row([tip("Verhandlungsspielraum", "spielraum"), { v: `<span class="${cls(r.spielraum)}">${eur(r.spielraum)}</span>`, num: true }, { v: `<span class="${cls(r10.spielraum)}">${eur(r10.spielraum)}</span>`, num: true }])
+    : row([{ v: "Kennzahl", num: false }, { v: "Aktuell", num: true }, { v: "Kaufpreis −10 %", num: true }], true) +
+      row(["Berechnung ausstehend", { v: AUSSTEHEND, num: true }, { v: AUSSTEHEND, num: true }]) +
     ? row([{ v: "Sanierungskosten ges.", num: false }, { v: "Gesamtinvest", num: true }, { v: "Rate (EK " + eur(d.ek) + ", " + pct(d.zins) + ")", num: true }, { v: "Cashflow/M", num: true }, { v: tip("Maximalpreis", "maxPreis"), num: true }], true) +
       r.sens.map(([s, g, rate, cf, p], i) => {
         const bold = i === 1;
