@@ -684,7 +684,7 @@ function applyState(s) {
     else if (el.matches("input, textarea, select")) el.value = s[k];
     else el.textContent = s[k];
   });
-  if (s._risiken) renderRisiken(s._risiken);
+  renderRisiken(Array.isArray(s._risiken) ? s._risiken : []);
   aktualisiereExterneLink();
   render();
 }
