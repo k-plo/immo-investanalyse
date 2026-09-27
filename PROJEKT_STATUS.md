@@ -14,7 +14,7 @@ Die folgenden Einträge dokumentieren frühere Stände und sind nicht als aktuel
 ## 🕐 Vorheriger Stand
 
 **Datum:** 27.09.2026
-**Letzte Aktion:** Neues Objekt Schwalmstadt-Treysa Amselweg aus Immowelt-Exposé angelegt, analysiert, in DB/Portfolio synchronisiert und über den lokalen Webdienst geprüft.
+**Letzte Aktion:** Neues Objekt `objekt-4c4d374f` aus Immowelt-Exposé angelegt, analysiert, in DB/Portfolio synchronisiert und mit DB-, JSON- und JavaScript-Prüfungen validiert.
 
 ---
 
@@ -26,6 +26,7 @@ Die folgenden Einträge dokumentieren frühere Stände und sind nicht als aktuel
 | **Kerstenhausen** | `objekte/Kerstenhausen/` | ✅ Analysiert, Übersicht aktiv | **C (56)** | KP 152.100 € · BruttoR 7,89 % · CF −53 €/M · KM 1.000 € · 🔴 Grundbuch/Miete weiterhin zu klären |
 | **Arnsbach** | `objekte/Arnsbach/` | 🟡 Analysiert, Übersicht aktiv | **D (47)** | KP 159.000 € · BruttoR 7,92 % · CF −188 €/M · Grundbuch- und WEG-Risiken offen |
 | **Schwalmstadt-Treysa Amselweg** | `objekte/Schwalmstadt-Treysa_Amselweg/` | ⚪ Erstprüfung, Übersicht aktiv | **B (78)** | KP 179.000 € · BruttoR 4,32 % · Ist-Miete 645 €/M · WEG-, Miet- und Finanzierungsunterlagen offen |
+| **Vermietete Dachgeschosswohnung Treysa** | `objekte/objekt-4c4d374f/` | ⚪ Erstprüfung, Übersicht aktiv | **?** | KP 159.000 € · 75,44 m² · Ist-Miete 750 €/M · Mietniveau, WEG, Grundbuch und Finanzierung offen |
 | _VORLAGE | `objekte/_VORLAGE/` | Vorlage für neue Objekte | – | Übersicht + Analyse-MDs generisch |
 
 ---
@@ -47,7 +48,7 @@ Die folgenden Einträge dokumentieren frühere Stände und sind nicht als aktuel
 - Auto-Sync: State-JSON in den Objektordner per File System Access API (Handle in IndexedDB `immo-fs-handles`/`immo-root`)
 - Tooltips (TIPS-Objekt), Risiko-Tabelle editierbar, localStorage-Autosave, Reset/Export
 - ✏️ **Editierbare Erklärungs-Tags** (18.09.): die 16 `.tag`-Spans unter den Eingabefeldern sind `contenteditable` + `data-persist="tag-<feld>"` → Quellen/Notizen direkt editierbar, ohne Hervorhebung; Persistenz über das data-persist-Muster (localStorage + State-JSON + DB-Sync)
-- 🧹 **Vorlage komplett blanko** (18.09.): alle Haarhausen-Reste aus `objekte/_VORLAGE/Objektname_Übersicht.html` entfernt (Elektroheizung-Box, dq-Zeilen mit ES450/697 m²/BJ 1900/Heizstrom, CHECK24-/58.000 €-/893 €-Bezüge, Exposé-Seitenangaben) → generische Platzhalter „Quelle eintragen"; nur die NUTZER-VORGABEN bleiben als Defaults (grESt 6, notar 2, instand 10, leerstand 4, ek 20000, tilgung 2)
+- 🧹 **Vorlage komplett blanko** (18.09., aktualisiert 27.09.): alle Haarhausen-Reste aus `objekte/_VORLAGE/Objektname_Übersicht.html` entfernt; generische Platzhalter „Quelle eintragen". Defaults: grESt 6, notar 2, Hausgeld 35 EUR bei fehlender Angabe, Leerstand 2 %, EK 20.000 EUR, Tilgung 1,0 %.
 
 ### Portfolio & DB (17.09.)
 - `immo_datenbank.db` (SQLite) + `portfolio.html` (generiert) + `tools/db_manager.py`
@@ -80,6 +81,13 @@ Die folgenden Einträge dokumentieren frühere Stände und sind nicht als aktuel
 - Erststatus ⚪ **ZU WENIG DATEN**: Grundbuch, Teilungserklärung, WEG-Abrechnungen, Mietvertrag und frisches Bankangebot fehlen.
 - `db_manager.py`: fehlender SQL-Platzhalter im Kalkulations-Insert ergänzt; Sync importiert nun alle vier aktiven State-Dateien und regeneriert `portfolio.html`.
 
+### Neues Objekt Vermietete Dachgeschosswohnung Treysa (27.09.)
+- Immowelt-Exposé erfasst: 3-Zimmer-Dachgeschosswohnung in Treysa, 75,44 m², Baujahr 1995, Energieklasse D, Kaufpreis 159.000 €, Ist-Kaltmiete 750 €/M, Balkon/Keller/Gäste-WC.
+- Neue Objektstruktur `objekte/objekt-4c4d374f/` mit Übersicht, SQLite-State, fünf Analyse-Dateien und Unterlagen-README angelegt.
+- Mietrecherche: Immowelt weist für Wohnungen in Schwalmstadt 6,96 €/m² aus (aktualisiert 01.09.2026); Ist-Miete liegt bei 9,94 €/m² und muss mit Mietvertrag verifiziert werden.
+- Zinsstartwert 4,20 % für 10 Jahre aus Interhyp-Konditionsspanne 4,08–4,49 % (14.–20.09.2026) eingetragen; kein individuelles Bankangebot.
+- Erststatus ⚪ **ZU WENIG DATEN**: Mietvertrag, Hausgeldaufteilung, WEG-Unterlagen, Grundbuch, genaue Adresse und Bankangebot fehlen.
+
 ### Lokale Stabilisierung (25.09.)
 - 🛠️ **Plattformunabhängige Pfade:** Python-Tools und Extraktionshelfer leiten den Projektordner aus `__file__` ab; keine fest codierten Windows-Pfade mehr.
 - 🗄️ **DB-Sync/Restore:** SQLite speichert Roh-State und JSON-Hash, importiert auch dynamische offene Punkte/Schritte und exportiert nur bei exaktem Objektnamen an den gespeicherten Pfad zurück. `check` vergleicht nun tatsächlich Datei- und DB-Hash.
@@ -103,7 +111,7 @@ Die folgenden Einträge dokumentieren frühere Stände und sind nicht als aktuel
 - Playwright-Tests: input-Events nach value-Setzung manuell dispatchen; Script-Scope-Funktionen sind nicht auf `window`
 - **Dynamische Tag-Texte unter Eingabefeldern: VERWORFEN** (18.09.) – statische, editierbare Tags genügen; nicht wieder vorschlagen
 - **📈 Zins-Recherche-Regel** (18.09., Goldene Regel 12 in README.md): KEINE Beispiel-/Werbezahlen von Vergleichsportalen (CHECK24-Beispielrechnungen) als Kalkulationsbasis! Stattdessen echte Marktkonditionen recherchieren (konkrete Angebote: Vergleich.de/Dr. Klein, FMH, Bankkonditionen), Spanne bestes–schlechtestes dokumentieren + Bindungsdauer nennen. Realität 18.09.: 4,67–5,55 % (12/20 J.) vs. CHECK24-Beispiel 3,02–3,77 % (10 J.). Bei Recalc > 7 Tage alt: frisch prüfen; innerhalb 7 Tage: Wert weiterverwenden. Immer Datum + Quelle in der Datenqualität-Tabelle
-- **🧾 Werte-Eintragsregel (23.09., verbindlich):** Recherchierte Werte werden immer direkt in die entsprechenden Eingabefelder sowie State-/Kalkulationsdateien eingetragen. Kaltmiete und Zins erhalten Quelle, Datum und Status; Instandhaltung wird künftig objektbezogen nach Baualter, Zustand und Sanierungsbedarf bewertet. Leerstand 4 Wochen/Jahr, EK 20.000 € und Tilgung 2,0 % bleiben Nutzer-Vorgaben. Unbekannte objektbezogene Werte bleiben leer/ausstehend.
+- **🧾 Werte-Eintragsregel (23.09., aktualisiert 27.09., verbindlich):** Recherchierte Werte werden immer direkt in die entsprechenden Eingabefelder sowie State-/Kalkulationsdateien eingetragen. Wenn keine andere Angabe vorliegt, wird Hausgeld mit 35 EUR/Monat eingetragen. Kaltmiete und Zins erhalten Quelle, Datum und Status; Instandhaltung wird objektbezogen nach Baualter, Zustand und Sanierungsbedarf bewertet. Leerstand 2 %, EK 20.000 EUR und Tilgung 1,0 % sind verbindliche Nutzer-Vorgaben. Unbekannte objektbezogene Werte bleiben leer/ausstehend.
 
 ---
 
@@ -136,4 +144,4 @@ Die folgenden Einträge dokumentieren frühere Stände und sind nicht als aktuel
 
 ---
 
-*Diese Datei wird nach jeder Session aktualisiert. Letztes Update: 23.09.2026*
+*Diese Datei wird nach jeder Session aktualisiert. Letztes Update: 27.09.2026*

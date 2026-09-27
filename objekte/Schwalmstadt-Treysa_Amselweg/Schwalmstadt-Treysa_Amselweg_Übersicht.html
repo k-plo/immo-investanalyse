@@ -103,17 +103,17 @@ body{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fo
 .wrap{max-width:1240px;margin:auto;min-width:0}
 h1{font-size:clamp(26px,3.3vw,42px);line-height:1.2;letter-spacing:-.045em;font-weight:750;color:var(--ink);margin:0 0 12px}
 .sub{font-size:13px;line-height:1.7;color:var(--muted);margin-bottom:24px}
-.wrap::before{content:"IMMOBILIEN / INVESTMENT ANALYSE";display:block;font-size:10px;font-weight:750;letter-spacing:.18em;color:var(--accent);margin-bottom:18px}
+.wrap::before{content:"Immobilien-Investment-Analyse";display:block;font-size:10px;font-weight:750;letter-spacing:.18em;color:var(--accent);margin-bottom:18px}
 button,input,select{font:inherit}
 code{overflow-wrap:anywhere}
 .box,.sub,.field label,.field .tag{overflow-wrap:anywhere}
 .appearance-controls{max-width:1240px;margin:0 auto 24px;display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}
 .appearance-controls .print-btn{margin:0}
-.appearance-controls.has-brand{flex-direction:column;align-items:flex-end;gap:3px;margin-bottom:14px}
+.appearance-controls.has-brand{position:absolute;top:0;right:0;width:auto;max-width:none;flex-direction:column;align-items:flex-end;gap:3px;margin:0}
 .appearance-controls.has-brand .theme-toggle{flex:0 0 auto}
 .portfolio-brand{display:block;width:164px;height:auto;object-fit:contain;opacity:.78}
 [data-theme="dark"] .portfolio-brand{filter:invert(1);opacity:.82}
-.theme-toggle{width:164px;height:44px;flex:0 0 164px;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;padding:10px 16px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);font-size:13px;font-weight:650;cursor:pointer}
+.theme-toggle{width:36px;height:36px;flex:0 0 36px;display:inline-flex;align-items:center;justify-content:center;padding:6px;border:1px solid var(--line);border-radius:50%;background:#fff;color:var(--ink);font-size:18px;line-height:1;cursor:pointer}
 @media screen{
 html[data-theme="dark"]{color-scheme:dark;--ink:#e4edf3;--muted:#a0b4c1;--accent:#65d0c4;--line:#2b414f;--canvas:#0c1721}
 [data-theme="dark"] body{background:radial-gradient(ellipse at 100% 0,#17323b 0,transparent 45%),var(--canvas)}
@@ -293,8 +293,11 @@ li{margin-bottom:8px}
   const apply = mode => {
     document.documentElement.dataset.theme = mode;
     if (button) {
-      button.textContent = mode === 'dark' ? '☀ Hellmodus' : '☾ Dunkelmodus';
+      const icon = mode === 'dark' ? '☀' : '☾';
+      const label = mode === 'dark' ? 'Hellmodus aktivieren' : 'Dunkelmodus aktivieren';
+      button.textContent = icon;
       button.setAttribute('aria-label', mode === 'dark' ? 'Hellmodus aktivieren' : 'Dunkelmodus aktivieren');
+      button.title = label;
       button.setAttribute('aria-pressed', String(mode === 'dark'));
     }
   };
@@ -622,7 +625,7 @@ li{margin-bottom:8px}
 
   <!-- ================= KOPF + EINGABEN ================= -->
   <div class="card">
-    <h1>🏠 Schwalmstadt-Treysa Amselweg</h1>
+    <h1>Schwalmstadt-Treysa Amselweg</h1>
     <div class="sub" id="objectIdLabel">Objekt-ID wird geladen …</div>
     <figure class="object-hero" id="objectHero" hidden><img id="objectPhoto" alt="Foto der Immobilie"><figcaption>Objektfoto aus der Anzeigenquelle</figcaption></figure>
     <div class="box yellow" id="preliminaryNotice" hidden>Voranalyse aus einer Online-Anzeige: Angaben sind ungeprüft. Mietdaten, Unterlagen, Zustand und Rechtslage fehlen noch; daraus abgeleitete Kennzahlen sind keine belastbare Investmententscheidung.</div>

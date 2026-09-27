@@ -28,7 +28,7 @@
   "miete": {
     "kaltmiete_monatlich_eur": 645,
     "nebenkosten_monatlich_eur": null,
-    "leerstand_wochen_pro_jahr": 4,
+    "leerstand_wochen_pro_jahr": 2,
     "marktuebliche_miete_eur": 612.48,
     "mietrueckstaende_eur": null
   },
@@ -36,12 +36,12 @@
     "hausgeld_monatlich_eur": 35,
     "verwaltung_prozent_von_miete": 0,
     "instandhaltung_eur_pro_m2_monat": 1.5,
-    "nicht_umlagefaehige_kosten_monatlich_eur": null
+    "nicht_umlagefaehige_kosten_monatlich_eur": 35
   },
   "finanzierung": {
     "eigenkapital_eur": 20000,
     "zinssatz_prozent": null,
-    "tilgung_prozent": 2.0,
+    "tilgung_prozent": 1.0,
     "zinsbindung_jahre": null,
     "finanzierungsnebenkosten_eur": null
   },
@@ -54,7 +54,7 @@
     "Notar und Grundbuch zusammen 2,0 % als vorläufiger Kalkulationswert.",
     "Renovierung und Sanierung mit 0 EUR sind nur technische Startwerte und kein Zustandsbefund.",
     "Instandhaltung 1,50 EUR/m²/Monat wegen Baujahr 1995 und Anbieterangabe gepflegt; nach Besichtigung anpassen.",
-    "Leerstand 4 Wochen/Jahr, Eigenkapital 20.000 EUR und Tilgung 2,0 % gemäß Nutzer-Vorgaben.",
+    "Hausgeld 35 EUR/Monat, falls keine andere Angabe vorliegt, Leerstand 2 %, Eigenkapital 20.000 EUR und Tilgung 1,0 % gemäß Nutzer-Vorgaben.",
     "Zinssatz bleibt offen, weil am 27.09.2026 kein belastbares konkretes Bankangebot vorliegt."
   ],
   "quellen": [

@@ -4,7 +4,7 @@ body{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fo
 .wrap{max-width:1240px;margin:auto;min-width:0}
 h1{font-size:clamp(26px,3.3vw,42px);line-height:1.2;letter-spacing:-.045em;font-weight:750;color:var(--ink);margin:0 0 12px}
 .sub{font-size:13px;line-height:1.7;color:var(--muted);margin-bottom:24px}
-.wrap::before{content:"IMMOBILIEN / INVESTMENT ANALYSE";display:block;font-size:10px;font-weight:750;letter-spacing:.18em;color:var(--accent);margin-bottom:18px}
+.wrap::before{content:"Immobilien-Investment-Analyse";display:block;font-size:10px;font-weight:750;letter-spacing:.18em;color:var(--accent);margin-bottom:18px}
 button,input,select{font:inherit}
 code{overflow-wrap:anywhere}
 .box,.sub,.field label,.field .tag{overflow-wrap:anywhere}
@@ -14,7 +14,7 @@ code{overflow-wrap:anywhere}
 .appearance-controls.has-brand .theme-toggle{flex:0 0 auto}
 .portfolio-brand{display:block;width:164px;height:auto;object-fit:contain;opacity:.78}
 [data-theme="dark"] .portfolio-brand{filter:invert(1);opacity:.82}
-.theme-toggle{width:164px;height:44px;flex:0 0 164px;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;padding:10px 16px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);font-size:13px;font-weight:650;cursor:pointer}
+.theme-toggle{width:36px;height:36px;flex:0 0 36px;display:inline-flex;align-items:center;justify-content:center;padding:6px;border:1px solid var(--line);border-radius:50%;background:#fff;color:var(--ink);font-size:18px;line-height:1;cursor:pointer}
 @media screen{
 html[data-theme="dark"]{color-scheme:dark;--ink:#e4edf3;--muted:#a0b4c1;--accent:#65d0c4;--line:#2b414f;--canvas:#0c1721}
 [data-theme="dark"] body{background:radial-gradient(ellipse at 100% 0,#17323b 0,transparent 45%),var(--canvas)}

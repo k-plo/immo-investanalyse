@@ -34,21 +34,21 @@ def default_data() -> dict:
         },
         "miete": {
             "kaltmiete_monatlich_eur": 850.0,
-            "leerstand_wochen_pro_jahr": 0.0,
+            "leerstand_wochen_pro_jahr": 2.0,
             "marktuebliche_miete_eur": 0.0,
             "mietrueckstaende_eur": 0.0,
         },
         "laufende_kosten": {
-            "hausgeld_monatlich_eur": 250.0,
+            "hausgeld_monatlich_eur": 35.0,
             "nebenkostenvorauszahlung_monatlich_eur": None,
             "nicht_umlagefaehige_kosten_monatlich_eur": 60.0,
             "verwaltung_prozent_von_miete": 0.0,   # bei ETW im Hausgeld
             "instandhaltung_eur_pro_m2_monat": None,
         },
         "finanzierung": {
-            "eigenkapital_eur": 50000.0,
+            "eigenkapital_eur": 20000.0,
             "zinssatz_prozent": 3.5,
-            "tilgung_prozent": 2.0,
+            "tilgung_prozent": 1.0,
             "zinsbindung_jahre": 10,
             "finanzierungsnebenkosten_eur": 0.0,
         },

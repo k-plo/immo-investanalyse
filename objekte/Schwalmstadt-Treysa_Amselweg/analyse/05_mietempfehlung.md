@@ -24,7 +24,7 @@ Quelle: [Immowelt Mietpreise Schwalmstadt](https://www.immowelt.de/immobilienpre
 
 ### c) Tragfähigkeit mit Nutzer-Vorgaben
 
-Die Nutzer-Vorgaben lauten 4 Wochen Leerstand/Jahr, 20.000 EUR Eigenkapital und 2,0 % Tilgung. Für die laufende Kalkulation werden außerdem 1,50 EUR/m²/Monat Instandhaltung als objektbezogener Startwert verwendet. Eine Finanzierungstragfähigkeit kann noch nicht berechnet werden, weil Zinssatz, Zinsbindung, nicht umlagefähiger Hausgeldanteil und Mietervorauszahlung fehlen.
+Die Nutzer-Vorgaben lauten 2 % Leerstand, 20.000 EUR Eigenkapital und 1,0 % Tilgung. Hausgeld ist mit 35 EUR/Monat eingetragen; der nicht umlagefähige Anteil bleibt bis zur Prüfung der WEG-Unterlagen offen. Für die laufende Kalkulation werden außerdem 1,50 EUR/m²/Monat Instandhaltung als objektbezogener Startwert verwendet. Eine Finanzierungstragfähigkeit kann noch nicht berechnet werden, weil Zinssatz, Zinsbindung, nicht umlagefähiger Hausgeldanteil und Mietervorauszahlung fehlen.
 
 ## 3. Szenarien
 

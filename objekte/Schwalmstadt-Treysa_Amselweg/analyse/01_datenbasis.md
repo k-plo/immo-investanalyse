@@ -47,7 +47,7 @@
 | Mietrückstände | UNBEKANNT | UNBEKANNT | Mietkonto fehlt |
 | Mietsteigerungspotenzial | Ist-Miete liegt nahe der recherchierten lokalen Wohnungsmiete | ABGELEITET | Immowelt-Mietpreisdaten, Stand 01.09.2026 |
 | Marktübliche Vergleichsmiete | ca. 612 EUR/Monat = 6,96 EUR/m² | ABGELEITET | Immowelt Mietpreise Schwalmstadt, Stand 01.09.2026 |
-| Leerstand | 4 Wochen/Jahr | NUTZER-VORGABE | Projektstandard |
+| Leerstand | 2 % der Kaltmiete | NUTZER-VORGABE | Projektstandard |
 | Bestehende Mietverträge | 1 vermietete Einheit, Vertragsdetails offen | BELEGT/UNBEKANNT | Exposé / Mietvertrag fehlt |
 
 ## 4. Finanzierung
@@ -57,7 +57,7 @@
 | Eigenkapital | 20.000 EUR | NUTZER-VORGABE | Projektstandard |
 | Darlehenssumme | Noch nicht belastbar berechenbar | UNBEKANNT | Zins- und Nebenkostenprüfung offen |
 | Zinssatz | Offen | UNBEKANNT | Frisches Bankangebot erforderlich |
-| Tilgung | 2,0 % | NUTZER-VORGABE | Projektstandard |
+| Tilgung | 1,0 % | NUTZER-VORGABE | Projektstandard |
 | Zinsbindung | Offen | UNBEKANNT | Bankangebot fehlt |
 | Monatliche Rate | Offen | ABGELEITET | Erst nach Zinsfestlegung |
 | Sondertilgung | UNBEKANNT | UNBEKANNT | Darlehensangebot fehlt |

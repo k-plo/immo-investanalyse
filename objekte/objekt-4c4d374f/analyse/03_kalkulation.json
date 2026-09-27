@@ -1,0 +1,72 @@
+{
+  "objekt": {
+    "name": "Vermietete Dachgeschosswohnung Treysa",
+    "adresse": "Treysa, Schwalmstadt, 34613; genaue Adresse nicht freigegeben",
+    "objektart": "Vermietete Eigentumswohnung, Dachgeschoss",
+    "baujahr": 1995,
+    "wohnflaeche_m2": 75.44,
+    "nutzflaeche_m2": null,
+    "grundstuecksflaeche_m2": null,
+    "anzahl_einheiten": null,
+    "zimmer": 3,
+    "etage": "3. Geschoss / Dachgeschoss",
+    "stellplaetze": null,
+    "energieklasse": "D",
+    "heizung": "Gas-Zentralheizung"
+  },
+  "kauf": {
+    "angebotspreis_eur": 159000,
+    "grunderwerbsteuer_prozent": 6.0,
+    "notar_prozent": 2.0,
+    "grundbuch_prozent": null,
+    "makler_prozent": 3.57,
+    "makler_anteil_verkaeufer_prozent": 0,
+    "renovierung_eur": 0,
+    "sanierung_eur": 0,
+    "sonstige_erwerbskosten_eur": 0
+  },
+  "miete": {
+    "kaltmiete_monatlich_eur": 750,
+    "nebenkosten_monatlich_eur": null,
+    "leerstand_wochen_pro_jahr": 2,
+    "marktuebliche_miete_eur": 525.06,
+    "mietrueckstaende_eur": null,
+    "mietbeginn": "01.03.2026"
+  },
+  "laufende_kosten": {
+    "hausgeld_monatlich_eur": null,
+    "verwaltung_prozent_von_miete": 0,
+    "instandhaltung_eur_pro_m2_monat": null,
+    "nicht_umlagefaehige_kosten_monatlich_eur": 35
+  },
+  "finanzierung": {
+    "eigenkapital_eur": 20000,
+    "zinssatz_prozent": 4.2,
+    "zinsspanne_prozent": "4,08–4,49",
+    "zinsbindung_jahre": 10,
+    "tilgung_prozent": 1.0,
+    "finanzierungsnebenkosten_eur": null
+  },
+  "weg": {
+    "instandhaltungsruecklage_eur": null,
+    "geplante_sonderumlagen_eur": null
+  },
+  "annahmen": [
+    "Grunderwerbsteuer 6,0 % für Hessen.",
+    "Notar und Grundbuch zusammen 2,0 % als vorläufiger Kalkulationswert.",
+    "Renovierung und Sanierung mit 0 EUR sind technische Startwerte, kein Zustandsbefund.",
+    "Hausgeld 35 EUR/Monat mangels anderer Angabe, Eigenkapital 20.000 EUR, Leerstand 2 % und Tilgung 1,0 % gemäß Nutzer-Vorgaben.",
+    "Zins 4,20 % ist ein Marktindikator für 10 Jahre und kein individuelles Bankangebot.",
+    "Der nicht umlagefähige Hausgeldanteil bleibt offen; der Gesamtwert von 35 EUR/Monat ist der Startwert mangels anderer Angabe."
+  ],
+  "quellen": [
+    {"information": "Kaufpreis, Fläche, Zimmer, Etage, Baujahr, Energie, Ausstattung", "wert": "159.000 EUR; 75,44 m²; 3 Zimmer; BJ 1995; Klasse D", "quelle": "Immowelt-Exposé https://www.immowelt.de/expose/2075ecd5-4021-44c1-a336-c88fae6c7f1c, abgerufen 27.09.2026", "status": "BELEGT"},
+    {"information": "Ist-Kaltmiete und Mietbeginn", "wert": "750 EUR/Monat seit 01.03.2026", "quelle": "Immowelt-Exposé, Weitere Informationen, abgerufen 27.09.2026", "status": "BELEGT"},
+    {"information": "Mietmarkt Schwalmstadt", "wert": "Wohnungen 6,96 EUR/m²; Spanne 4,53–9,55 EUR/m²", "quelle": "Immowelt Mietpreise Schwalmstadt, aktualisiert 01.09.2026, https://www.immowelt.de/immobilienpreise/mietpreise/hessen/schwalmstadt-34613/ad08de2890", "status": "BELEGT/ABGELEITET"},
+    {"information": "Bauzinsen 10 Jahre", "wert": "4,08–4,49 %, Startwert 4,20 %", "quelle": "Interhyp Bauzinsen, Konditionsangebote 14.–20.09.2026, abgerufen 27.09.2026, https://www.interhyp.de/zinsen/", "status": "BELEGT (extern)"},
+    {"information": "Maklerprovision", "wert": "3,57 % inkl. MwSt.", "quelle": "Immowelt-Exposé, Preisdetails, abgerufen 27.09.2026", "status": "BELEGT"}
+  ],
+  "widersprueche": [
+    "Die Exposé-Miete von 9,94 EUR/m² liegt deutlich über dem Immowelt-Wohnungsdurchschnitt von 6,96 EUR/m²; Mietvertrag, Wohnungsstandard und Mikrolage prüfen."
+  ]
+}

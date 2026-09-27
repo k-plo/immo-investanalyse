@@ -91,11 +91,11 @@
         <div class="field"><label>Kaltmiete ges./Monat (€)</label><input id="kaltmiete" type="number" placeholder="850"></div>
         <div class="field"><label>Marktübliche Miete (€)</label><input id="marktmiete" type="number" placeholder="0"><span class="hint">0 = unbekannt</span></div>
         <div class="field"><label>Nebenkostenvorauszahlung Mieter/Monat (€)</label><input id="nebenkostenVorauszahlung" type="number" placeholder="Vorauszahlung laut Mietvertrag"><span class="hint">Umlagefähiger Anteil, den der Mieter monatlich vorauszahlt</span></div>
-        <div class="field"><label>Hausgeld/Betriebskosten ges./Monat (€)</label><input id="hausgeld" type="number" placeholder="1,00 €/m² × Wohnfläche"><span class="hint">Bei EFH z. B. Grundsteuer, Versicherung, Müll; Richtwert ca. 1,00 €/m²/Monat</span></div>
+        <div class="field"><label>Hausgeld/Betriebskosten ges./Monat (€)</label><input id="hausgeld" type="number" placeholder="35"><span class="hint">Startwert 35 €, falls keine andere Angabe vorliegt</span></div>
         <div class="field"><label>davon nicht umlagefähig (€)</label><input id="hausgeldNichtUml" type="number" placeholder="60"><span class="hint">z. B. Verwaltung, Rücklage</span></div>
         <div class="field"><label>Verwaltung (% der KM)</label><input id="verwaltung" type="number" step="0.1" placeholder="0"><span class="hint">Nur eintragen, wenn Verwaltung zusätzlich anfällt; 0 wird als 0 gerechnet</span></div>
         <div class="field"><label>Instandhaltung (€/m²/Monat)</label><input id="instand" type="number" step="0.1" placeholder="nach Bewertung"><span class="hint">Wohnfläche × objektbezogener Monatsansatz; Richtwerte siehe Objektübersicht</span></div>
-        <div class="field"><label>Leerstand (Wochen/Jahr)</label><input id="leerstand" type="number" step="0.5" placeholder="0"><span class="hint">0 = voll vermietet (belegt)</span></div>
+        <div class="field"><label>Leerstand (Wochen/Jahr)</label><input id="leerstand" type="number" step="0.5" placeholder="2"><span class="hint">Startwert 2; objektbezogene Angaben gehen vor</span></div>
         <div class="field"><label>Mietrückstände (€)</label><input id="rueckstaende" type="number" placeholder="0"></div>
       </div>
     </div>
@@ -103,9 +103,9 @@
     <div class="card">
       <h2>Finanzierung</h2>
       <div class="grid2">
-        <div class="field"><label>Eigenkapital (€)</label><input id="ek" type="number" placeholder="50000"></div>
+        <div class="field"><label>Eigenkapital (€)</label><input id="ek" type="number" placeholder="20000"></div>
         <div class="field"><label>Zinssatz (%)</label><input id="zins" type="number" step="0.01" placeholder="3,5"><span class="hint">ANNAHME, falls kein Angebot</span></div>
-        <div class="field"><label>Anfängliche Tilgung (%)</label><input id="tilgung" type="number" step="0.01" placeholder="2,0"></div>
+        <div class="field"><label>Anfängliche Tilgung (%)</label><input id="tilgung" type="number" step="0.01" placeholder="1,0"></div>
         <div class="field"><label>Zinsbindung (Jahre)</label><input id="bindung" type="number" placeholder="10"></div>
         <div class="field"><label>Finanzierungsnebenkosten (€)</label><input id="finNk" type="number" placeholder="0"><span class="hint">z. B. Bürgschaft, Konto</span></div>
       </div>

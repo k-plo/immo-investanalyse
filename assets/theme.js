@@ -9,8 +9,11 @@
   const apply = mode => {
     document.documentElement.dataset.theme = mode;
     if (button) {
-      button.textContent = mode === 'dark' ? '☀ Hellmodus' : '☾ Dunkelmodus';
-      button.setAttribute('aria-label', mode === 'dark' ? 'Hellmodus aktivieren' : 'Dunkelmodus aktivieren');
+      const icon = mode === 'dark' ? '☀' : '☾';
+      const label = mode === 'dark' ? 'Hellmodus aktivieren' : 'Dunkelmodus aktivieren';
+      button.textContent = icon;
+      button.setAttribute('aria-label', label);
+      button.title = label;
       button.setAttribute('aria-pressed', String(mode === 'dark'));
     }
   };

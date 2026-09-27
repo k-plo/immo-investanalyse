@@ -45,7 +45,7 @@ body{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fo
 .wrap{max-width:1240px;margin:auto;min-width:0}
 h1{font-size:clamp(26px,3.3vw,42px);line-height:1.2;letter-spacing:-.045em;font-weight:750;color:var(--ink);margin:0 0 12px}
 .sub{font-size:13px;line-height:1.7;color:var(--muted);margin-bottom:24px}
-.wrap::before{content:"IMMOBILIEN / INVESTMENT ANALYSE";display:block;font-size:10px;font-weight:750;letter-spacing:.18em;color:var(--accent);margin-bottom:18px}
+.wrap::before{content:"Immobilien-Investment-Analyse";display:block;font-size:10px;font-weight:750;letter-spacing:.18em;color:var(--accent);margin-bottom:18px}
 button,input,select{font:inherit}
 code{overflow-wrap:anywhere}
 .box,.sub,.field label,.field .tag{overflow-wrap:anywhere}
@@ -55,7 +55,7 @@ code{overflow-wrap:anywhere}
 .appearance-controls.has-brand .theme-toggle{flex:0 0 auto}
 .portfolio-brand{display:block;width:164px;height:auto;object-fit:contain;opacity:.78}
 [data-theme="dark"] .portfolio-brand{filter:invert(1);opacity:.82}
-.theme-toggle{width:164px;height:44px;flex:0 0 164px;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;padding:10px 16px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);font-size:13px;font-weight:650;cursor:pointer}
+.theme-toggle{width:36px;height:36px;flex:0 0 36px;display:inline-flex;align-items:center;justify-content:center;padding:6px;border:1px solid var(--line);border-radius:50%;background:#fff;color:var(--ink);font-size:18px;line-height:1;cursor:pointer}
 @media screen{
 html[data-theme="dark"]{color-scheme:dark;--ink:#e4edf3;--muted:#a0b4c1;--accent:#65d0c4;--line:#2b414f;--canvas:#0c1721}
 [data-theme="dark"] body{background:radial-gradient(ellipse at 100% 0,#17323b 0,transparent 45%),var(--canvas)}
@@ -128,11 +128,11 @@ h2{font-size:16px;line-height:1.6;letter-spacing:-.015em;text-transform:none;col
 .input-group{padding:18px;border:1px solid var(--line);border-radius:12px;background:#f8fafb;min-width:0}
 .input-group h3{margin:0 0 16px;font-size:13px;line-height:1.4;color:var(--ink)}
 .inputs{grid-template-columns:repeat(4,minmax(0,1fr));gap:20px 18px}
-.field{min-width:0;gap:7px}
-.field label{font-size:12px;color:#405b68;min-height:38px;line-height:1.5}
+.field{min-width:0;gap:4px}
+.field label{font-size:12px;color:#405b68;min-height:0;line-height:1.35}
 .field input{font-size:16px;font-weight:650;min-height:46px;padding:11px 13px;border:1px solid #ccdadf;border-radius:10px;background:#f8fafb;color:var(--ink)}
 .field input:focus{border-color:var(--accent);box-shadow:0 0 0 3px #116d7214}
-.field .tag{font-size:10px;line-height:1.6;color:var(--muted)}
+.field .tag{font-size:10px;line-height:1.35;color:var(--muted)}
 .toolbar{gap:10px;margin:20px 0 28px}
 .toolbar .edit-hint{flex-basis:100%;margin:4px 0 0!important}
 .btn.secondary{background:#f7fafb;border:1px solid var(--line);color:#365763;font-weight:600}
@@ -183,8 +183,11 @@ li{margin-bottom:8px}
   const apply = mode => {
     document.documentElement.dataset.theme = mode;
     if (button) {
-      button.textContent = mode === 'dark' ? '☀ Hellmodus' : '☾ Dunkelmodus';
-      button.setAttribute('aria-label', mode === 'dark' ? 'Hellmodus aktivieren' : 'Dunkelmodus aktivieren');
+      const icon = mode === 'dark' ? '☀' : '☾';
+      const label = mode === 'dark' ? 'Hellmodus aktivieren' : 'Dunkelmodus aktivieren';
+      button.textContent = icon;
+      button.setAttribute('aria-label', label);
+      button.title = label;
       button.setAttribute('aria-pressed', String(mode === 'dark'));
     }
   };
