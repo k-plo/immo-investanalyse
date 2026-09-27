@@ -3,16 +3,21 @@ $root = Split-Path -Parent $MyInvocation.MyCommand.Path
 $port = 8000
 $url = "http://127.0.0.1:$port/"
 
-function Test-PortfolioServer {
+function Get-PortfolioServerVersion {
     try {
         $response = Invoke-WebRequest -Uri "$url`api/health" -UseBasicParsing -TimeoutSec 1
-        return $response.StatusCode -eq 200
+        if ($response.StatusCode -ne 200) { return 0 }
+        return [int](($response.Content | ConvertFrom-Json).api_version)
     } catch {
-        return $false
+        return 0
     }
 }
 
-if (-not (Test-PortfolioServer)) {
+$serverVersion = Get-PortfolioServerVersion
+if ($serverVersion -gt 0 -and $serverVersion -lt 2) {
+    throw "Auf Port $port läuft noch ein alter Portfolio-Server. Bitte diesen zuerst beenden und das Skript erneut starten."
+}
+if ($serverVersion -eq 0) {
     $python = Get-Command python3 -ErrorAction Stop
     $arguments = @("tools\local_server.py", "$port")
     Start-Process -FilePath $python.Source -ArgumentList $arguments -WorkingDirectory $root -WindowStyle Hidden
@@ -20,7 +25,7 @@ if (-not (Test-PortfolioServer)) {
     $ready = $false
     for ($attempt = 0; $attempt -lt 30; $attempt++) {
         Start-Sleep -Milliseconds 200
-        if (Test-PortfolioServer) {
+        if ((Get-PortfolioServerVersion) -ge 2) {
             $ready = $true
             break
         }

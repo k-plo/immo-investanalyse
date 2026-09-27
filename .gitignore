@@ -8,11 +8,11 @@ credentials.*
 .env
 .env.*
 
-# ===== Datenbank (wird lokal generiert) =====
-immo_datenbank.db
+# ===== Datenbank ist versioniert; transiente SQLite-Dateien nicht =====
 immo_datenbank.db-journal
 immo_datenbank.db-wal
 immo_datenbank.db-shm
+tmp/db-backups/
 
 # ===== Betriebssystem / Editor =====
 Thumbs.db

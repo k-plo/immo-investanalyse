@@ -5,7 +5,13 @@
 
 ---
 
-## 🕐 Letzter Stand
+## 🕐 Aktueller Stand (27.09.2026)
+
+Die bisherigen Objekt-State-JSON-Dateien wurden einmalig in `immo_datenbank.db` importiert. SQLite ist jetzt die einzige Laufzeitquelle für Portfolio und Objektübersichten; Live-Änderungen speichern mit Revisionsprüfung direkt in der DB. Alle bestehenden Objekte haben eine persistente UUID. Der Anzeigenlink-Import legt gleichnamige Orte getrennt an, importiert nur öffentlich auslesbare Fakten und markiert neue Objekte als Voranalyse. Objektfotos können importiert oder im Objekt ergänzt werden und erscheinen in der Übersicht und als verschwommener Portfolio-Hintergrund. Die Datenbankdatei ist Git-versioniert; parallele Änderungen auf mehreren Rechnern müssen vermieden werden. Technischer Ablauf und Einschränkungen: `README.md`.
+
+Die folgenden Einträge dokumentieren frühere Stände und sind nicht als aktuelle Datenquelle zu verwenden.
+
+## 🕐 Vorheriger Stand
 
 **Datum:** 25.09.2026
 **Letzte Aktion:** Besichtigungsunterlage für Arnsbach erstellt: druckfreundliche HTML-Checkliste und 3-seitige PDF mit priorisierten Fragen zu Grundbuch, WEG, Genehmigungen, Technik, Sanierung und Vermietbarkeit.

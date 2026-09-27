@@ -8,16 +8,11 @@
 
 **`portfolio.html`** (im Workspace-Root) zeigt **alle analysierten Objekte auf einen Blick**: Kacheln mit Kerndaten, **Rating A–F**, Filter nach Rating, Portfolio-Summen.
 
-**Datenhaltung (3 Ebenen):**
-1. **`immo_datenbank.db`** (SQLite) – zentrale Datenbank, Single Source of Truth für die Übersicht
-2. **`<Objektname>_Übersicht_State.json`** – Fail-Safe-Kopie im jeweiligen Objektordner
-3. **localStorage** – Browser-Cache der Objekt-Übersichten
+**Datenhaltung:** `immo_datenbank.db` (SQLite) ist die einzige Laufzeitquelle für Portfolio und Objektübersichten. Jede Immobilie hat eine unveränderliche `public_id` (UUID), unabhängig von Ort und Anzeigenname. Der Ordnername ist nur ein eindeutiger technischer Pfad. State-JSON wird nicht mehr eingelesen; der Download ist ausschließlich ein Export. `localStorage` wird nur noch für die Hell-/Dunkelmodus-Präferenz verwendet.
 
-**Workflow nach Änderungen in einer Objekt-Übersicht:**
-```
-python tools/db_manager.py sync                 ← State-JSONs → DB → portfolio.html
-```
-Beim Öffnen von `portfolio.html` wird zusätzlich automatisch aus dem bereits freigegebenen `objekte/`-Ordner gelesen. Dadurch erscheinen neue Objekte mit vorhandener State-JSON auch ohne vorherige manuelle Neugenerierung. Nach einem Browser-Neustart kann einmalig erneut die Ordnerberechtigung nötig sein.
+Änderungen in einer Objektübersicht werden automatisch über den lokalen Server in einer SQLite-Transaktion gespeichert. Jede Speicherung erhöht die Revision; bei konkurrierender Bearbeitung wird ein Konflikt gemeldet statt stillschweigend überschrieben. Das Portfolio lädt seine Karten bei jedem Öffnen und Aktualisieren aus `/api/portfolio`. Ohne laufenden Projektserver gibt es keinen Bearbeitungs-Fallback.
+
+**Mehrere Rechner mit Git:** Vor dem Bearbeiten `git pull --ff-only`; nach dem Bearbeiten den Server schließen, `python3 tools/db_manager.py check` ausführen, die Datenbankdatei und zugehörige Objektdateien committen und pushen. Auf dem zweiten Rechner erneut pullen. SQLite-Dateien lassen sich in Git nicht sinnvoll zeilenweise mergen: dieselbe DB darf nicht gleichzeitig auf zwei Rechnern bearbeitet werden. Die `-wal`/`-shm`-Dateien gehören nicht ins Repository.
 
 **Lokale Web-App starten:**
 
@@ -25,18 +20,20 @@ Beim Öffnen von `portfolio.html` wird zusätzlich automatisch aus dem bereits f
 .\start_portfolio.ps1
 ```
 
-Das Skript startet mit `python3` den dependency-freien lokalen Python-Server auf `http://127.0.0.1:8000/` und öffnet die Portfolioübersicht direkt in Chrome. Der Server stellt zusätzlich `/api/health` und `/api/portfolio` bereit. Ein bereits laufender Server wird wiederverwendet.
+Das Skript startet mit `python3` den dependency-freien lokalen Python-Server auf `http://127.0.0.1:8000/` und öffnet die Portfolioübersicht direkt in Chrome. Der Server stellt außerdem DB-Objekt-, Export- und Anzeigenimport-Endpunkte bereit. Nach Codeänderungen muss ein alter Serverprozess neu gestartet werden.
 
 **DB-Befehle:**
 | Befehl | Wirkung |
 |---|---|
-| `python tools/db_manager.py sync` | Alle State-JSONs einlesen → DB und Portfolio aktualisieren |
+| `python tools/db_manager.py sync` | Portfolio-Hülle neu generieren, ohne JSON-Import |
 | `python tools/db_manager.py list` | Objekte mit Kerndaten + Rating anzeigen |
-| `python tools/db_manager.py check` | Konsistenzprüfung DB vs. JSON |
-| `python tools/db_manager.py export-json <name>` | DB → JSON zurück schreiben (Restore) |
+| `python tools/db_manager.py check` | SQLite-Integrität, Fremdschlüssel und Objekt-IDs prüfen |
+| `python tools/db_manager.py export-json <name> <ziel.json>` | Eine DB-Revision als JSON exportieren; DB bleibt unverändert |
 | `python tools/portfolio_generator.py` | portfolio.html neu generieren |
 
 **Rating (A–F):** Bruttorendite 25 % · Cashflow 25 % · EK-Rendite 15 % · Risiko-Ampeln 20 % · Datenqualität 15 %
+
+**Anzeigenlink importieren:** Der Button im Portfolio versucht öffentlich lesbare HTML-/JSON-LD-Angaben (z. B. Titel, Kaufpreis, Wohnfläche, Adresse) und ein verfügbares Anzeigenfoto zu übernehmen. Es entsteht sofort ein Objektordner, ein DB-Eintrag mit UUID und eine interaktive Übersicht. Der Status bleibt „Quellenprüfung offen“: fehlende Mietdaten, Unterlagen, Rechte, Zustand und Kosten werden nicht erfunden. Verweigert eine Plattform den Abruf (z. B. HTTP 403), wird nur ein leerer, klar als „Abruf blockiert“ gekennzeichneter Datensatz mit Link und ID angelegt; die Analyse muss dann anhand von Unterlagen ergänzt werden. Captchas oder Login-Schranken werden nicht umgangen. Fotos werden nur angezeigt, wenn tatsächlich ein Bild importiert wurde; Dokument-Scans dienen nicht als Ersatzfoto. Über „🖼️ Objektfoto hinzufügen“ kann für jedes Objekt ein echtes Foto lokal hinterlegt werden; dieses erscheint in der Übersicht und verschwommen hinter der Portfolio-Karte.
 
 ---
 
@@ -68,7 +65,7 @@ Dokumente importieren
 3. **Kalkulation** – Ich trage alle belegten Zahlen in `tools/kalkulation.html` ein (oder du selbst im Browser) und sichere das Ergebnis als `analyse/03_kalkulation.json` + `analyse/04_investmentbericht.md` + `analyse/05_mietempfehlung.md` (Standard-Struktur, siehe Abschnitt 2).
 4. **Ergebnis** – Du erhältst den Investmentbericht im Standardformat (siehe unten) mit Ampel-Status.
 
-**Verbindliche Regel für neue Objekte:** Eine neue Analyse umfasst immer die fünf Dateien unter `analyse/` **plus** die interaktive `<Objektname>_Übersicht.html` direkt im Objektordner. Wenn bereits belastbare Eingabewerte vorliegen, wird zusätzlich `<Objektname>_Übersicht_State.json` als Fail-Safe-Kopie angelegt. Fehlende Werte bleiben leer bzw. „ausstehend"; es werden keine Zahlen erfunden.
+**Verbindliche Regel für vollständige neue Analysen:** Eine vollständige Analyse umfasst die fünf Dateien unter `analyse/`, die interaktive Übersicht und einen DB-Datensatz mit UUID. Ein Anzeigenlink erzeugt zunächst nur eine gekennzeichnete Voranalyse; die vollständige Dokumentenprüfung folgt danach. Fehlende Werte bleiben leer bzw. „ausstehend"; es werden keine Zahlen erfunden.
 
 ---
 
@@ -113,13 +110,13 @@ Jede Objekt-Analyse besteht aus genau **5 Dateien** in `objekte/<Name>/analyse/`
 |---|---|
 | `01_datenbasis.md` | Alle Objektdaten mit Kennzeichnung (BELEGT/ABGELEITET/ANNAHME/UNBEKANNT) + Quellen + Widersprüche + fehlende Infos (priorisiert) |
 | `02_dokumentenpruefung.md` | Dokumentenbewertung, Grundbuchanalyse, Flächenprüfung, technische Due Diligence, Mietverhältnis, Chancen, Risikoanalyse, Fragenliste |
-| `03_kalkulation.json` | Maschinenlesbare Kalkulation im Haarhausen-Schema: `objekt` / `kauf` / `miete` (inkl. `mietempfehlung`) / `laufende_kosten` / `finanzierung` (inkl. `zinsrecherche`) / `weg` / `annahmen` / `quellen` / `widersprueche` – Metadaten (adresse, objektart, baujahr, zimmer, stellplaetze) im `objekt`-Block sind Pflicht (DB + Portfolio lesen sie daraus!) |
+| `03_kalkulation.json` | Export/Analysedokument im Haarhausen-Schema; die Web-App liest daraus keine Laufzeitwerte mehr. Verbindliche Objektmetadaten werden in SQLite gepflegt. |
 | `04_investmentbericht.md` | Investment-Report (Objekt, Wirtschaftlichkeit, Chancen, Risiken, Dokumentenstatus, Due Diligence, Verhandlung) + INVESTMENT-STATUS (Ampel) |
 | `05_mietempfehlung.md` | Mietempfehlung mit Herleitung (Regionalvergleich), objektspezifische Faktoren, Tragfähigkeit mit Nutzer-Vorgaben, Szenarien, Quellen, nächste Schritte |
 
 **Referenz/Muster = `objekte/Haarhausen/analyse/`** – Aufbau, Abschnitte und Kennzeichnung daran orientieren. Bestehende Analysen (z. B. Kerstenhausen) bleiben unverändert.
 
-**�💡 Die interaktive Übersicht** (`<Objektname>_Übersicht.html`) liegt **direkt im Objektordner** (nicht in `analyse/`), damit man sie schnell findet. Sie kombiniert Kalkulationstool + Entscheidungsübersicht: Zahlen oben ändern → alles rechnet live. Änderungen werden automatisch im Browser gespeichert; für dauerhafte Sicherung „💾 State speichern (Download)" klicken – die JSON landet im Download-Ordner (Browser-Standard) und wird dann **in den Objektordner verschoben**.
+**Die interaktive Übersicht** (`<Objektname>_Übersicht.html`) liegt direkt im Objektordner. Zahlen oben ändern → alles rechnet live und wird in SQLite gespeichert. „💾 State speichern (Download)" ist nur ein optionaler Export; die JSON gehört nicht in den normalen Sync-Workflow.
 
 ---
 

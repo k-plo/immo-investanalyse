@@ -96,7 +96,7 @@ body{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fo
 .wrap{max-width:1240px;margin:auto;min-width:0}
 h1{font-size:clamp(26px,3.3vw,42px);line-height:1.2;letter-spacing:-.045em;font-weight:750;color:var(--ink);margin:0 0 12px}
 .sub{font-size:13px;line-height:1.7;color:var(--muted);margin-bottom:24px}
-.wrap::before{content:"IMMOBILIEN-INVESTMENT-ANALYSE";display:block;font-size:10px;font-weight:750;letter-spacing:.18em;color:var(--accent);margin-bottom:18px}
+.wrap::before{content:"IMMOBILIEN / INVESTMENT ANALYSE";display:block;font-size:10px;font-weight:750;letter-spacing:.18em;color:var(--accent);margin-bottom:18px}
 button,input,select{font:inherit}
 code{overflow-wrap:anywhere}
 .box,.sub,.field label,.field .tag{overflow-wrap:anywhere}
@@ -138,6 +138,14 @@ button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-v
 .filter button:hover,.btn:hover{filter:brightness(.96)}
 .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
 .karte{position:relative;min-width:0;border:1px solid var(--line);border-radius:var(--radius);padding:28px;background:#fff;box-shadow:0 5px 18px #16354105;transition:transform .18s,box-shadow .18s,border-color .18s;overflow:visible}
+.karte.has-photo{overflow:hidden;isolation:isolate}
+.karte-photo-bg{position:absolute;inset:-20px;background-size:cover;background-position:center;filter:blur(15px);opacity:.24;pointer-events:none;z-index:0}
+.karte.has-photo>*:not(.karte-photo-bg){position:relative;z-index:1}
+.karte.has-photo::after{position:relative;z-index:1}
+[data-theme="dark"] .karte-photo-bg{opacity:.16}
+.object-hero{margin:18px 0 26px;border-radius:16px;overflow:hidden;background:#e7eff0;max-height:320px}
+.object-hero img{display:block;width:100%;max-height:320px;object-fit:cover}
+.object-hero figcaption{padding:7px 12px;color:var(--muted);font-size:11px;background:var(--canvas)}
 .karte::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#116d72,#9dc8bf)}
 .karte:hover{z-index:2;transform:translateY(-3px);border-color:#99bebd;box-shadow:0 14px 32px #16354112}
 .karte::after{content:"Objektübersicht ansehen ↗";display:block;color:var(--accent);font-size:12px;font-weight:700;border-top:1px solid var(--line);padding-top:17px;margin-top:22px}
@@ -160,8 +168,8 @@ footer,.footer{font-size:11px;line-height:1.8;color:var(--muted);border-top:1px 
 h2{font-size:16px;line-height:1.6;letter-spacing:-.015em;text-transform:none;color:var(--ink);border-bottom:1px solid var(--line);padding-bottom:12px;margin:34px 0 18px}
 .card>h2:first-child{margin-top:0}
 .inputs{grid-template-columns:repeat(4,minmax(0,1fr));gap:20px 18px}
-.field{min-width:0;gap:4px}
-.field label{font-size:12px;color:#405b68;min-height:0;padding-bottom:4px;line-height:1.3}
+.field{min-width:0;gap:7px}
+.field label{font-size:12px;color:#405b68;min-height:38px;line-height:1.5}
 .field input{font-size:16px;font-weight:650;min-height:46px;padding:11px 13px;border:1px solid #ccdadf;border-radius:10px;background:#f8fafb;color:var(--ink)}
 .field input:focus{border-color:var(--accent);box-shadow:0 0 0 3px #116d7214}
 .field .tag{font-size:10px;line-height:1.6;color:var(--muted)}
@@ -197,6 +205,7 @@ li{margin-bottom:8px}
 .chk-li .txt{flex:1;min-width:0}
 .btn.delete{min-width:32px;min-height:32px;padding:4px}
 .tip .tipbox{font-size:12px;line-height:1.6;box-shadow:0 10px 30px #152d3933;z-index:1000}
+.tipbox-portal{box-sizing:border-box;width:min(320px,calc(100vw - 24px));max-width:calc(100vw - 24px);padding:11px 13px;border:1px solid #344158;border-radius:8px;background:#0f1420;color:#e8edf7;font-size:12px;font-weight:400;line-height:1.5;text-align:left;white-space:normal;word-wrap:break-word;overflow-wrap:break-word;box-shadow:0 10px 28px rgba(15,20,32,.4)}
 @media(max-width:1050px){.filter button.sync{margin-left:0}.inputs{grid-template-columns:repeat(2,minmax(0,1fr))}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.karte{padding:22px}.karte-kpis .v{font-size:23px}}
 @media(max-width:760px){body{padding:24px 16px 40px}.grid{grid-template-columns:minmax(0,1fr)}.card{padding:22px}.wrap::before{font-size:9px}.filter{padding:12px;gap:6px}.filter button{flex:1 1 auto}.filter button.sync,.filter button.analyse{flex-basis:100%;text-align:center}.karte-name{font-size:25px}.karte-kpis .v{font-size:27px}.print-btn{margin-bottom:20px}.kpi{padding:16px}.tip .tipbox{max-height:50vh;overflow:auto}.toolbar .btn{flex:1 1 auto}h2{margin-top:28px}.box{padding:15px}.external-link button{flex-grow:1}}
 @media(max-width:420px){body{padding:18px 12px 32px}.card{padding:18px}.inputs{gap:16px 12px}.field label{font-size:11px}.field input{padding:10px;font-size:16px}.kpis{gap:10px}.kpi{padding:13px}.kpi .v{font-size:22px}.karte{padding:20px}.karte-kpis .v{font-size:24px}.karte-fin{grid-template-columns:1fr}.toolbar .btn{flex-basis:100%}}
@@ -297,6 +306,154 @@ li{margin-bottom:8px}
   });
 })();
 </script>
+<script data-db-client>
+/* Object pages read and write only the local SQLite API. */
+(() => {
+  const sessions = new Map();
+  const url = name => `/api/objects/${encodeURIComponent(name)}`;
+  async function responseJson(response) {
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      const error = new Error(data.error || `HTTP ${response.status}`);
+      error.status = response.status;
+      throw error;
+    }
+    return data;
+  }
+  async function load(name) {
+    const data = await responseJson(await fetch(url(name), {cache: 'no-store'}));
+    sessions.set(name, {id:data.id, revision:data.revision, busy:false, dirty:false, timer:null, pending:null});
+    return data;
+  }
+  async function flush(name) {
+    const session = sessions.get(name);
+    if (!session) throw new Error('Objekt noch nicht aus der Datenbank geladen');
+    clearTimeout(session.timer);
+    if (session.busy) return session.pending;
+    session.busy = true;
+    session.pending = (async () => {
+      while (session.dirty) {
+        session.dirty = false;
+        session.status('saving');
+        try {
+          const data = await responseJson(await fetch(url(session.id), {
+            method:'PUT', headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({revision:session.revision, state:session.getState()})
+          }));
+          session.revision = data.revision;
+          session.status('saved', data.revision);
+          if ('BroadcastChannel' in window) {
+            const channel = new BroadcastChannel('immo-db-revision');
+            channel.postMessage({name, revision:data.revision});
+            channel.close();
+          }
+        } catch (error) {
+          session.dirty = false;
+          session.status(error.status === 409 ? 'conflict' : 'error', error.message);
+          throw error;
+        }
+      }
+    })();
+    try { return await session.pending; }
+    finally { session.busy = false; session.pending = null; }
+  }
+  function schedule(name, getState, status) {
+    const session = sessions.get(name);
+    if (!session) return;
+    session.getState = getState;
+    session.status = status;
+    session.dirty = true;
+    clearTimeout(session.timer);
+    session.timer = setTimeout(() => { flush(name).catch(() => {}); }, 400);
+  }
+  async function exportJson(name) {
+    await flush(name);
+    const data = await responseJson(await fetch(`/api/export/${encodeURIComponent(name)}`, {cache:'no-store'}));
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `${name}_Übersicht_State.json`;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+  }
+  async function setArchived(name, archive) {
+    await flush(name);
+    const session = sessions.get(name);
+    const response = await fetch(`${url(session.id)}/${archive ? 'archive' : 'reactivate'}`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({revision:session.revision})
+    });
+    return responseJson(response);
+  }
+  async function uploadPhoto(name, file) {
+    if (!file || file.size > 5_000_000 || !['image/jpeg','image/png','image/webp','image/avif'].includes(file.type)) {
+      throw new Error('Bitte JPEG, PNG, WebP oder AVIF bis 5 MB wählen');
+    }
+    await flush(name);
+    const session = sessions.get(name);
+    const dataUrl = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+    const response = await fetch(`${url(session.id)}/photo`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({revision:session.revision, mime:file.type, data:String(dataUrl).split(',')[1]})
+    });
+    const result = await responseJson(response);
+    session.revision = result.revision;
+    if ('BroadcastChannel' in window) {
+      const channel = new BroadcastChannel('immo-db-revision');
+      channel.postMessage({name, revision:result.revision});
+      channel.close();
+    }
+    return result;
+  }
+  window.ImmoDb = {load, schedule, flush, exportJson, setArchived, uploadPhoto};
+  document.addEventListener('DOMContentLoaded', () => {
+    const button = document.getElementById('archiveBtn');
+    if (!button || typeof OBJEKT_ORDNER === 'undefined') return;
+    const photoButton = document.createElement('button');
+    photoButton.type = 'button';
+    photoButton.className = 'btn secondary';
+    photoButton.textContent = '🖼️ Objektfoto hinzufügen';
+    const photoInput = document.createElement('input');
+    photoInput.type = 'file';
+    photoInput.accept = 'image/jpeg,image/png,image/webp,image/avif';
+    photoInput.hidden = true;
+    photoButton.onclick = () => photoInput.click();
+    photoInput.onchange = async () => {
+      photoButton.disabled = true;
+      try {
+        const result = await uploadPhoto(OBJEKT_ORDNER, photoInput.files[0]);
+        const image = document.getElementById('objectPhoto');
+        const figure = document.getElementById('objectHero');
+        if (image && figure) {
+          image.src = result.image_path + '?revision=' + result.revision;
+          figure.hidden = false;
+        }
+        document.getElementById('savedNote').textContent = `DB-Revision ${result.revision}`;
+      } catch (error) { alert('Foto konnte nicht gespeichert werden: ' + error.message); }
+      finally { photoButton.disabled = false; photoInput.value = ''; }
+    };
+    button.before(photoButton, photoInput);
+    const archive = !location.pathname.includes('/_ARCHIV/');
+    button.textContent = archive ? '🗄️ Archivieren' : '↩️ Reaktivieren';
+    button.onclick = async () => {
+      if (!confirm(`${OBJEKT_ORDNER} ${archive ? 'archivieren' : 'reaktivieren'}?`)) return;
+      button.disabled = true;
+      try {
+        await setArchived(OBJEKT_ORDNER, archive);
+        location.href = '/portfolio.html';
+      } catch (error) {
+        alert('Statusänderung fehlgeschlagen: ' + error.message);
+        button.disabled = false;
+      }
+    };
+  });
+})();
+</script>
 <script data-print-report>
 /* A compact, two-page print summary derived from the current live calculation. */
 (() => {
@@ -361,9 +518,8 @@ li{margin-bottom:8px}
       row('Kaltmiete / Monat',money(data.kaltmiete)),
       row('Leerstand / Jahr',`${data.leerstand.toLocaleString('de-DE')} Wochen`),
       row('Nicht umlagefähige Kosten / Monat',money(hausgeldNichtUml)),
-      row('Voraussichtliche Erstattung/Nachzahlung Mieter',signed(data.nebenkostenVorauszahlung - (data.hausgeldNichtUmlEingegeben ? Math.max(0, data.hausgeld - data.hausgeldNichtUml) : data.hausgeld))),
-      row('Voraussichtliche Erstattung/Nachzahlung Mieter',signed(r.nebenkostenSaldoMonat)),
-      row('Instandhaltung / Monat',money(data.flaeche*data.instand)),
+      row('Voraussichtliche Erstattung/Nachzahlung Mieter',money(data.nebenkostenVorauszahlung - (data.hausgeldNichtUmlEingegeben ? Math.max(0, data.hausgeld - data.hausgeldNichtUml) : data.hausgeld))),
+      row('Instandhaltung / Jahr',money(data.flaeche*data.instand*12)),
       row('Kreditrate / Monat',canCalculate?money(result.rate):'–')
     ].join('');
     const riskCells = [...document.querySelectorAll('#tblRisiken tr')].slice(1).map(tr => {
@@ -445,18 +601,18 @@ li{margin-bottom:8px}
   <!-- ================= KOPF + EINGABEN ================= -->
   <div class="card">
     <h1>🏠 Objektname</h1>
+    <div class="sub" id="objectIdLabel">Objekt-ID wird geladen …</div>
+    <figure class="object-hero" id="objectHero" hidden><img id="objectPhoto" alt="Foto der Immobilie"><figcaption>Objektfoto aus der Anzeigenquelle</figcaption></figure>
+    <div class="box yellow" id="preliminaryNotice" hidden>Voranalyse aus einer Online-Anzeige: Angaben sind ungeprüft. Mietdaten, Unterlagen, Zustand und Rechtslage fehlen noch; daraus abgeleitete Kennzahlen sind keine belastbare Investmententscheidung.</div>
     <div class="sub">Kalkulationstool + Entscheidungsübersicht · Objektart · Adresse · Wohnfläche · Baujahr · Energie</div>
     <div class="external-link"><input id="externeUrl" type="url" data-persist="externeUrl" placeholder="https://..." aria-label="URL der Objektanzeige"><button id="externeLinkBtn" type="button" onclick="oeffneExterneObjektseite()" disabled>🔗 Öffnen</button></div>
 
     <div class="toolbar">
       <button class="btn" onclick="zumPortfolio()">🏠 Zum Portfolio</button>
       <button class="btn secondary" onclick="exportJson()">💾 State speichern (Download)</button>
-      <button class="btn secondary" onclick="document.getElementById('fileInput').click()">📂 State laden</button>
       <button id="archiveBtn" class="btn secondary" onclick="archiviereObjekt()">🗄️ Archivieren</button>
-      <button id="syncConnectBtn" class="btn secondary" type="button" onclick="verbindeAutoSync(this)">🔗 Ordner verbinden</button>
-      <span class="edit-hint" style="margin-left:6px">Änderungen bleiben im Browser gespeichert. Nach „Ordner verbinden“ wird zusätzlich die State-JSON im Objektordner synchronisiert. „State speichern“ lädt ein Backup herunter.</span>
+      <span class="edit-hint" style="margin-left:6px">Änderungen werden direkt in SQLite gespeichert. JSON ist nur ein Export des bestätigten DB-Stands.</span>
     </div>
-    <input type="file" id="fileInput" accept=".json" style="display:none" onchange="loadFile(event)">
 
     <h2>⚙️ Eingaben – hier anpassen, alles unten rechnet live <span class="edit-hint">(Begriffe mit gepunkteter Linie: Maus draufhalten für Erklärung)</span></h2>
     <div class="inputs">
@@ -564,7 +720,7 @@ li{margin-bottom:8px}
 
     <h2>13 · So nutzt du diese Datei für mehrere Immobilien</h2>
     <div class="box blue">
-      <b>Grundprinzip:</b> Jede Immobilie hat <b>einen eigenen Objektordner</b> mit <b>einer eigenen HTML-Datei</b> direkt darin. Die Datei speichert deine Änderungen automatisch im Browser (pro Datei ein eigener Speicher – keine Überschneidung zwischen Immobilien).
+      <b>Grundprinzip:</b> Jede Immobilie besitzt eine eindeutige Objekt-ID, einen eigenen Ordner und eine eigene HTML-Übersicht. Änderungen werden über den lokalen Projektserver direkt in SQLite gespeichert.
       <div class="table-scroll" tabindex="0" role="region" aria-label="Analysetabelle – horizontal scrollbar"><table style="margin-top:6px">
         <tr><th>Objektordner</th><th>Datei</th></tr>
         <tr><td>objekte/&lt;Objektname&gt;/</td><td><b>&lt;Objektname&gt;_Übersicht.html</b> ← diese Datei (nach dem Kopieren umbenennen)</td></tr>
@@ -572,11 +728,11 @@ li{margin-bottom:8px}
       </table></div>
     </div>
     <div class="box yellow">
-      <b>Wichtig – deine Änderungen sichern:</b> Der Browser-Speicher (localStorage) ist an <b>diesen Browser auf diesem PC</b> gebunden. Für dauerhafte Sicherung oder Weitergabe:
+      <b>Wichtig – deine Änderungen sichern:</b> Die Datenbank ist die einzige Quelle. Für die Zusammenarbeit zwischen Rechnern:
       <ul>
-        <li><b>„💾 State speichern (Download)"</b> klicken → Datei <code>&lt;Objektname&gt;_Übersicht_State.json</code> landet im <b>Download-Ordner</b> (das ist Browser-Standard und nicht änderbar)</li>
-        <li>Diese JSON-Datei <b>in diesen Objektordner verschieben</b> (neben die HTML-Datei) – z. B. per Explorer ausschneiden/einfügen</li>
-        <li>Beim Öffnen in einem anderen Browser/PC: „📂 State laden" → JSON auswählen → alles wieder da</li>
+        <li>Nach Änderungen auf diesem Rechner die versionierte <code>immo_datenbank.db</code> mit Git committen und pushen.</li>
+        <li>Auf dem anderen Rechner vor dem Bearbeiten pullen; niemals dieselbe DB gleichzeitig auf zwei Rechnern bearbeiten.</li>
+        <li>„💾 State speichern (Download)" erzeugt nur eine zusätzliche JSON-Exportkopie; sie wird nicht eingelesen.</li>
       </ul>
     </div>
     <div class="box green">
@@ -584,8 +740,8 @@ li{margin-bottom:8px}
       <ul>
         <li>1. Neuen Objektordner anlegen (z. B. <code>objekte/&lt;Name&gt;/</code>) mit Unterlagen-Ordner</li>
         <li>2. Diese HTML-Datei hineinkopieren und mir sagen: „Analysiere das Objekt &lt;Name&gt;"</li>
-        <li>3. Ich trage die Objekt-Zahlen als Standardwerte ein (Objektname + localStorage-Schlüssel werden angepasst)</li>
-        <li>4. Du bearbeitest live – Änderungen auto-gespeichert, per State-Download dauerhaft gesichert</li>
+        <li>3. Die Analyse legt eine eindeutige Objekt-ID und einen DB-Datensatz an.</li>
+        <li>4. Du bearbeitest live – Änderungen werden direkt in SQLite gespeichert.</li>
       </ul>
     </div>
 
@@ -598,11 +754,7 @@ li{margin-bottom:8px}
 
 <script>
 "use strict";
-// localStorage-Schlüssel wird aus dem Objektnamen abgeleitet – jede Immobilie hat ihren eigenen Speicher
-const OBJEKT_KEY = "objektname-key";
 const OBJEKT_ORDNER = "Objektname";
-const LS_KEY = "immo-" + OBJEKT_KEY + "-v1";
-const STATE_DATEINAME = "Objektname_Übersicht_State.json";
 const fmt = (v, d = 0) => (v === null || v === undefined || isNaN(v) ? "–" : v.toLocaleString("de-DE", { minimumFractionDigits: d, maximumFractionDigits: d }));
 const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, c => ({
   "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
@@ -1144,7 +1296,6 @@ function collectState() {
   s._risiken = getRisiken();
   return s;
 }
-const LIVE_CHANNEL = "BroadcastChannel" in window ? new BroadcastChannel("immo-live-state") : null;
 function applyState(s) {
   IDS.forEach(id => { if (s[id] !== undefined) document.getElementById(id).value = s[id]; });
   Object.keys(s).forEach(k => {
@@ -1175,19 +1326,14 @@ function oeffneExterneObjektseite() {
   if (!/^https?:\/\/\S+$/i.test(url)) { alert("Bitte zuerst eine gültige http(s)-URL eintragen."); return; }
   window.open(url, "_blank", "noopener");
 }
-let saveTimer = null;
 function saveState() {
-  clearTimeout(saveTimer);
-  saveTimer = setTimeout(() => {
-    try {
-      localStorage.setItem(LS_KEY, JSON.stringify(collectState()));
-      if (LIVE_CHANNEL) LIVE_CHANNEL.postMessage({ folder: OBJEKT_ORDNER, state: collectState() });
-      const n = document.getElementById("savedNote");
-      n.classList.add("show");
-      setTimeout(() => n.classList.remove("show"), 1200);
-      schreibeDbUndJson();
-    } catch (e) { /* localStorage nicht verfügbar */ }
-  }, 400);
+  ImmoDb.schedule(OBJEKT_ORDNER, collectState, (phase, info) => {
+    const note = document.getElementById("savedNote");
+    note.textContent = phase === "saved" ? `✓ In DB gespeichert · Revision ${info}` :
+      phase === "saving" ? "⏳ Speichere in DB …" :
+      phase === "conflict" ? "⚠ Andere Revision – bitte Seite neu laden" : "⚠ Nicht gespeichert – Server prüfen";
+    note.classList.add("show");
+  });
 }
 // ---------- DB-Sync (File System Access API) ----------
 // Handle wird in IndexedDB gespeichert und überlebt Reload.
@@ -1253,14 +1399,6 @@ async function getDbDir(interactive = false) {
     return null;
   }
 }
-async function verbindeAutoSync(button) {
-  const dir = await getDbDir(true);
-  if (!dir) return;
-  button.textContent = await schreibeDbUndJson() ? "✓ Ordner verbunden" : "⚠ Sync fehlgeschlagen";
-}
-document.addEventListener("DOMContentLoaded", async () => {
-  if (await getDbDir()) document.getElementById("syncConnectBtn").textContent = "✓ Ordner verbunden";
-});
 function zumPortfolio() {
   window.location.href = location.pathname.includes("/_ARCHIV/") ? "../../../portfolio.html" : "../../portfolio.html";
 }
@@ -1287,7 +1425,6 @@ async function archiviereObjekt() {
   try {
     const dir = await getDbDir(true);
     if (!dir) return;
-    await schreibeDbUndJson();
     const objekteDir = await dir.getDirectoryHandle("objekte", { create: false });
     const quelle = await objekteDir.getDirectoryHandle(OBJEKT_ORDNER, { create: false });
     const archiv = await objekteDir.getDirectoryHandle("_ARCHIV", { create: true });
@@ -1343,54 +1480,14 @@ function aktualisiereArchivButton() {
   button.onclick = archiviert ? reaktiviereObjekt : archiviereObjekt;
 }
 aktualisiereArchivButton();
-async function schreibeDbUndJson() {
-  // Schreibt State-JSON in den Objektordner (Fail-Safe) – überschreibt die bestehende Datei.
-  // Die SQLite-DB wird vom db_manager.py aus den JSONs synchronisiert:
-  //   python tools/db_manager.py sync
-  try {
-    const dir = await getDbDir();
-    if (!dir) return false;
-    const objekteDir = await dir.getDirectoryHandle("objekte", { create: false }); // NICHT anlegen – muss existieren!
-    const objDir = await objekteDir.getDirectoryHandle(OBJEKT_ORDNER, { create: false }); // muss existieren!
-    const jsonFile = await objDir.getFileHandle(STATE_DATEINAME, { create: true });
-    const writable = await jsonFile.createWritable();
-    await writable.write(JSON.stringify(collectState(), null, 2));
-    await writable.close();
-    console.log("✓ State-JSON überschrieben: objekte/" + OBJEKT_ORDNER + "/" + STATE_DATEINAME);
-    return true;
-  } catch (e) {
-    if (e.name === "NotFoundError") {
-      console.warn("Sync übersprungen: Objektordner 'objekte/" + OBJEKT_ORDNER + "' im gewählten Verzeichnis nicht gefunden.");
-    } else {
-      console.warn("DB/JSON-Sync übersprungen:", e.message);
-    }
-    return false;
-  }
-}
-function resetAll() {
-  if (!confirm("Alle Änderungen verwerfen und zur Analyse vom 16.09. zurücksetzen?")) return;
-  localStorage.removeItem(LS_KEY);
-  location.reload();
-}
-function exportJson() {
-  const blob = new Blob([JSON.stringify(collectState(), null, 2)], { type: "application/json" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = STATE_DATEINAME;
-  a.click(); URL.revokeObjectURL(a.href);
-}
-function loadFile(ev) {
-  const f = ev.target.files[0]; if (!f) return;
-  const rd = new FileReader();
-  rd.onload = e => {
-    try { applyState(JSON.parse(e.target.result)); saveState(); }
-    catch (err) { alert("Datei konnte nicht gelesen werden: " + err.message); }
-  };
-  rd.readAsText(f);
+function resetAll() { location.reload(); }
+async function exportJson() {
+  try { await ImmoDb.exportJson(OBJEKT_ORDNER); }
+  catch (error) { alert("DB-Export fehlgeschlagen: " + error.message); }
 }
 
 // ---------- Init ----------
-(function init() {
+(async function init() {
   // Tooltips an Eingabe-Labels injizieren (Texte zentral in TIPS)
   document.querySelectorAll("label.tip[data-tip]").forEach(lbl => {
     const t = TIPS[lbl.dataset.tip];
@@ -1415,9 +1512,25 @@ function loadFile(ev) {
   window.addEventListener("resize", closeTip);
   IDS.forEach(id => document.getElementById(id).value = DEFAULTS[id]);
   renderRisiken(RISIKEN_DEFAULT);
-  let saved = null;
-  try { saved = JSON.parse(localStorage.getItem(LS_KEY)); } catch (e) { }
-  if (saved) applyState(saved);
+  try {
+    const saved = await ImmoDb.load(OBJEKT_ORDNER);
+    applyState(saved.state);
+    document.getElementById("objectIdLabel").textContent = `Objekt-ID: ${saved.id}`;
+    document.getElementById("preliminaryNotice").hidden = !["quellenpruefung_offen", "abruf_blockiert"].includes(saved.analysis_status);
+    if (saved.analysis_status === "abruf_blockiert") document.getElementById("preliminaryNotice").textContent = "Die Anzeigenplattform hat den automatischen Abruf blockiert. Link und Objekt-ID sind gespeichert; bitte Angaben und Foto manuell ergänzen und mit Unterlagen prüfen.";
+    if (saved.image_path) {
+      document.getElementById("objectPhoto").src = saved.image_path;
+      document.getElementById("objectHero").hidden = false;
+    }
+    document.getElementById("savedNote").textContent = `DB-Revision ${saved.revision}`;
+  } catch (error) {
+    document.querySelectorAll(".inputs input, [contenteditable], .toolbar button").forEach(el => {
+      if (el.matches("[contenteditable]")) el.contentEditable = "false";
+      else el.disabled = true;
+    });
+    alert("Objekt konnte nicht aus SQLite geladen werden. Bitte lokalen Portfolio-Server starten.\n" + error.message);
+    return;
+  }
   render();
   document.addEventListener("input", e => {
     if (e.target.matches && e.target.matches(".inputs input")) { render(); saveState(); }

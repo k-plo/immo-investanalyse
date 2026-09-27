@@ -5,18 +5,15 @@ Immobilien-Datenbank-Manager (SQLite).
 
 Funktionen:
   init            – DB-Schema anlegen (idempotent)
-  import-json     – Objekt-State-JSON in die DB importieren (Upsert)
-  sync-json       – JSON-Dateien aller Objektordner einlesen -> DB aktualisieren
-  export-json     – DB -> JSON-Dateien schreiben (Fail-Safe-Restore)
-  check           – Konsistenzprüfung DB vs. JSON (Prüfsummen)
-  rating          – Ratings neu berechnen
+  sync            – Portfolio-Hülle aus der DB neu erzeugen (kein JSON-Import)
+  export-json     – DB -> expliziten JSON-Exportpfad schreiben
+  check           – SQLite-Integrität, Fremdschlüssel und UUIDs prüfen
   list            – Objekte mit Kerndaten + Rating anzeigen
   prune           – DB-Einträge ohne Objektordner löschen (mit Abfrage)
 
 Verwendung:
-  python db_manager.py import-json <pfad-zur-json>
-  python db_manager.py sync-json <objekte-root>
-  python db_manager.py export-json <objektname>
+  python db_manager.py sync
+  python db_manager.py export-json <objektname> <ziel.json>
   python db_manager.py check
   python db_manager.py rating
   python db_manager.py list
@@ -25,9 +22,8 @@ Verwendung:
 import json
 import sqlite3
 import sys
-import hashlib
-import re
 import html
+import uuid
 from pathlib import Path
 from datetime import datetime
 
@@ -39,6 +35,11 @@ SCHEMA = """
 CREATE TABLE IF NOT EXISTS objekte (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT UNIQUE NOT NULL,
+    public_id TEXT UNIQUE,
+    display_name TEXT,
+    source_url TEXT,
+    analysis_status TEXT,
+    image_path TEXT,
     adresse TEXT,
     objektart TEXT,
     baujahr REAL,
@@ -47,13 +48,15 @@ CREATE TABLE IF NOT EXISTS objekte (
     kaufpreis REAL,
     wohnflaeche REAL,
     preis_pro_m2 REAL,
+    grundstuecksflaeche REAL,
     status TEXT,
     html_pfad TEXT,
     json_pfad TEXT,
     json_hash TEXT,
     state_json TEXT,
     erstellt_am TEXT,
-    geaendert_am TEXT
+    geaendert_am TEXT,
+    revision INTEGER NOT NULL DEFAULT 0
 );
 CREATE TABLE IF NOT EXISTS kalkulation (
     objekt_id INTEGER PRIMARY KEY REFERENCES objekte(id) ON DELETE CASCADE,
@@ -131,12 +134,24 @@ def init_db():
         conn.execute("ALTER TABLE objekte ADD COLUMN json_hash TEXT")
     if "state_json" not in vorhandene_spalten:
         conn.execute("ALTER TABLE objekte ADD COLUMN state_json TEXT")
+    if "grundstuecksflaeche" not in vorhandene_spalten:
+        conn.execute("ALTER TABLE objekte ADD COLUMN grundstuecksflaeche REAL")
+    if "revision" not in vorhandene_spalten:
+        conn.execute("ALTER TABLE objekte ADD COLUMN revision INTEGER NOT NULL DEFAULT 0")
+    for column in ("public_id", "display_name", "source_url", "analysis_status", "image_path"):
+        if column not in vorhandene_spalten:
+            conn.execute(f"ALTER TABLE objekte ADD COLUMN {column} TEXT")
+    conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_objekte_public_id ON objekte(public_id)")
+    conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_objekte_source_url ON objekte(source_url)")
+    for row in conn.execute("SELECT id,name FROM objekte WHERE public_id IS NULL OR public_id='' ").fetchall():
+        conn.execute("UPDATE objekte SET public_id=?,display_name=COALESCE(display_name,?) WHERE id=?",
+                     (str(uuid.uuid4()), row["name"], row["id"]))
     kalk_spalten = {r[1] for r in conn.execute("PRAGMA table_info(kalkulation)")}
     if "nebenkostenVorauszahlung" not in kalk_spalten:
         conn.execute("ALTER TABLE kalkulation ADD COLUMN nebenkostenVorauszahlung REAL")
-    conn.execute("INSERT OR REPLACE INTO meta (key, value) VALUES ('version', '1')")
+    conn.execute("INSERT OR IGNORE INTO meta (key, value) VALUES ('version', '1')")
     conn.execute("INSERT OR IGNORE INTO meta (key, value) VALUES ('erstellt', ?)", (now(),))
-    conn.execute("INSERT OR REPLACE INTO meta (key, value) VALUES ('letzte_initialisierung', ?)", (now(),))
+    conn.execute("INSERT OR IGNORE INTO meta (key, value) VALUES ('letzte_initialisierung', ?)", (now(),))
     conn.commit()
     conn.close()
     print(f"✓ DB initialisiert: {DB_PATH}")
@@ -269,124 +284,8 @@ def f(x):
     except (ValueError, TypeError):
         return None
 
-# ---------------------------------------------------------------- Import ---
-def import_json(path: str) -> None:
-    """Importiert ein State-JSON in die DB (Upsert)."""
-    p = Path(path).resolve()
-    state_bytes = p.read_bytes()
-    state = json.loads(state_bytes.decode("utf-8"))
-    state_hash = hashlib.sha256(state_bytes).hexdigest()[:12]
-    name = p.parent.name  # Objektordner-Name
-    archiviert = "_ARCHIV" in p.parts
-    rel_objekt = p.parent.relative_to(BASE).as_posix()
-    # Objekt-Metadaten aus der 03_kalkulation.json lesen (Objektart, Baujahr, Zimmer …)
-    meta = {}
-    kal_path = p.parent / "analyse" / "03_kalkulation.json"
-    if kal_path.exists():
-        try:
-            kal_meta = json.loads(kal_path.read_text(encoding="utf-8"))
-            meta = kal_meta.get("objekt", {})
-        except Exception:
-            pass
-    conn = db()
-    conn.execute("INSERT OR IGNORE INTO objekte (name, erstellt_am) VALUES (?, ?)", (name, now()))
-    obj_id = conn.execute("SELECT id FROM objekte WHERE name = ?", (name,)).fetchone()[0]
-    # HTML-Dateiname: aus dem State-JSON ableiten (STATE_DATEINAME ohne "_State.json")
-    # oder: tatsächliche HTML-Datei im Objektordner suchen (endet auf "_Übersicht.html")
-    html_name = None
-    for h in p.parent.glob("*_Übersicht.html"):
-        html_name = h.name
-        break
-    if not html_name:
-        html_name = f"{name}_Übersicht.html"  # Fallback
-    conn.execute("""UPDATE objekte SET kaufpreis=?, wohnflaeche=?, preis_pro_m2=?,
-                    adresse=?, objektart=?, baujahr=?, zimmer=?, stellplaetze=?,
-                    html_pfad=?, json_pfad=?, json_hash=?, state_json=?, geaendert_am=? WHERE id=?""",
-                 (f(state.get("preis")), f(state.get("flaeche")),
-                  (f(state.get("preis")) / f(state.get("flaeche"))) if f(state.get("preis")) and f(state.get("flaeche")) else None,
-                  meta.get("adresse", ""), meta.get("objektart", ""),
-                  f(meta.get("baujahr")), f(meta.get("zimmer")), f(meta.get("stellplaetze")),
-                  f"{rel_objekt}/{html_name}",
-                  str(p), state_hash, json.dumps(state, ensure_ascii=False), now(), obj_id))
-    conn.execute("UPDATE objekte SET status=? WHERE id=?", ("archiviert" if archiviert else "aktiv", obj_id))
-    # Rating VOR der Kalkulation berechnen (brutto_rendite/cf_nach/coc werden
-    # dort mitgespeichert, damit portfolio.html sie anzeigen kann)
-    risiken_state = [(r[0], r[1], r[2], r[3]) for r in state.get("_risiken", [])]
-    rating = berechne_rating(state, risiken_state)
-    # Kalkulation (brutto_rendite/cf_nach/coc aus dem Rating übernehmen,
-    # damit portfolio.html sie anzeigen kann – vorher immer "–")
-    conn.execute("""INSERT OR REPLACE INTO kalkulation
-                    (objekt_id, preis, flaeche, renovierung, sanierung, grESt, notar, makler, sonstige,
-                     kaltmiete, hausgeld, nebenkostenVorauszahlung, hausgeldNichtUml, instand, leerstand, ek, zins, tilgung,
-                     gesamtinvest, brutto_rendite, netto_rendite, cf_vor, cf_nach, rate, coc,
-                     darlehen, ltv, break_even_miete, max_preis, spielraum, geaendert_am)
-                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
-                 (obj_id, f(state.get("preis")), f(state.get("flaeche")), f(state.get("renovierung")),
-                  f(state.get("sanierung")), f(state.get("grESt")), f(state.get("notar")),
-                  f(state.get("makler")), f(state.get("sonstige")), f(state.get("kaltmiete")),
-                  f(state.get("hausgeld")), f(state.get("nebenkostenVorauszahlung")), f(state.get("hausgeldNichtUml")), f(state.get("instand")),
-                  f(state.get("leerstand")), f(state.get("ek")), f(state.get("zins")),
-                  f(state.get("tilgung")), rating.get("gesamtinvest"), rating.get("brutto_rendite"),
-                  rating.get("netto_rendite"), rating.get("cf_vor"), rating.get("cf_nach"), rating.get("rate"),
-                  rating.get("coc"), rating.get("darlehen"), rating.get("ltv"), rating.get("break_even_miete"),
-                  rating.get("max_preis"), rating.get("spielraum"), now()))
-    # Risiken
-    conn.execute("DELETE FROM risiken WHERE objekt_id = ?", (obj_id,))
-    for i, r in enumerate(state.get("_risiken", [])):
-        conn.execute("INSERT INTO risiken (objekt_id, text, kategorie, ampel, begruendung, reihenfolge) VALUES (?,?,?,?,?,?)",
-                     (obj_id, r[0], r[1], r[2], r[3], i))
-    # Offene Punkte + nächste Schritte
-    for tab, prefix in (("offene_punkte", "op"), ("naechste_schritte", "ns")):
-        conn.execute(f"DELETE FROM {tab} WHERE objekt_id = ?", (obj_id,))
-        muster = re.compile(rf"^p_{prefix}(.+)t$")
-        eintraege = []
-        for key, text in state.items():
-            treffer = muster.match(key)
-            if treffer:
-                suffix = treffer.group(1)
-                sortierung = (0, int(suffix)) if suffix.isdigit() else (1, suffix)
-                eintraege.append((sortierung, suffix, text))
-        for i, (_, suffix, text) in enumerate(sorted(eintraege), 1):
-            chk_key = f"p_{prefix}{suffix}"
-            conn.execute(f"INSERT INTO {tab} (objekt_id, text, erledigt, reihenfolge) VALUES (?,?,?,?)",
-                         (obj_id, text, 1 if state.get(chk_key) else 0, i))
-    # Chancen
-    conn.execute("""INSERT OR REPLACE INTO chancen (objekt_id, nachgewiesen, hypothese) VALUES (?,?,?)""",
-                 (obj_id, state.get("p_chancenNachgewiesen", ""), state.get("p_chancenHypothese", "")))
-    # Rating speichern (bereits oben berechnet)
-    conn.execute("""INSERT OR REPLACE INTO rating
-                    (objekt_id, brutto_note, cf_note, coc_note, risiko_note, datenqualitaet_note,
-                     punkte, gesamt_rating, berechnet_am) VALUES (?,?,?,?,?,?,?,?,?)""",
-                 (obj_id, rating["brutto_note"], rating["cf_note"], rating["coc_note"],
-                  rating["risiko_note"], rating["datenqualitaet_note"],
-                  rating["punkte"], rating["gesamt_rating"], now()))
-    conn.execute("INSERT OR REPLACE INTO meta (key, value) VALUES ('letzte_sync', ?)", (now(),))
-    conn.commit()
-    conn.close()
-    print(f"✓ Importiert: {name} → Rating {rating['gesamt_rating']} ({rating['punkte']} Pkt.)")
-
-def sync_json(objekte_root: str) -> None:
-    """Liest alle State-JSONs aus den Objektordnern und importiert sie."""
-    root = Path(objekte_root)
-    gefunden = 0
-    for ordner in sorted(root.iterdir()):
-        if not ordner.is_dir() or ordner.name.startswith("_"):
-            continue
-        for j in ordner.glob("*_Übersicht_State.json"):
-            import_json(str(j))
-            gefunden += 1
-    archiv_root = root / "_ARCHIV"
-    if archiv_root.is_dir():
-        for ordner in sorted(archiv_root.iterdir()):
-            if not ordner.is_dir():
-                continue
-            for j in ordner.glob("*_Übersicht_State.json"):
-                import_json(str(j))
-                gefunden += 1
-    print(f"✓ {gefunden} Objekt(e) synchronisiert.")
-
-def export_json(objektname: str) -> None:
-    """Schreibt die DB-Daten eines Objekts zurück ins JSON (Fail-Safe-Restore)."""
+# Historischer JSON-Import entfernt: SQLite ist die einzige Eingabequelle.\ndef export_json(objektname: str, ziel: str) -> None:
+    """Schreibt eine JSON-Kopie in einen expliziten Exportpfad; DB bleibt unverändert."""
     conn = db()
     row = conn.execute("SELECT * FROM objekte WHERE lower(name) = lower(?)", (objektname,)).fetchone()
     if not row:
@@ -399,7 +298,9 @@ def export_json(objektname: str) -> None:
         state = json.loads(obj["state_json"] or "{}")
     except (TypeError, ValueError):
         state = {}
-    state.update({"_tool": "immo-db-export", "_version": 1, "_objekt_ordner": obj["name"]})
+    state.update({"_tool": "immo-db-export", "_version": 1,
+                  "_objekt_ordner": obj["name"], "_object_id": obj["public_id"],
+                  "_revision": obj["revision"]})
     for feld in ("preis", "flaeche", "renovierung", "sanierung", "grESt", "notar", "makler",
                  "sonstige", "kaltmiete", "hausgeld", "nebenkostenVorauszahlung", "hausgeldNichtUml", "instand",
                  "leerstand", "ek", "zins", "tilgung"):
@@ -429,32 +330,21 @@ def export_json(objektname: str) -> None:
     if chance:
         state["p_chancenNachgewiesen"] = chance["nachgewiesen"] or ""
         state["p_chancenHypothese"] = chance["hypothese"] or ""
-    out = Path(obj["json_pfad"]) if obj["json_pfad"] else BASE / "objekte" / obj["name"] / f"{obj['name']}_Übersicht_State.json"
+    out = Path(ziel).resolve()
+    if out == Path(obj["json_pfad"] or "").resolve():
+        raise ValueError("Der frühere State-Pfad darf nicht als Exportziel überschrieben werden")
     payload = json.dumps(state, indent=2, ensure_ascii=False)
     out.write_text(payload, encoding="utf-8")
-    neuer_hash = hashlib.sha256(out.read_bytes()).hexdigest()[:12]
-    conn.execute("UPDATE objekte SET json_hash=?, state_json=?, json_pfad=?, geaendert_am=? WHERE id=?",
-                 (neuer_hash, json.dumps(state, ensure_ascii=False), str(out.resolve()), now(), obj_id))
-    conn.commit()
     print(f"✓ Exportiert: {out}")
     conn.close()
 
 def check() -> None:
-    """Konsistenzprüfung: DB vs. JSON-Prüfsummen."""
+    """Prüft nur die maßgebliche SQLite-Datenbank."""
     conn = db()
-    objekte = conn.execute("SELECT id, name, json_pfad, json_hash FROM objekte").fetchall()
-    print("KONSISTENZPRÜFUNG")
-    for o in objekte:
-        p = Path(o["json_pfad"])
-        if not p.exists():
-            print(f"  ⚠️ {o['name']}: JSON fehlt ({p})")
-            continue
-        j_hash = hashlib.sha256(p.read_bytes()).hexdigest()[:12]
-        db_hash = o["json_hash"]
-        kal = conn.execute("SELECT geaendert_am FROM kalkulation WHERE objekt_id = ?", (o["id"],)).fetchone()
-        symbol = "✓" if db_hash == j_hash else "⚠️"
-        status = "synchron" if db_hash == j_hash else f"abweichend (DB {db_hash or 'ohne Hash'}, Datei {j_hash})"
-        print(f"  {symbol} {o['name']}: {status}, DB-Stand {kal['geaendert_am'] if kal else '–'}")
+    integrity = conn.execute("PRAGMA integrity_check").fetchone()[0]
+    foreign_keys = conn.execute("PRAGMA foreign_key_check").fetchall()
+    without_id = conn.execute("SELECT name FROM objekte WHERE public_id IS NULL OR public_id='' ").fetchall()
+    print(f"SQLite-Integrität: {integrity}; Fremdschlüssel-Fehler: {len(foreign_keys)}; Objekte ohne ID: {len(without_id)}")
     conn.close()
 
 def list_objekte() -> None:
@@ -480,8 +370,7 @@ def list_objekte() -> None:
     conn.close()
 
 def sync_portfolio() -> None:
-    """sync-json + portfolio_generator in einem Aufruf."""
-    sync_json(str(BASE / "objekte"))
+    """Erzeugt die Portfolio-Hülle aus der Datenbank, ohne JSON einzulesen."""
     import importlib.util
     spec = importlib.util.spec_from_file_location("pg", BASE / "tools" / "portfolio_generator.py")
     mod = importlib.util.module_from_spec(spec)
@@ -549,26 +438,22 @@ def main():
         return
     cmd = sys.argv[1]
     if not DB_PATH.exists() and cmd != "init":
-        init_db()
+        raise SystemExit("Datenbank fehlt. Bitte die versionierte immo_datenbank.db wiederherstellen.")
     if cmd == "init":
         init_db()
-    elif cmd == "import-json" and len(sys.argv) > 2:
-        init_db()
-        import_json(sys.argv[2])
-    elif cmd == "sync-json" and len(sys.argv) > 2:
-        init_db()
-        sync_json(sys.argv[2])
+    elif cmd in ("import-json", "sync-json"):
+        raise SystemExit("JSON-Import ist nach der DB-Migration deaktiviert. SQLite ist die einzige Quelle.")
     elif cmd == "sync":
         init_db()
         sync_portfolio()
-    elif cmd == "export-json" and len(sys.argv) > 2:
-        export_json(sys.argv[2])
+    elif cmd == "export-json" and len(sys.argv) > 3:
+        export_json(sys.argv[2], sys.argv[3])
     elif cmd == "check":
         check()
     elif cmd == "list":
         list_objekte()
     elif cmd == "rating":
-        print("Rating wird bei jedem import-json automatisch neu berechnet.")
+        print("Ratings werden bei jeder DB-Speicherung automatisch neu berechnet.")
     elif cmd == "prune":
         prune(auto_yes="--yes" in sys.argv)
     else:
