@@ -13,6 +13,12 @@
     if (item.grundstuecksflaeche > 0) return '🌳 ' + Math.round(item.grundstuecksflaeche).toLocaleString('de-DE') + ' m²';
     return item.objektart ? '🏠 ' + item.objektart : '';
   }
+  function propertyType(item) {
+    const type = (item.objektart || '').toLowerCase();
+    if (/(wohnung|\betw\b|apartment)/.test(type)) return '🏢 Wohnung';
+    if (/(haus|bungalow|\befh\b|villa)/.test(type)) return '🏠 Haus';
+    return '🏘️ Immobilie';
+  }
   function card(item) {
     const rating = item.gesamt_rating || '?';
     const preliminary = ['quellenpruefung_offen','abruf_blockiert'].includes(item.analysis_status);
@@ -22,8 +28,8 @@
       ? '≈ ' + (item.kaltmiete / item.wohnflaeche).toLocaleString('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' €/m²' : '';
     const photo = item.image_path && /^\/objekte\/[a-z0-9äöüß_-]+\/titelbild\.(jpg|png|webp|avif)$/i.test(item.image_path)
       ? `<div class="karte-photo-bg" style="background-image:url('${esc(item.image_path)}')"></div>` : '';
-    return `<a class="karte${photo ? ' has-photo' : ''}" data-rating="${esc(rating)}" href="${href}" style="display:block;text-decoration:none;color:inherit">${photo}
-      <div class="karte-head"><div class="karte-name">${esc(item.display_name || item.name)}</div><div class="rating-badge" style="background:${ratingBg[rating] || '#e8ecf3'};color:${ratingColor[rating] || '#5a6a85'}">${preliminary ? 'Vorprüfung' : rating === '?' ? 'Offen' : esc(rating)}</div></div>
+    return `<a class="karte${photo ? ' has-photo' : ''}" data-rating="${esc(rating)}" href="${href}">${photo}
+      <div class="karte-head"><div class="karte-title"><div class="karte-name">${esc(item.display_name || item.name)}</div><span class="karte-type">${propertyType(item)}</span></div><div class="rating-badge" style="background:${ratingBg[rating] || '#e8ecf3'};color:${ratingColor[rating] || '#5a6a85'}">${preliminary ? 'Vorprüfung' : rating === '?' ? 'Offen' : esc(rating)}</div></div>
       <div class="karte-sub">${esc(item.objektart)} · ${esc(item.adresse)}<br><small>Objekt-ID: ${esc(item.public_id)}</small></div>
       <div class="karte-details"><span>📐 ${item.wohnflaeche == null ? '–' : Math.round(item.wohnflaeche)} m²</span><span>📅 BJ ${item.baujahr == null ? '–' : Math.round(item.baujahr)}</span><span>🛏 ${item.zimmer == null ? '–' : Math.round(item.zimmer)} Zi.</span><span>${esc(detail(item))}</span></div>
       <div class="karte-kpis"><div><span class="l">Kaufpreis</span><span class="v">${eur(item.kaufpreis)}</span><span class="s">${perM2(item.kaufpreis,item.wohnflaeche)} /m²</span></div>
