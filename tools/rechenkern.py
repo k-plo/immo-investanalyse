@@ -40,9 +40,10 @@ def default_data() -> dict:
         },
         "laufende_kosten": {
             "hausgeld_monatlich_eur": 250.0,
+            "nebenkostenvorauszahlung_monatlich_eur": None,
             "nicht_umlagefaehige_kosten_monatlich_eur": 60.0,
             "verwaltung_prozent_von_miete": 0.0,   # bei ETW im Hausgeld
-            "instandhaltung_eur_pro_m2_jahr": None,
+            "instandhaltung_eur_pro_m2_monat": None,
         },
         "finanzierung": {
             "eigenkapital_eur": 50000.0,
@@ -119,9 +120,10 @@ def normalisiere_daten(data: dict) -> dict:
         },
         "laufende_kosten": {
             "hausgeld_monatlich_eur": wert("hausgeld"),
+            "nebenkostenvorauszahlung_monatlich_eur": wert("nebenkostenVorauszahlung"),
             "nicht_umlagefaehige_kosten_monatlich_eur": wert("hausgeldNichtUml"),
             "verwaltung_prozent_von_miete": wert("verwaltung"),
-            "instandhaltung_eur_pro_m2_jahr": wert("instand"),
+            "instandhaltung_eur_pro_m2_monat": wert("instand"),
         },
         "finanzierung": {
             "eigenkapital_eur": wert("ek"),
@@ -178,11 +180,20 @@ def berechne(d: dict) -> dict:
     leerstand_faktor = max(0.0, 1.0 - n(miete.get("leerstand_wochen_pro_jahr")) / 52.0)
     r["miete_effektiv"] = jahres_kalt * leerstand_faktor
     hg = n(lk.get("hausgeld_monatlich_eur"))
-    hg_nicht_uml = n(lk.get("nicht_umlagefaehige_kosten_monatlich_eur"))
+    hg_nicht_uml_roh = lk.get("nicht_umlagefaehige_kosten_monatlich_eur")
+    vorauszahlung = n(lk.get("nebenkostenvorauszahlung_monatlich_eur"))
+    hg_nicht_uml = (max(0.0, hg - vorauszahlung)
+                    if hg_nicht_uml_roh in (None, "")
+                    else n(hg_nicht_uml_roh))
+    umlagefaehige_kosten = (max(0.0, hg - hg_nicht_uml)
+                            if hg_nicht_uml_roh not in (None, "")
+                            else hg)
+    r["nebenkosten_saldo_monat"] = vorauszahlung - umlagefaehige_kosten
+    r["nebenkosten_saldo_jahr"] = r["nebenkosten_saldo_monat"] * 12.0
     r["hausgeld_umlagefaehig_jahr"] = max(0.0, hg - hg_nicht_uml) * 12.0  # trägt der Mieter
     r["hausgeld_nicht_uml_jahr"] = hg_nicht_uml * 12.0
     r["verwaltung_jahr"] = jahres_kalt * n(lk.get("verwaltung_prozent_von_miete")) / 100.0
-    r["instandhaltung_jahr"] = flaeche * n(lk.get("instandhaltung_eur_pro_m2_jahr"))
+    r["instandhaltung_jahr"] = flaeche * n(lk.get("instandhaltung_eur_pro_m2_monat")) * 12.0
     r["netto_miete"] = (r["miete_effektiv"] - r["hausgeld_nicht_uml_jahr"]
                         - r["verwaltung_jahr"] - r["instandhaltung_jahr"])
 

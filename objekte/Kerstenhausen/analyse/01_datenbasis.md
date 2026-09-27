@@ -42,7 +42,7 @@
 | Eigenkapital | 20.000 € | NUTZER-VORGABE | User-Vorgabe 17.09. |
 | Zinssatz | 3,5 % (Marktmitte) | ANNAHME | CHECK24-Beispielrechnung 3,02–3,77 % (10 J. Festzins, Stand 16.09.2026); Live-Recherche am 18.09. ergab nur Beispielrechnungen (4,67–5,55 % bei 12/20 J. Bindung, Vergleich.de/Dr. Klein) – ⚠️ Zinsniveau scheinbar gestiegen, bei Finanzierungsgespräch frisch prüfen! |
 | Tilgung | 2,0 % | NUTZER-VORGABE | User-Vorgabe 17.09. |
-| Instandhaltung | 10 % der KM | NUTZER-VORGABE | User-Vorgabe 17.09. |
+| Instandhaltung | 5,00 €/m²/Monat | OBJEKTBEWERTUNG | Baujahr 1954, Energieklasse H und offener Sanierungsbedarf; Richtwertspanne für ältere Bestandsimmobilien 2,00–5,00 €/m²/Monat nach Verband Privater Bauherren über Interhyp, abgerufen 25.09.2026. |
 | Leerstand | 4 Wochen/Jahr | NUTZER-VORGABE | User-Vorgabe 17.09. |
 
 ## 4. Miete (ABGELEITET – HYPOTHESE)

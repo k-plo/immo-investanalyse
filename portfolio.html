@@ -350,7 +350,7 @@ function noteRisiko(ampeln) {
 }
 function noteDatenqualitaet(s) {
   const felder = ["preis", "flaeche", "renovierung", "sanierung", "grESt", "notar",
-    "makler", "kaltmiete", "hausgeld", "hausgeldNichtUml", "instand",
+    "makler", "kaltmiete", "hausgeld", "nebenkostenVorauszahlung", "hausgeldNichtUml", "instand",
     "leerstand", "ek", "zins", "tilgung"];
   const gefuellt = felder.filter(f => Object.prototype.hasOwnProperty.call(s, f) && s[f] !== null && s[f] !== undefined && s[f] !== "").length;
   let p = gefuellt / felder.length * 100;
@@ -366,13 +366,15 @@ function noteDatenqualitaet(s) {
 function berechneRatingJs(s, risiken) {
   const km = num(s.kaltmiete), preis = num(s.preis);
   const felder = ["preis", "flaeche", "renovierung", "sanierung", "grESt", "notar",
-    "makler", "sonstige", "kaltmiete", "hausgeld", "hausgeldNichtUml",
+    "makler", "sonstige", "kaltmiete", "hausgeld", "nebenkostenVorauszahlung", "hausgeldNichtUml",
     "instand", "leerstand", "ek", "zins", "tilgung"];
   const wert = feld => num(s[feld]) ?? 0;
   const brutto = preis > 0 ? km * 12 / preis * 100 : null;
   const ek = num(s.ek), zins = num(s.zins), tilg = num(s.tilgung);
   const lf = 1 - wert("leerstand") / 52;
-  const hg = wert("hausgeldNichtUml");
+  const hg = s.hausgeldNichtUml !== null && s.hausgeldNichtUml !== undefined && s.hausgeldNichtUml !== ""
+    ? wert("hausgeldNichtUml")
+    : Math.max(0, wert("hausgeld") - wert("nebenkostenVorauszahlung"));
   const hgTotal = wert("hausgeld");
   const instJahr = wert("flaeche") * wert("instand");
   let cfNach = null, coc = null, gesamtinvest = null;

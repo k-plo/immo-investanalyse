@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS kalkulation (
     objekt_id INTEGER PRIMARY KEY REFERENCES objekte(id) ON DELETE CASCADE,
     preis REAL, flaeche REAL, renovierung REAL, sanierung REAL,
     grESt REAL, notar REAL, makler REAL, sonstige REAL,
-    kaltmiete REAL, hausgeld REAL, hausgeldNichtUml REAL,
+    kaltmiete REAL, hausgeld REAL, nebenkostenVorauszahlung REAL, hausgeldNichtUml REAL,
     instand REAL, leerstand REAL, ek REAL, zins REAL, tilgung REAL,
     gesamtinvest REAL, brutto_rendite REAL, netto_rendite REAL,
     cf_vor REAL, cf_nach REAL, rate REAL, coc REAL,
@@ -131,6 +131,9 @@ def init_db():
         conn.execute("ALTER TABLE objekte ADD COLUMN json_hash TEXT")
     if "state_json" not in vorhandene_spalten:
         conn.execute("ALTER TABLE objekte ADD COLUMN state_json TEXT")
+    kalk_spalten = {r[1] for r in conn.execute("PRAGMA table_info(kalkulation)")}
+    if "nebenkostenVorauszahlung" not in kalk_spalten:
+        conn.execute("ALTER TABLE kalkulation ADD COLUMN nebenkostenVorauszahlung REAL")
     conn.execute("INSERT OR REPLACE INTO meta (key, value) VALUES ('version', '1')")
     conn.execute("INSERT OR IGNORE INTO meta (key, value) VALUES ('erstellt', ?)", (now(),))
     conn.execute("INSERT OR REPLACE INTO meta (key, value) VALUES ('letzte_initialisierung', ?)", (now(),))
@@ -181,7 +184,7 @@ def note_risiko(ampeln: list) -> tuple:
 def note_datenqualitaet(state: dict) -> tuple:
     """Anteil BELEGT/EINGABE vs. ANNAHME/UNBEKANNT + offene 🔴-Punkte."""
     felder = ["preis", "flaeche", "renovierung", "sanierung", "grESt", "notar",
-              "makler", "kaltmiete", "hausgeld", "hausgeldNichtUml", "instand",
+              "makler", "kaltmiete", "hausgeld", "nebenkostenVorauszahlung", "hausgeldNichtUml", "instand",
               "leerstand", "ek", "zins", "tilgung"]
     gefuellt = sum(1 for f in felder if f in state and state.get(f) not in (None, ""))
     basis = len(felder)
@@ -205,7 +208,7 @@ def berechne_rating(state: dict, risiken: list) -> dict:
         except (ValueError, TypeError):
             return None
     felder = ["preis", "flaeche", "renovierung", "sanierung", "grESt", "notar",
-              "makler", "sonstige", "kaltmiete", "hausgeld", "hausgeldNichtUml",
+              "makler", "sonstige", "kaltmiete", "hausgeld", "nebenkostenVorauszahlung", "hausgeldNichtUml",
               "instand", "leerstand", "ek", "zins", "tilgung"]
     werte = {feld: f(state.get(feld)) or 0 for feld in felder}
     km, preis = werte["kaltmiete"], werte["preis"]
@@ -215,8 +218,8 @@ def berechne_rating(state: dict, risiken: list) -> dict:
     if preis > 0 and werte["flaeche"] > 0:
         ek, tilg, zins = werte["ek"], werte["tilgung"], werte["zins"]
         lf = 1 - werte["leerstand"] / 52
-        hg = werte["hausgeldNichtUml"]
-        inst_jahr = werte["flaeche"] * werte["instand"]
+        hg = werte["hausgeldNichtUml"] if state.get("hausgeldNichtUml") not in (None, "") else max(0, werte["hausgeld"] - werte["nebenkostenVorauszahlung"])
+        inst_jahr = werte["flaeche"] * werte["instand"] * 12
         hg_total = werte["hausgeld"]
         nk_proz = werte["grESt"] + werte["notar"] + werte["makler"]
         fix = werte["renovierung"] + werte["sanierung"] + werte["sonstige"]
@@ -314,14 +317,14 @@ def import_json(path: str) -> None:
     # damit portfolio.html sie anzeigen kann – vorher immer "–")
     conn.execute("""INSERT OR REPLACE INTO kalkulation
                     (objekt_id, preis, flaeche, renovierung, sanierung, grESt, notar, makler, sonstige,
-                     kaltmiete, hausgeld, hausgeldNichtUml, instand, leerstand, ek, zins, tilgung,
+                     kaltmiete, hausgeld, nebenkostenVorauszahlung, hausgeldNichtUml, instand, leerstand, ek, zins, tilgung,
                      gesamtinvest, brutto_rendite, netto_rendite, cf_vor, cf_nach, rate, coc,
                      darlehen, ltv, break_even_miete, max_preis, spielraum, geaendert_am)
                     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
                  (obj_id, f(state.get("preis")), f(state.get("flaeche")), f(state.get("renovierung")),
                   f(state.get("sanierung")), f(state.get("grESt")), f(state.get("notar")),
                   f(state.get("makler")), f(state.get("sonstige")), f(state.get("kaltmiete")),
-                  f(state.get("hausgeld")), f(state.get("hausgeldNichtUml")), f(state.get("instand")),
+                  f(state.get("hausgeld")), f(state.get("nebenkostenVorauszahlung")), f(state.get("hausgeldNichtUml")), f(state.get("instand")),
                   f(state.get("leerstand")), f(state.get("ek")), f(state.get("zins")),
                   f(state.get("tilgung")), rating.get("gesamtinvest"), rating.get("brutto_rendite"),
                   rating.get("netto_rendite"), rating.get("cf_vor"), rating.get("cf_nach"), rating.get("rate"),
@@ -398,7 +401,7 @@ def export_json(objektname: str) -> None:
         state = {}
     state.update({"_tool": "immo-db-export", "_version": 1, "_objekt_ordner": obj["name"]})
     for feld in ("preis", "flaeche", "renovierung", "sanierung", "grESt", "notar", "makler",
-                 "sonstige", "kaltmiete", "hausgeld", "hausgeldNichtUml", "instand",
+                 "sonstige", "kaltmiete", "hausgeld", "nebenkostenVorauszahlung", "hausgeldNichtUml", "instand",
                  "leerstand", "ek", "zins", "tilgung"):
         state[feld] = kal[feld] if kal[feld] is not None else ""
     risiken = conn.execute("SELECT text, kategorie, ampel, begruendung FROM risiken WHERE objekt_id = ? ORDER BY reihenfolge", (obj_id,)).fetchall()

@@ -94,7 +94,7 @@ body{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fo
 .wrap{max-width:1240px;margin:auto;min-width:0}
 h1{font-size:clamp(26px,3.3vw,42px);line-height:1.2;letter-spacing:-.045em;font-weight:750;color:var(--ink);margin:0 0 12px}
 .sub{font-size:13px;line-height:1.7;color:var(--muted);margin-bottom:24px}
-.wrap::before{content:"IMMOBILIEN / INVESTMENT ANALYSE";display:block;font-size:10px;font-weight:750;letter-spacing:.18em;color:var(--accent);margin-bottom:18px}
+.wrap::before{content:"IMMOBILIEN-INVESTMENT-ANALYSE";display:block;font-size:10px;font-weight:750;letter-spacing:.18em;color:var(--accent);margin-bottom:18px}
 button,input,select{font:inherit}
 code{overflow-wrap:anywhere}
 .box,.sub,.field label,.field .tag{overflow-wrap:anywhere}
@@ -158,8 +158,8 @@ footer,.footer{font-size:11px;line-height:1.8;color:var(--muted);border-top:1px 
 h2{font-size:16px;line-height:1.6;letter-spacing:-.015em;text-transform:none;color:var(--ink);border-bottom:1px solid var(--line);padding-bottom:12px;margin:34px 0 18px}
 .card>h2:first-child{margin-top:0}
 .inputs{grid-template-columns:repeat(4,minmax(0,1fr));gap:20px 18px}
-.field{min-width:0;gap:7px}
-.field label{font-size:12px;color:#405b68;min-height:38px;line-height:1.5}
+.field{min-width:0;gap:4px}
+.field label{font-size:12px;color:#405b68;min-height:0;padding-bottom:4px;line-height:1.3}
 .field input{font-size:16px;font-weight:650;min-height:46px;padding:11px 13px;border:1px solid #ccdadf;border-radius:10px;background:#f8fafb;color:var(--ink)}
 .field input:focus{border-color:var(--accent);box-shadow:0 0 0 3px #116d7214}
 .field .tag{font-size:10px;line-height:1.6;color:var(--muted)}
@@ -328,11 +328,12 @@ li{margin-bottom:8px}
     const heading = document.querySelector('.wrap h1')?.textContent.replace(/^\s*🏠\s*/, '').trim() || 'Immobilienanalyse';
     const meta = document.querySelector('.wrap .sub')?.textContent.trim() || '';
     const date = new Date().toLocaleDateString('de-DE');
-    const missing = ['renovierung','sanierung','kaltmiete','hausgeld','hausgeldNichtUml'].filter(isEmpty);
+    const missing = ['renovierung','sanierung','kaltmiete','hausgeld','nebenkostenVorauszahlung','hausgeldNichtUml'].filter(isEmpty);
     const rentMissing = isEmpty('kaltmiete');
     const canCalculate = Boolean(result.berechenbar);
     const income = data.kaltmiete * 12 * (1 - data.leerstand / 52);
-    const operating = data.hausgeldNichtUml * 12 + data.flaeche * data.instand;
+    const hausgeldNichtUml = data.hausgeldNichtUmlEingegeben ? data.hausgeldNichtUml : Math.max(0, data.hausgeld - data.nebenkostenVorauszahlung);
+    const operating = hausgeldNichtUml * 12 + data.flaeche * data.instand * 12;
     let balance = canCalculate ? result.darlehen : 0;
     let cumIncome = 0, cumExpense = 0;
     const years = Array.from({length:10}, (_,i) => {
@@ -357,8 +358,10 @@ li{margin-bottom:8px}
     const operations = [
       row('Kaltmiete / Monat',money(data.kaltmiete)),
       row('Leerstand / Jahr',`${data.leerstand.toLocaleString('de-DE')} Wochen`),
-      row('Nicht umlagefähige Kosten / Monat',money(data.hausgeldNichtUml)),
-      row('Instandhaltung / Jahr',money(data.flaeche*data.instand)),
+      row('Nicht umlagefähige Kosten / Monat',money(hausgeldNichtUml)),
+      row('Voraussichtliche Erstattung/Nachzahlung Mieter',signed(data.nebenkostenVorauszahlung - (data.hausgeldNichtUmlEingegeben ? Math.max(0, data.hausgeld - data.hausgeldNichtUml) : data.hausgeld))),
+      row('Voraussichtliche Erstattung/Nachzahlung Mieter',signed(r.nebenkostenSaldoMonat)),
+      row('Instandhaltung / Monat',money(data.flaeche*data.instand)),
       row('Kreditrate / Monat',canCalculate?money(result.rate):'–')
     ].join('');
     const riskCells = [...document.querySelectorAll('#tblRisiken tr')].slice(1).map(tr => {
@@ -464,9 +467,10 @@ li{margin-bottom:8px}
       <div class="field"><label class="tip" data-tip="makler">Makler (%)<span class="tipbox"></span></label><input id="makler" type="number" step="0.01"><span class="tag" contenteditable="true" data-persist="tag-makler">BELEGT · Ebay 3,57 % inkl. MwSt.</span></div>
       <div class="field"><label class="tip" data-tip="sonstige">Sonstige Erwerbskosten (€)<span class="tipbox"></span></label><input id="sonstige" type="number" step="500"><span class="tag" contenteditable="true" data-persist="tag-sonstige">z. B. Gutachten</span></div>
       <div class="field"><label class="tip" data-tip="kaltmiete">Kaltmiete/Monat (€)<span class="tipbox"></span></label><input id="kaltmiete" type="number" step="10"><span class="tag" contenteditable="true" data-persist="tag-kaltmiete">AUSSTEHEND · recherchieren</span></div>
-      <div class="field"><label class="tip" data-tip="hausgeld">Hausgeld/Betriebskosten/Monat (€)</label><input id="hausgeld" type="number" step="10"><span class="tag" contenteditable="true" data-persist="tag-hausgeld">ANNAHME · Richtwert ca. 1,00 €/m²/Monat</span></div>
+      <div class="field"><label class="tip" data-tip="nebenkostenVorauszahlung">Nebenkostenvorauszahlung Mieter/Monat (€)</label><input id="nebenkostenVorauszahlung" type="number" step="10"><span class="tag" contenteditable="true" data-persist="tag-nebenkostenVorauszahlung">UNBEKANNT · Mietvertrag erforderlich</span></div>
+      <div class="field"><label class="tip" data-tip="hausgeld">Hausgeld/Betriebskosten gesamt/Monat (€)</label><input id="hausgeld" type="number" step="10"><span class="tag" contenteditable="true" data-persist="tag-hausgeld">ANNAHME · Richtwert ca. 1,00 €/m²/Monat</span></div>
       <div class="field"><label class="tip" data-tip="hausgeldNichtUml">davon nicht umlagefähig (€)<span class="tipbox"></span></label><input id="hausgeldNichtUml" type="number" step="5"><span class="tag" contenteditable="true" data-persist="tag-hausgeldNichtUml">Verwaltung, Rücklage</span></div>
-      <div class="field"><label class="tip" data-tip="instand">Instandhaltung (€/m²/Jahr)<span class="tipbox"></span></label><input id="instand" type="number" step="0.5"><span class="tag" contenteditable="true" data-persist="tag-instand">BEWERTET: 25 €/m²/Jahr · Baujahr 1954, Sanierungsbedarf</span></div>
+      <div class="field"><label class="tip" data-tip="instand">Instandhaltung (€/m²/Monat)<span class="tipbox"></span></label><input id="instand" type="number" step="0.1"><span class="tag" contenteditable="true" data-persist="tag-instand">OBJEKTBEWERTUNG: 5,00 €/m²/Monat · Baujahr 1954, Energieklasse H, Sanierungsbedarf</span></div>
       <div class="field"><label class="tip" data-tip="leerstand">Leerstand (Wochen/Jahr)<span class="tipbox"></span></label><input id="leerstand" type="number" step="0.5"><span class="tag" contenteditable="true" data-persist="tag-leerstand">NUTZER-VORGABE: 4 Wo.</span></div>
       <div class="field"><label class="tip" data-tip="ek">Eigenkapital (€)<span class="tipbox"></span></label><input id="ek" type="number" step="1000"><span class="tag" contenteditable="true" data-persist="tag-ek">NUTZER-VORGABE: 20.000 €</span></div>
       <div class="field"><label class="tip" data-tip="zins">Zinssatz (%)<span class="tipbox"></span></label><input id="zins" type="number" step="0.01"><span class="tag" contenteditable="true" data-persist="tag-zins">ANNAHME · Marktmitte, frisch prüfen ⚠️</span></div>
@@ -610,17 +614,17 @@ const cls = v => v > 0.005 ? "pos" : v < -0.005 ? "neg" : "neu";
 const DEFAULTS = {
   preis: 152100, flaeche: 117, renovierung: null, sanierung: null,
   grESt: 6.0, notar: 2.0, makler: 3.57, sonstige: 0,
-  kaltmiete: null, hausgeld: null, hausgeldNichtUml: null, instand: 25, leerstand: 4,
+  kaltmiete: null, hausgeld: null, nebenkostenVorauszahlung: null, hausgeldNichtUml: null, instand: 5, leerstand: 4,
   ek: 20000, zins: 3.5, tilgung: 2.0
 };
 // Felder, die ANNAHME sind und leer starten (Variante A: keine erfundenen Zahlen)
-const ANNAHME_FELDER = ["renovierung", "sanierung", "hausgeld", "hausgeldNichtUml", "instand", "leerstand", "ek", "tilgung"];
+const ANNAHME_FELDER = ["renovierung", "sanierung", "hausgeld", "nebenkostenVorauszahlung", "hausgeldNichtUml", "instand", "leerstand", "ek", "tilgung"];
 const IDS = Object.keys(DEFAULTS);
 // Lesbare Namen für "ausstehend"-Meldungen
 const FELDLABEL = {
   renovierung: "Renovierung", sanierung: "Sanierung", kaltmiete: "Kaltmiete",
-  hausgeld: "Hausgeld/Betriebskosten", hausgeldNichtUml: "Hausgeld (nicht umlagefähig)",
-  instand: "Instandhaltung €/m²/Jahr", leerstand: "Leerstand", ek: "Eigenkapital",
+  hausgeld: "Hausgeld/Betriebskosten gesamt", nebenkostenVorauszahlung: "Nebenkostenvorauszahlung Mieter", hausgeldNichtUml: "Hausgeld (nicht umlagefähig)",
+  instand: "Instandhaltung €/m²/Monat", leerstand: "Leerstand", ek: "Eigenkapital",
   tilgung: "Tilgung", preis: "Kaufpreis", flaeche: "Wohnfläche",
   grESt: "Grunderwerbsteuer", notar: "Notar/Grundbuch", makler: "Makler", sonstige: "Sonstige Kosten", zins: "Zinssatz"
 };
@@ -631,6 +635,7 @@ function readInputs() {
     const raw = String(document.getElementById(id).value).trim();
     d[id] = raw === "" ? 0 : (parseFloat(raw.replace(",", ".")) || 0);
   });
+  d.hausgeldNichtUmlEingegeben = String(document.getElementById("hausgeldNichtUml").value).trim() !== "";
   // Leere optionale Felder gelten als 0; nur die Rechengrundlage ist zwingend.
   d.fehlend = ["preis", "flaeche"].filter(id => d[id] <= 0);
   d.vollstaendig = d.fehlend.length === 0;
@@ -662,9 +667,18 @@ function calc(d) {
   const jahresKalt = d.kaltmiete * 12;
   const lf = 1 - d.leerstand / 52;
   r.mieteEffektiv = jahresKalt * lf;
-  r.hgNichtUmlJahr = d.hausgeldNichtUml * 12;
+  const hausgeldNichtUml = d.hausgeldNichtUmlEingegeben
+    ? d.hausgeldNichtUml
+    : Math.max(0, d.hausgeld - d.nebenkostenVorauszahlung);
+  const umlagefaehigeKosten = d.hausgeldNichtUmlEingegeben
+    ? Math.max(0, d.hausgeld - d.hausgeldNichtUml)
+    : d.hausgeld;
+  r.nebenkostenSaldoMonat = d.nebenkostenVorauszahlung - umlagefaehigeKosten;
+  r.nebenkostenSaldoJahr = r.nebenkostenSaldoMonat * 12;
+  r.hgUmlagefaehigJahr = Math.max(0, d.hausgeld - hausgeldNichtUml) * 12;
+  r.hgNichtUmlJahr = hausgeldNichtUml * 12;
   r.verwaltungJahr = 0;
-  r.instandJahr = d.flaeche * d.instand;
+  r.instandJahr = d.flaeche * d.instand * 12;
   r.netto = r.mieteEffektiv - r.hgNichtUmlJahr - r.verwaltungJahr - r.instandJahr;
   r.cfVor = r.netto / 12;
 
@@ -819,6 +833,7 @@ function render() {
     ? row([{ v: tip("Kennzahl", "status"), num: false }, { v: "Wert", num: true }], true) +
       row([tip("Bruttorendite", "bruttoR"), { v: pct(r.bruttoR), num: true }]) +
       row([tip("Nettorendite", "nettoR"), { v: pct(r.nettoR), num: true }]) +
+      row([tip("Voraussichtliche Erstattung/Nachzahlung Mieter", "nebenkostenSaldo"), { v: r.nebenkostenSaldoMonat > 0 ? "+" + eur(r.nebenkostenSaldoMonat) + " Erstattung" : r.nebenkostenSaldoMonat < 0 ? "−" + eur(Math.abs(r.nebenkostenSaldoMonat)) + " Nachzahlung" : "0 € ausgeglichen", num: true }]) +
       row([tip("Cashflow vor Finanzierung", "cfVor"), { v: eur(r.cfVor) + "/M", num: true }]) +
       row([tip("Monatsrate (" + pct(d.zins) + " Zins + " + pct(d.tilgung) + " Tilgung)", "rate"), { v: "−" + eur(r.rate) + "/M", num: true }]) +
       row([tip("<b>Cashflow nach Finanzierung</b>", "cf"), { v: `<b class="${cls(r.cf)}">${eur(r.cf)}/M</b>`, num: true }]) +
@@ -930,8 +945,10 @@ const TIPS = {
   sonstige: "Weitere Einmalkosten: Gutachten, Umzug, Möbel, Notgroschen-Polster. Meist klein, aber einplanen.",
   kaltmiete: "Die Miete OHNE Nebenkosten, die der Mieter monatlich zahlt. Basis für alle Rendite-Berechnungen. Aktuell eine Empfehlung (ABGELEITET aus Regionalvergleich) – nicht belegt!",
   hausgeld: "Gesamtbetrag für Hausgeld/Betriebskosten. Bei einem EFH z. B. Grundsteuer, Gebäudeversicherung und Müllgebühren. Richtwert als Startannahme: ca. 1,00 €/m² Wohnfläche pro Monat. 0 bleibt 0; Verwaltung wird nicht automatisch ergänzt.",
-  hausgeldNichtUml: "Der Teil des Hausgelds, den der Mieter NICHT übernehmen kann: Verwaltungskosten, Instandhaltungsrücklage. Das frisst deine Miete direkt – je höher, desto schlechter für den Cashflow.",
-  instand: "Bewerteter Ansatz: 25 €/m²/Jahr. Das Baujahr 1954, Energieklasse H, die Öl-Zentralheizung und der offene Sanierungsbedarf rechtfertigen einen Zuschlag über den Richtwert von 18,62 €/m²/Jahr für Gebäude ab 32 Jahren. Vergleich: 12 €/m²/Jahr Mindestansatz, 14,58 €/m² ab 22 Jahren, 18,62 €/m² ab 32 Jahren. Berechnung: Wohnfläche × Eingabe.",
+  nebenkostenVorauszahlung: "Monatliche Vorauszahlung des Mieters auf umlagefähige Betriebskosten. Sie ist keine zusätzliche Kaltmiete und wird dem Hausgeld gegenübergestellt.",
+  nebenkostenSaldo: "Positiv: voraussichtliche Erstattung an den Mieter. Negativ: voraussichtliche Nachzahlung des Mieters. Null: Vorauszahlung entspricht den Kosten.",
+  hausgeldNichtUml: "Eigentümeranteil: Hausgeld gesamt minus Mietervorauszahlung. Ein ausdrücklich eingetragener Wert bleibt maßgeblich.",
+  instand: "Objektbezogener Ansatz: 5,00 €/m²/Monat. Baujahr 1954, Energieklasse H, Öl-Zentralheizung und offener Sanierungsbedarf sprechen für den oberen Rand der Spanne von 2,00–5,00 €/m²/Monat für ältere Bestandsimmobilien. Quelle: Verband Privater Bauherren über Interhyp, abgerufen 25.09.2026. Berechnung: Wohnfläche × Eingabe.",
   leerstand: "Zeit pro Jahr, in der die Wohnung leer steht (Umzüge, Mietersuche). Jede Woche kostet Miete – der Rechner zieht sie anteilig ab. Realistisch: 2–6 Wochen/Jahr.",
   ek: "Eigenkapital = dein eigenes Geld, das du einbringst. Mehr EK = kleinere Rate, aber weniger Rendite auf dein Geld. Weniger EK = größere Rate, höheres Risiko. Das Tool berechnet unten Break-Even-EK je Zinsszenario.",
   zins: "Der jährliche Zinssatz des Darlehens. Aktuelles Marktniveau recherchieren (z. B. CHECK24/FMH) und hier als Quelle eintragen. Bei hohem Beleihungsauslauf verlangen Banken mehr.",

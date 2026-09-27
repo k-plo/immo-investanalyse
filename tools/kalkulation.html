@@ -90,10 +90,11 @@
       <div class="grid2">
         <div class="field"><label>Kaltmiete ges./Monat (€)</label><input id="kaltmiete" type="number" placeholder="850"></div>
         <div class="field"><label>Marktübliche Miete (€)</label><input id="marktmiete" type="number" placeholder="0"><span class="hint">0 = unbekannt</span></div>
+        <div class="field"><label>Nebenkostenvorauszahlung Mieter/Monat (€)</label><input id="nebenkostenVorauszahlung" type="number" placeholder="Vorauszahlung laut Mietvertrag"><span class="hint">Umlagefähiger Anteil, den der Mieter monatlich vorauszahlt</span></div>
         <div class="field"><label>Hausgeld/Betriebskosten ges./Monat (€)</label><input id="hausgeld" type="number" placeholder="1,00 €/m² × Wohnfläche"><span class="hint">Bei EFH z. B. Grundsteuer, Versicherung, Müll; Richtwert ca. 1,00 €/m²/Monat</span></div>
         <div class="field"><label>davon nicht umlagefähig (€)</label><input id="hausgeldNichtUml" type="number" placeholder="60"><span class="hint">z. B. Verwaltung, Rücklage</span></div>
         <div class="field"><label>Verwaltung (% der KM)</label><input id="verwaltung" type="number" step="0.1" placeholder="0"><span class="hint">Nur eintragen, wenn Verwaltung zusätzlich anfällt; 0 wird als 0 gerechnet</span></div>
-        <div class="field"><label>Instandhaltung (€/m²/Jahr)</label><input id="instand" type="number" step="0.1" placeholder="nach Bewertung"><span class="hint">Wohnfläche × objektbezogener Ansatz; Richtwerte siehe Objektübersicht</span></div>
+        <div class="field"><label>Instandhaltung (€/m²/Monat)</label><input id="instand" type="number" step="0.1" placeholder="nach Bewertung"><span class="hint">Wohnfläche × objektbezogener Monatsansatz; Richtwerte siehe Objektübersicht</span></div>
         <div class="field"><label>Leerstand (Wochen/Jahr)</label><input id="leerstand" type="number" step="0.5" placeholder="0"><span class="hint">0 = voll vermietet (belegt)</span></div>
         <div class="field"><label>Mietrückstände (€)</label><input id="rueckstaende" type="number" placeholder="0"></div>
       </div>
@@ -180,6 +181,7 @@
 const F = id => parseFloat(String(document.getElementById(id).value).replace(",", ".")) || 0;
 const fmt = (v, d = 0) => v.toLocaleString("de-DE", { minimumFractionDigits: d, maximumFractionDigits: d });
 const eur = v => fmt(v, 0) + " €";
+const signedEur = v => (v < 0 ? "−" : "+") + eur(Math.abs(v));
 const pct = v => fmt(v, 2).replace(".", ",") + " %";
 const cls = v => v > 0.005 ? "pos" : v < -0.005 ? "neg" : "neu";
 
@@ -190,7 +192,8 @@ function readInputs() {
     preis: F("preis"), renovierung: F("renovierung"), sanierung: F("sanierung"), sonstige: F("sonstige"),
     grESt: F("grESt"), notar: F("notar"), makler: F("makler"),
     kaltmiete: F("kaltmiete"), marktmiete: F("marktmiete"),
-    hausgeld: F("hausgeld"), hausgeldNichtUml: F("hausgeldNichtUml"),
+    hausgeld: F("hausgeld"), nebenkostenVorauszahlung: F("nebenkostenVorauszahlung"), hausgeldNichtUml: F("hausgeldNichtUml"),
+    hausgeldNichtUmlEingegeben: String(document.getElementById("hausgeldNichtUml").value).trim() !== "",
     verwaltung: F("verwaltung"), instand: F("instand"),
     leerstandWochen: F("leerstand"), rueckstaende: F("rueckstaende"),
     ek: F("ek"), zins: F("zins"), tilgung: F("tilgung"), bindung: F("bindung"), finNk: F("finNk"),
@@ -220,10 +223,18 @@ function calc(d) {
   const jahresKalt = d.kaltmiete * 12;
   const leerstandFaktor = 1 - (d.leerstandWochen / 52);
   r.mieteEffektiv = jahresKalt * leerstandFaktor;
-  r.hausgeldUml = Math.max(0, d.hausgeld - d.hausgeldNichtUml) * 12; // umlagefähig: vom Mieter getragen
-  r.hausgeldNichtUmlJahr = d.hausgeldNichtUml * 12;
+  const hausgeldNichtUml = d.hausgeldNichtUmlEingegeben
+    ? d.hausgeldNichtUml
+    : Math.max(0, d.hausgeld - d.nebenkostenVorauszahlung);
+  const umlagefaehigeKosten = d.hausgeldNichtUmlEingegeben
+    ? Math.max(0, d.hausgeld - d.hausgeldNichtUml)
+    : d.hausgeld;
+  r.nebenkostenSaldoMonat = d.nebenkostenVorauszahlung - umlagefaehigeKosten;
+  r.nebenkostenSaldoJahr = r.nebenkostenSaldoMonat * 12;
+  r.hausgeldUml = Math.max(0, d.hausgeld - hausgeldNichtUml) * 12; // umlagefähig: vom Mieter getragen
+  r.hausgeldNichtUmlJahr = hausgeldNichtUml * 12;
   r.verwaltungJahr = jahresKalt * d.verwaltung / 100;
-  r.instandJahr = d.flaeche * d.instand;
+  r.instandJahr = d.flaeche * d.instand * 12;
   r.nettoMiete = r.mieteEffektiv - r.hausgeldNichtUmlJahr - r.verwaltungJahr - r.instandJahr;
 
   // --- Renditen ---
@@ -399,6 +410,7 @@ function render() {
     row([{ v: "Position", num: false }, { v: "pro Monat", num: true }, { v: "pro Jahr", num: true }], true) +
     row(["Kaltmiete (effektiv, abgl. Leerstand)", { v: eur(r.mieteEffektiv / 12), num: true }, { v: eur(r.mieteEffektiv), num: true }]) +
     row(["− Hausgeld, nicht umlagefähig", { v: "−" + eur(r.hausgeldNichtUmlJahr / 12), num: true }, { v: "−" + eur(r.hausgeldNichtUmlJahr), num: true }]) +
+    row(["Voraussichtliche Erstattung/Nachzahlung Mieter", { v: signedEur(r.nebenkostenSaldoMonat), num: true }, { v: signedEur(r.nebenkostenSaldoJahr), num: true }]) +
     row(["− Verwaltung", { v: "−" + eur(r.verwaltungJahr / 12), num: true }, { v: "−" + eur(r.verwaltungJahr), num: true }]) +
     row(["− Instandhaltungsrückstellung", { v: "−" + eur(r.instandJahr / 12), num: true }, { v: "−" + eur(r.instandJahr), num: true }]) +
     row(["<b>= Netto-Mieteinnahmen</b>", { v: "<b>" + eur(r.nettoMiete / 12) + "</b>", num: true }, { v: "<b>" + eur(r.nettoMiete) + "</b>", num: true }]) +
@@ -452,7 +464,7 @@ function render() {
 // ---------- Export / Import ----------
 function collectState() {
   const ids = ["objName","flaeche","einheiten","preis","renovierung","sanierung","sonstige","grESt","notar","makler",
-    "kaltmiete","marktmiete","hausgeld","hausgeldNichtUml","verwaltung","instand","leerstand","rueckstaende",
+    "kaltmiete","marktmiete","hausgeld","nebenkostenVorauszahlung","hausgeldNichtUml","verwaltung","instand","leerstand","rueckstaende",
     "ek","zins","tilgung","bindung","finNk","ruecklage","sonderumlage","zielBrutto","zielCashflow"];
   const raw = {};
   ids.forEach(id => raw[id] = document.getElementById(id).value);
@@ -472,9 +484,10 @@ function collectState() {
     },
     laufende_kosten: {
       hausgeld_monatlich_eur: d.hausgeld,
-      nicht_umlagefaehige_kosten_monatlich_eur: d.hausgeldNichtUml,
+      nebenkostenvorauszahlung_monatlich_eur: d.nebenkostenVorauszahlung,
+      nicht_umlagefaehige_kosten_monatlich_eur: d.hausgeldNichtUmlEingegeben ? d.hausgeldNichtUml : Math.max(0, d.hausgeld - d.nebenkostenVorauszahlung),
       verwaltung_prozent_von_miete: d.verwaltung,
-      instandhaltung_eur_pro_m2_jahr: d.instand
+      instandhaltung_eur_pro_m2_monat: d.instand
     },
     finanzierung: {
       eigenkapital_eur: d.ek, zinssatz_prozent: d.zins, tilgung_prozent: d.tilgung,
@@ -495,9 +508,10 @@ function applyState(s) {
       kaltmiete: s.miete?.kaltmiete_monatlich_eur, marktmiete: s.miete?.marktuebliche_miete_eur,
       leerstand: s.miete?.leerstand_wochen_pro_jahr, rueckstaende: s.miete?.mietrueckstaende_eur,
       hausgeld: s.laufende_kosten?.hausgeld_monatlich_eur,
+      nebenkostenVorauszahlung: s.laufende_kosten?.nebenkostenvorauszahlung_monatlich_eur,
       hausgeldNichtUml: s.laufende_kosten?.nicht_umlagefaehige_kosten_monatlich_eur,
       verwaltung: s.laufende_kosten?.verwaltung_prozent_von_miete,
-      instand: s.laufende_kosten?.instandhaltung_eur_pro_m2_jahr,
+      instand: s.laufende_kosten?.instandhaltung_eur_pro_m2_monat ?? ((s.laufende_kosten?.instandhaltung_eur_pro_m2_jahr ?? 0) / 12),
       ek: s.finanzierung?.eigenkapital_eur, zins: s.finanzierung?.zinssatz_prozent ?? s.finanzierung?.zins_prozent,
       tilgung: s.finanzierung?.tilgung_prozent, bindung: s.finanzierung?.zinsbindung_jahre,
       finNk: s.finanzierung?.finanzierungsnebenkosten_eur,

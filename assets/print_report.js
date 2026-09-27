@@ -30,11 +30,12 @@
     const heading = document.querySelector('.wrap h1')?.textContent.replace(/^\s*🏠\s*/, '').trim() || 'Immobilienanalyse';
     const meta = document.querySelector('.wrap .sub')?.textContent.trim() || '';
     const date = new Date().toLocaleDateString('de-DE');
-    const missing = ['renovierung','sanierung','kaltmiete','hausgeld','hausgeldNichtUml'].filter(isEmpty);
+    const missing = ['renovierung','sanierung','kaltmiete','hausgeld','nebenkostenVorauszahlung','hausgeldNichtUml'].filter(isEmpty);
     const rentMissing = isEmpty('kaltmiete');
     const canCalculate = Boolean(result.berechenbar);
     const income = data.kaltmiete * 12 * (1 - data.leerstand / 52);
-    const operating = data.hausgeldNichtUml * 12 + data.flaeche * data.instand;
+    const hausgeldNichtUml = data.hausgeldNichtUmlEingegeben ? data.hausgeldNichtUml : Math.max(0, data.hausgeld - data.nebenkostenVorauszahlung);
+    const operating = hausgeldNichtUml * 12 + data.flaeche * data.instand * 12;
     let balance = canCalculate ? result.darlehen : 0;
     let cumIncome = 0, cumExpense = 0;
     const years = Array.from({length:10}, (_,i) => {
@@ -59,8 +60,9 @@
     const operations = [
       row('Kaltmiete / Monat',money(data.kaltmiete)),
       row('Leerstand / Jahr',`${data.leerstand.toLocaleString('de-DE')} Wochen`),
-      row('Nicht umlagefähige Kosten / Monat',money(data.hausgeldNichtUml)),
-      row('Instandhaltung / Jahr',money(data.flaeche*data.instand)),
+      row('Nicht umlagefähige Kosten / Monat',money(hausgeldNichtUml)),
+      row('Voraussichtliche Erstattung/Nachzahlung Mieter',money(data.nebenkostenVorauszahlung - (data.hausgeldNichtUmlEingegeben ? Math.max(0, data.hausgeld - data.hausgeldNichtUml) : data.hausgeld))),
+      row('Instandhaltung / Jahr',money(data.flaeche*data.instand*12)),
       row('Kreditrate / Monat',canCalculate?money(result.rate):'–')
     ].join('');
     const riskCells = [...document.querySelectorAll('#tblRisiken tr')].slice(1).map(tr => {
