@@ -1,4 +1,42 @@
-# Immobilien-Investment-Analyse – Arbeitsanleitung
+<p align="center">
+  <img src="assets/kp-immobilien-logo.png" alt="KP Immobilien" width="220">
+</p>
+
+<h1 align="center">Immobilien-Investment-Analyse</h1>
+
+<p align="center">
+  <em>Nachvollziehbare Immobilienanalyse, Kalkulation und Portfolioverwaltung</em>
+</p>
+
+<p align="center">
+  <a href="https://github.com/k-plo/immo-investanalyse/tree/codex/portfolio-current-sync"><img src="https://img.shields.io/badge/Branch-codex%2Fportfolio--current--sync-116d72?style=flat-square" alt="Aktiver Branch"></a>
+  <img src="https://img.shields.io/badge/Datenbank-SQLite-116d72?style=flat-square" alt="SQLite">
+  <img src="https://img.shields.io/badge/Quelle-Datenbank%20priorit%C3%A4r-116d72?style=flat-square" alt="Datenbank als Quelle">
+</p>
+
+> Diese README ist die zentrale Arbeitsanleitung für das Projekt. Sie beschreibt Datenfluss, Ordnerstruktur, Analyseformat und den sicheren Ablauf auf mehreren Rechnern.
+
+## Schnellstart
+
+```bash
+git clone https://github.com/k-plo/immo-investanalyse.git
+cd immo-investanalyse
+git switch --track origin/codex/portfolio-current-sync
+python3 tools/local_server.py
+```
+
+Danach im Browser [http://127.0.0.1:8000/portfolio.html](http://127.0.0.1:8000/portfolio.html) öffnen. Unter Windows kann alternativ `start_portfolio.ps1` verwendet werden.
+
+### Inhaltsübersicht
+
+- [Portfolio und Datenbank](#0-portfolio-übersicht--datenbank)
+- [Arbeitsprozess](#1-so-arbeitest-du-mit-mir-prozess)
+- [Ordnerstruktur](#2-ordnerstruktur)
+- [Dokumenten-Checkliste](#3-dokumenten-checkliste-was-in-den-ordner-gehört)
+- [Datenqualität](#4-datenqualität--verbindliche-kennzeichnung)
+- [Investmentbericht](#5-investmentbericht--standardformat)
+- [Kalkulationstool](#6-kalkulationstool)
+- [Goldene Regeln](#7-goldene-regeln-gelten-für-jede-analyse)
 
 > **Ziel:** Aus einem Immobilienordner (Exposé, Grundbuch, Mietverträge, WEG-Unterlagen …) entsteht ein strukturierter, nachvollziehbarer Investmentbericht – plus ein Kalkulationstool für Wirtschaftlichkeit, Finanzierung und Stress-Tests.
 
@@ -13,6 +51,20 @@
 Änderungen in einer Objektübersicht werden automatisch über den lokalen Server in einer SQLite-Transaktion gespeichert. Jede Speicherung erhöht die Revision; bei konkurrierender Bearbeitung wird ein Konflikt gemeldet statt stillschweigend überschrieben. Das Portfolio lädt seine Karten bei jedem Öffnen und Aktualisieren aus `/api/portfolio`. Ohne laufenden Projektserver gibt es keinen Bearbeitungs-Fallback.
 
 **Mehrere Rechner mit Git:** Vor dem Bearbeiten `git pull --ff-only`; nach dem Bearbeiten den Server schließen, `python3 tools/db_manager.py check` ausführen, die Datenbankdatei und zugehörige Objektdateien committen und pushen. Auf dem zweiten Rechner erneut pullen. SQLite-Dateien lassen sich in Git nicht sinnvoll zeilenweise mergen: dieselbe DB darf nicht gleichzeitig auf zwei Rechnern bearbeitet werden. Die `-wal`/`-shm`-Dateien gehören nicht ins Repository.
+
+**Objektbilder:** Titelbilder liegen direkt im jeweiligen Objektordner, zum Beispiel `objekte/Arnsbach/titelbild.webp`, und werden mit Git versioniert. Die Datenbank enthält nur den Projektpfad zum Bild. Deshalb müssen Bilddatei und Datenbankänderung gemeinsam committed werden. Die Übersichten funktionieren auf anderen Rechnern nur über den lokalen Projektserver, nicht beim direkten Öffnen per `file://`.
+
+**Empfohlener Synchronisationsablauf:**
+
+```bash
+git switch codex/portfolio-current-sync
+git pull --ff-only
+# Änderungen lokal durchführen und Server anschließend beenden
+python3 tools/db_manager.py check
+git add immo_datenbank.db objekte/ assets/ portfolio.html tools/
+git commit -m "Analyse aktualisieren"
+git push origin codex/portfolio-current-sync
+```
 
 **Lokale Web-App starten:**
 
@@ -102,7 +154,7 @@ Immo/
     └── rechenkern.py              ← gleiche Logik in Python (prüfbar/nachvollziehbar)
 ```
 
-**� Standard-Analyse-Struktur (User-Vorgabe 21.09.2026, verbindlich für alle NEUEN Objekte):**
+**Standard-Analyse-Struktur (User-Vorgabe 21.09.2026, verbindlich für alle neuen Objekte):**
 
 Jede Objekt-Analyse besteht aus genau **5 Dateien** in `objekte/<Name>/analyse/`:
 
