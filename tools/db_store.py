@@ -76,6 +76,21 @@ def portfolio_rows() -> list[dict]:
     return [dict(row) for row in rows]
 
 
+def new_candidates() -> list[dict]:
+    """Find folders with documents that have no DB record yet (no JSON reads)."""
+    with closing(connection()) as conn:
+        known = {row[0] for row in conn.execute("SELECT name FROM objekte")}
+    result = []
+    for folder in sorted((BASE / "objekte").iterdir()):
+        if not folder.is_dir() or folder.name.startswith("_") or folder.name in known:
+            continue
+        documents = folder / "unterlagen"
+        count = sum(1 for item in documents.iterdir() if item.is_file()) if documents.is_dir() else 0
+        if count:
+            result.append({"name": folder.name, "documents": count})
+    return result
+
+
 def _number(value: object) -> float | None:
     if value is None or value == "":
         return None

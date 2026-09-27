@@ -23,7 +23,7 @@
     const photo = item.image_path && /^\/objekte\/[a-z0-9äöüß_-]+\/titelbild\.(jpg|png|webp|avif)$/i.test(item.image_path)
       ? `<div class="karte-photo-bg" style="background-image:url('${esc(item.image_path)}')"></div>` : '';
     return `<a class="karte${photo ? ' has-photo' : ''}" data-rating="${esc(rating)}" href="${href}" style="display:block;text-decoration:none;color:inherit">${photo}
-      <div class="karte-head"><div class="karte-name">${esc(item.display_name || item.name)}</div><div class="rating-badge" style="background:${ratingBg[rating] || '#e8ecf3'};color:${ratingColor[rating] || '#5a6a85'}">${preliminary ? 'Vorprüfung' : esc(rating)}</div></div>
+      <div class="karte-head"><div class="karte-name">${esc(item.display_name || item.name)}</div><div class="rating-badge" style="background:${ratingBg[rating] || '#e8ecf3'};color:${ratingColor[rating] || '#5a6a85'}">${preliminary ? 'Vorprüfung' : rating === '?' ? 'Offen' : esc(rating)}</div></div>
       <div class="karte-sub">${esc(item.objektart)} · ${esc(item.adresse)}<br><small>Objekt-ID: ${esc(item.public_id)}</small></div>
       <div class="karte-details"><span>📐 ${item.wohnflaeche == null ? '–' : Math.round(item.wohnflaeche)} m²</span><span>📅 BJ ${item.baujahr == null ? '–' : Math.round(item.baujahr)}</span><span>🛏 ${item.zimmer == null ? '–' : Math.round(item.zimmer)} Zi.</span><span>${esc(detail(item))}</span></div>
       <div class="karte-kpis"><div><span class="l">Kaufpreis</span><span class="v">${eur(item.kaufpreis)}</span><span class="s">${perM2(item.kaufpreis,item.wohnflaeche)} /m²</span></div>
@@ -60,7 +60,18 @@
       if (button) button.disabled = false;
     }
   };
-  window.neueObjekteAnalysieren = () => alert('Neue Objekte müssen im DB-gestützten Analyseprozess angelegt werden. State-JSON-Dateien werden nicht mehr als Quelle importiert.');
+  window.neueObjekteAnalysieren = async button => {
+    button.disabled = true;
+    try {
+      const response = await fetch('/api/new-candidates', {cache:'no-store'});
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const {items} = await response.json();
+      alert(items.length
+        ? 'Neue Objektordner mit Unterlagen:\n\n' + items.map(item => `${item.name} (${item.documents} Unterlagen)`).join('\n') + '\n\nBitte den Dokumenten-Analyseprozess starten; die neue Analyse muss einen DB-Datensatz mit Objekt-ID anlegen.'
+        : 'Keine neuen Objektordner mit Unterlagen gefunden. Bereits in SQLite erfasste Objekte werden übersprungen.');
+    } catch (error) { alert('Ordnerprüfung fehlgeschlagen: ' + error.message); }
+    finally { button.disabled = false; }
+  };
   window.importListing = async event => {
     event.preventDefault();
     const form = event.currentTarget;

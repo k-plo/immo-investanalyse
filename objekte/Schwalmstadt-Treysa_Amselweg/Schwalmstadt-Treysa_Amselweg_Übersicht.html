@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Arnsbach – Übersicht</title>
+<title>Schwalmstadt-Treysa Amselweg – Übersicht</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: "Segoe UI", Arial, sans-serif; font-size: 12px; color: #1a2332; line-height: 1.45; background: #e8edf4; padding: 20px 12px 60px; }
@@ -594,17 +594,17 @@ li{margin-bottom:8px}
 
 <button class="print-btn" onclick="window.print()">🖨️ Als PDF drucken</button>
 <div class="saved-note" id="savedNote">✓ Gespeichert</div>
-<script type="application/json" id="inspectionData">{"checks":["Heizung, Öltank und Kachelofen: Zustand, Wartung und Austauschbedarf prüfen.","Dach, Fenster, Kellerfeuchte, Bäder und Elektroinstallation auf Sanierungsbedarf prüfen.","Terrasse, Gartenanteil und Doppelcarport mit den zugeordneten Nutzungsrechten abgleichen."],"questions":["Welche Grundbuchlasten bestehen und welche werden vor dem Verkauf gelöscht?","Liegen aktuelle WEG-Abrechnungen, Wirtschaftsplan, Rücklagenstand und Beschlussprotokolle vor?","Wie hoch sind Hausgeld und nicht umlagefähige Kosten für genau diese Einheit?","Welche Schäden oder Sanierungen gab es zuletzt und welche Maßnahmen sind geplant?"]}</script>
+<script type="application/json" id="inspectionData">{"checks":["Dach, Fenster, Heizung, Feuchtigkeit und Elektroinstallation vor Ort dokumentieren.","Wohnfläche, Raumaufteilung und genehmigte Nutzung mit den Unterlagen abgleichen.","Erkennbaren Renovierungs- und Sanierungsbedarf für die Kalkulation notieren."],"questions":["Welche Unterlagen belegen Baujahr und Wohnfläche?","Gibt es bekannte Schäden oder bereits beschlossene Sanierungen?","Welche Mietverträge, Betriebskosten und Wartungsnachweise liegen vor?","Gibt es Grundbuchlasten, Dienstbarkeiten oder weitere Rechte Dritter?"]}</script>
 
 <div class="wrap">
 
   <!-- ================= KOPF + EINGABEN ================= -->
   <div class="card">
-    <h1>🏠 Arnsbach</h1>
+    <h1>🏠 Schwalmstadt-Treysa Amselweg</h1>
     <div class="sub" id="objectIdLabel">Objekt-ID wird geladen …</div>
     <figure class="object-hero" id="objectHero" hidden><img id="objectPhoto" alt="Foto der Immobilie"><figcaption>Objektfoto aus der Anzeigenquelle</figcaption></figure>
     <div class="box yellow" id="preliminaryNotice" hidden>Voranalyse aus einer Online-Anzeige: Angaben sind ungeprüft. Mietdaten, Unterlagen, Zustand und Rechtslage fehlen noch; daraus abgeleitete Kennzahlen sind keine belastbare Investmententscheidung.</div>
-    <div class="sub">Bungalow/EFH, WEG-Einheit 2 von 2 · Kerstenhausener Straße 2a · 178 m² · BJ 1994 · Energieklasse E</div>
+    <div class="sub">Kalkulationstool + Entscheidungsübersicht · Eigentumswohnung · Treysa, Schwalmstadt · 88 m² · Baujahr 1995 · Energieklasse C</div>
     <div class="external-link"><input id="externeUrl" type="url" data-persist="externeUrl" placeholder="https://..." aria-label="URL der Objektanzeige"><button id="externeLinkBtn" type="button" onclick="oeffneExterneObjektseite()" disabled>🔗 Öffnen</button></div>
 
     <div class="toolbar">
@@ -616,22 +616,22 @@ li{margin-bottom:8px}
 
     <h2>⚙️ Eingaben – hier anpassen, alles unten rechnet live <span class="edit-hint">(Begriffe mit gepunkteter Linie: Maus draufhalten für Erklärung)</span></h2>
     <div class="inputs">
-      <div class="field"><label class="tip" data-tip="preis">Angebotspreis (€)<span class="tipbox"></span></label><input id="preis" type="number" step="1000"><span class="tag" contenteditable="true" data-persist="tag-preis">BELEGT · Exposé S. 1</span></div>
-      <div class="field"><label class="tip" data-tip="flaeche">Wohnfläche (m²)<span class="tipbox"></span></label><input id="flaeche" type="number" step="0.1"><span class="tag" contenteditable="true" data-persist="tag-flaeche">BELEGT · Exposé/TE</span></div>
-      <div class="field"><label class="tip" data-tip="renovierung">Renovierung (€)<span class="tipbox"></span></label><input id="renovierung" type="number" step="1000"><span class="tag" contenteditable="true" data-persist="tag-renovierung">AUSSTEHEND · Kostenschätzung fehlt</span></div>
-      <div class="field"><label class="tip" data-tip="sanierung">Sanierung (€)<span class="tipbox"></span></label><input id="sanierung" type="number" step="1000"><span class="tag" contenteditable="true" data-persist="tag-sanierung">AUSSTEHEND · sanierungsbedürftig</span></div>
+      <div class="field"><label class="tip" data-tip="preis">Angebotspreis (€)<span class="tipbox"></span></label><input id="preis" type="number" step="1000"><span class="tag" contenteditable="true" data-persist="tag-preis">BELEGT · Exposé</span></div>
+      <div class="field"><label class="tip" data-tip="flaeche">Wohnfläche (m²)<span class="tipbox"></span></label><input id="flaeche" type="number" step="0.1"><span class="tag" contenteditable="true" data-persist="tag-flaeche">BELEGT · Exposé</span></div>
+      <div class="field"><label class="tip" data-tip="renovierung">Renovierung (€)<span class="tipbox"></span></label><input id="renovierung" type="number" step="1000"><span class="tag" contenteditable="true" data-persist="tag-renovierung">UNBEKANNT · Besichtigung erforderlich</span></div>
+      <div class="field"><label class="tip" data-tip="sanierung">Sanierung (€)<span class="tipbox"></span></label><input id="sanierung" type="number" step="1000"><span class="tag" contenteditable="true" data-persist="tag-sanierung">UNBEKANNT · WEG-Unterlagen fehlen</span></div>
       <div class="field"><label class="tip" data-tip="grESt">Grunderwerbsteuer (%)<span class="tipbox"></span></label><input id="grESt" type="number" step="0.1"><span class="tag" contenteditable="true" data-persist="tag-grESt">ANNAHME · Bundesland-Satz</span></div>
       <div class="field"><label class="tip" data-tip="notar">Notar + Grundbuch (%)<span class="tipbox"></span></label><input id="notar" type="number" step="0.1"><span class="tag" contenteditable="true" data-persist="tag-notar">ANNAHME · üblich 1,5–2,0 %</span></div>
-      <div class="field"><label class="tip" data-tip="makler">Makler (%)<span class="tipbox"></span></label><input id="makler" type="number" step="0.01"><span class="tag" contenteditable="true" data-persist="tag-makler">BELEGT · Exposé S. 5</span></div>
+      <div class="field"><label class="tip" data-tip="makler">Makler (%)<span class="tipbox"></span></label><input id="makler" type="number" step="0.01"><span class="tag" contenteditable="true" data-persist="tag-makler">BELEGT · Exposé</span></div>
       <div class="field"><label class="tip" data-tip="sonstige">Sonstige Erwerbskosten (€)<span class="tipbox"></span></label><input id="sonstige" type="number" step="500"><span class="tag" contenteditable="true" data-persist="tag-sonstige">z. B. Gutachten</span></div>
-      <div class="field"><label class="tip" data-tip="kaltmiete">Kaltmiete/Monat (€)<span class="tipbox"></span></label><input id="kaltmiete" type="number" step="10"><span class="tag" contenteditable="true" data-persist="tag-kaltmiete">UNBEKANNT · Orientierung 1.050 €</span></div>
+      <div class="field"><label class="tip" data-tip="kaltmiete">Kaltmiete/Monat (€)<span class="tipbox"></span></label><input id="kaltmiete" type="number" step="10"><span class="tag" contenteditable="true" data-persist="tag-kaltmiete">BELEGT · Immowelt-Exposé</span></div>
       <div class="field"><label class="tip" data-tip="nebenkostenVorauszahlung">Nebenkostenvorauszahlung Mieter/Monat (€)<span class="tipbox"></span></label><input id="nebenkostenVorauszahlung" type="number" step="10"><span class="tag" contenteditable="true" data-persist="tag-nebenkostenVorauszahlung">UNBEKANNT · Mietvertrag erforderlich</span></div>
-      <div class="field"><label class="tip" data-tip="hausgeld">Hausgeld/Betriebskosten gesamt/Monat (€)<span class="tipbox"></span></label><input id="hausgeld" type="number" step="10"><span class="tag" contenteditable="true" data-persist="tag-hausgeld">ANNAHME · Richtwert ca. 1,00 €/m²/Monat</span></div>
-      <div class="field"><label class="tip" data-tip="hausgeldNichtUml">davon nicht umlagefähig (€)<span class="tipbox"></span></label><input id="hausgeldNichtUml" type="number" step="5"><span class="tag" contenteditable="true" data-persist="tag-hausgeldNichtUml">UNBEKANNT · Rücklage fehlt</span></div>
-      <div class="field"><label class="tip" data-tip="instand">Instandhaltung (€/m²/Monat)<span class="tipbox"></span></label><input id="instand" type="number" step="0.1"><span class="tag" contenteditable="true" data-persist="tag-instand">OBJEKTBEWERTUNG: 2,50 €/m²/Monat · Baujahr 1994, Energieklasse E</span></div>
+      <div class="field"><label class="tip" data-tip="hausgeld">Hausgeld/Betriebskosten gesamt/Monat (€)<span class="tipbox"></span></label><input id="hausgeld" type="number" step="10"><span class="tag" contenteditable="true" data-persist="tag-hausgeld">BELEGT · Immowelt-Exposé</span></div>
+      <div class="field"><label class="tip" data-tip="hausgeldNichtUml">davon nicht umlagefähig (€)<span class="tipbox"></span></label><input id="hausgeldNichtUml" type="number" step="5"><span class="tag" contenteditable="true" data-persist="tag-hausgeldNichtUml">UNBEKANNT · Hausgeldabrechnung fehlt</span></div>
+      <div class="field"><label class="tip" data-tip="instand">Instandhaltung (€/m²/Monat)<span class="tipbox"></span></label><input id="instand" type="number" step="0.1"><span class="tag" contenteditable="true" data-persist="tag-instand">OBJEKTBEWERTUNG: 1,50 €/m²/Monat · Baujahr 1995, gepflegt</span></div>
       <div class="field"><label class="tip" data-tip="leerstand">Leerstand (Wochen/Jahr)<span class="tipbox"></span></label><input id="leerstand" type="number" step="0.5"><span class="tag" contenteditable="true" data-persist="tag-leerstand">NUTZER-VORGABE: 4 Wo.</span></div>
       <div class="field"><label class="tip" data-tip="ek">Eigenkapital (€)<span class="tipbox"></span></label><input id="ek" type="number" step="1000"><span class="tag" contenteditable="true" data-persist="tag-ek">NUTZER-VORGABE: 20.000 €</span></div>
-      <div class="field"><label class="tip" data-tip="zins">Zinssatz (%)<span class="tipbox"></span></label><input id="zins" type="number" step="0.01"><span class="tag" contenteditable="true" data-persist="tag-zins">MARKTINDIKATOR · 4,20 % / 10 J. · Interhyp 14.–20.09.2026</span></div>
+      <div class="field"><label class="tip" data-tip="zins">Zinssatz (%)<span class="tipbox"></span></label><input id="zins" type="number" step="0.01"><span class="tag" contenteditable="true" data-persist="tag-zins">UNBEKANNT · frisches Bankangebot erforderlich</span></div>
       <div class="field"><label class="tip" data-tip="tilgung">Tilgung (%)<span class="tipbox"></span></label><input id="tilgung" type="number" step="0.1"><span class="tag" contenteditable="true" data-persist="tag-tilgung">NUTZER-VORGABE: 2,0 %</span></div>
     </div>
   </div>
@@ -675,17 +675,17 @@ li{margin-bottom:8px}
     <div class="box green">
       <b>✅ Nachgewiesen:</b>
       <ul contenteditable="true" data-persist="chancenNachgewiesen">
-        <li>Kaufpreis <span data-bind="kpProM2">€/m²</span> (ABGELEITET)</li>
-        <li>Ebenerdiger Bungalow mit 5 Zimmern und 2 Bädern (BELEGT · Exposé)</li>
-        <li>Terrassen, Gartenanteil und Doppelcarport (BELEGT · Exposé/TE)</li>
+        <li>Kaufpreis <span data-bind="kpProM2">€/m²</span> (Bewertung, ABGELEITET)</li>
+        <li>Lage-Vorteile (BELEGT Exposé)</li>
+        <li>Ausstattungs-Highlights (BELEGT)</li>
       </ul>
     </div>
     <div class="box yellow">
       <b>❓ Hypothesen (zu prüfen):</b>
       <ul contenteditable="true" data-persist="chancenHypothese">
-        <li>Kaufpreis unter Marktwert (Vergleichsdaten fehlen)</li>
-        <li>Vermietung für Familien, WG oder Senioren</li>
-        <li>Wertsteigerung nach Sanierung (Kosten und Marktwert prüfen)</li>
+        <li>Kaufpreis unter Marktwert (Vergleichsdaten prüfen)</li>
+        <li>Mietsteigerungs-/Vermietungspotenzial</li>
+        <li>Wertsteigerung durch Sanierung</li>
       </ul>
     </div>
 
@@ -697,19 +697,19 @@ li{margin-bottom:8px}
 
     <h2>10 · Offene Punkte <span class="edit-hint">(abhaken – Status wird gespeichert)</span></h2>
     <ul id="offenePunkte" data-list-persist="offenePunkte">
-      <li class="chk-li"><input type="checkbox" class="chk" data-persist="op1"><span class="txt" contenteditable="true" data-persist="op1t">🔴 Grundbuchlasten und Löschungsbewilligungen notariell klären</span><button class="btn delete" type="button" title="Punkt löschen" aria-label="Punkt löschen" onclick="deleteListItem(this)">×</button></li>
-      <li class="chk-li"><input type="checkbox" class="chk" data-persist="op2"><span class="txt" contenteditable="true" data-persist="op2t">🔴 Sanierungsumfang, Heizung, Tank und Kachelofen bewerten</span><button class="btn delete" type="button" title="Punkt löschen" aria-label="Punkt löschen" onclick="deleteListItem(this)">×</button></li>
-      <li class="chk-li"><input type="checkbox" class="chk" data-persist="op3"><span class="txt" contenteditable="true" data-persist="op3t">🔴 WEG-Unterlagen, Hausgeld und Rücklage anfordern</span><button class="btn delete" type="button" title="Punkt löschen" aria-label="Punkt löschen" onclick="deleteListItem(this)">×</button></li>
+      <li class="chk-li"><input type="checkbox" class="chk" data-persist="op1"><span class="txt" contenteditable="true" data-persist="op1t">🔴 Offener Punkt 1 (kritisch)</span><button class="btn delete" type="button" title="Punkt löschen" aria-label="Punkt löschen" onclick="deleteListItem(this)">×</button></li>
+      <li class="chk-li"><input type="checkbox" class="chk" data-persist="op2"><span class="txt" contenteditable="true" data-persist="op2t">🟡 Offener Punkt 2 (wichtig)</span><button class="btn delete" type="button" title="Punkt löschen" aria-label="Punkt löschen" onclick="deleteListItem(this)">×</button></li>
+      <li class="chk-li"><input type="checkbox" class="chk" data-persist="op3"><span class="txt" contenteditable="true" data-persist="op3t">🟢 Offener Punkt 3 (optional)</span><button class="btn delete" type="button" title="Punkt löschen" aria-label="Punkt löschen" onclick="deleteListItem(this)">×</button></li>
     </ul>
     <button class="btn secondary" type="button" onclick="addOffenerPunkt()">+ Offenen Punkt hinzufügen</button>
 
     <h2>11 · Nächste Schritte <span class="edit-hint">(abhaken)</span></h2>
     <ul id="schritte" data-list-persist="schritte">
-      <li class="chk-li"><input type="checkbox" class="chk" data-persist="ns1"><span class="txt" contenteditable="true" data-persist="ns1t">1. Fragenliste an Makler/Verkäufer senden</span><button class="btn delete" type="button" title="Schritt löschen" aria-label="Schritt löschen" onclick="deleteListItem(this)">×</button></li>
-      <li class="chk-li"><input type="checkbox" class="chk" data-persist="ns2"><span class="txt" contenteditable="true" data-persist="ns2t">2. Besichtigung mit Fokus auf Sanierungsumfang durchführen</span><button class="btn delete" type="button" title="Schritt löschen" aria-label="Schritt löschen" onclick="deleteListItem(this)">×</button></li>
-      <li class="chk-li"><input type="checkbox" class="chk" data-persist="ns3"><span class="txt" contenteditable="true" data-persist="ns3t">3. Lesbare WEG-, Grundbuch-, Plan- und Energiedokumente anfordern</span><button class="btn delete" type="button" title="Schritt löschen" aria-label="Schritt löschen" onclick="deleteListItem(this)">×</button></li>
-      <li class="chk-li"><input type="checkbox" class="chk" data-persist="ns4"><span class="txt" contenteditable="true" data-persist="ns4t">4. Vergleichsmieten und Finanzierung klären</span><button class="btn delete" type="button" title="Schritt löschen" aria-label="Schritt löschen" onclick="deleteListItem(this)">×</button></li>
-      <li class="chk-li"><input type="checkbox" class="chk" data-persist="ns5"><span class="txt" contenteditable="true" data-persist="ns5t">5. Kalkulation erst mit belegten Werten neu rechnen</span><button class="btn delete" type="button" title="Schritt löschen" aria-label="Schritt löschen" onclick="deleteListItem(this)">×</button></li>
+      <li class="chk-li"><input type="checkbox" class="chk" data-persist="ns1"><span class="txt" contenteditable="true" data-persist="ns1t">1. Fragenliste an Makler senden</span><button class="btn delete" type="button" title="Schritt löschen" aria-label="Schritt löschen" onclick="deleteListItem(this)">×</button></li>
+      <li class="chk-li"><input type="checkbox" class="chk" data-persist="ns2"><span class="txt" contenteditable="true" data-persist="ns2t">2. Besichtigung durchführen</span><button class="btn delete" type="button" title="Schritt löschen" aria-label="Schritt löschen" onclick="deleteListItem(this)">×</button></li>
+      <li class="chk-li"><input type="checkbox" class="chk" data-persist="ns3"><span class="txt" contenteditable="true" data-persist="ns3t">3. Unterlagen anfordern (Grundbuch, Energieausweis, …)</span><button class="btn delete" type="button" title="Schritt löschen" aria-label="Schritt löschen" onclick="deleteListItem(this)">×</button></li>
+      <li class="chk-li"><input type="checkbox" class="chk" data-persist="ns4"><span class="txt" contenteditable="true" data-persist="ns4t">4. Finanzierung klären (Bankgespräch)</span><button class="btn delete" type="button" title="Schritt löschen" aria-label="Schritt löschen" onclick="deleteListItem(this)">×</button></li>
+      <li class="chk-li"><input type="checkbox" class="chk" data-persist="ns5"><span class="txt" contenteditable="true" data-persist="ns5t">5. Kalkulation mit BELEGT-Werten neu rechnen</span><button class="btn delete" type="button" title="Schritt löschen" aria-label="Schritt löschen" onclick="deleteListItem(this)">×</button></li>
     </ul>
     <button class="btn secondary" type="button" onclick="addSchritt()">+ Nächsten Schritt hinzufügen</button>
 
@@ -730,9 +730,9 @@ li{margin-bottom:8px}
     <div class="box yellow">
       <b>Wichtig – deine Änderungen sichern:</b> Die Datenbank ist die einzige Quelle. Für die Zusammenarbeit zwischen Rechnern:
       <ul>
-        <li>Nach Änderungen auf diesem Rechner die versionierte <code>immo_datenbank.db</code> mit Git committen und pushen.</li>
-        <li>Auf dem anderen Rechner vor dem Bearbeiten pullen; niemals dieselbe DB gleichzeitig auf zwei Rechnern bearbeiten.</li>
-        <li>„💾 State speichern (Download)" erzeugt nur eine zusätzliche JSON-Exportkopie; sie wird nicht eingelesen.</li>
+        <li>Nach Änderungen die versionierte <code>immo_datenbank.db</code> mit Git committen und pushen.</li>
+        <li>Auf dem anderen Rechner vor dem Bearbeiten pullen; die DB nicht gleichzeitig auf zwei Rechnern bearbeiten.</li>
+        <li>„💾 State speichern (Download)" erzeugt nur eine JSON-Exportkopie; sie wird nicht eingelesen.</li>
       </ul>
     </div>
     <div class="box green">
@@ -754,7 +754,7 @@ li{margin-bottom:8px}
 
 <script>
 "use strict";
-const OBJEKT_ORDNER = "Arnsbach";
+const OBJEKT_ORDNER = "Schwalmstadt-Treysa_Amselweg";
 const fmt = (v, d = 0) => (v === null || v === undefined || isNaN(v) ? "–" : v.toLocaleString("de-DE", { minimumFractionDigits: d, maximumFractionDigits: d }));
 const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, c => ({
   "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
@@ -772,10 +772,10 @@ const getZinsSzenarien = zins => ZINS_OFFSETS.map(({ offset, label }) => ({
   label
 }));
 const DEFAULTS = {
-  preis: 159000, flaeche: 178, renovierung: null, sanierung: null,
+  preis: 179000, flaeche: 88, renovierung: 0, sanierung: 0,
   grESt: 6.0, notar: 2.0, makler: 3.57, sonstige: 0,
-  kaltmiete: 1050, hausgeld: null, nebenkostenVorauszahlung: null, hausgeldNichtUml: null, instand: 2.5, leerstand: 4,
-  ek: 20000, zins: 4.2, tilgung: 2.0
+  kaltmiete: 645, hausgeld: 35, nebenkostenVorauszahlung: null, hausgeldNichtUml: null, instand: 1.5, leerstand: 4,
+  ek: 20000, zins: null, tilgung: 2.0
 };
 const IDS = Object.keys(DEFAULTS);
 // Lesbare Namen für "ausstehend"-Meldungen
@@ -1065,10 +1065,10 @@ function render() {
   // Datenqualität: live aus den Eingaben (Objekt-spezifische BELEGT-Zeilen hier anpassen!)
   const dq = [];
   dq.push([`Kaufpreis ${eur(d.preis)}, Wohnfläche ${d.flaeche ? fmt(d.flaeche, 1) + " m²" : "–"}`, "BELEGT", "Quelle eintragen (z. B. Exposé S. 2)"]);
-  dq.push(["Bungalow/WEG-Einheit 2 von 2, Baujahr 1994, Energieklasse E, 2.114 m² WEG-Gesamtfläche", "BELEGT", "Exposé S. 2; Teilungserklärung S. 5-8"]);
+  dq.push(["Objekt-spezifische BELEGT-Infos hier eintragen (Lage, Baujahr, Besonderheiten …)", "BELEGT", "Quelle eintragen"]);
   dq.push(["Zinssätze (aktuelles Marktniveau recherchieren)", "BELEGT (extern)", "z. B. CHECK24, Datum eintragen"]);
-  dq.push([d.kaltmiete === null ? "Kaltmiete: ausstehend" : `Kaltmiete ${eur(d.kaltmiete)}/M (${d.flaeche > 0 ? eur(d.kaltmiete / d.flaeche) : "–"}/m²)`, d.kaltmiete === null ? "AUSSTEHEND" : "ABGELEITET", d.kaltmiete === null ? "Bitte eingeben – Regionalvergleich recherchieren" : "05_mietempfehlung.md: regionale Orientierung, Spanne 1.000–1.100 €"]);
-  dq.push([d.ek === null ? "Eigenkapital: ausstehend" : `Eigenkapital ${eur(d.ek)}`, d.ek === null ? "AUSSTEHEND" : "NUTZER-VORGABE", d.ek === null ? "Bitte eingeben" : "Vorgabe des Nutzers"]);
+  dq.push([d.kaltmiete === null ? "Kaltmiete: ausstehend" : `Kaltmiete ${eur(d.kaltmiete)}/M (${d.flaeche > 0 ? eur(d.kaltmiete / d.flaeche) : "–"}/m²)`, d.kaltmiete === null ? "AUSSTEHEND" : "EINGABE", d.kaltmiete === null ? "Bitte eingeben – Regionalvergleich recherchieren" : "Deine Eingabe"]);
+  dq.push([d.ek === null ? "Eigenkapital: ausstehend" : `Eigenkapital ${eur(d.ek)}`, d.ek === null ? "AUSSTEHEND" : "EINGABE", d.ek === null ? "Bitte eingeben" : "Deine Eingabe"]);
   const annahmeListe = [];
   if (d.renovierung === null) annahmeListe.push("Renovierung");
   else annahmeListe.push("Renovierung " + eur(d.renovierung));
@@ -1078,10 +1078,9 @@ function render() {
   else annahmeListe.push("Tilgung " + pct(d.tilgung));
   if (d.leerstand === null) annahmeListe.push("Leerstand");
   else annahmeListe.push("Leerstand " + fmt(d.leerstand, 1) + " Wo.");
-  dq.push([annahmeListe.join(", "), "ANNAHME/NUTZER-VORGABE", "Instandhaltung, Leerstand und Tilgung: Vorgaben des Nutzers; Renovierung/Sanierung: noch offen"]);
+  dq.push([annahmeListe.join(", "), "ANNAHME", "Platzhalter – nicht belegt"]);
   dq.push(["Objekt-spezifische Annahmen hier eintragen (z. B. Heizstrom-Schätzung)", "ANNAHME (Orientierung)", "Rechenweg dokumentieren"]);
-  dq.push(["Hausgeld, nicht umlagefähige Kosten, Sanierungsnachweise, tatsächliche Vergleichsmiete", "UNBEKANNT", "WEG-Unterlagen/Besichtigung erforderlich"]);
-  dq.push([`Zins ${pct(d.zins)} · 10 Jahre Sollzinsbindung`, d.zins === null ? "AUSSTEHEND" : "BELEGT (extern)", d.zins === null ? "Bankangebot recherchieren" : "Dr. Klein Zinschart, abgerufen 23.09.2026"]);
+  dq.push(["Grundbuch, Mietverträge, Sanierungsnachweise, tatsächliche Vergleichsmiete", "UNBEKANNT", "Muss geklärt werden"]);
   document.getElementById("tblDatenqualitaet").innerHTML =
     row([{ v: "Wert", num: false }, { v: "Status", num: true }, { v: "Quelle", num: false }], true) +
     dq.map(([w, s, q]) => {
@@ -1122,7 +1121,7 @@ const TIPS = {
   nebenkostenVorauszahlung: "Monatliche Vorauszahlung des Mieters auf umlagefähige Betriebskosten. Sie ist keine zusätzliche Kaltmiete und wird dem Hausgeld gegenübergestellt.",
   nebenkostenSaldo: "Positiv: voraussichtliche Erstattung an den Mieter. Negativ: voraussichtliche Nachzahlung des Mieters. Null: Vorauszahlung entspricht den Kosten.",
   hausgeldNichtUml: "Eigentümeranteil: Hausgeld gesamt minus Mietervorauszahlung. Ein ausdrücklich eingetragener Wert bleibt maßgeblich.",
-  instand: "Objektbezogener Ansatz: 2,50 €/m²/Monat. Baujahr 1994 und Energieklasse E sprechen für einen mittleren Ansatz innerhalb der Spanne von 2,00–5,00 €/m²/Monat für ältere Bestandsimmobilien. Quelle: Verband Privater Bauherren über Interhyp, abgerufen 25.09.2026. Berechnung: Wohnfläche × Eingabe.",
+  instand: "Monatlicher Ansatz nach Wohnfläche: 1,00–1,50 €/m²/Monat für neuere oder gepflegte Häuser, 2,00–5,00 €/m²/Monat für ältere Bestandsimmobilien. Quelle: Verband Privater Bauherren über Interhyp, abgerufen 25.09.2026. Berechnung: Wohnfläche × Eingabe.",
   leerstand: "Zeit pro Jahr, in der die Wohnung leer steht (Umzüge, Mietersuche). Jede Woche kostet Miete – der Rechner zieht sie anteilig ab. Realistisch: 2–6 Wochen/Jahr.",
   ek: "Eigenkapital = dein eigenes Geld, das du einbringst. Mehr EK = kleinere Rate, aber weniger Rendite auf dein Geld. Weniger EK = größere Rate, höheres Risiko. Das Tool berechnet unten Break-Even-EK je Zinsszenario.",
   zins: "Der jährliche Zinssatz des Darlehens. Aktuelles Marktniveau recherchieren (z. B. CHECK24/FMH) und hier als Quelle eintragen. Bei hohem Beleihungsauslauf verlangen Banken mehr.",
@@ -1201,11 +1200,9 @@ function isTipElement(target, source) { return target && source && (target === s
 
 // ---------- Risiken (dynamisch) ----------
 const RISIKEN_DEFAULT = [
-  ["🔴 Grundbuchbelastungen", "rechtlich", "🔴", "Vier Positionen mit nominal ca. 114.723,78 € sind nicht eindeutig gelöscht. Löschungsbewilligungen vor Kauf sichern."],
-  ["🔴 Sanierungsbedarf", "technisch", "🔴", "Heizung Baujahr 1994, 6.000-l-Tanks, Fenster und Kachelofen prüfen; Kosten unbekannt."],
-  ["🔴 WEG-Unterlagen fehlen", "WEG", "🔴", "Hausgeld, Rücklage, Protokolle, Verwalter und Sonderumlagen sind unbekannt."],
-  ["🟠 Dokumentenwidersprüche", "Dokumentation", "🟠", "Adresse, Grundstücksfläche, Zimmerliste und Energieausweis müssen geklärt werden."],
-  ["🟡 Vermietbarkeit", "Miete", "🟡", "Kaltmiete und lokale Vergleichsangebote für 178 m² fehlen."]
+  ["🔴 Risiko 1", "rechtlich", "🔴", "Begründung …"],
+  ["🟠 Risiko 2", "technisch", "🟠", "Begründung …"],
+  ["🟡 Risiko 3", "Dokumentation", "🟡", "Begründung …"]
 ];
 function renderRisiken(risiken) {
   const tbl = document.getElementById("tblRisiken");
@@ -1332,11 +1329,9 @@ function oeffneExterneObjektseite() {
 }
 function saveState() {
   ImmoDb.schedule(OBJEKT_ORDNER, collectState, (phase, info) => {
-    const note = document.getElementById("savedNote");
-    note.textContent = phase === "saved" ? `✓ In DB gespeichert · Revision ${info}` :
-      phase === "saving" ? "⏳ Speichere in DB …" :
-      phase === "conflict" ? "⚠ Andere Revision – bitte Seite neu laden" : "⚠ Nicht gespeichert – Server prüfen";
-    note.classList.add("show");
+    const n = document.getElementById("savedNote");
+    n.textContent = phase === "saved" ? `DB-Revision ${info}` : phase === "saving" ? "Speichere in DB …" : `Speicherfehler: ${info}`;
+    n.classList.add("show");
   });
 }
 // ---------- Archivierung über die Datenbank ----------
@@ -1359,7 +1354,9 @@ function aktualisiereArchivButton() {
   button.onclick = archiviert ? reaktiviereObjekt : archiviereObjekt;
 }
 aktualisiereArchivButton();
-function resetAll() { location.reload(); }
+function resetAll() {
+  location.reload();
+}
 async function exportJson() {
   try { await ImmoDb.exportJson(OBJEKT_ORDNER); }
   catch (error) { alert("DB-Export fehlgeschlagen: " + error.message); }
@@ -1395,19 +1392,19 @@ async function exportJson() {
     const saved = await ImmoDb.load(OBJEKT_ORDNER);
     applyState(saved.state);
     document.getElementById("objectIdLabel").textContent = `Objekt-ID: ${saved.id}`;
+    document.getElementById("savedNote").textContent = `DB-Revision ${saved.revision}`;
     document.getElementById("preliminaryNotice").hidden = !["quellenpruefung_offen", "abruf_blockiert"].includes(saved.analysis_status);
     if (saved.analysis_status === "abruf_blockiert") document.getElementById("preliminaryNotice").textContent = "Die Anzeigenplattform hat den automatischen Abruf blockiert. Link und Objekt-ID sind gespeichert; bitte Angaben und Foto manuell ergänzen und mit Unterlagen prüfen.";
     if (saved.image_path) {
       document.getElementById("objectPhoto").src = saved.image_path;
       document.getElementById("objectHero").hidden = false;
     }
-    document.getElementById("savedNote").textContent = `DB-Revision ${saved.revision}`;
   } catch (error) {
     document.querySelectorAll(".inputs input, [contenteditable], .toolbar button").forEach(el => {
       if (el.matches("[contenteditable]")) el.contentEditable = "false";
       else el.disabled = true;
     });
-    alert("Objekt konnte nicht aus SQLite geladen werden. Bitte lokalen Portfolio-Server starten.\n" + error.message);
+    alert("Objekt konnte nicht aus SQLite geladen werden.\n" + error.message);
     return;
   }
   render();

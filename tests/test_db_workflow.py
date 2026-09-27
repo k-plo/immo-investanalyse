@@ -11,6 +11,7 @@ from unittest.mock import patch
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 import db_store
+from db_manager import berechne_rating
 from listing_import import extract_listing, validate_url, ListingError
 
 
@@ -22,6 +23,11 @@ PNG = base64.b64decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4
 
 
 class DbWorkflowTest(unittest.TestCase):
+    def test_missing_interest_never_becomes_zero_percent_financing(self):
+        result = berechne_rating({'preis':'179000','flaeche':'88','kaltmiete':'645','zins':'','tilgung':'2'}, [])
+        self.assertIsNone(result['cf_nach'])
+        self.assertEqual(result['gesamt_rating'], '?')
+
     def test_listing_parser_and_private_url_rejection(self):
         item = extract_listing(PAGE, 'https://example.org/anzeige/1')
         self.assertEqual(item['price'], 249000)

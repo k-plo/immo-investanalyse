@@ -1,0 +1,69 @@
+{
+  "objekt": {
+    "name": "Schwalmstadt-Treysa Amselweg",
+    "adresse": "Am Harthberg 6 / Amselweg 5, 34613 Schwalmstadt-Treysa; genaue Einheit nicht freigegeben",
+    "objektart": "Vermietete Eigentumswohnung, Dachgeschoss",
+    "baujahr": 1995,
+    "wohnflaeche_m2": 88,
+    "nutzflaeche_m2": 5.19,
+    "grundstuecksflaeche_m2": null,
+    "anzahl_einheiten": null,
+    "zimmer": 4,
+    "etage": "3. Geschoss / Dachgeschoss",
+    "stellplaetze": null,
+    "energieklasse": "C",
+    "heizung": "Zentrale Gasheizung und zentrale Warmwasserbereitung"
+  },
+  "kauf": {
+    "angebotspreis_eur": 179000,
+    "grunderwerbsteuer_prozent": 6.0,
+    "notar_prozent": 2.0,
+    "grundbuch_prozent": null,
+    "makler_prozent": 3.57,
+    "makler_anteil_verkaeufer_prozent": 0,
+    "renovierung_eur": 0,
+    "sanierung_eur": 0,
+    "sonstige_erwerbskosten_eur": 0
+  },
+  "miete": {
+    "kaltmiete_monatlich_eur": 645,
+    "nebenkosten_monatlich_eur": null,
+    "leerstand_wochen_pro_jahr": 4,
+    "marktuebliche_miete_eur": 612.48,
+    "mietrueckstaende_eur": null
+  },
+  "laufende_kosten": {
+    "hausgeld_monatlich_eur": 35,
+    "verwaltung_prozent_von_miete": 0,
+    "instandhaltung_eur_pro_m2_monat": 1.5,
+    "nicht_umlagefaehige_kosten_monatlich_eur": null
+  },
+  "finanzierung": {
+    "eigenkapital_eur": 20000,
+    "zinssatz_prozent": null,
+    "tilgung_prozent": 2.0,
+    "zinsbindung_jahre": null,
+    "finanzierungsnebenkosten_eur": null
+  },
+  "weg": {
+    "instandhaltungsruecklage_eur": null,
+    "geplante_sonderumlagen_eur": null
+  },
+  "annahmen": [
+    "Grunderwerbsteuer 6,0 % für Hessen.",
+    "Notar und Grundbuch zusammen 2,0 % als vorläufiger Kalkulationswert.",
+    "Renovierung und Sanierung mit 0 EUR sind nur technische Startwerte und kein Zustandsbefund.",
+    "Instandhaltung 1,50 EUR/m²/Monat wegen Baujahr 1995 und Anbieterangabe gepflegt; nach Besichtigung anpassen.",
+    "Leerstand 4 Wochen/Jahr, Eigenkapital 20.000 EUR und Tilgung 2,0 % gemäß Nutzer-Vorgaben.",
+    "Zinssatz bleibt offen, weil am 27.09.2026 kein belastbares konkretes Bankangebot vorliegt."
+  ],
+  "quellen": [
+    {"information": "Kaufpreis, Wohnfläche, Zimmer, Baujahr, Hausgeld, Energieklasse, Ausstattung", "wert": "179.000 EUR; 88 m²; 4 Zimmer; BJ 1995; Hausgeld 35 EUR", "quelle": "Immowelt-Exposé https://www.immowelt.de/expose/35f2ff04-b79d-4206-8948-4fa0afe02faf, abgerufen 27.09.2026", "status": "BELEGT"},
+    {"information": "Nettokaltmiete", "wert": "645 EUR/Monat", "quelle": "Immowelt-Exposé, Abschnitt Weitere Informationen, abgerufen 27.09.2026", "status": "BELEGT"},
+    {"information": "Lokale Wohnungsmiete", "wert": "6,96 EUR/m²; ca. 612 EUR/Monat bei 88 m²", "quelle": "Immowelt Mietpreise Schwalmstadt, Stand 01.09.2026, https://www.immowelt.de/immobilienpreise/mietpreise/hessen/schwalmstadt-34613/ad08de2890", "status": "BELEGT/ABGELEITET"},
+    {"information": "Maklerprovision", "wert": "3,57 % inkl. gesetzlicher Mehrwertsteuer", "quelle": "Immowelt-Exposé, Preisdetails, abgerufen 27.09.2026", "status": "BELEGT"}
+  ],
+  "widersprueche": [
+    "Die Anzeige nennt Am Harthberg 6 / Amselweg 5 als Wohnanlage, gibt die genaue Adresse der Einheit aber nicht frei. Zuordnung in Teilungserklärung und Grundbuch prüfen."
+  ]
+}

@@ -10,7 +10,7 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import unquote, urlparse
 
-from db_store import RevisionConflict, get_object, import_listing, portfolio_rows, save_object, set_archive_status, set_photo
+from db_store import RevisionConflict, get_object, import_listing, new_candidates, portfolio_rows, save_object, set_archive_status, set_photo
 from listing_import import ListingError
 
 BASE = Path(__file__).resolve().parent.parent
@@ -57,6 +57,9 @@ class PortfolioHandler(SimpleHTTPRequestHandler):
                 self.send_json({"items": portfolio_rows()})
             except sqlite3.Error as error:
                 self.send_json({"error": f"Datenbankfehler: {error}"}, status=500)
+            return
+        if path == "/api/new-candidates":
+            self.send_json({"items": new_candidates()})
             return
         if path.startswith("/api/objects/"):
             name = unquote(path.removeprefix("/api/objects/"))

@@ -227,7 +227,7 @@ def berechne_rating(state: dict, risiken: list) -> dict:
               "instand", "leerstand", "ek", "zins", "tilgung"]
     werte = {feld: f(state.get(feld)) or 0 for feld in felder}
     km, preis = werte["kaltmiete"], werte["preis"]
-    brutto = km * 12 / preis * 100 if preis > 0 else None
+    brutto = km * 12 / preis * 100 if preis > 0 and f(state.get("kaltmiete")) is not None else None
     cf_nach = netto_rendite = cf_vor = rate = darlehen = ltv = break_even = max_preis = spielraum = None
     n1, p1 = note_rendite(brutto)
     if preis > 0 and werte["flaeche"] > 0:
@@ -251,6 +251,10 @@ def berechne_rating(state: dict, risiken: list) -> dict:
         nk_faktor = 1 + nk_proz / 100
         max_preis = max(0, (cf_vor + (ek - fix) * zt) / (nk_faktor * zt)) if zt > 0 else 0
         spielraum = max_preis - preis
+        if f(state.get("kaltmiete")) is None:
+            netto_rendite = cf_vor = None
+        if any(f(state.get(key)) is None for key in ("kaltmiete", "zins", "tilgung")):
+            cf_nach = rate = break_even = max_preis = spielraum = None
     n2, p2 = note_cashflow(cf_nach)
     coc = None
     if werte["ek"] and cf_nach is not None:
@@ -262,7 +266,10 @@ def berechne_rating(state: dict, risiken: list) -> dict:
     n4, p4 = note_risiko(ampeln)
     n5, p5 = note_datenqualitaet(state)
     gesamt_punkte = p1 * 0.25 + p2 * 0.25 + p3 * 0.15 + p4 * 0.20 + p5 * 0.15
-    if gesamt_punkte >= 85: g = "A"
+    if any(f(state.get(key)) is None for key in ("preis", "flaeche", "kaltmiete", "zins", "tilgung")):
+        g = "?"
+        gesamt_punkte = None
+    elif gesamt_punkte >= 85: g = "A"
     elif gesamt_punkte >= 70: g = "B"
     elif gesamt_punkte >= 55: g = "C"
     elif gesamt_punkte >= 40: g = "D"
@@ -270,7 +277,7 @@ def berechne_rating(state: dict, risiken: list) -> dict:
     return {
         "brutto_note": n1, "cf_note": n2, "coc_note": n3,
         "risiko_note": n4, "datenqualitaet_note": n5,
-        "punkte": round(gesamt_punkte, 1), "gesamt_rating": g,
+        "punkte": round(gesamt_punkte, 1) if gesamt_punkte is not None else None, "gesamt_rating": g,
         "brutto_rendite": brutto, "cf_nach": cf_nach, "coc": coc,
         "gesamtinvest": (gesamt if preis > 0 and werte["flaeche"] > 0 else None),
         "netto_rendite": netto_rendite, "cf_vor": cf_vor, "rate": rate,

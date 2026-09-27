@@ -290,6 +290,7 @@ function readInputs() {
   });
   // Leere optionale Felder gelten als 0; nur die Rechengrundlage ist zwingend.
   d.fehlend = ["preis", "flaeche"].filter(id => d[id] <= 0);
+  for (const id of ["kaltmiete", "zins", "tilgung"]) if (document.getElementById(id).value.trim() === "") d.fehlend.push(id);
   d.vollstaendig = d.fehlend.length === 0;
   return d;
 }
@@ -706,157 +707,26 @@ function saveState() {
     n.classList.add("show");
   });
 }
-// ---------- DB-Sync (File System Access API) ----------
-// Handle wird in IndexedDB gespeichert und überlebt Reload.
-const IDB_NAME = "immo-fs-handles";
-async function idbOpen() {
-  return new Promise((res, rej) => {
-    const req = indexedDB.open(IDB_NAME, 1);
-    req.onupgradeneeded = () => req.result.createObjectStore("handles");
-    req.onsuccess = () => res(req.result);
-    req.onerror = () => res(null);
-  });
-}
-async function idbSet(key, val) {
-  const db = await idbOpen();
-  if (!db) return;
-  return new Promise((res) => {
-    const tx = db.transaction("handles", "readwrite");
-    tx.objectStore("handles").put(val, key);
-    tx.oncomplete = res;
-  });
-}
-async function idbGet(key) {
-  const dbi = await idbOpen();
-  if (!dbi) return null;
-  return new Promise((res) => {
-    const req = dbi.transaction("handles").objectStore("handles").get(key);
-    req.onsuccess = () => res(req.result || null);
-    req.onerror = () => res(null);
-  });
-}
-let dbDirHandle = null;
-async function getDbDir() {
-  if (dbDirHandle) return dbDirHandle;
-  if (!window.showDirectoryPicker) return null;
-  // 1. Gespeicherten Handle aus IndexedDB laden
-  const saved = await idbGet("immo-root");
-  if (saved) {
-    const perm = await saved.queryPermission({ mode: "readwrite" });
-    if (perm === "granted") { dbDirHandle = saved; return dbDirHandle; }
-    const req = await saved.requestPermission({ mode: "readwrite" });
-    if (req === "granted") { dbDirHandle = saved; return dbDirHandle; }
-  }
-  // 2. Neuen Handle anfordern – User muss den IMMO-Hauptordner wählen
-  try {
-    const h = await window.showDirectoryPicker({
-      id: "immo-root", mode: "readwrite",
-      startIn: "documents"
-    });
-    // Validierung: Muss einen "objekte"-Unterordner haben (oder wir legen ihn an)
-    await h.getDirectoryHandle("objekte", { create: false }); // wirft, wenn falscher Ordner
-    dbDirHandle = h;
-    await idbSet("immo-root", h);
-    return dbDirHandle;
-  } catch (e) {
-    if (e.name === "AbortError") return null; // User hat abgebrochen
-    if (e.name === "NotFoundError") {
-      alert("❌ Falscher Ordner gewählt!\n\nBitte wähle den Hauptordner 'Immo' (der, der die Unterordner 'objekte' und 'tools' enthält).\n\nGewählter Ordner hat keinen 'objekte'-Unterordner.");
-    }
-    return null;
-  }
-}
-function zumPortfolio() {
-  window.location.href = location.pathname.includes("/_ARCHIV/") ? "../../../portfolio.html" : "../../portfolio.html";
-}
-async function kopiereOrdner(quelle, ziel) {
-  for await (const [name, handle] of quelle.entries()) {
-    if (handle.kind === "file") {
-      const quelleDatei = await handle.getFile();
-      const zielDatei = await ziel.getFileHandle(name, { create: true });
-      const writable = await zielDatei.createWritable();
-      await writable.write(await quelleDatei.arrayBuffer());
-      await writable.close();
-    } else {
-      const zielOrdner = await ziel.getDirectoryHandle(name, { create: true });
-      await kopiereOrdner(handle, zielOrdner);
-    }
-  }
-}
+// ---------- Archivierung über die Datenbank ----------
+function zumPortfolio() { location.href = "/portfolio.html"; }
 async function archiviereObjekt() {
-  if (location.pathname.includes("/_ARCHIV/")) {
-    alert("Dieses Objekt liegt bereits im Archiv.");
-    return;
-  }
-  if (!confirm(`'${OBJEKT_ORDNER}' vollständig nach objekte/_ARCHIV verschieben?`)) return;
-  try {
-    const dir = await getDbDir();
-    if (!dir) return;
-    await schreibeDbUndJson();
-    const objekteDir = await dir.getDirectoryHandle("objekte", { create: false });
-    const quelle = await objekteDir.getDirectoryHandle(OBJEKT_ORDNER, { create: false });
-    const archiv = await objekteDir.getDirectoryHandle("_ARCHIV", { create: true });
-    try {
-      await archiv.getDirectoryHandle(OBJEKT_ORDNER, { create: false });
-      alert("Im Archiv existiert bereits ein Ordner mit diesem Namen. Nichts wurde verschoben.");
-      return;
-    } catch (e) {
-      if (e.name !== "NotFoundError") throw e;
-    }
-    const ziel = await archiv.getDirectoryHandle(OBJEKT_ORDNER, { create: true });
-    await kopiereOrdner(quelle, ziel);
-    await objekteDir.removeEntry(OBJEKT_ORDNER, { recursive: true });
-    alert("Objekt wurde archiviert. Die Archivdateien bleiben unverändert erhalten.");
-    zumPortfolio();
-  } catch (e) {
-    if (e.name !== "AbortError") alert("Archivierung fehlgeschlagen: " + e.message);
-  }
+  if (!confirm(`${OBJEKT_ORDNER} archivieren?`)) return;
+  try { await ImmoDb.setArchived(OBJEKT_ORDNER, true); zumPortfolio(); }
+  catch (error) { alert("Archivierung fehlgeschlagen: " + error.message); }
 }
 async function reaktiviereObjekt() {
-  if (!location.pathname.includes("/_ARCHIV/")) {
-    alert("Dieses Objekt ist bereits aktiv.");
-    return;
-  }
-  if (!confirm(`'${OBJEKT_ORDNER}' aus dem Archiv reaktivieren?`)) return;
-  try {
-    const dir = await getDbDir();
-    if (!dir) return;
-    const objekteDir = await dir.getDirectoryHandle("objekte", { create: false });
-    const archiv = await objekteDir.getDirectoryHandle("_ARCHIV", { create: false });
-    const quelle = await archiv.getDirectoryHandle(OBJEKT_ORDNER, { create: false });
-    try {
-      await objekteDir.getDirectoryHandle(OBJEKT_ORDNER, { create: false });
-      alert("Im aktiven Ordner existiert bereits ein Objekt mit diesem Namen. Nichts wurde verschoben.");
-      return;
-    } catch (e) {
-      if (e.name !== "NotFoundError") throw e;
-    }
-    const ziel = await objekteDir.getDirectoryHandle(OBJEKT_ORDNER, { create: true });
-    await kopiereOrdner(quelle, ziel);
-    await archiv.removeEntry(OBJEKT_ORDNER, { recursive: true });
-    alert("Objekt wurde reaktiviert.");
-    zumPortfolio();
-  } catch (e) {
-    if (e.name !== "AbortError") alert("Reaktivierung fehlgeschlagen: " + e.message);
-  }
+  if (!confirm(`${OBJEKT_ORDNER} reaktivieren?`)) return;
+  try { await ImmoDb.setArchived(OBJEKT_ORDNER, false); zumPortfolio(); }
+  catch (error) { alert("Reaktivierung fehlgeschlagen: " + error.message); }
 }
 function aktualisiereArchivButton() {
   const button = document.getElementById("archiveBtn");
   if (!button) return;
   const archiviert = location.pathname.includes("/_ARCHIV/");
   button.textContent = archiviert ? "↩️ Reaktivieren" : "🗄️ Archivieren";
-  button.onclick = async () => {
-    if (!confirm(`${OBJEKT_ORDNER} ${archiviert ? 'reaktivieren' : 'archivieren'}?`)) return;
-    try {
-      await ImmoDb.setArchived(OBJEKT_ORDNER, !archiviert);
-      location.href = "/portfolio.html";
-    } catch (error) { alert("Statusänderung fehlgeschlagen: " + error.message); }
-  };
+  button.onclick = archiviert ? reaktiviereObjekt : archiviereObjekt;
 }
 aktualisiereArchivButton();
-async function schreibeDbUndJson() {
-  throw new Error("State-JSON darf nicht mehr als Speicherquelle verwendet werden");
-}
 function resetAll() {
   location.reload();
 }
