@@ -102,6 +102,10 @@ code{overflow-wrap:anywhere}
 .box,.sub,.field label,.field .tag{overflow-wrap:anywhere}
 .appearance-controls{max-width:1240px;margin:0 auto 24px;display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}
 .appearance-controls .print-btn{margin:0}
+.appearance-controls.has-brand{flex-direction:column;align-items:flex-end;gap:3px;margin-bottom:14px}
+.appearance-controls.has-brand .theme-toggle{flex:0 0 auto}
+.portfolio-brand{display:block;width:164px;height:auto;object-fit:contain;opacity:.78}
+[data-theme="dark"] .portfolio-brand{filter:invert(1);opacity:.82}
 .theme-toggle{width:164px;height:44px;flex:0 0 164px;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;padding:10px 16px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);font-size:13px;font-weight:650;cursor:pointer}
 @media screen{
 html[data-theme="dark"]{color-scheme:dark;--ink:#e4edf3;--muted:#a0b4c1;--accent:#65d0c4;--line:#2b414f;--canvas:#0c1721}
@@ -136,43 +140,50 @@ button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-v
 .filter button.aktiv,.filter button.sync,.btn,.external-link button,.print-btn{background:var(--accent);border-color:var(--accent);color:#fff}
 .filter button.analyse{flex-basis:auto;margin-left:0;color:var(--accent);background:#eff7f6;border-color:#cee3e1}
 .filter button:hover,.btn:hover{filter:brightness(.96)}
-.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
-.karte{position:relative;min-width:0;border:1px solid var(--line);border-radius:var(--radius);padding:28px;background:#fff;box-shadow:0 5px 18px #16354105;transition:transform .18s,box-shadow .18s,border-color .18s;overflow:visible}
-.karte.has-photo{overflow:hidden;isolation:isolate}
-.karte-photo-bg{position:absolute;inset:-20px;background-size:cover;background-position:center;filter:blur(15px);opacity:.24;pointer-events:none;z-index:0}
+.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:stretch}
+.karte{position:relative;display:flex;flex-direction:column;min-width:0;height:100%;box-sizing:border-box;text-decoration:none;color:inherit;border:1px solid var(--line);border-radius:var(--radius);padding:16px;background:#fff;box-shadow:0 5px 18px #16354105;transition:transform .18s,box-shadow .18s,border-color .18s;overflow:hidden;isolation:isolate}
+.karte-photo-bg{position:absolute;inset:-5px;background-size:cover;background-position:center;filter:blur(3px);opacity:.64;pointer-events:none;z-index:0}
+.karte-photo-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#fff3 0%,#fffa 62%,#fffe 100%)}
 .karte.has-photo>*:not(.karte-photo-bg){position:relative;z-index:1}
 .karte.has-photo::after{position:relative;z-index:1}
-[data-theme="dark"] .karte-photo-bg{opacity:.16}
+[data-theme="dark"] .karte-photo-bg{opacity:.48}
+[data-theme="dark"] .karte-photo-bg::after{background:linear-gradient(180deg,#14232e55 0%,#14232eb8 62%,#14232ee8 100%)}
 .object-hero{margin:18px 0 26px;border-radius:16px;overflow:hidden;background:#e7eff0;max-height:320px}
 .object-hero img{display:block;width:100%;max-height:320px;object-fit:cover}
 .object-hero figcaption{padding:7px 12px;color:var(--muted);font-size:11px;background:var(--canvas)}
-.karte::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#116d72,#9dc8bf)}
+.karte::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#116d72,#9dc8bf);border-radius:var(--radius) var(--radius) 0 0;z-index:2}
 .karte:hover{z-index:2;transform:translateY(-3px);border-color:#99bebd;box-shadow:0 14px 32px #16354112}
-.karte::after{content:"Objektübersicht ansehen ↗";display:block;color:var(--accent);font-size:12px;font-weight:700;border-top:1px solid var(--line);padding-top:17px;margin-top:22px}
-.karte-name{font-size:24px;font-weight:750;letter-spacing:-.035em;line-height:1.3}
-.rating-badge{font-size:21px;border-radius:12px;min-width:44px;text-align:center;padding:5px 12px}
-.karte-sub{font-size:13px;margin:8px 0 20px;color:var(--muted)}
-.karte-details{font-size:12px;gap:8px;margin-bottom:24px}
-.karte-details span{background:#f4f7f8;border-radius:6px;padding:5px 8px;color:#526975}
-.karte-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:16px}
-.karte-kpis div{border:0;border-radius:12px;background:#f1f6f6;padding:16px;min-width:0}
-.karte-kpis .l,.karte-fin .l{font-size:10px;letter-spacing:.07em;color:var(--muted);font-weight:650}
-.karte-kpis .v{font-size:26px;letter-spacing:-.04em;font-weight:750;margin-top:4px;font-variant-numeric:tabular-nums}
-.karte-kpis .s,.karte-fin .s{font-size:11px;color:var(--muted);margin-top:4px}
-.karte-fin{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:16px;margin:0}
-.karte-fin div{border:0;background:none;padding:4px 0}
-.karte-fin .v{font-size:13px;font-weight:650;line-height:1.65;margin-top:5px}
+.karte::after{content:"Objektübersicht ansehen ↗";display:block;color:var(--accent);font-size:11px;font-weight:700;border-top:1px solid var(--line);padding-top:8px;margin-top:9px}
+.karte-title{display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-width:0}
+.karte-name{font-size:19px;font-weight:750;letter-spacing:-.035em;line-height:1.25}
+.karte-type{display:inline-flex;align-items:center;padding:2px 7px;border:1px solid #c9e1de;border-radius:999px;background:#eaf5f3;color:#185f62;font-size:10px;font-weight:750;line-height:1.4;white-space:nowrap}
+[data-theme="dark"] .karte-type{background:#1d4245;border-color:#397375;color:#9ae0d4}
+.rating-badge{font-size:16px;border-radius:9px;min-width:34px;text-align:center;padding:4px 8px}
+.karte-sub{font-size:11px;line-height:1.45;margin:6px 0 9px;color:var(--muted)}
+.karte-details{font-size:10px;gap:5px;margin-bottom:9px}
+.karte-details span{background:#f4f7f8;border-radius:6px;padding:3px 6px;color:#526975}
+.karte-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-bottom:8px}
+.karte-kpis div{border:0;border-radius:10px;background:#f1f6f6e8;padding:9px;min-width:0}
+.karte-kpis .l,.karte-fin .l{font-size:9px;letter-spacing:.07em;color:var(--muted);font-weight:650}
+.karte-kpis .v{font-size:20px;letter-spacing:-.04em;font-weight:750;margin-top:2px;font-variant-numeric:tabular-nums}
+.karte-kpis .s,.karte-fin .s{font-size:10px;color:var(--muted);margin-top:1px}
+.karte-fin{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:9px;margin:0;margin-top:auto}
+.karte-fin div{border:0;background:none;padding:2px 0}
+.karte-fin .v{font-size:12px;font-weight:650;line-height:1.45;margin-top:2px}
 footer,.footer{font-size:11px;line-height:1.8;color:var(--muted);border-top:1px solid var(--line);padding-top:22px;margin-top:30px;overflow-wrap:anywhere}
 .card{border:1px solid var(--line);border-radius:var(--radius);padding:32px;margin-bottom:24px;box-shadow:0 5px 18px #16354105;min-width:0}
 .card:first-child{border-top:4px solid var(--accent)}
 h2{font-size:16px;line-height:1.6;letter-spacing:-.015em;text-transform:none;color:var(--ink);border-bottom:1px solid var(--line);padding-bottom:12px;margin:34px 0 18px}
 .card>h2:first-child{margin-top:0}
+.input-groups{display:grid;gap:24px}
+.input-group{padding:18px;border:1px solid var(--line);border-radius:12px;background:#f8fafb;min-width:0}
+.input-group h3{margin:0 0 16px;font-size:13px;line-height:1.4;color:var(--ink)}
 .inputs{grid-template-columns:repeat(4,minmax(0,1fr));gap:20px 18px}
-.field{min-width:0;gap:7px}
-.field label{font-size:12px;color:#405b68;min-height:38px;line-height:1.5}
+.field{min-width:0;gap:4px}
+.field label{font-size:12px;color:#405b68;min-height:0;line-height:1.35}
 .field input{font-size:16px;font-weight:650;min-height:46px;padding:11px 13px;border:1px solid #ccdadf;border-radius:10px;background:#f8fafb;color:var(--ink)}
 .field input:focus{border-color:var(--accent);box-shadow:0 0 0 3px #116d7214}
-.field .tag{font-size:10px;line-height:1.6;color:var(--muted)}
+.field .tag{font-size:10px;line-height:1.35;color:var(--muted)}
 .toolbar{gap:10px;margin:20px 0 28px}
 .toolbar .edit-hint{flex-basis:100%;margin:4px 0 0!important}
 .btn.secondary{background:#f7fafb;border:1px solid var(--line);color:#365763;font-weight:600}
@@ -206,9 +217,9 @@ li{margin-bottom:8px}
 .btn.delete{min-width:32px;min-height:32px;padding:4px}
 .tip .tipbox{font-size:12px;line-height:1.6;box-shadow:0 10px 30px #152d3933;z-index:1000}
 .tipbox-portal{box-sizing:border-box;width:min(320px,calc(100vw - 24px));max-width:calc(100vw - 24px);padding:11px 13px;border:1px solid #344158;border-radius:8px;background:#0f1420;color:#e8edf7;font-size:12px;font-weight:400;line-height:1.5;text-align:left;white-space:normal;word-wrap:break-word;overflow-wrap:break-word;box-shadow:0 10px 28px rgba(15,20,32,.4)}
-@media(max-width:1050px){.filter button.sync{margin-left:0}.inputs{grid-template-columns:repeat(2,minmax(0,1fr))}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.karte{padding:22px}.karte-kpis .v{font-size:23px}}
-@media(max-width:760px){body{padding:24px 16px 40px}.grid{grid-template-columns:minmax(0,1fr)}.card{padding:22px}.wrap::before{font-size:9px}.filter{padding:12px;gap:6px}.filter button{flex:1 1 auto}.filter button.sync,.filter button.analyse{flex-basis:100%;text-align:center}.karte-name{font-size:25px}.karte-kpis .v{font-size:27px}.print-btn{margin-bottom:20px}.kpi{padding:16px}.tip .tipbox{max-height:50vh;overflow:auto}.toolbar .btn{flex:1 1 auto}h2{margin-top:28px}.box{padding:15px}.external-link button{flex-grow:1}}
-@media(max-width:420px){body{padding:18px 12px 32px}.card{padding:18px}.inputs{gap:16px 12px}.field label{font-size:11px}.field input{padding:10px;font-size:16px}.kpis{gap:10px}.kpi{padding:13px}.kpi .v{font-size:22px}.karte{padding:20px}.karte-kpis .v{font-size:24px}.karte-fin{grid-template-columns:1fr}.toolbar .btn{flex-basis:100%}}
+@media(max-width:1050px){.filter button.sync{margin-left:0}.inputs{grid-template-columns:repeat(2,minmax(0,1fr))}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.karte-kpis .v{font-size:19px}}
+@media(max-width:760px){body{padding:24px 16px 40px}.grid{grid-template-columns:minmax(0,1fr)}.card{padding:22px}.wrap::before{font-size:9px}.filter{padding:12px;gap:6px}.filter button{flex:1 1 auto}.filter button.sync,.filter button.analyse{flex-basis:100%;text-align:center}.karte-name{font-size:20px}.karte-kpis .v{font-size:20px}.print-btn{margin-bottom:20px}.kpi{padding:16px}.tip .tipbox{max-height:50vh;overflow:auto}.toolbar .btn{flex:1 1 auto}h2{margin-top:28px}.box{padding:15px}.external-link button{flex-grow:1}}
+@media(max-width:420px){body{padding:18px 12px 32px}.card{padding:18px}.inputs{gap:16px 12px}.field label{font-size:11px}.field input{padding:10px;font-size:16px}.kpis{gap:10px}.kpi{padding:13px}.kpi .v{font-size:22px}.karte{padding:14px}.karte-kpis .v{font-size:19px}.karte-fin{grid-template-columns:1fr}.toolbar .btn{flex-basis:100%}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;scroll-behavior:auto!important}.karte:hover{transform:none}}
 @media print{body{background:#fff;padding:0;font-size:10px}.wrap{max-width:none}.wrap::before{display:none}.card{border:0;border-radius:0;box-shadow:none;padding:10px 0}.card:first-child{border-top:0}.print-btn,.toolbar,.saved-note,.edit-hint,.filter{display:none!important}.inputs,.kpis{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.field input{min-height:0;padding:0;border:0;background:none;font-size:11px}.field label{min-height:0;font-size:9px}.kpi{padding:8px}.kpi .v{font-size:17px}.table-scroll{overflow:visible;border:0}.table-scroll table{min-width:0;font-size:10px}th,td{padding:5px}.box{padding:10px}h2{margin-top:20px;font-size:13px}.tipbox{display:none!important}.grid{grid-template-columns:1fr 1fr}.karte{break-inside:avoid}.karte::after{display:none}}
 </style>
@@ -295,6 +306,11 @@ li{margin-bottom:8px}
     controls.append(button);
     const print = document.querySelector('body > .print-btn');
     if (print) controls.append(print);
+    const brand = document.querySelector('body > .portfolio-brand');
+    if (brand) {
+      controls.classList.add('has-brand');
+      controls.append(brand);
+    }
     document.body.prepend(controls);
     apply(document.documentElement.dataset.theme);
   });
@@ -491,7 +507,7 @@ li{margin-bottom:8px}
     const rentMissing = isEmpty('kaltmiete');
     const canCalculate = Boolean(result.berechenbar);
     const income = data.kaltmiete * 12 * (1 - data.leerstand / 52);
-    const hausgeldNichtUml = data.hausgeldNichtUmlEingegeben ? data.hausgeldNichtUml : Math.max(0, data.hausgeld - data.nebenkostenVorauszahlung);
+    const hausgeldNichtUml = data.hausgeldNichtUmlEingegeben ? data.hausgeldNichtUml : 35;
     const operating = hausgeldNichtUml * 12 + data.flaeche * data.instand * 12;
     let balance = canCalculate ? result.darlehen : 0;
     let cumIncome = 0, cumExpense = 0;
@@ -518,7 +534,6 @@ li{margin-bottom:8px}
       row('Kaltmiete / Monat',money(data.kaltmiete)),
       row('Leerstand / Jahr',`${data.leerstand.toLocaleString('de-DE')} Wochen`),
       row('Nicht umlagefähige Kosten / Monat',money(hausgeldNichtUml)),
-      row('Voraussichtliche Erstattung/Nachzahlung Mieter',money(data.nebenkostenVorauszahlung - (data.hausgeldNichtUmlEingegeben ? Math.max(0, data.hausgeld - data.hausgeldNichtUml) : data.hausgeld))),
       row('Instandhaltung / Jahr',money(data.flaeche*data.instand*12)),
       row('Kreditrate / Monat',canCalculate?money(result.rate):'–')
     ].join('');
@@ -614,7 +629,7 @@ li{margin-bottom:8px}
       <span class="edit-hint" style="margin-left:6px">Änderungen werden direkt in SQLite gespeichert. JSON ist nur ein Export des bestätigten DB-Stands.</span>
     </div>
 
-    <h2>⚙️ Eingaben – hier anpassen, alles unten rechnet live <span class="edit-hint">(Begriffe mit gepunkteter Linie: Maus draufhalten für Erklärung)</span></h2>
+    <h2>⚙️ Eingaben – hier anpassen, alles unten rechnet live</h2>
     <div class="inputs">
       <div class="field"><label class="tip" data-tip="preis">Angebotspreis (€)<span class="tipbox"></span></label><input id="preis" type="number" step="1000"><span class="tag" contenteditable="true" data-persist="tag-preis">BELEGT · Exposé</span></div>
       <div class="field"><label class="tip" data-tip="flaeche">Wohnfläche (m²)<span class="tipbox"></span></label><input id="flaeche" type="number" step="0.1"><span class="tag" contenteditable="true" data-persist="tag-flaeche">BELEGT · Exposé</span></div>
@@ -625,14 +640,12 @@ li{margin-bottom:8px}
       <div class="field"><label class="tip" data-tip="makler">Makler (%)<span class="tipbox"></span></label><input id="makler" type="number" step="0.01"><span class="tag" contenteditable="true" data-persist="tag-makler">BELEGT · Exposé</span></div>
       <div class="field"><label class="tip" data-tip="sonstige">Sonstige Erwerbskosten (€)<span class="tipbox"></span></label><input id="sonstige" type="number" step="500"><span class="tag" contenteditable="true" data-persist="tag-sonstige">z. B. Gutachten</span></div>
       <div class="field"><label class="tip" data-tip="kaltmiete">Kaltmiete/Monat (€)<span class="tipbox"></span></label><input id="kaltmiete" type="number" step="10"><span class="tag" contenteditable="true" data-persist="tag-kaltmiete">BELEGT · Immowelt-Exposé</span></div>
-      <div class="field"><label class="tip" data-tip="nebenkostenVorauszahlung">Nebenkostenvorauszahlung Mieter/Monat (€)<span class="tipbox"></span></label><input id="nebenkostenVorauszahlung" type="number" step="10"><span class="tag" contenteditable="true" data-persist="tag-nebenkostenVorauszahlung">UNBEKANNT · Mietvertrag erforderlich</span></div>
-      <div class="field"><label class="tip" data-tip="hausgeld">Hausgeld/Betriebskosten gesamt/Monat (€)<span class="tipbox"></span></label><input id="hausgeld" type="number" step="10"><span class="tag" contenteditable="true" data-persist="tag-hausgeld">BELEGT · Immowelt-Exposé</span></div>
-      <div class="field"><label class="tip" data-tip="hausgeldNichtUml">davon nicht umlagefähig (€)<span class="tipbox"></span></label><input id="hausgeldNichtUml" type="number" step="5"><span class="tag" contenteditable="true" data-persist="tag-hausgeldNichtUml">UNBEKANNT · Hausgeldabrechnung fehlt</span></div>
-      <div class="field"><label class="tip" data-tip="instand">Instandhaltung (€/m²/Monat)<span class="tipbox"></span></label><input id="instand" type="number" step="0.1"><span class="tag" contenteditable="true" data-persist="tag-instand">OBJEKTBEWERTUNG: 1,50 €/m²/Monat · Baujahr 1995, gepflegt</span></div>
-      <div class="field"><label class="tip" data-tip="leerstand">Leerstand (Wochen/Jahr)<span class="tipbox"></span></label><input id="leerstand" type="number" step="0.5"><span class="tag" contenteditable="true" data-persist="tag-leerstand">NUTZER-VORGABE: 4 Wo.</span></div>
+      <div class="field"><label class="tip" data-tip="hausgeldNichtUml">Nicht umlagefähiges Hausgeld (€ / Monat)<span class="tipbox"></span></label><input id="hausgeldNichtUml" type="number" step="5"><span class="tag" contenteditable="true" data-persist="tag-hausgeldNichtUml">ANNAHME · 35 € Pauschale, Unterlagen ohne Eigentümeranteil</span></div>
+      <div class="field"><label class="tip" data-tip="instand">Instandhaltung (€ / m² / Monat)<span class="tipbox"></span></label><input id="instand" type="number" step="0.1"><span class="tag" contenteditable="true" data-persist="tag-instand">NUTZER-VORGABE: 1,00 €/m²/Monat</span></div>
+      <div class="field"><label class="tip" data-tip="leerstand">Leerstand (% der Kaltmiete)<span class="tipbox"></span></label><input id="leerstand" type="number" step="0.1"><span class="tag" contenteditable="true" data-persist="tag-leerstand">NUTZER-VORGABE: 2,0 % der Kaltmiete</span></div>
       <div class="field"><label class="tip" data-tip="ek">Eigenkapital (€)<span class="tipbox"></span></label><input id="ek" type="number" step="1000"><span class="tag" contenteditable="true" data-persist="tag-ek">NUTZER-VORGABE: 20.000 €</span></div>
-      <div class="field"><label class="tip" data-tip="zins">Zinssatz (%)<span class="tipbox"></span></label><input id="zins" type="number" step="0.01"><span class="tag" contenteditable="true" data-persist="tag-zins">UNBEKANNT · frisches Bankangebot erforderlich</span></div>
-      <div class="field"><label class="tip" data-tip="tilgung">Tilgung (%)<span class="tipbox"></span></label><input id="tilgung" type="number" step="0.1"><span class="tag" contenteditable="true" data-persist="tag-tilgung">NUTZER-VORGABE: 2,0 %</span></div>
+      <div class="field"><label class="tip" data-tip="zins">Zinssatz (%)<span class="tipbox"></span></label><input id="zins" type="number" step="0.01"><span class="tag" contenteditable="true" data-persist="tag-zins">MARKTINDIKATOR · 4,20 % / 10 J. · Interhyp 10.09.2026</span></div>
+      <div class="field"><label class="tip" data-tip="tilgung">Tilgung (%)<span class="tipbox"></span></label><input id="tilgung" type="number" step="0.1"><span class="tag" contenteditable="true" data-persist="tag-tilgung">NUTZER-VORGABE: 1,0 %</span></div>
     </div>
   </div>
 
@@ -645,9 +658,8 @@ li{margin-bottom:8px}
     <h2>1 · Erwerbsrechnung</h2>
     <div class="table-scroll" tabindex="0" role="region" aria-label="Analysetabelle – horizontal scrollbar"><table id="tblErwerb"></table></div>
 
-    <h2>2 · Eigenkapital-Ermittlung (3 Grenzen)</h2>
-    <div class="box green" id="ekEmpfehlung"></div>
-    <div class="table-scroll" tabindex="0" role="region" aria-label="Analysetabelle – horizontal scrollbar"><table id="tblEkStufen"></table></div>
+    <h2>2 · Cashflow-Berechnung</h2>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="Cashflow-Berechnung – horizontal scrollbar"><table id="tblCashflow"></table></div>
 
     <h2>3 · Wirtschaftlichkeit</h2>
     <div class="table-scroll" tabindex="0" role="region" aria-label="Analysetabelle – horizontal scrollbar"><table id="tblWirt"></table></div>
@@ -774,10 +786,16 @@ const getZinsSzenarien = zins => ZINS_OFFSETS.map(({ offset, label }) => ({
 const DEFAULTS = {
   preis: 179000, flaeche: 88, renovierung: 0, sanierung: 0,
   grESt: 6.0, notar: 2.0, makler: 3.57, sonstige: 0,
-  kaltmiete: 645, hausgeld: 35, nebenkostenVorauszahlung: null, hausgeldNichtUml: null, instand: 1.5, leerstand: 4,
-  ek: 20000, zins: null, tilgung: 2.0
+  kaltmiete: 645, hausgeld: 35, nebenkostenVorauszahlung: null, hausgeldNichtUml: null, instand: 1.0, leerstand: 2,
+  ek: 20000, zins: 4.2, tilgung: 1.0
 };
 const IDS = Object.keys(DEFAULTS);
+let lastLoadedState = {};
+const INPUT_GROUPS = [
+  { title: "Kauf und Erwerbskosten", fields: ["preis", "flaeche", "renovierung", "sanierung", "grESt", "notar", "makler", "sonstige"] },
+  { title: "Miete und laufende Kosten", fields: ["kaltmiete", "hausgeldNichtUml", "instand", "leerstand"] },
+  { title: "Finanzierung", fields: ["ek", "zins", "tilgung"] }
+];
 // Lesbare Namen für "ausstehend"-Meldungen
 const FELDLABEL = {
   renovierung: "Renovierung", sanierung: "Sanierung", kaltmiete: "Kaltmiete",
@@ -787,10 +805,41 @@ const FELDLABEL = {
   grESt: "Grunderwerbsteuer", notar: "Notar/Grundbuch", makler: "Makler", sonstige: "Sonstige Kosten", zins: "Zinssatz"
 };
 
+function gruppiereEingaben() {
+  const root = document.querySelector(".inputs");
+  if (!root || root.dataset.grouped === "true") return;
+  root.dataset.grouped = "true";
+  root.classList.remove("inputs");
+  root.classList.add("input-groups");
+  const labels = {
+    hausgeldNichtUml: "Nicht umlagefähiges Hausgeld (€ / Monat)",
+    instand: "Instandhaltung (€ / m² / Monat)",
+    leerstand: "Leerstand (% der Kaltmiete)"
+  };
+  INPUT_GROUPS.forEach(group => {
+    const section = document.createElement("section");
+    section.className = "input-group";
+    const heading = document.createElement("h3");
+    heading.textContent = group.title;
+    const fields = document.createElement("div");
+    fields.className = "inputs";
+    group.fields.forEach(id => {
+      const field = document.getElementById(id)?.closest(".field");
+      if (!field) return;
+      const label = field.querySelector("label");
+      if (label && labels[id]) label.childNodes[0].textContent = labels[id];
+      fields.append(field);
+    });
+    section.append(heading, fields);
+    root.append(section);
+  });
+}
+
 function readInputs() {
   const d = {};
   IDS.forEach(id => {
-    const raw = String(document.getElementById(id).value).trim();
+    const input = document.getElementById(id);
+    const raw = input ? String(input.value).trim() : "";
     d[id] = raw === "" ? 0 : (parseFloat(raw.replace(",", ".")) || 0);
   });
   d.hausgeldNichtUmlEingegeben = String(document.getElementById("hausgeldNichtUml").value).trim() !== "";
@@ -830,17 +879,13 @@ function calc(d) {
   r.giProM2 = d.flaeche > 0 ? r.gesamt / d.flaeche : 0;
 
   const jahresKalt = d.kaltmiete * 12;
-  const lf = 1 - d.leerstand / 52;
+  const lf = Math.max(0, 1 - d.leerstand / 100);
   r.mieteEffektiv = jahresKalt * lf;
-  const hausgeldNichtUml = d.hausgeldNichtUmlEingegeben
-    ? d.hausgeldNichtUml
-    : Math.max(0, d.hausgeld - d.nebenkostenVorauszahlung);
-  const umlagefaehigeKosten = d.hausgeldNichtUmlEingegeben
-    ? Math.max(0, d.hausgeld - d.hausgeldNichtUml)
-    : d.hausgeld;
+  const hausgeldNichtUml = d.hausgeldNichtUmlEingegeben ? d.hausgeldNichtUml : 35;
+  const umlagefaehigeKosten = 0;
   r.nebenkostenSaldoMonat = d.nebenkostenVorauszahlung - umlagefaehigeKosten;
   r.nebenkostenSaldoJahr = r.nebenkostenSaldoMonat * 12;
-  r.hgUmlagefaehigJahr = Math.max(0, d.hausgeld - hausgeldNichtUml) * 12;
+  r.hgUmlagefaehigJahr = 0;
   r.hgNichtUmlJahr = hausgeldNichtUml * 12;
   r.verwaltungJahr = 0;
   r.instandJahr = d.flaeche * d.instand * 12;
@@ -884,7 +929,7 @@ function calc(d) {
   const nettoMit = (kmJahr, instF = 1, lfF = lf) => kmJahr * lfF - r.hgNichtUmlJahr - r.verwaltungJahr - r.instandJahr * instF;
   r.stress = [
     ["Miete −10 %", nettoMit(jahresKalt * 0.9) / 12 - r.rate],
-    ["Leerstand +2 Monate", nettoMit(jahresKalt, 1, 1 - (d.leerstand + 8.7) / 52) / 12 - r.rate],
+    ["Leerstand +2 %-Punkte", nettoMit(jahresKalt, 1, Math.max(0, 1 - (d.leerstand + 2) / 100)) / 12 - r.rate],
     ["Instandhaltung +50 %", nettoMit(jahresKalt, 1.5) / 12 - r.rate],
     ["Zins +2,0 %-Punkte", r.cfVor - r.darlehen * (d.zins + 2 + d.tilgung) / 100 / 12],
     ["Sanierung +10 % KP (finanziert)", r.cfVor - (r.darlehen + d.preis * 0.10) * zt],
@@ -976,32 +1021,35 @@ function render() {
     row(["Sanierung", { v: w(d.sanierung), num: true }, d.sanierung === null ? "FEHLT – bitte eingeben" : "ANNAHME ⚠️"]) +
     row(["Sonstige Erwerbskosten", { v: eur(d.sonstige), num: true }, "–"]) +
     row(["<b>Gesamtinvestition</b>", { v: r.berechenbar ? "<b>" + eur(r.gesamt) + "</b>" : AUSSTEHEND, num: true }, "ABGELEITET"]) +
+    row(["Eigenkapital", { v: eur(d.ek), num: true }, "NUTZER-VORGABE"]) +
+    row(["<b>Darlehensbetrag</b>", { v: r.berechenbar ? "<b>" + eur(r.darlehen) + "</b>" : AUSSTEHEND, num: true }, "Gesamtinvestition − Eigenkapital"]) +
     row(["Gesamtinvestition / m²", { v: r.berechenbar ? eur(r.giProM2) : AUSSTEHEND, num: true }, d.flaeche > 0 ? fmt(d.flaeche, 1) + " m²" : "—"]);
 
-  document.getElementById("ekEmpfehlung").innerHTML = r.berechenbar
-    ? `<b>💡 ${tip("Empfohlenes Eigenkapital", "ekBE")}: ${eur(Math.ceil(r.ekBE[r.zinsSzenarien[2].zins] / 1000) * 1000)} (aufgerundet auf 1.000 €)</b><br>` +
-      `<span class="small">Das ist das Minimum, bei dem der Cashflow <b>auch im schlechtesten Zinsszenario (${pct(r.zinsSzenarien[2].zins)})</b> neutral bleibt. ` +
-      `Formel: EK = Gesamtinvest − (Netto-Miete/Monat ÷ monatlicher Zins+Tilgungssatz).</span>`
-    : `<b>💡 Empfohlenes Eigenkapital: ${AUSSTEHEND}</b><br><span class="small">Berechnung erst möglich, wenn Miete, Hausgeld, Renovierung/Sanierung, EK, Zins und Tilgung eingegeben sind.</span>`;
-
-  document.getElementById("tblEkStufen").innerHTML = r.berechenbar
-    ? row([{ v: "Grenze", num: false }, { v: "EK nötig", num: true }, { v: "Erklärung", num: false }], true) +
-      r.zinsSzenarien.map((szenario, i) => row([i === 2 ? `<b>Cashflow = 0 bei Zins ${pct(szenario.zins)}</b>` : `Cashflow = 0 bei Zins ${pct(szenario.zins)}`, { v: i === 2 ? "<b>" + eur(r.ekBE[szenario.zins]) + "</b>" : eur(r.ekBE[szenario.zins]), num: true }, i === 0 ? "Unter deiner Eingabe" : i === 1 ? "Deine Eingabe" : "<b>Über deiner Eingabe</b>"])).join("") +
-      row(["Dein aktuelles EK", { v: d.ek === null ? AUSSTEHEND : `<span class="${cls(r.cf)}">${eur(d.ek)}</span>`, num: true }, d.ek === null ? "FEHLT – bitte eingeben" : r.cf >= 0 ? "✅ Cashflow positiv" : "⚠️ Cashflow negativ – mehr EK oder besser verhandeln"])
-    : row([{ v: "Grenze", num: false }, { v: "EK nötig", num: true }, { v: "Erklärung", num: false }], true) +
-      row(["Berechnung ausstehend", { v: AUSSTEHEND, num: true }, "Bitte fehlende Eingaben oben ausfüllen"]);
+  const cash = value => value < 0 ? "−" + eur(Math.abs(value)) : eur(value);
+  document.getElementById("tblCashflow").innerHTML = r.berechenbar
+    ? row([{ v: "Position", num: false }, { v: "Monatlich", num: true }, { v: "Jährlich", num: true }], true) +
+      row(["Kaltmiete", { v: eur(d.kaltmiete), num: true }, { v: eur(d.kaltmiete * 12), num: true }]) +
+      row(["Leerstand " + pct(d.leerstand), { v: "−" + eur(d.kaltmiete - r.mieteEffektiv / 12), num: true }, { v: "−" + eur(d.kaltmiete * 12 - r.mieteEffektiv), num: true }]) +
+      row(["<b>Effektive Mieteinnahmen</b>", { v: "<b>" + eur(r.mieteEffektiv / 12) + "</b>", num: true }, { v: "<b>" + eur(r.mieteEffektiv) + "</b>", num: true }]) +
+      row(["Nicht umlagefähiges Hausgeld inkl. Verwaltung", { v: "−" + eur(r.hgNichtUmlJahr / 12), num: true }, { v: "−" + eur(r.hgNichtUmlJahr), num: true }]) +
+      row(["Instandhaltung", { v: "−" + eur(r.instandJahr / 12), num: true }, { v: "−" + eur(r.instandJahr), num: true }]) +
+      row(["<b>Cashflow vor Finanzierung</b>", { v: "<b>" + eur(r.cfVor) + "</b>", num: true }, { v: "<b>" + eur(r.cfVor * 12) + "</b>", num: true }]) +
+      row(["Zinsanteil " + pct(d.zins), { v: "−" + eur(r.zinsJahr / 12), num: true }, { v: "−" + eur(r.zinsJahr), num: true }]) +
+      row(["Tilgungsanteil " + pct(d.tilgung), { v: "−" + eur(r.tilgJahr / 12), num: true }, { v: "−" + eur(r.tilgJahr), num: true }]) +
+      row(["<b>Kreditrate gesamt</b>", { v: "<b>−" + eur(r.rate) + "</b>", num: true }, { v: "<b>−" + eur(r.rate * 12) + "</b>", num: true }]) +
+      row(["<b>Cashflow nach Finanzierung</b>", { v: `<b class="${cls(r.cf)}">${cash(r.cf)}</b>`, num: true }, { v: `<b class="${cls(r.cf)}">${cash(r.cf * 12)}</b>`, num: true }])
+    : row([{ v: "Position", num: false }, { v: "Monatlich", num: true }, { v: "Jährlich", num: true }], true) +
+      row(["Berechnung ausstehend", { v: AUSSTEHEND, num: true }, { v: AUSSTEHEND, num: true }]);
 
   document.getElementById("tblWirt").innerHTML = r.berechenbar
     ? row([{ v: tip("Kennzahl", "status"), num: false }, { v: "Wert", num: true }], true) +
       row([tip("Bruttorendite", "bruttoR"), { v: pct(r.bruttoR), num: true }]) +
       row([tip("Nettorendite", "nettoR"), { v: pct(r.nettoR), num: true }]) +
-      row([tip("Voraussichtliche Erstattung/Nachzahlung Mieter", "nebenkostenSaldo"), { v: r.nebenkostenSaldoMonat > 0 ? "+" + eur(r.nebenkostenSaldoMonat) + " Erstattung" : r.nebenkostenSaldoMonat < 0 ? "−" + eur(Math.abs(r.nebenkostenSaldoMonat)) + " Nachzahlung" : "0 € ausgeglichen", num: true }]) +
-      row([tip("Cashflow vor Finanzierung", "cfVor"), { v: eur(r.cfVor) + "/M", num: true }]) +
-      row([tip("Monatsrate (" + pct(d.zins) + " Zins + " + pct(d.tilgung) + " Tilgung)", "rate"), { v: "−" + eur(r.rate) + "/M", num: true }]) +
-      row([tip("<b>Cashflow nach Finanzierung</b>", "cf"), { v: `<b class="${cls(r.cf)}">${eur(r.cf)}/M</b>`, num: true }]) +
       row([tip("EK-Rendite (Cash-on-Cash, inkl. Tilgung)", "coc"), { v: pct(r.coc), num: true }]) +
       row([tip("Darlehen (Beleihungsauslauf " + pct(r.ltv) + " des KP)", "darlehen"), { v: eur(r.darlehen), num: true }]) +
-      row([tip("Break-Even-Miete (CF = 0)", "breakEvenMiete"), { v: eur(r.breakEvenMiete) + "/M", num: true }])
+      row([tip("Break-Even-Miete (CF = 0)", "breakEvenMiete"), { v: eur(r.breakEvenMiete) + "/M", num: true }]) +
+      row([tip("Maximaler Kaufpreis", "maxPreis"), { v: eur(r.maxPreis), num: true }]) +
+      row([tip("Verhandlungsspielraum", "spielraum"), { v: eur(r.spielraum), num: true }])
     : row([{ v: "Kennzahl", num: false }, { v: "Wert", num: true }], true) +
       row(["Berechnung ausstehend", { v: AUSSTEHEND, num: true }]) +
       row(["Fehlende Eingaben", { v: d.fehlend.map(f => FELDLABEL[f] || f).join(", "), num: false }]);
@@ -1077,7 +1125,7 @@ function render() {
   if (d.tilgung === null) annahmeListe.push("Tilgung");
   else annahmeListe.push("Tilgung " + pct(d.tilgung));
   if (d.leerstand === null) annahmeListe.push("Leerstand");
-  else annahmeListe.push("Leerstand " + fmt(d.leerstand, 1) + " Wo.");
+  else annahmeListe.push("Leerstand " + fmt(d.leerstand, 1) + " % der Kaltmiete");
   dq.push([annahmeListe.join(", "), "ANNAHME", "Platzhalter – nicht belegt"]);
   dq.push(["Objekt-spezifische Annahmen hier eintragen (z. B. Heizstrom-Schätzung)", "ANNAHME (Orientierung)", "Rechenweg dokumentieren"]);
   dq.push(["Grundbuch, Mietverträge, Sanierungsnachweise, tatsächliche Vergleichsmiete", "UNBEKANNT", "Muss geklärt werden"]);
@@ -1120,9 +1168,9 @@ const TIPS = {
   hausgeld: "Gesamtbetrag für Hausgeld/Betriebskosten. Bei einem EFH z. B. Grundsteuer, Gebäudeversicherung und Müllgebühren. Richtwert als Startannahme: ca. 1,00 €/m² Wohnfläche pro Monat. 0 bleibt 0; Verwaltung wird nicht automatisch ergänzt.",
   nebenkostenVorauszahlung: "Monatliche Vorauszahlung des Mieters auf umlagefähige Betriebskosten. Sie ist keine zusätzliche Kaltmiete und wird dem Hausgeld gegenübergestellt.",
   nebenkostenSaldo: "Positiv: voraussichtliche Erstattung an den Mieter. Negativ: voraussichtliche Nachzahlung des Mieters. Null: Vorauszahlung entspricht den Kosten.",
-  hausgeldNichtUml: "Eigentümeranteil: Hausgeld gesamt minus Mietervorauszahlung. Ein ausdrücklich eingetragener Wert bleibt maßgeblich.",
+  hausgeldNichtUml: "Kosten, die der Eigentümer monatlich selbst trägt. Ein belegter Wert aus Unterlagen bleibt maßgeblich; fehlt er, rechnet das Tool mit 35 € Pauschale.",
   instand: "Monatlicher Ansatz nach Wohnfläche: 1,00–1,50 €/m²/Monat für neuere oder gepflegte Häuser, 2,00–5,00 €/m²/Monat für ältere Bestandsimmobilien. Quelle: Verband Privater Bauherren über Interhyp, abgerufen 25.09.2026. Berechnung: Wohnfläche × Eingabe.",
-  leerstand: "Zeit pro Jahr, in der die Wohnung leer steht (Umzüge, Mietersuche). Jede Woche kostet Miete – der Rechner zieht sie anteilig ab. Realistisch: 2–6 Wochen/Jahr.",
+  leerstand: "Sicherheitsabschlag auf die Kaltmiete für Mieterwechsel und Vermietungsrisiko. Nutzer-Vorgabe: 2 % der Kaltmiete.",
   ek: "Eigenkapital = dein eigenes Geld, das du einbringst. Mehr EK = kleinere Rate, aber weniger Rendite auf dein Geld. Weniger EK = größere Rate, höheres Risiko. Das Tool berechnet unten Break-Even-EK je Zinsszenario.",
   zins: "Der jährliche Zinssatz des Darlehens. Aktuelles Marktniveau recherchieren (z. B. CHECK24/FMH) und hier als Quelle eintragen. Bei hohem Beleihungsauslauf verlangen Banken mehr.",
   tilgung: "Der Teil der Rate, der das Darlehen abbaut (Rest: Zinsen). 2 % anfängliche Tilgung = Standard; höher = schneller schuldenfrei, aber höhere Rate.",
@@ -1286,8 +1334,11 @@ function restoreListSafe(list, savedHtml) {
 
 // ---------- Speichern ----------
 function collectState() {
-  const s = { _tool: "immo-objekt-uebersicht", _version: 1, _objekt_ordner: OBJEKT_ORDNER };
-  IDS.forEach(id => s[id] = document.getElementById(id).value);
+  const s = { ...lastLoadedState, _tool: "immo-objekt-uebersicht", _version: 1, _objekt_ordner: OBJEKT_ORDNER };
+  IDS.forEach(id => {
+    const input = document.getElementById(id);
+    if (input) s[id] = input.value;
+  });
   document.querySelectorAll("[data-persist]").forEach(el => {
     s["p_" + el.dataset.persist] = el.type === "checkbox" ? el.checked : (el.matches("input, textarea, select") ? el.value : el.textContent);
   });
@@ -1295,10 +1346,14 @@ function collectState() {
     s["_list_" + el.dataset.listPersist] = el.innerHTML;
   });
   s._risiken = getRisiken();
+  lastLoadedState = { ...lastLoadedState, ...s };
   return s;
 }
 function applyState(s) {
-  IDS.forEach(id => { if (s[id] !== undefined) document.getElementById(id).value = s[id]; });
+  IDS.forEach(id => {
+    const input = document.getElementById(id);
+    if (input && s[id] !== undefined) input.value = s[id];
+  });
   Object.keys(s).forEach(k => {
     if (!k.startsWith("_list_")) return;
     const el = document.querySelector(`[data-list-persist="${k.slice(6)}"]`);
@@ -1386,10 +1441,15 @@ async function exportJson() {
   });
   window.addEventListener("scroll", closeTip, true);
   window.addEventListener("resize", closeTip);
-  IDS.forEach(id => document.getElementById(id).value = DEFAULTS[id]);
+  gruppiereEingaben();
+  IDS.forEach(id => {
+    const input = document.getElementById(id);
+    if (input) input.value = DEFAULTS[id];
+  });
   renderRisiken(RISIKEN_DEFAULT);
   try {
     const saved = await ImmoDb.load(OBJEKT_ORDNER);
+    lastLoadedState = { ...(saved.state || {}) };
     applyState(saved.state);
     document.getElementById("objectIdLabel").textContent = `Objekt-ID: ${saved.id}`;
     document.getElementById("savedNote").textContent = `DB-Revision ${saved.revision}`;

@@ -102,6 +102,10 @@ code{overflow-wrap:anywhere}
 .box,.sub,.field label,.field .tag{overflow-wrap:anywhere}
 .appearance-controls{max-width:1240px;margin:0 auto 24px;display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}
 .appearance-controls .print-btn{margin:0}
+.appearance-controls.has-brand{flex-direction:column;align-items:flex-end;gap:3px;margin-bottom:14px}
+.appearance-controls.has-brand .theme-toggle{flex:0 0 auto}
+.portfolio-brand{display:block;width:164px;height:auto;object-fit:contain;opacity:.78}
+[data-theme="dark"] .portfolio-brand{filter:invert(1);opacity:.82}
 .theme-toggle{width:164px;height:44px;flex:0 0 164px;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;padding:10px 16px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);font-size:13px;font-weight:650;cursor:pointer}
 @media screen{
 html[data-theme="dark"]{color-scheme:dark;--ink:#e4edf3;--muted:#a0b4c1;--accent:#65d0c4;--line:#2b414f;--canvas:#0c1721}
@@ -136,37 +140,44 @@ button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-v
 .filter button.aktiv,.filter button.sync,.btn,.external-link button,.print-btn{background:var(--accent);border-color:var(--accent);color:#fff}
 .filter button.analyse{flex-basis:auto;margin-left:0;color:var(--accent);background:#eff7f6;border-color:#cee3e1}
 .filter button:hover,.btn:hover{filter:brightness(.96)}
-.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
-.karte{position:relative;min-width:0;border:1px solid var(--line);border-radius:var(--radius);padding:28px;background:#fff;box-shadow:0 5px 18px #16354105;transition:transform .18s,box-shadow .18s,border-color .18s;overflow:visible}
-.karte.has-photo{overflow:hidden;isolation:isolate}
-.karte-photo-bg{position:absolute;inset:-20px;background-size:cover;background-position:center;filter:blur(15px);opacity:.24;pointer-events:none;z-index:0}
+.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:stretch}
+.karte{position:relative;display:flex;flex-direction:column;min-width:0;height:100%;box-sizing:border-box;text-decoration:none;color:inherit;border:1px solid var(--line);border-radius:var(--radius);padding:16px;background:#fff;box-shadow:0 5px 18px #16354105;transition:transform .18s,box-shadow .18s,border-color .18s;overflow:hidden;isolation:isolate}
+.karte-photo-bg{position:absolute;inset:-5px;background-size:cover;background-position:center;filter:blur(3px);opacity:.64;pointer-events:none;z-index:0}
+.karte-photo-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#fff3 0%,#fffa 62%,#fffe 100%)}
 .karte.has-photo>*:not(.karte-photo-bg){position:relative;z-index:1}
 .karte.has-photo::after{position:relative;z-index:1}
-[data-theme="dark"] .karte-photo-bg{opacity:.16}
+[data-theme="dark"] .karte-photo-bg{opacity:.48}
+[data-theme="dark"] .karte-photo-bg::after{background:linear-gradient(180deg,#14232e55 0%,#14232eb8 62%,#14232ee8 100%)}
 .object-hero{margin:18px 0 26px;border-radius:16px;overflow:hidden;background:#e7eff0;max-height:320px}
 .object-hero img{display:block;width:100%;max-height:320px;object-fit:cover}
 .object-hero figcaption{padding:7px 12px;color:var(--muted);font-size:11px;background:var(--canvas)}
-.karte::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#116d72,#9dc8bf)}
+.karte::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#116d72,#9dc8bf);border-radius:var(--radius) var(--radius) 0 0;z-index:2}
 .karte:hover{z-index:2;transform:translateY(-3px);border-color:#99bebd;box-shadow:0 14px 32px #16354112}
-.karte::after{content:"Objektübersicht ansehen ↗";display:block;color:var(--accent);font-size:12px;font-weight:700;border-top:1px solid var(--line);padding-top:17px;margin-top:22px}
-.karte-name{font-size:24px;font-weight:750;letter-spacing:-.035em;line-height:1.3}
-.rating-badge{font-size:21px;border-radius:12px;min-width:44px;text-align:center;padding:5px 12px}
-.karte-sub{font-size:13px;margin:8px 0 20px;color:var(--muted)}
-.karte-details{font-size:12px;gap:8px;margin-bottom:24px}
-.karte-details span{background:#f4f7f8;border-radius:6px;padding:5px 8px;color:#526975}
-.karte-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:16px}
-.karte-kpis div{border:0;border-radius:12px;background:#f1f6f6;padding:16px;min-width:0}
-.karte-kpis .l,.karte-fin .l{font-size:10px;letter-spacing:.07em;color:var(--muted);font-weight:650}
-.karte-kpis .v{font-size:26px;letter-spacing:-.04em;font-weight:750;margin-top:4px;font-variant-numeric:tabular-nums}
-.karte-kpis .s,.karte-fin .s{font-size:11px;color:var(--muted);margin-top:4px}
-.karte-fin{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:16px;margin:0}
-.karte-fin div{border:0;background:none;padding:4px 0}
-.karte-fin .v{font-size:13px;font-weight:650;line-height:1.65;margin-top:5px}
+.karte::after{content:"Objektübersicht ansehen ↗";display:block;color:var(--accent);font-size:11px;font-weight:700;border-top:1px solid var(--line);padding-top:8px;margin-top:9px}
+.karte-title{display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-width:0}
+.karte-name{font-size:19px;font-weight:750;letter-spacing:-.035em;line-height:1.25}
+.karte-type{display:inline-flex;align-items:center;padding:2px 7px;border:1px solid #c9e1de;border-radius:999px;background:#eaf5f3;color:#185f62;font-size:10px;font-weight:750;line-height:1.4;white-space:nowrap}
+[data-theme="dark"] .karte-type{background:#1d4245;border-color:#397375;color:#9ae0d4}
+.rating-badge{font-size:16px;border-radius:9px;min-width:34px;text-align:center;padding:4px 8px}
+.karte-sub{font-size:11px;line-height:1.45;margin:6px 0 9px;color:var(--muted)}
+.karte-details{font-size:10px;gap:5px;margin-bottom:9px}
+.karte-details span{background:#f4f7f8;border-radius:6px;padding:3px 6px;color:#526975}
+.karte-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-bottom:8px}
+.karte-kpis div{border:0;border-radius:10px;background:#f1f6f6e8;padding:9px;min-width:0}
+.karte-kpis .l,.karte-fin .l{font-size:9px;letter-spacing:.07em;color:var(--muted);font-weight:650}
+.karte-kpis .v{font-size:20px;letter-spacing:-.04em;font-weight:750;margin-top:2px;font-variant-numeric:tabular-nums}
+.karte-kpis .s,.karte-fin .s{font-size:10px;color:var(--muted);margin-top:1px}
+.karte-fin{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:9px;margin:0;margin-top:auto}
+.karte-fin div{border:0;background:none;padding:2px 0}
+.karte-fin .v{font-size:12px;font-weight:650;line-height:1.45;margin-top:2px}
 footer,.footer{font-size:11px;line-height:1.8;color:var(--muted);border-top:1px solid var(--line);padding-top:22px;margin-top:30px;overflow-wrap:anywhere}
 .card{border:1px solid var(--line);border-radius:var(--radius);padding:32px;margin-bottom:24px;box-shadow:0 5px 18px #16354105;min-width:0}
 .card:first-child{border-top:4px solid var(--accent)}
 h2{font-size:16px;line-height:1.6;letter-spacing:-.015em;text-transform:none;color:var(--ink);border-bottom:1px solid var(--line);padding-bottom:12px;margin:34px 0 18px}
 .card>h2:first-child{margin-top:0}
+.input-groups{display:grid;gap:24px}
+.input-group{padding:18px;border:1px solid var(--line);border-radius:12px;background:#f8fafb;min-width:0}
+.input-group h3{margin:0 0 16px;font-size:13px;line-height:1.4;color:var(--ink)}
 .inputs{grid-template-columns:repeat(4,minmax(0,1fr));gap:20px 18px}
 .field{min-width:0;gap:7px}
 .field label{font-size:12px;color:#405b68;min-height:38px;line-height:1.5}
@@ -206,9 +217,9 @@ li{margin-bottom:8px}
 .btn.delete{min-width:32px;min-height:32px;padding:4px}
 .tip .tipbox{font-size:12px;line-height:1.6;box-shadow:0 10px 30px #152d3933;z-index:1000}
 .tipbox-portal{box-sizing:border-box;width:min(320px,calc(100vw - 24px));max-width:calc(100vw - 24px);padding:11px 13px;border:1px solid #344158;border-radius:8px;background:#0f1420;color:#e8edf7;font-size:12px;font-weight:400;line-height:1.5;text-align:left;white-space:normal;word-wrap:break-word;overflow-wrap:break-word;box-shadow:0 10px 28px rgba(15,20,32,.4)}
-@media(max-width:1050px){.filter button.sync{margin-left:0}.inputs{grid-template-columns:repeat(2,minmax(0,1fr))}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.karte{padding:22px}.karte-kpis .v{font-size:23px}}
-@media(max-width:760px){body{padding:24px 16px 40px}.grid{grid-template-columns:minmax(0,1fr)}.card{padding:22px}.wrap::before{font-size:9px}.filter{padding:12px;gap:6px}.filter button{flex:1 1 auto}.filter button.sync,.filter button.analyse{flex-basis:100%;text-align:center}.karte-name{font-size:25px}.karte-kpis .v{font-size:27px}.print-btn{margin-bottom:20px}.kpi{padding:16px}.tip .tipbox{max-height:50vh;overflow:auto}.toolbar .btn{flex:1 1 auto}h2{margin-top:28px}.box{padding:15px}.external-link button{flex-grow:1}}
-@media(max-width:420px){body{padding:18px 12px 32px}.card{padding:18px}.inputs{gap:16px 12px}.field label{font-size:11px}.field input{padding:10px;font-size:16px}.kpis{gap:10px}.kpi{padding:13px}.kpi .v{font-size:22px}.karte{padding:20px}.karte-kpis .v{font-size:24px}.karte-fin{grid-template-columns:1fr}.toolbar .btn{flex-basis:100%}}
+@media(max-width:1050px){.filter button.sync{margin-left:0}.inputs{grid-template-columns:repeat(2,minmax(0,1fr))}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.karte-kpis .v{font-size:19px}}
+@media(max-width:760px){body{padding:24px 16px 40px}.grid{grid-template-columns:minmax(0,1fr)}.card{padding:22px}.wrap::before{font-size:9px}.filter{padding:12px;gap:6px}.filter button{flex:1 1 auto}.filter button.sync,.filter button.analyse{flex-basis:100%;text-align:center}.karte-name{font-size:20px}.karte-kpis .v{font-size:20px}.print-btn{margin-bottom:20px}.kpi{padding:16px}.tip .tipbox{max-height:50vh;overflow:auto}.toolbar .btn{flex:1 1 auto}h2{margin-top:28px}.box{padding:15px}.external-link button{flex-grow:1}}
+@media(max-width:420px){body{padding:18px 12px 32px}.card{padding:18px}.inputs{gap:16px 12px}.field label{font-size:11px}.field input{padding:10px;font-size:16px}.kpis{gap:10px}.kpi{padding:13px}.kpi .v{font-size:22px}.karte{padding:14px}.karte-kpis .v{font-size:19px}.karte-fin{grid-template-columns:1fr}.toolbar .btn{flex-basis:100%}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;scroll-behavior:auto!important}.karte:hover{transform:none}}
 @media print{body{background:#fff;padding:0;font-size:10px}.wrap{max-width:none}.wrap::before{display:none}.card{border:0;border-radius:0;box-shadow:none;padding:10px 0}.card:first-child{border-top:0}.print-btn,.toolbar,.saved-note,.edit-hint,.filter{display:none!important}.inputs,.kpis{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.field input{min-height:0;padding:0;border:0;background:none;font-size:11px}.field label{min-height:0;font-size:9px}.kpi{padding:8px}.kpi .v{font-size:17px}.table-scroll{overflow:visible;border:0}.table-scroll table{min-width:0;font-size:10px}th,td{padding:5px}.box{padding:10px}h2{margin-top:20px;font-size:13px}.tipbox{display:none!important}.grid{grid-template-columns:1fr 1fr}.karte{break-inside:avoid}.karte::after{display:none}}
 </style>
@@ -295,6 +306,11 @@ li{margin-bottom:8px}
     controls.append(button);
     const print = document.querySelector('body > .print-btn');
     if (print) controls.append(print);
+    const brand = document.querySelector('body > .portfolio-brand');
+    if (brand) {
+      controls.classList.add('has-brand');
+      controls.append(brand);
+    }
     document.body.prepend(controls);
     apply(document.documentElement.dataset.theme);
   });
@@ -627,12 +643,12 @@ li{margin-bottom:8px}
       <div class="field"><label class="tip" data-tip="kaltmiete">Kaltmiete/Monat (€)<span class="tipbox"></span></label><input id="kaltmiete" type="number" step="10"><span class="tag" contenteditable="true" data-persist="tag-kaltmiete">UNBEKANNT · Orientierung 1.050 €</span></div>
       <div class="field"><label class="tip" data-tip="nebenkostenVorauszahlung">Nebenkostenvorauszahlung Mieter/Monat (€)<span class="tipbox"></span></label><input id="nebenkostenVorauszahlung" type="number" step="10"><span class="tag" contenteditable="true" data-persist="tag-nebenkostenVorauszahlung">UNBEKANNT · Mietvertrag erforderlich</span></div>
       <div class="field"><label class="tip" data-tip="hausgeld">Hausgeld/Betriebskosten gesamt/Monat (€)<span class="tipbox"></span></label><input id="hausgeld" type="number" step="10"><span class="tag" contenteditable="true" data-persist="tag-hausgeld">ANNAHME · Richtwert ca. 1,00 €/m²/Monat</span></div>
-      <div class="field"><label class="tip" data-tip="hausgeldNichtUml">davon nicht umlagefähig (€)<span class="tipbox"></span></label><input id="hausgeldNichtUml" type="number" step="5"><span class="tag" contenteditable="true" data-persist="tag-hausgeldNichtUml">UNBEKANNT · Rücklage fehlt</span></div>
-      <div class="field"><label class="tip" data-tip="instand">Instandhaltung (€/m²/Monat)<span class="tipbox"></span></label><input id="instand" type="number" step="0.1"><span class="tag" contenteditable="true" data-persist="tag-instand">OBJEKTBEWERTUNG: 2,50 €/m²/Monat · Baujahr 1994, Energieklasse E</span></div>
-      <div class="field"><label class="tip" data-tip="leerstand">Leerstand (Wochen/Jahr)<span class="tipbox"></span></label><input id="leerstand" type="number" step="0.5"><span class="tag" contenteditable="true" data-persist="tag-leerstand">NUTZER-VORGABE: 4 Wo.</span></div>
+      <div class="field"><label class="tip" data-tip="hausgeldNichtUml">Nicht umlagefähiges Hausgeld (€ / Monat)<span class="tipbox"></span></label><input id="hausgeldNichtUml" type="number" step="5"><span class="tag" contenteditable="true" data-persist="tag-hausgeldNichtUml">ANNAHME · 35 € Pauschale, Unterlagen ohne Eigentümeranteil</span></div>
+      <div class="field"><label class="tip" data-tip="instand">Instandhaltung (€ / m² / Monat)<span class="tipbox"></span></label><input id="instand" type="number" step="0.1"><span class="tag" contenteditable="true" data-persist="tag-instand">NUTZER-VORGABE: 1,00 €/m²/Monat</span></div>
+      <div class="field"><label class="tip" data-tip="leerstand">Leerstand (% der Kaltmiete)<span class="tipbox"></span></label><input id="leerstand" type="number" step="0.1"><span class="tag" contenteditable="true" data-persist="tag-leerstand">NUTZER-VORGABE: 2,0 % der Kaltmiete</span></div>
       <div class="field"><label class="tip" data-tip="ek">Eigenkapital (€)<span class="tipbox"></span></label><input id="ek" type="number" step="1000"><span class="tag" contenteditable="true" data-persist="tag-ek">NUTZER-VORGABE: 20.000 €</span></div>
-      <div class="field"><label class="tip" data-tip="zins">Zinssatz (%)<span class="tipbox"></span></label><input id="zins" type="number" step="0.01"><span class="tag" contenteditable="true" data-persist="tag-zins">MARKTINDIKATOR · 4,20 % / 10 J. · Interhyp 14.–20.09.2026</span></div>
-      <div class="field"><label class="tip" data-tip="tilgung">Tilgung (%)<span class="tipbox"></span></label><input id="tilgung" type="number" step="0.1"><span class="tag" contenteditable="true" data-persist="tag-tilgung">NUTZER-VORGABE: 2,0 %</span></div>
+      <div class="field"><label class="tip" data-tip="zins">Zinssatz (%)<span class="tipbox"></span></label><input id="zins" type="number" step="0.01"><span class="tag" contenteditable="true" data-persist="tag-zins">MARKTINDIKATOR · 4,20 % / 10 J. · Interhyp 10.09.2026</span></div>
+      <div class="field"><label class="tip" data-tip="tilgung">Tilgung (%)<span class="tipbox"></span></label><input id="tilgung" type="number" step="0.1"><span class="tag" contenteditable="true" data-persist="tag-tilgung">NUTZER-VORGABE: 1,0 %</span></div>
     </div>
   </div>
 
@@ -774,10 +790,16 @@ const getZinsSzenarien = zins => ZINS_OFFSETS.map(({ offset, label }) => ({
 const DEFAULTS = {
   preis: 159000, flaeche: 178, renovierung: null, sanierung: null,
   grESt: 6.0, notar: 2.0, makler: 3.57, sonstige: 0,
-  kaltmiete: 1050, hausgeld: null, nebenkostenVorauszahlung: null, hausgeldNichtUml: null, instand: 2.5, leerstand: 4,
-  ek: 20000, zins: 4.2, tilgung: 2.0
+  kaltmiete: 1050, hausgeld: null, nebenkostenVorauszahlung: null, hausgeldNichtUml: null, instand: 1.0, leerstand: 2,
+  ek: 20000, zins: 4.2, tilgung: 1.0
 };
 const IDS = Object.keys(DEFAULTS);
+const INPUT_GROUPS = [
+  { title: "Kauf und Erwerbskosten", fields: ["preis", "flaeche", "renovierung", "sanierung", "grESt", "notar", "makler", "sonstige"] },
+  { title: "Miete und laufende Kosten", fields: ["kaltmiete", "hausgeldNichtUml", "instand", "leerstand"] },
+  { title: "Finanzierung", fields: ["ek", "zins", "tilgung"] }
+];
+const AUSGEBLENDETE_EINGABEN = ["hausgeld", "nebenkostenVorauszahlung"];
 // Lesbare Namen für "ausstehend"-Meldungen
 const FELDLABEL = {
   renovierung: "Renovierung", sanierung: "Sanierung", kaltmiete: "Kaltmiete",
@@ -786,6 +808,37 @@ const FELDLABEL = {
   tilgung: "Tilgung", preis: "Kaufpreis", flaeche: "Wohnfläche",
   grESt: "Grunderwerbsteuer", notar: "Notar/Grundbuch", makler: "Makler", sonstige: "Sonstige Kosten", zins: "Zinssatz"
 };
+
+function gruppiereEingaben() {
+  const root = document.querySelector(".inputs");
+  if (!root || root.dataset.grouped === "true") return;
+  root.dataset.grouped = "true";
+  root.classList.remove("inputs");
+  root.classList.add("input-groups");
+  const labels = {
+    hausgeldNichtUml: "Nicht umlagefähiges Hausgeld (€ / Monat)",
+    instand: "Instandhaltung (€ / m² / Monat)",
+    leerstand: "Leerstand (% der Kaltmiete)"
+  };
+  AUSGEBLENDETE_EINGABEN.forEach(id => document.getElementById(id)?.closest(".field")?.setAttribute("hidden", ""));
+  INPUT_GROUPS.forEach(group => {
+    const section = document.createElement("section");
+    section.className = "input-group";
+    const heading = document.createElement("h3");
+    heading.textContent = group.title;
+    const fields = document.createElement("div");
+    fields.className = "inputs";
+    group.fields.forEach(id => {
+      const field = document.getElementById(id)?.closest(".field");
+      if (!field) return;
+      const label = field.querySelector("label");
+      if (label && labels[id]) label.childNodes[0].textContent = labels[id];
+      fields.append(field);
+    });
+    section.append(heading, fields);
+    root.append(section);
+  });
+}
 
 function readInputs() {
   const d = {};
@@ -830,17 +883,13 @@ function calc(d) {
   r.giProM2 = d.flaeche > 0 ? r.gesamt / d.flaeche : 0;
 
   const jahresKalt = d.kaltmiete * 12;
-  const lf = 1 - d.leerstand / 52;
+  const lf = Math.max(0, 1 - d.leerstand / 100);
   r.mieteEffektiv = jahresKalt * lf;
-  const hausgeldNichtUml = d.hausgeldNichtUmlEingegeben
-    ? d.hausgeldNichtUml
-    : Math.max(0, d.hausgeld - d.nebenkostenVorauszahlung);
-  const umlagefaehigeKosten = d.hausgeldNichtUmlEingegeben
-    ? Math.max(0, d.hausgeld - d.hausgeldNichtUml)
-    : d.hausgeld;
+  const hausgeldNichtUml = d.hausgeldNichtUmlEingegeben ? d.hausgeldNichtUml : 35;
+  const umlagefaehigeKosten = 0;
   r.nebenkostenSaldoMonat = d.nebenkostenVorauszahlung - umlagefaehigeKosten;
   r.nebenkostenSaldoJahr = r.nebenkostenSaldoMonat * 12;
-  r.hgUmlagefaehigJahr = Math.max(0, d.hausgeld - hausgeldNichtUml) * 12;
+  r.hgUmlagefaehigJahr = 0;
   r.hgNichtUmlJahr = hausgeldNichtUml * 12;
   r.verwaltungJahr = 0;
   r.instandJahr = d.flaeche * d.instand * 12;
@@ -884,7 +933,7 @@ function calc(d) {
   const nettoMit = (kmJahr, instF = 1, lfF = lf) => kmJahr * lfF - r.hgNichtUmlJahr - r.verwaltungJahr - r.instandJahr * instF;
   r.stress = [
     ["Miete −10 %", nettoMit(jahresKalt * 0.9) / 12 - r.rate],
-    ["Leerstand +2 Monate", nettoMit(jahresKalt, 1, 1 - (d.leerstand + 8.7) / 52) / 12 - r.rate],
+    ["Leerstand +2 %-Punkte", nettoMit(jahresKalt, 1, Math.max(0, 1 - (d.leerstand + 2) / 100)) / 12 - r.rate],
     ["Instandhaltung +50 %", nettoMit(jahresKalt, 1.5) / 12 - r.rate],
     ["Zins +2,0 %-Punkte", r.cfVor - r.darlehen * (d.zins + 2 + d.tilgung) / 100 / 12],
     ["Sanierung +10 % KP (finanziert)", r.cfVor - (r.darlehen + d.preis * 0.10) * zt],
@@ -1077,7 +1126,7 @@ function render() {
   if (d.tilgung === null) annahmeListe.push("Tilgung");
   else annahmeListe.push("Tilgung " + pct(d.tilgung));
   if (d.leerstand === null) annahmeListe.push("Leerstand");
-  else annahmeListe.push("Leerstand " + fmt(d.leerstand, 1) + " Wo.");
+  else annahmeListe.push("Leerstand " + fmt(d.leerstand, 1) + " % der Kaltmiete");
   dq.push([annahmeListe.join(", "), "ANNAHME/NUTZER-VORGABE", "Instandhaltung, Leerstand und Tilgung: Vorgaben des Nutzers; Renovierung/Sanierung: noch offen"]);
   dq.push(["Objekt-spezifische Annahmen hier eintragen (z. B. Heizstrom-Schätzung)", "ANNAHME (Orientierung)", "Rechenweg dokumentieren"]);
   dq.push(["Hausgeld, nicht umlagefähige Kosten, Sanierungsnachweise, tatsächliche Vergleichsmiete", "UNBEKANNT", "WEG-Unterlagen/Besichtigung erforderlich"]);
@@ -1121,9 +1170,9 @@ const TIPS = {
   hausgeld: "Gesamtbetrag für Hausgeld/Betriebskosten. Bei einem EFH z. B. Grundsteuer, Gebäudeversicherung und Müllgebühren. Richtwert als Startannahme: ca. 1,00 €/m² Wohnfläche pro Monat. 0 bleibt 0; Verwaltung wird nicht automatisch ergänzt.",
   nebenkostenVorauszahlung: "Monatliche Vorauszahlung des Mieters auf umlagefähige Betriebskosten. Sie ist keine zusätzliche Kaltmiete und wird dem Hausgeld gegenübergestellt.",
   nebenkostenSaldo: "Positiv: voraussichtliche Erstattung an den Mieter. Negativ: voraussichtliche Nachzahlung des Mieters. Null: Vorauszahlung entspricht den Kosten.",
-  hausgeldNichtUml: "Eigentümeranteil: Hausgeld gesamt minus Mietervorauszahlung. Ein ausdrücklich eingetragener Wert bleibt maßgeblich.",
+  hausgeldNichtUml: "Kosten, die der Eigentümer monatlich selbst trägt. Ein belegter Wert aus Unterlagen bleibt maßgeblich; fehlt er, rechnet das Tool mit 35 € Pauschale.",
   instand: "Objektbezogener Ansatz: 2,50 €/m²/Monat. Baujahr 1994 und Energieklasse E sprechen für einen mittleren Ansatz innerhalb der Spanne von 2,00–5,00 €/m²/Monat für ältere Bestandsimmobilien. Quelle: Verband Privater Bauherren über Interhyp, abgerufen 25.09.2026. Berechnung: Wohnfläche × Eingabe.",
-  leerstand: "Zeit pro Jahr, in der die Wohnung leer steht (Umzüge, Mietersuche). Jede Woche kostet Miete – der Rechner zieht sie anteilig ab. Realistisch: 2–6 Wochen/Jahr.",
+  leerstand: "Sicherheitsabschlag auf die Kaltmiete für Mieterwechsel und Vermietungsrisiko. Nutzer-Vorgabe: 2 % der Kaltmiete.",
   ek: "Eigenkapital = dein eigenes Geld, das du einbringst. Mehr EK = kleinere Rate, aber weniger Rendite auf dein Geld. Weniger EK = größere Rate, höheres Risiko. Das Tool berechnet unten Break-Even-EK je Zinsszenario.",
   zins: "Der jährliche Zinssatz des Darlehens. Aktuelles Marktniveau recherchieren (z. B. CHECK24/FMH) und hier als Quelle eintragen. Bei hohem Beleihungsauslauf verlangen Banken mehr.",
   tilgung: "Der Teil der Rate, der das Darlehen abbaut (Rest: Zinsen). 2 % anfängliche Tilgung = Standard; höher = schneller schuldenfrei, aber höhere Rate.",
@@ -1389,6 +1438,7 @@ async function exportJson() {
   });
   window.addEventListener("scroll", closeTip, true);
   window.addEventListener("resize", closeTip);
+  gruppiereEingaben();
   IDS.forEach(id => document.getElementById(id).value = DEFAULTS[id]);
   renderRisiken(RISIKEN_DEFAULT);
   try {

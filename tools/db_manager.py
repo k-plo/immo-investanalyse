@@ -232,8 +232,8 @@ def berechne_rating(state: dict, risiken: list) -> dict:
     n1, p1 = note_rendite(brutto)
     if preis > 0 and werte["flaeche"] > 0:
         ek, tilg, zins = werte["ek"], werte["tilgung"], werte["zins"]
-        lf = 1 - werte["leerstand"] / 52
-        hg = werte["hausgeldNichtUml"] if state.get("hausgeldNichtUml") not in (None, "") else max(0, werte["hausgeld"] - werte["nebenkostenVorauszahlung"])
+        lf = max(0, 1 - werte["leerstand"] / 100)
+        hg = werte["hausgeldNichtUml"] if state.get("hausgeldNichtUml") not in (None, "") else 35
         inst_jahr = werte["flaeche"] * werte["instand"] * 12
         hg_total = werte["hausgeld"]
         nk_proz = werte["grESt"] + werte["notar"] + werte["makler"]
