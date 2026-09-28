@@ -5,7 +5,7 @@
 
 ---
 
-## 🕐 Aktueller Stand (27.09.2026)
+## 🕐 Aktueller Stand (23.09.2026)
 
 Die bisherigen Objekt-State-JSON-Dateien einschließlich der neuen Analyse **Schwalmstadt-Treysa Amselweg** wurden einmalig in `immo_datenbank.db` importiert. SQLite ist jetzt die einzige Laufzeitquelle für Portfolio und Objektübersichten; Live-Änderungen speichern mit Revisionsprüfung direkt in der DB. Alle bestehenden Objekte haben eine persistente UUID. Der Anzeigenlink-Import legt gleichnamige Orte getrennt an, importiert nur öffentlich auslesbare Fakten und markiert neue Objekte als Voranalyse. Objektfotos können importiert oder im Objekt ergänzt werden und erscheinen in der Übersicht und als verschwommener Portfolio-Hintergrund. Die Datenbankdatei ist Git-versioniert; parallele Änderungen auf mehreren Rechnern müssen vermieden werden. Technischer Ablauf und Einschränkungen: `README.md`.
 
@@ -14,7 +14,7 @@ Die folgenden Einträge dokumentieren frühere Stände und sind nicht als aktuel
 ## 🕐 Vorheriger Stand
 
 **Datum:** 27.09.2026
-**Letzte Aktion:** Neues Objekt `Vermietete Dachgeschosswohnung Treysa` aus Immowelt-Exposé angelegt, analysiert, in DB/Portfolio synchronisiert und mit DB-, JSON- und JavaScript-Prüfungen validiert.
+**Letzte Aktion:** Aktives Objekt `Schwalmstadt-Treysa – Am Harthberg 6` umbenannt und mit DB, Übersicht und Portfolio synchronisiert; `Schwalmstadt-Treysa_Amselweg` bleibt archiviert.
 
 ---
 
@@ -25,8 +25,9 @@ Die folgenden Einträge dokumentieren frühere Stände und sind nicht als aktuel
 | **Haarhausen** | `objekte/_ARCHIV/Haarhausen/` | 🗄️ Analysiert, archiviert | **C (61)** | Aus aktivem Portfolio ausgeblendet; State und Analyse bleiben erhalten |
 | **Kerstenhausen** | `objekte/Kerstenhausen/` | ✅ Analysiert, Übersicht aktiv | **C (56)** | KP 152.100 € · BruttoR 7,89 % · CF −53 €/M · KM 1.000 € · 🔴 Grundbuch/Miete weiterhin zu klären |
 | **Arnsbach** | `objekte/Arnsbach/` | 🟡 Analysiert, Übersicht aktiv | **D (47)** | KP 159.000 € · BruttoR 7,92 % · CF −188 €/M · Grundbuch- und WEG-Risiken offen |
-| **Schwalmstadt-Treysa Amselweg** | `objekte/Schwalmstadt-Treysa_Amselweg/` | ⚪ Erstprüfung, Übersicht aktiv | **B (78)** | KP 179.000 € · BruttoR 4,32 % · Ist-Miete 645 €/M · WEG-, Miet- und Finanzierungsunterlagen offen |
-| **Vermietete Dachgeschosswohnung Treysa** | `objekte/Vermietete Dachgeschosswohnung Treysa/` | ⚪ Erstprüfung, Übersicht aktiv | **?** | KP 159.000 € · 75,44 m² · Ist-Miete 750 €/M · Mietniveau, WEG, Grundbuch und Finanzierung offen |
+| **Schwalmstadt-Treysa – Amselweg** | `objekte/_ARCHIV/Schwalmstadt-Treysa_Amselweg/` | 🗄️ Archiviert | **B (78)** | Nicht im aktiven Portfolio berücksichtigen |
+| **Schwalmstadt-Treysa – Am Harthberg 6** | `objekte/Schwalmstadt-Treysa_Am_Harthberg_6/` | ⚪ Erstprüfung, Übersicht aktiv | **?** | KP 159.000 € · 75,44 m² · Ist-Miete 750 €/M · Mietniveau, WEG, Grundbuch und Finanzierung offen |
+| **Homberg – Magdeburger Straße 5** | `objekte/Homberg_Magdeburger_Strasse_5/` | ⚪ Erstprüfung, Übersicht aktiv | **?** | KP 148.000 € · 72 m² · Miete ca. 542 €/M · Mietstatus widersprüchlich, WEG und Finanzierung offen |
 | _VORLAGE | `objekte/_VORLAGE/` | Vorlage für neue Objekte | – | Übersicht + Analyse-MDs generisch |
 
 ---
@@ -81,9 +82,9 @@ Die folgenden Einträge dokumentieren frühere Stände und sind nicht als aktuel
 - Erststatus ⚪ **ZU WENIG DATEN**: Grundbuch, Teilungserklärung, WEG-Abrechnungen, Mietvertrag und frisches Bankangebot fehlen.
 - `db_manager.py`: fehlender SQL-Platzhalter im Kalkulations-Insert ergänzt; Sync importiert nun alle vier aktiven State-Dateien und regeneriert `portfolio.html`.
 
-### Neues Objekt Vermietete Dachgeschosswohnung Treysa (27.09.)
+### Neues Objekt Schwalmstadt-Treysa – Am Harthberg 6 (27.09.)
 - Immowelt-Exposé erfasst: 3-Zimmer-Dachgeschosswohnung in Treysa, 75,44 m², Baujahr 1995, Energieklasse D, Kaufpreis 159.000 €, Ist-Kaltmiete 750 €/M, Balkon/Keller/Gäste-WC.
-- Neue Objektstruktur `objekte/Vermietete Dachgeschosswohnung Treysa/` mit Übersicht, SQLite-State, fünf Analyse-Dateien und Unterlagen-README angelegt.
+- Neue Objektstruktur `objekte/Schwalmstadt-Treysa_Am_Harthberg_6/` mit Übersicht, SQLite-State, fünf Analyse-Dateien und Unterlagen-README angelegt; Adresse und Ordnername nachträglich präzisiert.
 - Mietrecherche: Immowelt weist für Wohnungen in Schwalmstadt 6,96 €/m² aus (aktualisiert 01.09.2026); Ist-Miete liegt bei 9,94 €/m² und muss mit Mietvertrag verifiziert werden.
 - Zinsstartwert 4,20 % für 10 Jahre aus Interhyp-Konditionsspanne 4,08–4,49 % (14.–20.09.2026) eingetragen; kein individuelles Bankangebot.
 - Erststatus ⚪ **ZU WENIG DATEN**: Mietvertrag, Hausgeldaufteilung, WEG-Unterlagen, Grundbuch, genaue Adresse und Bankangebot fehlen.

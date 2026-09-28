@@ -1,0 +1,37 @@
+{
+  "objekt": "Magdeburger Straße 5, Homberg (Efze)",
+  "status": "NUR MIT KLÄRUNG",
+  "quelle": "Immowelt Exposé 264J3VGMPDK6, Abruf 23.09.2026",
+  "belegt": {
+    "kaufpreis": 148000,
+    "wohnflaeche_m2": 72,
+    "zimmer": 3,
+    "baujahr": 1997,
+    "hausgeld_monat": 282,
+    "jahresnettokaltmiete": 6500,
+    "kaeuferprovision": 0
+  },
+  "abgeleitet": {
+    "kaltmiete_monat": 541.67,
+    "kaltmiete_eur_m2": 7.52,
+    "kaufpreis_eur_m2": 2055.56,
+    "lokaler_mietindikator_monat": 524,
+    "lokaler_kaufpreisindikator_eur_m2": 1633
+  },
+  "annahmen": {
+    "grunderwerbsteuer_prozent": 6.0,
+    "notar_grundbuch_prozent": 2.0,
+    "makler_prozent": 0.0,
+    "nicht_umlagefaehiges_hausgeld_monat": 35,
+    "instandhaltung_eur_m2_monat": 0.833333,
+    "leerstand_wochen_jahr": 4,
+    "eigenkapital": 20000,
+    "zins_prozent": 4.2,
+    "tilgung_prozent": 2.0
+  },
+  "hinweise": [
+    "Leerstand ist in der Übersicht als Prozentfeld hinterlegt; 4 Wochen/Jahr entsprechen ca. 7,69 Prozent.",
+    "Die Aufteilung des Hausgelds ist nicht belegt; 35 EUR nicht umlagefähig sind vorläufig.",
+    "Mietstatus und Verfügbarkeit widersprechen sich im Exposé."
+  ]
+}

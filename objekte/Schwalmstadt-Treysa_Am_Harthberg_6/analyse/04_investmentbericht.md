@@ -1,4 +1,4 @@
-# 04 – Investmentbericht: Vermietete Dachgeschosswohnung Treysa
+# 04 – Investmentbericht: Schwalmstadt-Treysa – Am Harthberg 6
 
 > Stand: 27.09.2026. Erstprüfung auf Basis des Immowelt-Exposés und externer Marktindikatoren. Keine rechtliche, steuerliche oder finanzielle Beratung.
 

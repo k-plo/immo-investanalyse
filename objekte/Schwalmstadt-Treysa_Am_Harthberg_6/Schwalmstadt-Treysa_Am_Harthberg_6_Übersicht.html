@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vermietete Dachgeschosswohnung Treysa &ndash; Übersicht</title>
+<title>Schwalmstadt-Treysa – Am Harthberg 6 &ndash; Übersicht</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: "Segoe UI", Arial, sans-serif; font-size: 12px; color: #1a2332; line-height: 1.45; background: #e8edf4; padding: 20px 12px 60px; }
@@ -160,9 +160,10 @@ button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-v
 .object-hero{margin:18px 0 26px;border-radius:16px;overflow:hidden;background:#e7eff0;max-height:320px}
 .object-hero img{display:block;width:100%;max-height:320px;object-fit:cover}
   .hero-status-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,1fr);gap:20px;align-items:stretch;margin:18px 0 26px}
+  .object-media{display:flex;flex-direction:column;min-width:0}
   .hero-status-grid .object-hero{margin:0;max-height:none}
   .hero-status-grid .object-hero img{height:auto;min-height:260px;max-height:none}
-  .workflow-status{border:1px solid var(--line);border-radius:14px;padding:18px 20px;background:#f8fafb}
+  .workflow-status{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:14px;padding:18px 20px 6px;background:#f8fafb}
   .workflow-status h2{margin:0 0 12px;padding-bottom:10px}
   .workflow-list{display:grid;gap:6px;list-style:none;margin:0}
   .workflow-item{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;padding:8px 0;border-bottom:1px solid var(--line);margin:0}
@@ -171,6 +172,9 @@ button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-v
   .workflow-label{font-size:13px;font-weight:600;line-height:1.4}
   .workflow-date{display:inline-flex;align-items:center;gap:8px;margin-left:10px;font-size:11px;color:var(--muted);vertical-align:middle}
   .workflow-date input{min-height:34px;padding:5px 8px;border:1px solid var(--line);border-radius:7px;background:#fff;color:var(--ink);font:inherit}
+  .workflow-note{display:flex;flex-direction:column;gap:6px;margin-top:auto;padding-top:16px;font-size:12px;font-weight:650;color:var(--muted)}
+  .workflow-note textarea{min-height:82px;resize:vertical;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);font:inherit;font-weight:400}
+  .object-media .external-link{margin-bottom:0}
   @media (max-width: 760px){.hero-status-grid{grid-template-columns:1fr;gap:14px}.hero-status-grid .object-hero img{height:auto;min-height:0;max-height:320px}.workflow-status{padding:16px}}
 .karte::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#116d72,#9dc8bf);border-radius:var(--radius) var(--radius) 0 0;z-index:2}
 .karte:hover{z-index:2;transform:translateY(-3px);border-color:#99bebd;box-shadow:0 14px 32px #16354112}
@@ -650,10 +654,13 @@ li{margin-bottom:8px}
 
   <!-- ================= KOPF + EINGABEN ================= -->
   <div class="card">
-    <h1>Vermietete Dachgeschosswohnung Treysa</h1>
+    <h1>Schwalmstadt-Treysa – Am Harthberg 6</h1>
     <div class="sub" id="objectIdLabel">Objekt-ID wird geladen …</div>
     <div class="hero-status-grid">
-      <figure class="object-hero" id="objectHero" hidden><img id="objectPhoto" alt="Foto der Immobilie"></figure>
+      <div class="object-media">
+        <figure class="object-hero" id="objectHero" hidden><img id="objectPhoto" alt="Foto der Immobilie"></figure>
+        <div class="external-link"><input id="externeUrl" type="url" data-persist="externeUrl" placeholder="https://..." aria-label="URL der Objektanzeige"><button id="externeLinkBtn" type="button" onclick="oeffneExterneObjektseite()" disabled>🔗 Öffnen</button></div>
+      </div>
       <section class="workflow-status" id="workflowStatus" aria-labelledby="workflowStatusTitle">
         <h2 id="workflowStatusTitle">Bearbeitungsstatus</h2>
         <ul class="workflow-list">
@@ -664,11 +671,13 @@ li{margin-bottom:8px}
           <li class="workflow-item"><input type="checkbox" class="chk" data-persist="statusNotarBeauftragt"><div><label class="workflow-label">Notar beauftragt</label></div></li>
           <li class="workflow-item"><input type="checkbox" class="chk" data-persist="statusNotarTermin"><div><label class="workflow-label">Notartermin</label><label class="workflow-date">Datum: <input type="date" data-persist="statusNotarTerminDatum" aria-label="Datum des Notartermins"></label></div></li>
         </ul>
+        <label class="workflow-note">Notiz
+          <textarea data-persist="statusNotiz" rows="4" spellcheck="false" placeholder="Freie Notiz zum Bearbeitungsstand"></textarea>
+        </label>
       </section>
     </div>
     <div class="box yellow" id="preliminaryNotice" hidden>Voranalyse aus einer Online-Anzeige: Angaben sind ungeprüft. Mietdaten, Unterlagen, Zustand und Rechtslage fehlen noch; daraus abgeleitete Kennzahlen sind keine belastbare Investmententscheidung.</div>
     <div class="sub">Vermietete Eigentumswohnung &middot; Treysa, Schwalmstadt &middot; 75,44 m&sup2; &middot; Baujahr 1995 &middot; Energieklasse D</div>
-    <div class="external-link"><input id="externeUrl" type="url" data-persist="externeUrl" placeholder="https://..." aria-label="URL der Objektanzeige"><button id="externeLinkBtn" type="button" onclick="oeffneExterneObjektseite()" disabled>🔗 Öffnen</button></div>
 
     <div class="toolbar">
       <button class="btn" onclick="zumPortfolio()">🏠 Zum Portfolio</button>
@@ -814,7 +823,7 @@ li{margin-bottom:8px}
 
 <script>
 "use strict";
-const OBJEKT_ORDNER = "Vermietete Dachgeschosswohnung Treysa";
+const OBJEKT_ORDNER = "Schwalmstadt-Treysa_Am_Harthberg_6";
 const fmt = (v, d = 0) => (v === null || v === undefined || isNaN(v) ? "–" : v.toLocaleString("de-DE", { minimumFractionDigits: d, maximumFractionDigits: d }));
 const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, c => ({
   "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
@@ -1467,23 +1476,6 @@ async function exportJson() {
   catch (error) { alert("DB-Export fehlgeschlagen: " + error.message); }
 }
 
-function syncHeroStatusHeight() {
-  const grid = document.querySelector(".hero-status-grid");
-  const hero = document.getElementById("objectHero");
-  const status = document.querySelector(".workflow-status");
-  const image = document.getElementById("objectPhoto");
-  if (!grid || !hero || hero.hidden || !status || !image) return;
-  grid.style.alignItems = "start";
-  grid.style.height = "auto";
-  status.style.height = "fit-content";
-  hero.style.height = "auto";
-  image.style.height = "auto";
-  const height = status.getBoundingClientRect().height;
-  grid.style.height = `${height}px`;
-  hero.style.height = "100%";
-  image.style.height = "100%";
-}
-
 // ---------- Init ----------
 (async function init() {
   // Tooltips an Eingabe-Labels injizieren (Texte zentral in TIPS)
@@ -1534,8 +1526,6 @@ function syncHeroStatusHeight() {
     alert("Objekt konnte nicht aus SQLite geladen werden.\n" + error.message);
     return;
   }
-  syncHeroStatusHeight();
-  window.addEventListener("resize", syncHeroStatusHeight);
   render();
   document.addEventListener("input", e => {
     if (e.target.matches && e.target.matches(".inputs input")) { render(); saveState(); }

@@ -1,4 +1,4 @@
-# 02 – Dokumentenprüfung: Vermietete Dachgeschosswohnung Treysa
+# 02 – Dokumentenprüfung: Schwalmstadt-Treysa – Am Harthberg 6
 
 > Stand: 27.09.2026. Bisher liegt nur das Online-Exposé vor. Eine belastbare Investmententscheidung ist noch nicht möglich.
 

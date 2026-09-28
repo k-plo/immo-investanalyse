@@ -1,4 +1,4 @@
-# 05 – Mietempfehlung: Vermietete Dachgeschosswohnung Treysa
+# 05 – Mietempfehlung: Schwalmstadt-Treysa – Am Harthberg 6
 
 > Stand: 27.09.2026. Marktindikation, keine Mietrechts- oder Finanzberatung.
 

@@ -1,4 +1,4 @@
-# 01 – Datenbasis: Vermietete Dachgeschosswohnung Treysa
+# 01 – Datenbasis: Schwalmstadt-Treysa – Am Harthberg 6
 
 > Stand: 27.09.2026. BELEGT stammt aus dem Immowelt-Exposé; ABGELEITET wird nachvollziehbar gerechnet. Fehlende Angaben bleiben UNBEKANNT.
 

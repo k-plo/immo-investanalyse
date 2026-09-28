@@ -29,6 +29,13 @@ DERIVED_FIELDS = (
 )
 
 
+def _analysis_status(current_status: str | None, rating: dict) -> str:
+    """Der Status folgt automatisch der Vollständigkeit der Bewertungsdaten."""
+    if current_status == "abruf_blockiert":
+        return current_status
+    return "analysiert" if rating["gesamt_rating"] != "?" else "quellenpruefung_offen"
+
+
 class RevisionConflict(Exception):
     pass
 
@@ -47,15 +54,57 @@ def get_object(name: str) -> dict | None:
             "SELECT name, public_id, display_name, source_url, image_path, analysis_status, revision, state_json, status, geaendert_am FROM objekte WHERE public_id=? OR name=? ORDER BY CASE WHEN public_id=? THEN 0 ELSE 1 END LIMIT 1",
             (name, name, name),
         ).fetchone()
-    if row is None:
-        return None
+        if row is None:
+            return None
+        state = json.loads(row["state_json"] or "{}")
+        state = _hydrate_workflow_state(conn, row["name"], state)
     return {
         "name": row["name"], "id": row["public_id"], "display_name": row["display_name"],
         "source_url": row["source_url"], "image_path": row["image_path"],
         "analysis_status": row["analysis_status"],
         "revision": row["revision"], "status": row["status"],
-        "updated_at": row["geaendert_am"], "state": json.loads(row["state_json"] or "{}"),
+        "updated_at": row["geaendert_am"], "state": state,
     }
+
+
+def _hydrate_workflow_state(conn: sqlite3.Connection, object_name: str, state: dict) -> dict:
+    """Merge the DB-owned risks and workflow lists into the browser state."""
+    row = conn.execute("SELECT id FROM objekte WHERE name=?", (object_name,)).fetchone()
+    if row is None:
+        return state
+    object_id = row["id"]
+    risks = conn.execute(
+        "SELECT text, kategorie, ampel, begruendung FROM risiken WHERE objekt_id=? ORDER BY reihenfolge",
+        (object_id,),
+    ).fetchall()
+    if risks:
+        state["_risiken"] = [list(risk) for risk in risks]
+    for table, prefix, list_key in (("offene_punkte", "op", "offenePunkte"),
+                                    ("naechste_schritte", "ns", "schritte")):
+        rows = conn.execute(
+            f"SELECT text, erledigt FROM {table} WHERE objekt_id=? ORDER BY reihenfolge",
+            (object_id,),
+        ).fetchall()
+        if not rows:
+            continue
+        for key in list(state):
+            if key.startswith(f"p_{prefix}") or key == f"_list_{list_key}":
+                del state[key]
+        items = []
+        for index, item in enumerate(rows, 1):
+            text = item["text"] or ""
+            state[f"p_{prefix}{index}"] = bool(item["erledigt"])
+            state[f"p_{prefix}{index}t"] = text
+            checked = " checked" if item["erledigt"] else ""
+            escaped = html.escape(text)
+            items.append(
+                f'<li class="chk-li"><input type="checkbox" class="chk" data-persist="{prefix}{index}"{checked}>'
+                f'<span class="txt" contenteditable="true" data-persist="{prefix}{index}t">{escaped}</span>'
+                '<button class="btn delete" type="button" title="Punkt löschen" aria-label="Punkt löschen" '
+                'onclick="deleteListItem(this)">×</button></li>'
+            )
+        state[f"_list_{list_key}"] = "".join(items)
+    return state
 
 
 def portfolio_rows() -> list[dict]:
@@ -118,7 +167,7 @@ def save_object(name: str, state: dict, expected_revision: int) -> dict:
     timestamp = datetime.now(timezone.utc).isoformat(timespec="seconds")
     with closing(connection()) as conn, conn:
         conn.execute("BEGIN IMMEDIATE")
-        row = conn.execute("SELECT id, name, revision FROM objekte WHERE public_id=? OR name=? ORDER BY CASE WHEN public_id=? THEN 0 ELSE 1 END LIMIT 1", (name, name, name)).fetchone()
+        row = conn.execute("SELECT id, name, revision, analysis_status FROM objekte WHERE public_id=? OR name=? ORDER BY CASE WHEN public_id=? THEN 0 ELSE 1 END LIMIT 1", (name, name, name)).fetchone()
         if row is None:
             raise KeyError(name)
         if row["name"] != state.get("_objekt_ordner"):
@@ -127,9 +176,10 @@ def save_object(name: str, state: dict, expected_revision: int) -> dict:
             raise RevisionConflict(f"DB-Revision {row['revision']}, Browser-Revision {expected_revision}")
         object_id = row["id"]
         price, area = values["preis"], values["flaeche"]
+        analysis_status = _analysis_status(row["analysis_status"], rating)
         conn.execute("""UPDATE objekte SET state_json=?,kaufpreis=?,wohnflaeche=?,
-            preis_pro_m2=?,geaendert_am=?,revision=revision+1 WHERE id=?""",
-            (payload, price, area, price / area if price and area else None, timestamp, object_id))
+            preis_pro_m2=?,analysis_status=?,geaendert_am=?,revision=revision+1 WHERE id=?""",
+            (payload, price, area, price / area if price and area else None, analysis_status, timestamp, object_id))
         derived = {key: rating[key] for key in DERIVED_FIELDS}
         columns = {**values, **derived, "geaendert_am": timestamp}
         assignments = ",".join(f'"{key}"=?' for key in columns)
