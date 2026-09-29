@@ -1,16 +1,16 @@
 {
   "objekt": {
     "name": "Schwalmstadt-Treysa – Am Harthberg 6",
-    "adresse": "Treysa, Schwalmstadt, 34613; genaue Adresse nicht freigegeben",
+    "adresse": "Am Harthberg 6, 34613 Schwalmstadt-Treysa",
     "objektart": "Vermietete Eigentumswohnung, Dachgeschoss",
     "baujahr": 1995,
     "wohnflaeche_m2": 75.44,
     "nutzflaeche_m2": null,
     "grundstuecksflaeche_m2": null,
-    "anzahl_einheiten": null,
+    "anzahl_einheiten": 14,
     "zimmer": 3,
     "etage": "3. Geschoss / Dachgeschoss",
-    "stellplaetze": null,
+    "stellplaetze": 1,
     "energieklasse": "D",
     "heizung": "Gas-Zentralheizung"
   },
@@ -34,39 +34,47 @@
     "mietbeginn": "01.03.2026"
   },
   "laufende_kosten": {
-    "hausgeld_monatlich_eur": null,
+    "hausgeld_monatlich_eur": 480,
     "verwaltung_prozent_von_miete": 0,
-    "instandhaltung_eur_pro_m2_monat": null,
-    "nicht_umlagefaehige_kosten_monatlich_eur": 35
+    "instandhaltung_eur_pro_m2_monat": 1.0,
+    "nicht_umlagefaehige_kosten_monatlich_eur": 64.88
   },
   "finanzierung": {
-    "eigenkapital_eur": 20000,
-    "zinssatz_prozent": 4.2,
-    "zinsspanne_prozent": "4,08–4,49",
+    "eigenkapital_eur": 25000,
+    "zinssatz_prozent": 4.8,
+    "zinsspanne_prozent": "4,80 (bestehender Nutzerwert)",
     "zinsbindung_jahre": 10,
     "tilgung_prozent": 1.0,
     "finanzierungsnebenkosten_eur": null
   },
   "weg": {
     "instandhaltungsruecklage_eur": null,
-    "geplante_sonderumlagen_eur": null
+    "ruecklagenbeitrag_eur_jahr": 603.50,
+    "geplante_sonderumlagen_eur": 0
   },
   "annahmen": [
     "Grunderwerbsteuer 6,0 % für Hessen.",
     "Notar und Grundbuch zusammen 2,0 % als vorläufiger Kalkulationswert.",
     "Renovierung und Sanierung mit 0 EUR sind technische Startwerte, kein Zustandsbefund.",
-    "Hausgeld 35 EUR/Monat mangels anderer Angabe, Eigenkapital 20.000 EUR, Leerstand 2 % und Tilgung 1,0 % gemäß Nutzer-Vorgaben.",
-    "Zins 4,20 % ist ein Marktindikator für 10 Jahre und kein individuelles Bankangebot.",
-    "Der nicht umlagefähige Hausgeldanteil bleibt offen; der Gesamtwert von 35 EUR/Monat ist der Startwert mangels anderer Angabe."
+    "Eigenkapital 25.000 EUR und Zins 4,80 % entsprechen dem bestehenden Nutzer-State; Leerstand 2 % und Tilgung 1,0 % bleiben Nutzer-Vorgaben.",
+    "Zins 4,80 % und Eigenkapital 25.000 EUR entsprechen dem bestehenden, ausdrücklich gespeicherten Nutzer-State; individuelles Bankangebot und Zinsbindung sind noch zu verifizieren.",
+    "Wirtschaftsplan 2027: 480 EUR Monatsvorschuss; davon 64,88 EUR/Monat nicht umlagefähige Kosten und 50,29 EUR/Monat Beiträge zu zwei Rücklagen."
   ],
   "quellen": [
     {"information": "Kaufpreis, Fläche, Zimmer, Etage, Baujahr, Energie, Ausstattung", "wert": "159.000 EUR; 75,44 m²; 3 Zimmer; BJ 1995; Klasse D", "quelle": "Immowelt-Exposé https://www.immowelt.de/expose/2075ecd5-4021-44c1-a336-c88fae6c7f1c, abgerufen 27.09.2026", "status": "BELEGT"},
     {"information": "Ist-Kaltmiete und Mietbeginn", "wert": "750 EUR/Monat seit 01.03.2026", "quelle": "Immowelt-Exposé, Weitere Informationen, abgerufen 27.09.2026", "status": "BELEGT"},
     {"information": "Mietmarkt Schwalmstadt", "wert": "Wohnungen 6,96 EUR/m²; Spanne 4,53–9,55 EUR/m²", "quelle": "Immowelt Mietpreise Schwalmstadt, aktualisiert 01.09.2026, https://www.immowelt.de/immobilienpreise/mietpreise/hessen/schwalmstadt-34613/ad08de2890", "status": "BELEGT/ABGELEITET"},
-    {"information": "Bauzinsen 10 Jahre", "wert": "4,08–4,49 %, Startwert 4,20 %", "quelle": "Interhyp Bauzinsen, Konditionsangebote 14.–20.09.2026, abgerufen 27.09.2026, https://www.interhyp.de/zinsen/", "status": "BELEGT (extern)"},
-    {"information": "Maklerprovision", "wert": "3,57 % inkl. MwSt.", "quelle": "Immowelt-Exposé, Preisdetails, abgerufen 27.09.2026", "status": "BELEGT"}
+    {"information": "Bauzinsen 10 Jahre", "wert": "4,08–4,49 % als externer Marktindikator; im State ist 4,80 % als Nutzerwert gespeichert", "quelle": "Interhyp Bauzinsen, Konditionsangebote 14.–20.09.2026, abgerufen 27.09.2026, https://www.interhyp.de/zinsen/", "status": "BELEGT (extern) / EINGABE zu verifizieren"},
+    {"information": "Maklerprovision", "wert": "3,57 % inkl. MwSt.", "quelle": "Immowelt-Exposé, Preisdetails, abgerufen 27.09.2026", "status": "BELEGT"},
+    {"information": "Energieausweis", "wert": "Verbrauch 119 kWh/(m²·a), Primärenergie 130 kWh/(m²·a), Gas, Baujahr Gebäude/Wärmeerzeuger 1995, gültig bis 10.01.2028", "quelle": "Energieausweis ista, Registriernummer HE-2018-001627641, ausgestellt 10.01.2018", "status": "BELEGT"},
+    {"information": "Teilungserklärung", "wert": "Einheit 6A in Haus II mit Keller und Stellplatz-Sondernutzungsrecht 6A; 14 Einheiten in zwei Untergemeinschaften; MEA 754,38/10.000", "quelle": "Teilungserklärung UR-Nr. 1684/2020 vom 14.07.2020, Seiten 1–10 und Lageplan", "status": "BELEGT"},
+    {"information": "Hausgeld und Rücklagen", "wert": "Wirtschaftsplan 2027: 480,00 EUR/Monat; 778,52 EUR/Jahr nicht umlagefähig; 603,50 EUR/Jahr Rücklagenbeiträge", "quelle": "Wirtschaftsplan 2027, Einheit 6A, erstellt 21.08.2026", "status": "BELEGT"},
+    {"information": "Jahresabrechnung 2024", "wert": "7.841,21 EUR Kostenanteil; 2.355,88 EUR Nachzahlung; Rücklagen-/Geldkonten mit positiven Salden", "quelle": "Jahresabrechnung 2024, Einheit 6 DG links, erstellt 24.07.2025", "status": "BELEGT"},
+    {"information": "WEG-Beschlüsse Balkone", "wert": "34.000 EUR brutto für sechs Balkone 2024; weitere fünf Balkone 28.000 EUR 2025; alle zwölf Balkone danach instandgesetzt", "quelle": "WEG-Protokolle vom 16.11.2024 und 02.08.2025", "status": "BELEGT"}
   ],
   "widersprueche": [
-    "Die Exposé-Miete von 9,94 EUR/m² liegt deutlich über dem Immowelt-Wohnungsdurchschnitt von 6,96 EUR/m²; Mietvertrag, Wohnungsstandard und Mikrolage prüfen."
+    "Die Exposé-Miete von 9,94 EUR/m² liegt deutlich über dem Immowelt-Wohnungsdurchschnitt von 6,96 EUR/m²; Mietvertrag, Wohnungsstandard und Mikrolage prüfen.",
+    "Hausgeld 2024 (rechnerisch 254,73 EUR/Monat Vorschüsse) und Wirtschaftsplan 2027 (480,00 EUR/Monat) sind wegen geänderter Kosten-/Rücklagenplanung nicht direkt vergleichbar; die aktuelle Beschluss- und Zahlungslage prüfen.",
+    "Die Unterlagen verwenden sowohl Am Harthberg als auch Am Hardtberg; Schreibweise und Einheit 6A mit Grundbuch, Aufteilungsplan und Kaufvertragsentwurf abgleichen."
   ]
 }

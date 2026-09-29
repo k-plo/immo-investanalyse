@@ -5,7 +5,7 @@
 
 ---
 
-## 🕐 Aktueller Stand (23.09.2026)
+## 🕐 Aktueller Stand (29.09.2026)
 
 Die bisherigen Objekt-State-JSON-Dateien einschließlich der neuen Analyse **Schwalmstadt-Treysa Amselweg** wurden einmalig in `immo_datenbank.db` importiert. SQLite ist jetzt die einzige Laufzeitquelle für Portfolio und Objektübersichten; Live-Änderungen speichern mit Revisionsprüfung direkt in der DB. Alle bestehenden Objekte haben eine persistente UUID. Der Anzeigenlink-Import legt gleichnamige Orte getrennt an, importiert nur öffentlich auslesbare Fakten und markiert neue Objekte als Voranalyse. Objektfotos können importiert oder im Objekt ergänzt werden und erscheinen in der Übersicht und als verschwommener Portfolio-Hintergrund. Die Datenbankdatei ist Git-versioniert; parallele Änderungen auf mehreren Rechnern müssen vermieden werden. Technischer Ablauf und Einschränkungen: `README.md`.
 
@@ -13,8 +13,8 @@ Die folgenden Einträge dokumentieren frühere Stände und sind nicht als aktuel
 
 ## 🕐 Vorheriger Stand
 
-**Datum:** 27.09.2026
-**Letzte Aktion:** Aktives Objekt `Schwalmstadt-Treysa – Am Harthberg 6` umbenannt und mit DB, Übersicht und Portfolio synchronisiert; `Schwalmstadt-Treysa_Amselweg` bleibt archiviert.
+**Datum:** 29.09.2026
+**Letzte Aktion:** Neue WEG-, Energie-, Abrechnungs- und Protokollunterlagen für `Schwalmstadt-Treysa – Am Harthberg 6` ausgewertet; Übersicht, Analysen, SQLite-State und Portfolio synchronisiert.
 
 ---
 
@@ -26,7 +26,7 @@ Die folgenden Einträge dokumentieren frühere Stände und sind nicht als aktuel
 | **Kerstenhausen** | `objekte/Kerstenhausen/` | ✅ Analysiert, Übersicht aktiv | **C (56)** | KP 152.100 € · BruttoR 7,89 % · CF −53 €/M · KM 1.000 € · 🔴 Grundbuch/Miete weiterhin zu klären |
 | **Arnsbach** | `objekte/Arnsbach/` | 🟡 Analysiert, Übersicht aktiv | **D (47)** | KP 159.000 € · BruttoR 7,92 % · CF −188 €/M · Grundbuch- und WEG-Risiken offen |
 | **Schwalmstadt-Treysa – Amselweg** | `objekte/_ARCHIV/Schwalmstadt-Treysa_Amselweg/` | 🗄️ Archiviert | **B (78)** | Nicht im aktiven Portfolio berücksichtigen |
-| **Schwalmstadt-Treysa – Am Harthberg 6** | `objekte/Schwalmstadt-Treysa_Am_Harthberg_6/` | ⚪ Erstprüfung, Übersicht aktiv | **?** | KP 159.000 € · 75,44 m² · Ist-Miete 750 €/M · Mietniveau, WEG, Grundbuch und Finanzierung offen |
+| **Schwalmstadt-Treysa – Am Harthberg 6** | `objekte/Schwalmstadt-Treysa_Am_Harthberg_6/` | 🟡 Nur mit Klärung, Übersicht aktiv | **?** | KP 159.000 € · 75,44 m² · WP 2027: 480 €/M · nicht umlagefähig 64,88 €/M · Cashflow im bestehenden State −156 €/M · Mietvertrag, Grundbuch und Abrechnung 2025 offen |
 | **Homberg – Magdeburger Straße 5** | `objekte/Homberg_Magdeburger_Strasse_5/` | ⚪ Erstprüfung, Übersicht aktiv | **?** | KP 148.000 € · 72 m² · Miete ca. 542 €/M · Mietstatus widersprüchlich, WEG und Finanzierung offen |
 | _VORLAGE | `objekte/_VORLAGE/` | Vorlage für neue Objekte | – | Übersicht + Analyse-MDs generisch |
 
@@ -88,6 +88,13 @@ Die folgenden Einträge dokumentieren frühere Stände und sind nicht als aktuel
 - Mietrecherche: Immowelt weist für Wohnungen in Schwalmstadt 6,96 €/m² aus (aktualisiert 01.09.2026); Ist-Miete liegt bei 9,94 €/m² und muss mit Mietvertrag verifiziert werden.
 - Zinsstartwert 4,20 % für 10 Jahre aus Interhyp-Konditionsspanne 4,08–4,49 % (14.–20.09.2026) eingetragen; kein individuelles Bankangebot.
 - Erststatus ⚪ **ZU WENIG DATEN**: Mietvertrag, Hausgeldaufteilung, WEG-Unterlagen, Grundbuch, genaue Adresse und Bankangebot fehlen.
+
+### Harthberg-Unterlagenprüfung (29.09.)
+- Sechs neue PDFs geprüft: Energieausweis, Teilungserklärung, Jahresabrechnung 2024, WEG-Protokolle 2024/2025 und Wirtschaftsplan 2027.
+- Belegt: 480 EUR Monatsvorschuss ab 2027, davon 64,88 EUR nicht umlagefähig und 50,29 EUR Rücklagenbeitrag; Jahresabrechnung 2024 mit 2.355,88 EUR Nachzahlung.
+- Balkonmaßnahmen 2024/2025 laut Protokoll abgeschlossen; historische Maßnahmen werden nicht mehr als offene Sonderumlage kalkuliert.
+- Energieausweis: 119 kWh/(m²·a), Primärenergie 130, Gas; Heizungsprüfung empfohlen. Mietvertrag, Mietkonto, Grundbuchauszug, Abrechnung 2025 und individueller Rücklagenstand bleiben offen.
+- Neue Basiskalkulation: im bestehenden State mit 25.000 EUR EK und 4,80 % Zins rund −156 EUR Cashflow/Monat, Break-even-Miete rund 912 EUR, rechnerischer Maximalpreis rund 130.118 EUR. Die ausdrücklich gespeicherten Finanzierungswerte wurden nicht überschrieben.
 
 ### Lokale Stabilisierung (25.09.)
 - 🛠️ **Plattformunabhängige Pfade:** Python-Tools und Extraktionshelfer leiten den Projektordner aus `__file__` ab; keine fest codierten Windows-Pfade mehr.

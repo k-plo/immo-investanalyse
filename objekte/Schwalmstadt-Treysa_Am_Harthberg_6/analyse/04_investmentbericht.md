@@ -1,12 +1,12 @@
 # 04 – Investmentbericht: Schwalmstadt-Treysa – Am Harthberg 6
 
-> Stand: 27.09.2026. Erstprüfung auf Basis des Immowelt-Exposés und externer Marktindikatoren. Keine rechtliche, steuerliche oder finanzielle Beratung.
+> Stand: 29.09.2026. Prüfung auf Basis von Exposé, Energieausweis, Teilungserklärung, Jahresabrechnung 2024, WEG-Protokollen 2024/2025 und Wirtschaftsplan 2027. Keine rechtliche, steuerliche oder finanzielle Beratung.
 
 ## Kurzfazit
 
-**⚪ ZU WENIG DATEN – keine belastbare Investmententscheidung möglich.**
+**🟡 NUR MIT KLÄRUNG – aktuell kein Ankauf zum Angebotspreis.**
 
-Die Wohnung ist mit 159.000 EUR und 750 EUR Kaltmiete grundsätzlich rechnerisch interessant. Die Bruttorendite beträgt rund **5,66 %**. Der Mietansatz liegt mit 9,94 EUR/m² jedoch deutlich über dem aktuellen Immowelt-Wohnungsdurchschnitt für Schwalmstadt von 6,96 EUR/m². Das Mietverhältnis und die WEG-Kosten müssen deshalb vor jeder Preisentscheidung belegt werden.
+Die Wohnung ist mit 159.000 EUR und 750 EUR Kaltmiete zunächst renditestark dargestellt. Mit dem Wirtschaftsplan 2027, 25.000 EUR bestehendem Eigenkapital-State, 4,80 % Zins und der konservativen Instandhaltung von 1,00 EUR/m²/Monat ergibt sich ein modellierter Cashflow nach Finanzierung von **-156 EUR/Monat**. Der Break-even liegt bei rund **912 EUR Kaltmiete**, während 750 EUR bereits über der regionalen Durchschnittsindikation liegen. Der Kaufpreis liegt damit vor weiterer Prüfung über dem rechnerischen Maximalpreis von rund **130.118 EUR**.
 
 ## Vorläufige Wirtschaftlichkeit
 
@@ -15,7 +15,8 @@ Die Wohnung ist mit 159.000 EUR und 750 EUR Kaltmiete grundsätzlich rechnerisch
 - Gesamtinvestition ohne Renovierung/Sanierung: **177.396 EUR**
 - Bruttorendite: **5,66 %**
 - Mietmarkt-Indikation: ca. **525 EUR/Monat** bei 6,96 EUR/m²; Ist-Miete 750 EUR ist belegt, aber noch nicht durch Mietvertrag geprüft
-- Cashflow nach Finanzierung: **nicht belastbar**, weil Hausgeld, nicht umlagefähiger Anteil, Nebenkostenvorauszahlung und individuelles Bankangebot fehlen
+- Cashflow nach Finanzierung: **-156 EUR/Monat** im Basisszenario; 4,80 % Zins und 25.000 EUR Eigenkapital stammen aus dem bestehenden State und sind mit einem Bankangebot zu verifizieren
+- WEG-Belastung 2027: 480 EUR Vorschuss/Monat, davon 64,88 EUR nicht umlagefähig und 50,29 EUR Rücklagenbeitrag
 
 ## Chancen
 
@@ -23,23 +24,28 @@ Die Wohnung ist mit 159.000 EUR und 750 EUR Kaltmiete grundsätzlich rechnerisch
 - 3-Zimmer-Dachgeschosswohnung mit Balkon, Fernblick, Gäste-WC, Keller und Tageslichtbad.
 - Gepflegter Zustand laut Anbieter; Bahnhof Treysa und Infrastruktur können die Vermietbarkeit stützen.
 - Energieklasse D ist besser als ein stark ineffizientes Altbauobjekt, aber Gasheizung und Gemeinschaftseigentum bleiben zu prüfen.
+- Balkonmaßnahmen 2024/2025 sind laut Protokollen beschlossen und danach für alle zwölf Balkone abgeschlossen; ein wesentlicher offener Sanierungsblock ist damit reduziert.
+- Teilungserklärung, Sondernutzungsrecht am Stellplatz und WEG-Konten liegen erstmals vor und ermöglichen eine deutlich belastbarere Prüfung.
 
 ## Risiken
 
 - 🔴 Mietansatz liegt rund 43 % über der regionalen Immowelt-Orientierung; Vertrag und nachhaltige Marktfähigkeit prüfen.
-- 🔴 Hausgeld, Rücklage, Sonderumlagen und nicht umlagefähige Kosten unbekannt.
-- 🔴 Genaue Adresse, Grundbuch, Teilungserklärung und Aufteilungsplan fehlen.
+- 🔴 Cashflow bei 25.000 EUR Eigenkapital rund -156 EUR/Monat; Wertminderung, Mietausfall oder Zinsanstieg verschärfen das Defizit.
+- 🔴 Ist-Miete 750 EUR liegt rund 43 % über der Immowelt-Durchschnittsindikation; Mietvertrag, Mietkonto und Nebenkostenabrechnungen fehlen.
+- 🔴 Abrechnung 2024 weist 2.355,88 EUR Nachzahlung aus; Ursache und Übertragbarkeit auf 2027 klären.
+- 🟠 Hausgeldsprung von rechnerisch 254,73 EUR Vorschuss 2024 auf 480 EUR ab 2027; Abrechnung 2025 und Beschlussgrundlage fehlen.
+- 🟠 Grundbuchauszug, Aufteilungsplan und aktuelle Zuordnung von Einheit 6A/Stellplatz fehlen weiterhin.
 - 🟠 Finanzierung basiert nur auf Marktindikator 4,20 %, nicht auf Bankangebot.
-- 🟠 Dach, Gas-Zentralheizung, Fenster und WEG-Gemeinschaftseigentum nicht besichtigt bzw. dokumentiert.
+- 🟠 Gasheizung, Dach, Fenster und Feuchtigkeit nicht besichtigt; Energieausweis empfiehlt Heizungsprüfung.
 
 ## Nächste Entscheidungsschritte
 
-1. Mietvertrag, Mietkonto und Nebenkostenabrechnungen anfordern.
-2. Wirtschaftsplan, Jahresabrechnung, Rücklage und WEG-Protokolle prüfen.
-3. Grundbuch, Teilungserklärung und genaue Einheitenzuordnung prüfen.
-4. Besichtigung sowie Energieausweis und technische Unterlagen durchführen.
-5. Bankangebot mit Zinsbindung und nicht umlagefähigen Kosten in die Kalkulation eintragen.
+1. Mietvertrag, Mietkonto und Nebenkostenabrechnungen anfordern und 750 EUR nachhaltig verifizieren.
+2. Wirtschaftsplan 2027, Abrechnung 2025, Rücklagenbestand und Abrechnung der Balkon-Sonderumlagen prüfen.
+3. Grundbuchauszug, Aufteilungsplan sowie Einheit-6A-/Stellplatzzuordnung prüfen.
+4. Gasheizung, Dach, Fenster, Feuchtigkeit und Balkonanschlüsse vor Ort besichtigen.
+5. Bankangebot mit Zinsbindung einholen; maximalen Ankaufspreis wegen -156 EUR Monats-Cashflow neu verhandeln.
 
 ## Status
 
-**⚪ ZU WENIG DATEN.** Erst nach Dokumenten- und Finanzierungsprüfung darf ein Ziel- oder Maximalpreis abgeleitet werden.
+**🟡 NUR MIT KLÄRUNG.** Die Unterlagenlage ist deutlich besser, aber Mietnachweis, Grundbuch, Abrechnung 2025 und technische Besichtigung fehlen. Zum Angebotspreis ist das Objekt im Basismodell nicht cashflow-tragfähig.

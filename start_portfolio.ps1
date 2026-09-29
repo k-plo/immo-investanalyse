@@ -5,7 +5,7 @@ $url = "http://127.0.0.1:$port/"
 
 function Get-PortfolioServerVersion {
     try {
-        $response = Invoke-WebRequest -Uri "$url`api/health" -UseBasicParsing -TimeoutSec 1
+        $response = Invoke-WebRequest -Uri "${url}api/health" -UseBasicParsing -TimeoutSec 1
         if ($response.StatusCode -ne 200) { return 0 }
         return [int](($response.Content | ConvertFrom-Json).api_version)
     } catch {

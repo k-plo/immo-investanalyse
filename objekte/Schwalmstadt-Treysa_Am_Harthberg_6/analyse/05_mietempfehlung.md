@@ -1,6 +1,6 @@
 # 05 – Mietempfehlung: Schwalmstadt-Treysa – Am Harthberg 6
 
-> Stand: 27.09.2026. Marktindikation, keine Mietrechts- oder Finanzberatung.
+> Stand: 29.09.2026. Marktindikation, keine Mietrechts- oder Finanzberatung.
 
 ## 1. Empfehlung
 
@@ -22,7 +22,7 @@ Positiv wirken 3 Zimmer, Balkon mit Ost-Ausrichtung und Fernblick, Gäste-WC, Ke
 
 ### c) Tragfähigkeit
 
-Für die Kalkulation gelten 2 % Leerstand, 20.000 EUR Eigenkapital und 1,0 % Tilgung. Mangels anderer Angabe wird Hausgeld mit 35 EUR/Monat eingetragen; der nicht umlagefähige Anteil muss mit den WEG-Unterlagen geprüft werden. Der Zinsstartwert von 4,20 % stammt aus einer aktuellen Interhyp-Marktspanne für 10 Jahre.
+Für die Kalkulation gelten 2 % Leerstand, 20.000 EUR Eigenkapital und 1,0 % Tilgung. Der Wirtschaftsplan 2027 belegt 480 EUR Vorschuss/Monat, davon 64,88 EUR nicht umlagefähige Kosten und 50,29 EUR Rücklagenbeitrag. Zusätzlich werden 1,00 EUR/m²/Monat Instandhaltung angesetzt. Der Zinsstartwert von 4,20 % stammt aus einer aktuellen Interhyp-Marktspanne für 10 Jahre.
 
 ## 3. Szenarien
 
@@ -32,11 +32,14 @@ Für die Kalkulation gelten 2 % Leerstand, 20.000 EUR Eigenkapital und 1,0 % Til
 | Basis | 750 EUR | bestehende Miete laut Exposé |
 | obere Marktspanne | 720 EUR | 9,55 EUR/m² als Immowelt-Obergrenze, nur Orientierung |
 
+Bei 750 EUR Ist-Miete ergibt sich im Basismodell trotz der hohen Bruttorendite ein Cashflow nach Finanzierung von rund **-156 EUR/Monat**. Für einen ausgeglichenen Cashflow werden rund **912 EUR/Monat** benötigt; das ist oberhalb der belegten Ist-Miete und der regionalen Marktindikation. Die Miete ist daher nicht als frei steigerbarer Ertrag zu behandeln.
+
 ## 4. Quellen und Status
 
 - Ist-Miete: **BELEGT**, Immowelt-Exposé, abgerufen 27.09.2026.
 - Regionalwert: **BELEGT**, Immowelt Mietpreise Schwalmstadt, aktualisiert 01.09.2026.
 - Mietvertrag, Staffelmiete, Indexierung, Nebenkostenvorauszahlung und Mietkonto: **UNBEKANNT**.
+- Wirtschaftsplan 2027 und nicht umlagefähige Kosten: **BELEGT**; Eigentümerbelastung 64,88 EUR/Monat plus Rücklagenbeitrag 50,29 EUR/Monat.
 
 ## 5. Nächste Schritte
 
