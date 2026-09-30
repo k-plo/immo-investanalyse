@@ -95,6 +95,7 @@ Die folgenden Einträge dokumentieren frühere Stände und sind nicht als aktuel
 - Balkonmaßnahmen 2024/2025 laut Protokoll abgeschlossen; historische Maßnahmen werden nicht mehr als offene Sonderumlage kalkuliert.
 - Energieausweis: 119 kWh/(m²·a), Primärenergie 130, Gas; Heizungsprüfung empfohlen. Mietvertrag, Mietkonto, Grundbuchauszug, Abrechnung 2025 und individueller Rücklagenstand bleiben offen.
 - Neue Basiskalkulation: im bestehenden State mit 25.000 EUR EK und 4,80 % Zins rund −156 EUR Cashflow/Monat, Break-even-Miete rund 912 EUR, rechnerischer Maximalpreis rund 130.118 EUR. Die ausdrücklich gespeicherten Finanzierungswerte wurden nicht überschrieben.
+- Besichtigungs-Checkliste erstellt: `objekte/Schwalmstadt-Treysa_Am_Harthberg_6/Besichtigungscheckliste_Harthberg.html` mit kaufentscheidenden Fragen, WEG-/Mietprüfung, Technik, Balkonen, Dach und Abschlusskontrolle.
 
 ### Lokale Stabilisierung (25.09.)
 - 🛠️ **Plattformunabhängige Pfade:** Python-Tools und Extraktionshelfer leiten den Projektordner aus `__file__` ab; keine fest codierten Windows-Pfade mehr.
