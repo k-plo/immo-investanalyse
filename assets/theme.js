@@ -32,6 +32,11 @@
     controls.append(button);
     const print = document.querySelector('body > .print-btn');
     if (print) controls.append(print);
+    const portfolio = document.querySelector('.toolbar button[onclick^="zumPortfolio"]');
+    if (portfolio) {
+      portfolio.classList.add('portfolio-button');
+      controls.prepend(portfolio);
+    }
     const brand = document.querySelector('body > .portfolio-brand');
     if (brand) {
       controls.classList.add('has-brand');
