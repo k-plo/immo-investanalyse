@@ -5,7 +5,7 @@
 
 ---
 
-## 🕐 Aktueller Stand (29.09.2026)
+## 🕐 Aktueller Stand (30.09.2026)
 
 Die bisherigen Objekt-State-JSON-Dateien einschließlich der neuen Analyse **Schwalmstadt-Treysa Amselweg** wurden einmalig in `immo_datenbank.db` importiert. SQLite ist jetzt die einzige Laufzeitquelle für Portfolio und Objektübersichten; Live-Änderungen speichern mit Revisionsprüfung direkt in der DB. Alle bestehenden Objekte haben eine persistente UUID. Der Anzeigenlink-Import legt gleichnamige Orte getrennt an, importiert nur öffentlich auslesbare Fakten und markiert neue Objekte als Voranalyse. Objektfotos können importiert oder im Objekt ergänzt werden und erscheinen in der Übersicht und als verschwommener Portfolio-Hintergrund. Die Datenbankdatei ist Git-versioniert; parallele Änderungen auf mehreren Rechnern müssen vermieden werden. Technischer Ablauf und Einschränkungen: `README.md`.
 
@@ -14,7 +14,7 @@ Die folgenden Einträge dokumentieren frühere Stände und sind nicht als aktuel
 ## 🕐 Vorheriger Stand
 
 **Datum:** 29.09.2026
-**Letzte Aktion:** Neue WEG-, Energie-, Abrechnungs- und Protokollunterlagen für `Schwalmstadt-Treysa – Am Harthberg 6` ausgewertet; Übersicht, Analysen, SQLite-State und Portfolio synchronisiert.
+**Letzte Aktion:** `Neuental-Waltersbrück – Am Frankenhain 14` aus der Anbieter-DOCX vorgeprüft; Analyse-Dateien, Übersicht, SQLite-State und Portfolio angelegt bzw. synchronisiert. Energieklasse H, Sanierungsrisiko, Gartengrundstück und Garagenwiderspruch sind kaufentscheidende offene Punkte.
 
 ---
 
@@ -28,6 +28,7 @@ Die folgenden Einträge dokumentieren frühere Stände und sind nicht als aktuel
 | **Schwalmstadt-Treysa – Amselweg** | `objekte/_ARCHIV/Schwalmstadt-Treysa_Amselweg/` | 🗄️ Archiviert | **B (78)** | Nicht im aktiven Portfolio berücksichtigen |
 | **Schwalmstadt-Treysa – Am Harthberg 6** | `objekte/Schwalmstadt-Treysa_Am_Harthberg_6/` | 🟡 Nur mit Klärung, Übersicht aktiv | **?** | KP 159.000 € · 75,44 m² · WP 2027: 480 €/M · nicht umlagefähig 64,88 €/M · Cashflow im bestehenden State −156 €/M · Mietvertrag, Grundbuch und Abrechnung 2025 offen |
 | **Homberg – Magdeburger Straße 5** | `objekte/Homberg_Magdeburger_Strasse_5/` | ⚪ Erstprüfung, Übersicht aktiv | **?** | KP 148.000 € · 72 m² · Miete ca. 542 €/M · Mietstatus widersprüchlich, WEG und Finanzierung offen |
+| **Neuental-Waltersbrück – Am Frankenhain 14** | `objekte/Waltersbrück_Am_Frankenhain_14/` | 🟡 Nur mit Klärung, Übersicht aktiv | **?** | KP 119.000 € · 136 m² · Energieklasse H · Marktmiete ca. 1.096 €/M nur abgeleitet · Sanierung, Grundbuch und Gartengrundstück offen |
 | _VORLAGE | `objekte/_VORLAGE/` | Vorlage für neue Objekte | – | Übersicht + Analyse-MDs generisch |
 
 ---

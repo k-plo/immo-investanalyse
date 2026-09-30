@@ -41,11 +41,13 @@ def main():
   .rating-badge {{ font-size: 20px; font-weight: 800; border-radius: 10px; padding: 6px 14px; }}
   .karte-sub {{ color: #5a6a85; font-size: 11px; margin: 4px 0 10px; }}
   .karte-details {{ display: flex; gap: 14px; flex-wrap: wrap; font-size: 11px; color: #3a4a65; margin-bottom: 10px; }}
-  .karte-kpis {{ display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 10px; }}
+  .karte-kpis {{ display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 10px; }}
   .karte-kpis div {{ background: #f8fafd; border: 1px solid #e3eaf4; border-radius: 8px; padding: 7px 9px; }}
   .karte-kpis span {{ display: block; }}
   .karte-kpis .l {{ font-size: 8.5px; color: #5a6a85; text-transform: uppercase; letter-spacing: .04em; }}
   .karte-kpis .v {{ font-size: 14px; font-weight: 700; margin-top: 2px; }}
+  .karte-kpis .pos {{ color: #1a7f4b; }}
+  .karte-kpis .neg {{ color: #c0392b; }}
   .karte-fin {{ display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }}
   .karte-fin div {{ background: #f4f8fd; border: 1px solid #e3eaf4; border-radius: 8px; padding: 7px 9px; }}
   .karte-fin span {{ display: block; }}
@@ -93,7 +95,7 @@ def main():
     ⚠️ Modellrechnungen – keine rechtliche, steuerliche oder finanzielle Beratung. 🔄 <b>Aktualisieren</b> liest aktuelle Werte direkt aus der Datenbank.
   </footer>
 </div>
-<script src="assets/portfolio_db.js?v=3"></script>
+<script src="assets/portfolio_db.js?v=4"></script>
 </body>
 </html>"""
     OUT.write_text(html, encoding="utf-8")

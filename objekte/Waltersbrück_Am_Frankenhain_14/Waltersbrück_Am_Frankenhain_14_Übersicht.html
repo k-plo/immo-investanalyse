@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Schwalmstadt-Treysa – Am Harthberg 6 &ndash; Übersicht</title>
+<title>Neuental-Waltersbrück – Am Frankenhain 14 – Übersicht</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: "Segoe UI", Arial, sans-serif; font-size: 12px; color: #1a2332; line-height: 1.45; background: #e8edf4; padding: 20px 12px 60px; }
@@ -542,11 +542,11 @@ li{margin-bottom:8px}
     const heading = document.querySelector('.wrap h1')?.textContent.replace(/^\s*🏠\s*/, '').trim() || 'Immobilienanalyse';
     const meta = document.querySelector('.wrap .sub')?.textContent.trim() || '';
     const date = new Date().toLocaleDateString('de-DE');
-    const missing = ['renovierung','sanierung','kaltmiete','nebenkostenVorauszahlung','hausgeldNichtUml'].filter(isEmpty);
+    const missing = ['renovierung','sanierung','kaltmiete','hausgeld','nebenkostenVorauszahlung','hausgeldNichtUml'].filter(isEmpty);
     const rentMissing = isEmpty('kaltmiete');
     const canCalculate = Boolean(result.berechenbar);
     const income = data.kaltmiete * 12 * (1 - data.leerstand / 52);
-    const hausgeldNichtUml = data.hausgeldNichtUmlEingegeben ? data.hausgeldNichtUml : 64.88;
+    const hausgeldNichtUml = data.hausgeldNichtUmlEingegeben ? data.hausgeldNichtUml : 35;
     const operating = hausgeldNichtUml * 12 + data.flaeche * data.instand * 12;
     let balance = canCalculate ? result.darlehen : 0;
     let cumIncome = 0, cumExpense = 0;
@@ -648,13 +648,13 @@ li{margin-bottom:8px}
 
 <button class="print-btn" onclick="window.print()">🖨️ Als PDF drucken</button>
 <div class="saved-note" id="savedNote">✓ Gespeichert</div>
-<script type="application/json" id="inspectionData">{"checks":["Dach, Fenster, Heizung, Feuchtigkeit und Elektroinstallation vor Ort dokumentieren.","Wohnfläche, Raumaufteilung und genehmigte Nutzung mit den Unterlagen abgleichen.","Erkennbaren Renovierungs- und Sanierungsbedarf für die Kalkulation notieren."],"questions":["Welche Unterlagen belegen Baujahr und Wohnfläche?","Gibt es bekannte Schäden oder bereits beschlossene Sanierungen?","Welche Mietverträge, Betriebskosten und Wartungsnachweise liegen vor?","Gibt es Grundbuchlasten, Dienstbarkeiten oder weitere Rechte Dritter?"]}</script>
+<script type="application/json" id="inspectionData">{"checks":["Dach, Fenster, Fassade, Kellerfeuchte, Öl-Heizung, Tank und Elektroinstallation dokumentieren.","Wohnfläche, Nebengebäude, Garagen und Gartengrundstück mit Unterlagen und Realität abgleichen.","Energetischen Sanierungsbedarf und grobe Kostenpositionen für Gebäudehülle und Heizung erfassen.","Zufahrt, Erschließung und Eigentumsgrenzen des entfernten Gartengrundstücks prüfen."],"questions":["Warum nennt der Text drei Garagen, der Dateiname aber eine Doppelgarage?","Sind Nebengebäude, Dachgeschossausbau und Gartengrundstück genehmigt und rechtlich zugeordnet?","Wie alt sind Kessel und Öltank, wie hoch war der Ölverbrauch der letzten Jahre?","Welche Grundbuchlasten, Baulasten, Wegerechte oder Altlasten bestehen?"]}</script>
 
 <div class="wrap">
 
   <!-- ================= KOPF + EINGABEN ================= -->
   <div class="card">
-    <h1>Schwalmstadt-Treysa – Am Harthberg 6</h1>
+    <h1>Neuental-Waltersbrück – Am Frankenhain 14</h1>
     <div class="sub" id="objectIdLabel">Objekt-ID wird geladen …</div>
     <div class="hero-status-grid">
       <div class="object-media">
@@ -677,7 +677,7 @@ li{margin-bottom:8px}
       </section>
     </div>
     <div class="box yellow" id="preliminaryNotice" hidden>Voranalyse aus einer Online-Anzeige: Angaben sind ungeprüft. Mietdaten, Unterlagen, Zustand und Rechtslage fehlen noch; daraus abgeleitete Kennzahlen sind keine belastbare Investmententscheidung.</div>
-    <div class="sub">Vermietete Eigentumswohnung &middot; Treysa, Schwalmstadt &middot; 75,44 m&sup2; &middot; Baujahr 1995 &middot; Energieklasse D</div>
+    <div class="sub">Einfamilienhaus &middot; Neuental-Waltersbrück &middot; 136 m² &middot; Baujahr 1940 &middot; Energieklasse H</div>
 
     <div class="toolbar">
       <button class="btn" onclick="zumPortfolio()">🏠 Zum Portfolio</button>
@@ -697,7 +697,7 @@ li{margin-bottom:8px}
       <div class="field"><label class="tip" data-tip="makler">Makler (%)<span class="tipbox"></span></label><input id="makler" type="number" step="0.01"><span class="tag" contenteditable="true" data-persist="tag-makler">BELEGT · Exposé</span></div>
       <div class="field"><label class="tip" data-tip="sonstige">Sonstige Erwerbskosten (€)<span class="tipbox"></span></label><input id="sonstige" type="number" step="500"><span class="tag" contenteditable="true" data-persist="tag-sonstige">z. B. Gutachten</span></div>
       <div class="field"><label class="tip" data-tip="kaltmiete">Kaltmiete/Monat (€)<span class="tipbox"></span></label><input id="kaltmiete" type="number" step="10"><span class="tag" contenteditable="true" data-persist="tag-kaltmiete">BELEGT · Immowelt-Exposé</span></div>
-      <div class="field"><label class="tip" data-tip="hausgeldNichtUml">Nicht umlagefähiges Hausgeld (€ / Monat)<span class="tipbox"></span></label><input id="hausgeldNichtUml" type="number" step="0.01" value="64.88"><span class="tag" contenteditable="true" data-persist="tag-hausgeldNichtUml">BELEGT · Wirtschaftsplan 2027: 778,52 €/Jahr</span></div>
+      <div class="field"><label class="tip" data-tip="hausgeldNichtUml">Nicht umlagefähiges Hausgeld (€ / Monat)<span class="tipbox"></span></label><input id="hausgeldNichtUml" type="number" step="5" value="35"><span class="tag" contenteditable="true" data-persist="tag-hausgeldNichtUml">ANNAHME · 35 € Startwert, falls keine andere Angabe vorliegt</span></div>
       <div class="field"><label class="tip" data-tip="instand">Instandhaltung (€ / m² / Monat)<span class="tipbox"></span></label><input id="instand" type="number" step="0.1"><span class="tag" contenteditable="true" data-persist="tag-instand">NUTZER-VORGABE: 1,00 €/m²/Monat</span></div>
       <div class="field"><label class="tip" data-tip="leerstand">Leerstand (% der Kaltmiete)<span class="tipbox"></span></label><input id="leerstand" type="number" step="0.1"><span class="tag" contenteditable="true" data-persist="tag-leerstand">NUTZER-VORGABE: 2,0 % der Kaltmiete</span></div>
       <div class="field"><label class="tip" data-tip="ek">Eigenkapital (€)<span class="tipbox"></span></label><input id="ek" type="number" step="1000"><span class="tag" contenteditable="true" data-persist="tag-ek">NUTZER-VORGABE: 20.000 €</span></div>
@@ -744,17 +744,17 @@ li{margin-bottom:8px}
     <div class="box green">
       <b>✅ Nachgewiesen:</b>
       <ul contenteditable="true" data-persist="chancenNachgewiesen">
-        <li>Vermietete 3-Zimmer-Dachgeschosswohnung mit Balkon, Keller und Stellplatz-Sondernutzungsrecht (BELEGT)</li>
-        <li>Balkonmaßnahmen 2024/2025 laut WEG-Protokollen abgeschlossen; zwölf Balkone instandgesetzt (BELEGT)</li>
-        <li>Teilungserklärung, Jahresabrechnung 2024 und Wirtschaftsplan 2027 erstmals verfügbar (BELEGT)</li>
+        <li>Kaufpreis <span data-bind="kpProM2">€/m²</span> (Bewertung, ABGELEITET)</li>
+        <li>Lage-Vorteile (BELEGT Exposé)</li>
+        <li>Ausstattungs-Highlights (BELEGT)</li>
       </ul>
     </div>
     <div class="box yellow">
       <b>❓ Hypothesen (zu prüfen):</b>
       <ul contenteditable="true" data-persist="chancenHypothese">
-        <li>750 EUR Kaltmiete nachhaltig erzielbar; Mietvertrag und Mietkonto fehlen (HYPOTHESE)</li>
-        <li>Wertstabilität nach abgeschlossener Balkonsanierung (HYPOTHESE)</li>
-        <li>Heizungs-/Energieoptimierung als langfristiger Wertsicherungshebel (HYPOTHESE)</li>
+        <li>Kaufpreis unter Marktwert (Vergleichsdaten prüfen)</li>
+        <li>Mietsteigerungs-/Vermietungspotenzial</li>
+        <li>Wertsteigerung durch Sanierung</li>
       </ul>
     </div>
 
@@ -766,20 +766,19 @@ li{margin-bottom:8px}
 
     <h2>10 · Offene Punkte <span class="edit-hint">(abhaken – Status wird gespeichert)</span></h2>
     <ul id="offenePunkte" data-list-persist="offenePunkte">
-      <li class="chk-li"><input type="checkbox" class="chk" data-persist="op1"><span class="txt" contenteditable="true" data-persist="op1t">🔴 Mietvertrag, Mietkonto, Nebenkostenabrechnungen und Grundbuchauszug anfordern</span><button class="btn delete" type="button" title="Punkt löschen" aria-label="Punkt löschen" onclick="deleteListItem(this)">×</button></li>
-      <li class="chk-li"><input type="checkbox" class="chk" data-persist="op2"><span class="txt" contenteditable="true" data-persist="op2t">🔴 Sprung des Hausgeldvorschusses auf 480 EUR und Nachzahlung 2024 von 2.355,88 EUR klären</span><button class="btn delete" type="button" title="Punkt löschen" aria-label="Punkt löschen" onclick="deleteListItem(this)">×</button></li>
-      <li class="chk-li"><input type="checkbox" class="chk" data-persist="op3"><span class="txt" contenteditable="true" data-persist="op3t">🟠 Abrechnung 2025, individueller Rücklagenstand und Balkonabrechnung prüfen</span><button class="btn delete" type="button" title="Punkt löschen" aria-label="Punkt löschen" onclick="deleteListItem(this)">×</button></li>
-      <li class="chk-li"><input type="checkbox" class="chk" data-persist="op4"><span class="txt" contenteditable="true" data-persist="op4t">🟠 Heizung, Dach, Fenster, Feuchtigkeit und Balkonanschlüsse besichtigen</span><button class="btn delete" type="button" title="Punkt löschen" aria-label="Punkt löschen" onclick="deleteListItem(this)">×</button></li>
+      <li class="chk-li"><input type="checkbox" class="chk" data-persist="op1"><span class="txt" contenteditable="true" data-persist="op1t">🔴 Offener Punkt 1 (kritisch)</span><button class="btn delete" type="button" title="Punkt löschen" aria-label="Punkt löschen" onclick="deleteListItem(this)">×</button></li>
+      <li class="chk-li"><input type="checkbox" class="chk" data-persist="op2"><span class="txt" contenteditable="true" data-persist="op2t">🟡 Offener Punkt 2 (wichtig)</span><button class="btn delete" type="button" title="Punkt löschen" aria-label="Punkt löschen" onclick="deleteListItem(this)">×</button></li>
+      <li class="chk-li"><input type="checkbox" class="chk" data-persist="op3"><span class="txt" contenteditable="true" data-persist="op3t">🟢 Offener Punkt 3 (optional)</span><button class="btn delete" type="button" title="Punkt löschen" aria-label="Punkt löschen" onclick="deleteListItem(this)">×</button></li>
     </ul>
     <button class="btn secondary" type="button" onclick="addOffenerPunkt()">+ Offenen Punkt hinzufügen</button>
 
     <h2>11 · Nächste Schritte <span class="edit-hint">(abhaken)</span></h2>
     <ul id="schritte" data-list-persist="schritte">
-      <li class="chk-li"><input type="checkbox" class="chk" data-persist="ns1"><span class="txt" contenteditable="true" data-persist="ns1t">1. Mietvertrag, Mietkonto und Abrechnungen vom Makler anfordern</span><button class="btn delete" type="button" title="Schritt löschen" aria-label="Schritt löschen" onclick="deleteListItem(this)">×</button></li>
-      <li class="chk-li"><input type="checkbox" class="chk" data-persist="ns2"><span class="txt" contenteditable="true" data-persist="ns2t">2. Grundbuchauszug, Aufteilungsplan und Einheit-6A-Zuordnung prüfen</span><button class="btn delete" type="button" title="Schritt löschen" aria-label="Schritt löschen" onclick="deleteListItem(this)">×</button></li>
-      <li class="chk-li"><input type="checkbox" class="chk" data-persist="ns3"><span class="txt" contenteditable="true" data-persist="ns3t">3. Abrechnung 2025, Rücklagenstand und Balkon-Sonderumlagen belegen lassen</span><button class="btn delete" type="button" title="Schritt löschen" aria-label="Schritt löschen" onclick="deleteListItem(this)">×</button></li>
-      <li class="chk-li"><input type="checkbox" class="chk" data-persist="ns4"><span class="txt" contenteditable="true" data-persist="ns4t">4. Gasheizung, Dach, Fenster, Feuchtigkeit und Balkone besichtigen</span><button class="btn delete" type="button" title="Schritt löschen" aria-label="Schritt löschen" onclick="deleteListItem(this)">×</button></li>
-      <li class="chk-li"><input type="checkbox" class="chk" data-persist="ns5"><span class="txt" contenteditable="true" data-persist="ns5t">5. Bankangebot einholen und Zielpreis unter Cashflow-Maximalpreis verhandeln</span><button class="btn delete" type="button" title="Schritt löschen" aria-label="Schritt löschen" onclick="deleteListItem(this)">×</button></li>
+      <li class="chk-li"><input type="checkbox" class="chk" data-persist="ns1"><span class="txt" contenteditable="true" data-persist="ns1t">1. Fragenliste an Makler senden</span><button class="btn delete" type="button" title="Schritt löschen" aria-label="Schritt löschen" onclick="deleteListItem(this)">×</button></li>
+      <li class="chk-li"><input type="checkbox" class="chk" data-persist="ns2"><span class="txt" contenteditable="true" data-persist="ns2t">2. Besichtigung durchführen</span><button class="btn delete" type="button" title="Schritt löschen" aria-label="Schritt löschen" onclick="deleteListItem(this)">×</button></li>
+      <li class="chk-li"><input type="checkbox" class="chk" data-persist="ns3"><span class="txt" contenteditable="true" data-persist="ns3t">3. Unterlagen anfordern (Grundbuch, Energieausweis, …)</span><button class="btn delete" type="button" title="Schritt löschen" aria-label="Schritt löschen" onclick="deleteListItem(this)">×</button></li>
+      <li class="chk-li"><input type="checkbox" class="chk" data-persist="ns4"><span class="txt" contenteditable="true" data-persist="ns4t">4. Finanzierung klären (Bankgespräch)</span><button class="btn delete" type="button" title="Schritt löschen" aria-label="Schritt löschen" onclick="deleteListItem(this)">×</button></li>
+      <li class="chk-li"><input type="checkbox" class="chk" data-persist="ns5"><span class="txt" contenteditable="true" data-persist="ns5t">5. Kalkulation mit BELEGT-Werten neu rechnen</span><button class="btn delete" type="button" title="Schritt löschen" aria-label="Schritt löschen" onclick="deleteListItem(this)">×</button></li>
     </ul>
     <button class="btn secondary" type="button" onclick="addSchritt()">+ Nächsten Schritt hinzufügen</button>
 
@@ -824,7 +823,7 @@ li{margin-bottom:8px}
 
 <script>
 "use strict";
-const OBJEKT_ORDNER = "Schwalmstadt-Treysa_Am_Harthberg_6";
+const OBJEKT_ORDNER = "Waltersbrück_Am_Frankenhain_14";
 const fmt = (v, d = 0) => (v === null || v === undefined || isNaN(v) ? "–" : v.toLocaleString("de-DE", { minimumFractionDigits: d, maximumFractionDigits: d }));
 const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, c => ({
   "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
@@ -842,9 +841,9 @@ const getZinsSzenarien = zins => ZINS_OFFSETS.map(({ offset, label }) => ({
   label
 }));
 const DEFAULTS = {
-  preis: 159000, flaeche: 75.44, renovierung: 0, sanierung: 0,
+  preis: null, flaeche: null, renovierung: null, sanierung: null,
   grESt: 6.0, notar: 2.0, makler: 3.57, sonstige: 0,
-  kaltmiete: 750, nebenkostenVorauszahlung: null, hausgeldNichtUml: 64.88, instand: 1.0, leerstand: 2,
+  kaltmiete: null, nebenkostenVorauszahlung: null, hausgeldNichtUml: 35, instand: null, leerstand: 2,
   ek: 20000, zins: 4.2, tilgung: 1.0
 };
 const IDS = Object.keys(DEFAULTS);
@@ -940,7 +939,7 @@ function calc(d) {
   const jahresKalt = d.kaltmiete * 12;
   const lf = Math.max(0, 1 - d.leerstand / 100);
   r.mieteEffektiv = jahresKalt * lf;
-  const hausgeldNichtUml = d.hausgeldNichtUmlEingegeben ? d.hausgeldNichtUml : 64.88;
+  const hausgeldNichtUml = d.hausgeldNichtUmlEingegeben ? d.hausgeldNichtUml : 35;
   const umlagefaehigeKosten = 0;
   r.nebenkostenSaldoMonat = d.nebenkostenVorauszahlung - umlagefaehigeKosten;
   r.nebenkostenSaldoJahr = r.nebenkostenSaldoMonat * 12;
@@ -1314,11 +1313,9 @@ function isTipElement(target, source) { return target && source && (target === s
 
 // ---------- Risiken (dynamisch) ----------
 const RISIKEN_DEFAULT = [
-  ["Cashflow bei 25.000 EUR EK negativ", "wirtschaftlich", "🔴", "Das Basismodell ergibt bei 159.000 EUR Kaufpreis rund -156 EUR/Monat nach Finanzierung; Break-even-Miete rund 912 EUR."],
-  ["Miete nicht rechtlich/nachhaltig belegt", "Mietrecht", "🔴", "750 EUR Kaltmiete stammen aus dem Exposé; Mietvertrag, Mietkonto und Nebenkostenabrechnungen fehlen."],
-  ["Hausgeldsprung und Nachzahlung", "WEG", "🟠", "2024 Nachzahlung 2.355,88 EUR; Wirtschaftsplan 2027 setzt 480 EUR Vorschuss monatlich an."],
-  ["Grundbuch und Aufteilungsplan offen", "rechtlich", "🟠", "Einheit 6A und Stellplatz sind aus der Teilungserklärung ableitbar, der aktuelle Grundbuchauszug fehlt."],
-  ["Gasheizung / Gemeinschaftseigentum", "technisch", "🟠", "Energieausweis empfiehlt Heizungsprüfung; Dach, Fenster und Feuchtigkeit sind nicht vor Ort geprüft."]
+  ["🔴 Risiko 1", "rechtlich", "🔴", "Begründung …"],
+  ["🟠 Risiko 2", "technisch", "🟠", "Begründung …"],
+  ["🟡 Risiko 3", "Dokumentation", "🟡", "Begründung …"]
 ];
 function renderRisiken(risiken) {
   const tbl = document.getElementById("tblRisiken");

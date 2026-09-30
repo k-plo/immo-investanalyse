@@ -6,6 +6,12 @@
   const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[char]));
   const eur = value => value == null ? '–' : Number(value).toLocaleString('de-DE', {maximumFractionDigits:0}) + ' €';
   const pct = value => value == null ? '–' : Number(value).toLocaleString('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' %';
+  const factorNumber = (price, rent) => price == null || rent == null || Number(rent) <= 0 ? null : Number(price) / (Number(rent) * 12);
+  const factor = (price, rent) => {
+    const value = factorNumber(price, rent);
+    return value == null ? '–' : value.toLocaleString('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2});
+  };
+  const bruttoRenditeClass = value => value == null ? '' : Number(value) > 7 ? 'pos' : 'neg';
   const perM2 = (value, area) => value == null || !area ? '–' : eur(value / area);
   function detail(item) {
     const type = (item.objektart || '').toLowerCase();
@@ -28,6 +34,8 @@
     const href = 'objekte/' + encodeURIComponent(item.name) + '/' + encodeURIComponent(file);
     const rentPerArea = item.kaltmiete != null && item.wohnflaeche
       ? '≈ ' + (item.kaltmiete / item.wohnflaeche).toLocaleString('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' €/m²' : '';
+    const factorValue = factorNumber(item.kaufpreis, item.kaltmiete);
+    const factorClass = factorValue == null ? '' : factorValue <= 15 ? 'pos' : 'neg';
     const photo = item.image_path && /^\/objekte\/[a-z0-9äöüß_-]+\/titelbild\.(jpg|png|webp|avif)$/i.test(item.image_path)
       ? `<div class="karte-photo-bg" style="background-image:url('${esc(item.image_path)}')"></div>` : '';
     return `<a class="karte${photo ? ' has-photo' : ''}" data-rating="${esc(rating)}" href="${href}">${photo}
@@ -36,7 +44,8 @@
       <div class="karte-details"><span>📐 ${item.wohnflaeche == null ? '–' : Math.round(item.wohnflaeche)} m²</span><span>📅 BJ ${item.baujahr == null ? '–' : Math.round(item.baujahr)}</span><span>🛏 ${item.zimmer == null ? '–' : Math.round(item.zimmer)} Zi.</span><span>${esc(detail(item))}</span></div>
       <div class="karte-kpis"><div><span class="l">Kaufpreis</span><span class="v">${eur(item.kaufpreis)}</span><span class="s">${perM2(item.kaufpreis,item.wohnflaeche)} /m²</span></div>
       <div><span class="l">Gesamtinvest</span><span class="v">${hideDerived ? '–' : eur(item.gesamtinvest)}</span><span class="s">${hideDerived ? 'Unterlagen offen' : perM2(item.gesamtinvest,item.wohnflaeche) + ' /m²'}</span></div>
-      <div><span class="l">BruttoR</span><span class="v">${hideDerived ? '–' : pct(item.brutto_rendite)}</span></div><div><span class="l">CF/M</span><span class="v">${hideDerived ? '–' : eur(item.cf_nach)}</span></div></div>
+      <div><span class="l">Faktor</span><span class="v ${factorClass}">${factor(item.kaufpreis,item.kaltmiete)}</span></div>
+      <div><span class="l">BruttoR</span><span class="v ${hideDerived ? '' : bruttoRenditeClass(item.brutto_rendite)}">${hideDerived ? '–' : pct(item.brutto_rendite)}</span></div><div><span class="l">CF/M</span><span class="v">${hideDerived ? '–' : eur(item.cf_nach)}</span></div></div>
       <div class="karte-fin"><div><span class="l">Miete/Monat</span><span class="v">${eur(item.kaltmiete)}</span><span class="s">${rentPerArea}</span></div>
       <div><span class="l">Finanzierung</span><span class="v">${eur(item.ek)} EK · ${pct(item.zins)} · ${pct(item.tilgung)} Tilg.</span></div></div></a>`;
   }

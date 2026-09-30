@@ -69,7 +69,9 @@ button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-v
 .karte-sub{font-size:11px;line-height:1.45;margin:6px 0 9px;color:var(--muted)}
 .karte-details{font-size:10px;gap:5px;margin-bottom:9px}
 .karte-details span{background:#f4f7f8;border-radius:6px;padding:3px 6px;color:#526975}
-.karte-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-bottom:8px}
+.karte-kpis{grid-template-columns:repeat(6,minmax(0,1fr));gap:7px;margin-bottom:8px}
+.karte-kpis>div:nth-child(1),.karte-kpis>div:nth-child(2){grid-column:span 3}
+.karte-kpis>div:nth-child(3),.karte-kpis>div:nth-child(4),.karte-kpis>div:nth-child(5){grid-column:span 2}
 .karte-kpis div{border:0;border-radius:10px;background:#f1f6f6e8;padding:9px;min-width:0}
 .karte-kpis .l,.karte-fin .l{font-size:9px;letter-spacing:.07em;color:var(--muted);font-weight:650}
 .karte-kpis .v{font-size:20px;letter-spacing:-.04em;font-weight:750;margin-top:2px;font-variant-numeric:tabular-nums}
@@ -108,6 +110,7 @@ h2 .edit-hint{display:block;margin-top:6px}
 .kpi .v{font-size:clamp(21px,2.4vw,29px);letter-spacing:-.04em;margin:6px 0;line-height:1.25;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
 .kpi .s{font-size:11px;color:var(--muted)}
 .box{padding:18px 20px;border-radius:12px;border-color:var(--line);margin:12px 0;line-height:1.8}
+.pos{color:#1a7f4b}.neg{color:#c0392b}.neu{color:#b9770e}
 .box.red{background:#fff5f3;border-left-color:#bd4f44}.box.yellow{background:#fffaf0;border-left-color:#ba892b}.box.green{background:#eff8f4;border-left-color:#368367}.box.blue{background:#f1f7fb;border-left-color:#487c9a}
 .small{font-size:12px;color:var(--muted)}.status-big{font-size:21px;line-height:1.4;letter-spacing:-.02em}
 .badge{font-size:11px;padding:4px 10px;border-radius:6px}
@@ -128,7 +131,7 @@ li{margin-bottom:8px}
 .tip .tipbox{font-size:12px;line-height:1.6;box-shadow:0 10px 30px #152d3933;z-index:1000}
 .tipbox-portal{box-sizing:border-box;width:min(320px,calc(100vw - 24px));max-width:calc(100vw - 24px);padding:11px 13px;border:1px solid #344158;border-radius:8px;background:#0f1420;color:#e8edf7;font-size:12px;font-weight:400;line-height:1.5;text-align:left;white-space:normal;word-wrap:break-word;overflow-wrap:break-word;box-shadow:0 10px 28px rgba(15,20,32,.4)}
 @media(max-width:1050px){.filter button.sync{margin-left:0}.inputs{grid-template-columns:repeat(2,minmax(0,1fr))}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.karte-kpis .v{font-size:19px}}
-@media(max-width:760px){body{padding:24px 16px 40px}.grid{grid-template-columns:minmax(0,1fr)}.card{padding:22px}.wrap::before{font-size:9px}.filter{padding:12px;gap:6px}.filter button{flex:1 1 auto}.filter button.sync,.filter button.analyse{flex-basis:100%;text-align:center}.karte-name{font-size:20px}.karte-kpis .v{font-size:20px}.print-btn{margin-bottom:20px}.kpi{padding:16px}.tip .tipbox{max-height:50vh;overflow:auto}.toolbar .btn{flex:1 1 auto}h2{margin-top:28px}.box{padding:15px}.external-link button{flex-grow:1}}
+@media(max-width:760px){body{padding:24px 16px 40px}.grid{grid-template-columns:minmax(0,1fr)}.card{padding:22px}.wrap::before{font-size:9px}.filter{padding:12px;gap:6px}.filter button{flex:1 1 auto}.filter button.sync,.filter button.analyse{flex-basis:100%;text-align:center}.karte-name{font-size:20px}.karte-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.karte-kpis>div{grid-column:span 1!important}.karte-kpis .v{font-size:20px}.print-btn{margin-bottom:20px}.kpi{padding:16px}.tip .tipbox{max-height:50vh;overflow:auto}.toolbar .btn{flex:1 1 auto}h2{margin-top:28px}.box{padding:15px}.external-link button{flex-grow:1}}
 @media(max-width:420px){body{padding:18px 12px 32px}.card{padding:18px}.inputs{gap:16px 12px}.field label{font-size:11px}.field input{padding:10px;font-size:16px}.kpis{gap:10px}.kpi{padding:13px}.kpi .v{font-size:22px}.karte{padding:14px}.karte-kpis .v{font-size:19px}.karte-fin{grid-template-columns:1fr}.toolbar .btn{flex-basis:100%}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;scroll-behavior:auto!important}.karte:hover{transform:none}}
 @media print{body{background:#fff;padding:0;font-size:10px}.wrap{max-width:none}.wrap::before{display:none}.card{border:0;border-radius:0;box-shadow:none;padding:10px 0}.card:first-child{border-top:0}.print-btn,.toolbar,.saved-note,.edit-hint,.filter{display:none!important}.inputs,.kpis{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.field input{min-height:0;padding:0;border:0;background:none;font-size:11px}.field label{min-height:0;font-size:9px}.kpi{padding:8px}.kpi .v{font-size:17px}.table-scroll{overflow:visible;border:0}.table-scroll table{min-width:0;font-size:10px}th,td{padding:5px}.box{padding:10px}h2{margin-top:20px;font-size:13px}.tipbox{display:none!important}.grid{grid-template-columns:1fr 1fr}.karte{break-inside:avoid}.karte::after{display:none}}
