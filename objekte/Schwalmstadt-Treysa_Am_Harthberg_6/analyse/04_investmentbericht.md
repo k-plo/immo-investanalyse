@@ -6,7 +6,7 @@
 
 **🟡 NUR MIT KLÄRUNG – aktuell kein Ankauf zum Angebotspreis.**
 
-Die Wohnung ist mit 159.000 EUR und 750 EUR Kaltmiete zunächst renditestark dargestellt. Mit dem Wirtschaftsplan 2027, 25.000 EUR bestehendem Eigenkapital-State, 4,80 % Zins und der konservativen Instandhaltung von 1,00 EUR/m²/Monat ergibt sich ein modellierter Cashflow nach Finanzierung von **-156 EUR/Monat**. Der Break-even liegt bei rund **912 EUR Kaltmiete**, während 750 EUR bereits über der regionalen Durchschnittsindikation liegen. Der Kaufpreis liegt damit vor weiterer Prüfung über dem rechnerischen Maximalpreis von rund **130.118 EUR**.
+Die Wohnung ist mit 159.000 EUR und 750 EUR Kaltmiete zunächst renditestark dargestellt. Mit dem Wirtschaftsplan 2027, 25.000 EUR bestehendem Eigenkapital-State, 4,80 % Zins, 2 % Leerstand der Kaltmiete und der konservativen Instandhaltung von 1,00 EUR/m²/Monat ergibt sich ein modellierter Cashflow nach Finanzierung von **-142 EUR/Monat**. Der Break-even liegt bei rund **895 EUR Kaltmiete**, während 750 EUR bereits über der regionalen Durchschnittsindikation liegen. Der Kaufpreis liegt damit vor weiterer Prüfung über dem rechnerischen Maximalpreis von rund **132.686 EUR**.
 
 ## Vorläufige Wirtschaftlichkeit
 
@@ -15,7 +15,7 @@ Die Wohnung ist mit 159.000 EUR und 750 EUR Kaltmiete zunächst renditestark dar
 - Gesamtinvestition ohne Renovierung/Sanierung: **177.396 EUR**
 - Bruttorendite: **5,66 %**
 - Mietmarkt-Indikation: ca. **525 EUR/Monat** bei 6,96 EUR/m²; Ist-Miete 750 EUR ist belegt, aber noch nicht durch Mietvertrag geprüft
-- Cashflow nach Finanzierung: **-156 EUR/Monat** im Basisszenario; 4,80 % Zins und 25.000 EUR Eigenkapital stammen aus dem bestehenden State und sind mit einem Bankangebot zu verifizieren
+- Cashflow nach Finanzierung: **-142 EUR/Monat** im Basisszenario bei 2 % Leerstand der Kaltmiete; 4,80 % Zins und 25.000 EUR Eigenkapital stammen aus dem bestehenden State und sind mit einem Bankangebot zu verifizieren
 - WEG-Belastung 2027: 480 EUR Vorschuss/Monat, davon 64,88 EUR nicht umlagefähig und 50,29 EUR Rücklagenbeitrag
 
 ## Chancen
@@ -30,7 +30,7 @@ Die Wohnung ist mit 159.000 EUR und 750 EUR Kaltmiete zunächst renditestark dar
 ## Risiken
 
 - 🔴 Mietansatz liegt rund 43 % über der regionalen Immowelt-Orientierung; Vertrag und nachhaltige Marktfähigkeit prüfen.
-- 🔴 Cashflow bei 25.000 EUR Eigenkapital rund -156 EUR/Monat; Wertminderung, Mietausfall oder Zinsanstieg verschärfen das Defizit.
+- 🔴 Cashflow bei 25.000 EUR Eigenkapital rund -142 EUR/Monat; Wertminderung, Mietausfall oder Zinsanstieg verschärfen das Defizit.
 - 🔴 Ist-Miete 750 EUR liegt rund 43 % über der Immowelt-Durchschnittsindikation; Mietvertrag, Mietkonto und Nebenkostenabrechnungen fehlen.
 - 🔴 Abrechnung 2024 weist 2.355,88 EUR Nachzahlung aus; Ursache und Übertragbarkeit auf 2027 klären.
 - 🟠 Hausgeldsprung von rechnerisch 254,73 EUR Vorschuss 2024 auf 480 EUR ab 2027; Abrechnung 2025 und Beschlussgrundlage fehlen.
@@ -44,7 +44,7 @@ Die Wohnung ist mit 159.000 EUR und 750 EUR Kaltmiete zunächst renditestark dar
 2. Wirtschaftsplan 2027, Abrechnung 2025, Rücklagenbestand und Abrechnung der Balkon-Sonderumlagen prüfen.
 3. Grundbuchauszug, Aufteilungsplan sowie Einheit-6A-/Stellplatzzuordnung prüfen.
 4. Gasheizung, Dach, Fenster, Feuchtigkeit und Balkonanschlüsse vor Ort besichtigen.
-5. Bankangebot mit Zinsbindung einholen; maximalen Ankaufspreis wegen -156 EUR Monats-Cashflow neu verhandeln.
+5. Bankangebot mit Zinsbindung einholen; maximalen Ankaufspreis wegen -142 EUR Monats-Cashflow neu verhandeln.
 
 ## Status
 

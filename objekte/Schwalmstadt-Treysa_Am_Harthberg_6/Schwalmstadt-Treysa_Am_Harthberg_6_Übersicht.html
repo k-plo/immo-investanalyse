@@ -555,7 +555,7 @@ li{margin-bottom:8px}
     const missing = ['renovierung','sanierung','kaltmiete','hausgeld','nebenkostenVorauszahlung','hausgeldNichtUml'].filter(isEmpty);
     const rentMissing = isEmpty('kaltmiete');
     const canCalculate = Boolean(result.berechenbar);
-    const income = data.kaltmiete * 12 * (1 - data.leerstand / 52);
+    const income = data.kaltmiete * 12 * (1 - data.leerstand / 100);
     const hausgeldNichtUml = data.hausgeldNichtUmlEingegeben ? data.hausgeldNichtUml : Math.max(0, data.hausgeld - data.nebenkostenVorauszahlung);
     const operating = hausgeldNichtUml * 12 + data.flaeche * data.instand * 12;
     let balance = canCalculate ? result.darlehen : 0;
@@ -581,7 +581,7 @@ li{margin-bottom:8px}
     ].join('') : row('Gesamtinvestition','Noch nicht berechenbar');
     const operations = [
       row('Kaltmiete / Monat',money(data.kaltmiete)),
-      row('Leerstand / Jahr',`${data.leerstand.toLocaleString('de-DE')} Wochen`),
+      row('Leerstand',`${data.leerstand.toLocaleString('de-DE')} % der Kaltmiete`),
       row('Nicht umlagefähige Kosten / Monat',money(hausgeldNichtUml)),
       row('Voraussichtliche Erstattung/Nachzahlung Mieter',money(data.nebenkostenVorauszahlung - (data.hausgeldNichtUmlEingegeben ? Math.max(0, data.hausgeld - data.hausgeldNichtUml) : data.hausgeld))),
       row('Instandhaltung / Jahr',money(data.flaeche*data.instand*12)),
@@ -1325,7 +1325,7 @@ function isTipElement(target, source) { return target && source && (target === s
 
 // ---------- Risiken (dynamisch) ----------
 const RISIKEN_DEFAULT = [
-  ["Cashflow bei 25.000 EUR EK negativ", "wirtschaftlich", "🔴", "Das Basismodell ergibt bei 159.000 EUR Kaufpreis rund -156 EUR/Monat nach Finanzierung; Break-even-Miete rund 912 EUR."],
+  ["Cashflow bei 25.000 EUR EK negativ", "wirtschaftlich", "🔴", "Das Basismodell ergibt bei 159.000 EUR Kaufpreis rund -142 EUR/Monat nach Finanzierung; Break-even-Miete rund 895 EUR."],
   ["Miete nicht rechtlich/nachhaltig belegt", "Mietrecht", "🔴", "750 EUR Kaltmiete stammen aus dem Exposé; Mietvertrag, Mietkonto und Nebenkostenabrechnungen fehlen."],
   ["Hausgeldsprung und Nachzahlung", "WEG", "🟠", "2024 Nachzahlung 2.355,88 EUR; Wirtschaftsplan 2027 setzt 480 EUR Vorschuss monatlich an."],
   ["Grundbuch und Aufteilungsplan offen", "rechtlich", "🟠", "Einheit 6A und Stellplatz sind aus der Teilungserklärung ableitbar, der aktuelle Grundbuchauszug fehlt."],

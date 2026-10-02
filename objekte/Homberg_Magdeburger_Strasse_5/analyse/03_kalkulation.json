@@ -24,13 +24,13 @@
     "makler_prozent": 0.0,
     "nicht_umlagefaehiges_hausgeld_monat": 35,
     "instandhaltung_eur_m2_monat": 0.833333,
-    "leerstand_wochen_jahr": 4,
+    "leerstand_prozent": 2.0,
     "eigenkapital": 20000,
     "zins_prozent": 4.2,
     "tilgung_prozent": 2.0
   },
   "hinweise": [
-    "Leerstand ist in der Übersicht als Prozentfeld hinterlegt; 4 Wochen/Jahr entsprechen ca. 7,69 Prozent.",
+    "Leerstand ist in der Übersicht als Prozentfeld hinterlegt; Startwert sind 2 % der Kaltmiete.",
     "Die Aufteilung des Hausgelds ist nicht belegt; 35 EUR nicht umlagefähig sind vorläufig.",
     "Mietstatus und Verfügbarkeit widersprechen sich im Exposé."
   ]

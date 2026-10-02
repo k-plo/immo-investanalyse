@@ -32,7 +32,7 @@ Für die Kalkulation gelten 2 % Leerstand, 20.000 EUR Eigenkapital und 1,0 % Til
 | Basis | 750 EUR | bestehende Miete laut Exposé |
 | obere Marktspanne | 720 EUR | 9,55 EUR/m² als Immowelt-Obergrenze, nur Orientierung |
 
-Bei 750 EUR Ist-Miete ergibt sich im Basismodell trotz der hohen Bruttorendite ein Cashflow nach Finanzierung von rund **-156 EUR/Monat**. Für einen ausgeglichenen Cashflow werden rund **912 EUR/Monat** benötigt; das ist oberhalb der belegten Ist-Miete und der regionalen Marktindikation. Die Miete ist daher nicht als frei steigerbarer Ertrag zu behandeln.
+Bei 750 EUR Ist-Miete ergibt sich im Basismodell mit 2 % Leerstand der Kaltmiete trotz der hohen Bruttorendite ein Cashflow nach Finanzierung von rund **-142 EUR/Monat**. Für einen ausgeglichenen Cashflow werden rund **895 EUR/Monat** benötigt; das ist oberhalb der belegten Ist-Miete und der regionalen Marktindikation. Die Miete ist daher nicht als frei steigerbarer Ertrag zu behandeln.
 
 ## 4. Quellen und Status
 

@@ -39,7 +39,7 @@
 | Ist-Miete | keine; Wohnung leer | BELEGT | Beschreibung |
 | Marktindikator | 7,83 EUR/m2 = ca. 446 EUR/Monat | ABGELEITET | Immowelt Mietpreise Fritzlar, aktualisiert 01.10.2026 |
 | Mietspanne fuer die Vorpruefung | ca. 400-500 EUR kalt/Monat | ANNAHME | Marktindikator plus Zustand/Stellplatz; Inseratvergleich fehlt |
-| Leerstand | 2 % = ca. 1,04 Wochen/Jahr | ANNAHME | Nutzer-Vorgabe |
+| Leerstand | 2 % der Kaltmiete | ANNAHME | Nutzer-Vorgabe |
 | Mietvertrag/Mietrueckstaende | nicht vorhanden | UNBEKANNT | Wohnung leer |
 | Instandhaltung | 1,00 EUR/m2/Monat | NUTZER-VORGABE | Vorgabe des Nutzers |
 

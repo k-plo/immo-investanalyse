@@ -34,7 +34,7 @@ def default_data() -> dict:
         },
         "miete": {
             "kaltmiete_monatlich_eur": 850.0,
-            "leerstand_wochen_pro_jahr": 2.0,
+            "leerstand_prozent": 2.0,
             "marktuebliche_miete_eur": 0.0,
             "mietrueckstaende_eur": 0.0,
         },
@@ -114,7 +114,7 @@ def normalisiere_daten(data: dict) -> dict:
         },
         "miete": {
             "kaltmiete_monatlich_eur": wert("kaltmiete"),
-            "leerstand_wochen_pro_jahr": wert("leerstand", "leerstandWochen"),
+            "leerstand_prozent": wert("leerstand", "leerstandProzent"),
             "marktuebliche_miete_eur": wert("marktmiete"),
             "mietrueckstaende_eur": wert("rueckstaende"),
         },
@@ -177,7 +177,15 @@ def berechne(d: dict) -> dict:
 
     # --- Miete & laufende Kosten ---
     jahres_kalt = n(miete.get("kaltmiete_monatlich_eur")) * 12.0
-    leerstand_faktor = max(0.0, 1.0 - n(miete.get("leerstand_wochen_pro_jahr")) / 52.0)
+    if "leerstand_prozent" in miete:
+        leerstand_faktor = max(0.0, 1.0 - n(miete.get("leerstand_prozent")) / 100.0)
+        leerstand_text = f"{n(miete.get('leerstand_prozent')):.2f} % der Kaltmiete"
+        stress_leerstand_faktor = max(0.0, 1.0 - (n(miete.get("leerstand_prozent")) + 2.0) / 100.0)
+    else:
+        leerstand_faktor = max(0.0, 1.0 - n(miete.get("leerstand_wochen_pro_jahr")) / 52.0)
+        leerstand_text = f"{n(miete.get('leerstand_wochen_pro_jahr')):.2f} Wochen/Jahr"
+        stress_leerstand_faktor = max(0.0, 1.0 - (n(miete.get("leerstand_wochen_pro_jahr")) + 8.7) / 52.0)
+    r["leerstand_text"] = leerstand_text
     r["miete_effektiv"] = jahres_kalt * leerstand_faktor
     hg = n(lk.get("hausgeld_monatlich_eur"))
     hg_nicht_uml_roh = lk.get("nicht_umlagefaehige_kosten_monatlich_eur")
@@ -234,7 +242,7 @@ def berechne(d: dict) -> dict:
 
     r["stress"] = [
         ("1) Miete −10 %", netto(jahres_kalt * 0.9) / 12.0 - rate),
-        ("2) Leerstand +2 Monate", netto(jahres_kalt, lf=max(0.0, 1.0 - (n(miete.get("leerstand_wochen_pro_jahr")) + 8.7) / 52.0)) / 12.0 - rate),
+        ("2) Leerstand +2 %-Punkte", netto(jahres_kalt, lf=stress_leerstand_faktor) / 12.0 - rate),
         ("3) Instandhaltung +50 %", netto(jahres_kalt, inst_faktor=1.5) / 12.0 - rate),
         ("4) Zins +2,0 %-Punkte", r["cashflow_vor_monat"] - annuitaetenrate(r["darlehen"], zins + 2.0, tilgung)),
         ("5) Sanierung +10 % KP (finanziert)", r["cashflow_vor_monat"] - annuitaetenrate(r["darlehen"] + preis * 0.10, zins, tilgung)),
@@ -318,7 +326,7 @@ def report(d: dict, r: dict) -> str:
         add(f"    Kaufpreis/m²: {eur(r['kp_pro_m2'])} · Gesamtinvest/m²: {eur(r['gi_pro_m2'])}")
     add("")
     add("RENDITE & CASHFLOW")
-    add(f"  Kaltmiete/Jahr (effektiv)    {eur(r['miete_effektiv'])}   (Leerstand {d['miete']['leerstand_wochen_pro_jahr']} Wo.)")
+    add(f"  Kaltmiete/Jahr (effektiv)    {eur(r['miete_effektiv'])}   (Leerstand {r.get('leerstand_text', 'unbekannt')})")
     add(f"  − Hausgeld nicht umlagefähig {eur(r['hausgeld_nicht_uml_jahr'])}")
     add(f"  − Verwaltung                 {eur(r['verwaltung_jahr'])}")
     add(f"  − Instandhaltung             {eur(r['instandhaltung_jahr'])}")

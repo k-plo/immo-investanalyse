@@ -28,7 +28,7 @@
   "miete": {
     "kaltmiete_monatlich_eur": 750,
     "nebenkosten_monatlich_eur": null,
-    "leerstand_wochen_pro_jahr": 2,
+    "leerstand_prozent": 2.0,
     "marktuebliche_miete_eur": 525.06,
     "mietrueckstaende_eur": null,
     "mietbeginn": "01.03.2026"

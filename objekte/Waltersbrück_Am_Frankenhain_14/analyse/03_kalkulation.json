@@ -1,7 +1,7 @@
 {
   "objekt":{"name":"Neuental-Waltersbrück – Am Frankenhain 14","adresse":"Am Frankenhain 14, 34599 Neuental-Waltersbrück","objektart":"Einfamilienhaus","baujahr":1940,"wohnflaeche_m2":136,"nutzflaeche_m2":98,"grundstuecksflaeche_m2":1520,"anzahl_einheiten":1,"zimmer":5,"stellplaetze":3,"energieklasse":"H","heizung":"Ölzentralheizung"},
   "kauf":{"angebotspreis_eur":119000,"grunderwerbsteuer_prozent":6.0,"notar_prozent":2.0,"grundbuch_prozent":0,"makler_prozent":2.975,"renovierung_eur":null,"sanierung_eur":null,"sonstige_erwerbskosten_eur":0},
-  "miete":{"kaltmiete_monatlich_eur":1096,"nebenkosten_monatlich_eur":null,"leerstand_wochen_pro_jahr":2,"marktuebliche_miete_eur":1096},
+  "miete":{"kaltmiete_monatlich_eur":1096,"nebenkosten_monatlich_eur":null,"leerstand_prozent":2.0,"marktuebliche_miete_eur":1096},
   "laufende_kosten":{"hausgeld_monatlich_eur":35,"verwaltung_prozent_von_miete":0,"instandhaltung_eur_pro_m2_monat":1.0,"nicht_umlagefaehige_kosten_monatlich_eur":35},
   "finanzierung":{"eigenkapital_eur":20000,"zinssatz_prozent":4.2,"tilgung_prozent":1.0,"zinsbindung_jahre":10},
   "weg":{"instandhaltungsruecklage_eur":null,"geplante_sonderumlagen_eur":0},

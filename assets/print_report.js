@@ -33,7 +33,7 @@
     const missing = ['renovierung','sanierung','kaltmiete','hausgeld','nebenkostenVorauszahlung','hausgeldNichtUml'].filter(isEmpty);
     const rentMissing = isEmpty('kaltmiete');
     const canCalculate = Boolean(result.berechenbar);
-    const income = data.kaltmiete * 12 * (1 - data.leerstand / 52);
+    const income = data.kaltmiete * 12 * (1 - data.leerstand / 100);
     const hausgeldNichtUml = data.hausgeldNichtUmlEingegeben ? data.hausgeldNichtUml : Math.max(0, data.hausgeld - data.nebenkostenVorauszahlung);
     const operating = hausgeldNichtUml * 12 + data.flaeche * data.instand * 12;
     let balance = canCalculate ? result.darlehen : 0;
@@ -59,7 +59,7 @@
     ].join('') : row('Gesamtinvestition','Noch nicht berechenbar');
     const operations = [
       row('Kaltmiete / Monat',money(data.kaltmiete)),
-      row('Leerstand / Jahr',`${data.leerstand.toLocaleString('de-DE')} Wochen`),
+      row('Leerstand',`${data.leerstand.toLocaleString('de-DE')} % der Kaltmiete`),
       row('Nicht umlagefähige Kosten / Monat',money(hausgeldNichtUml)),
       row('Voraussichtliche Erstattung/Nachzahlung Mieter',money(data.nebenkostenVorauszahlung - (data.hausgeldNichtUmlEingegeben ? Math.max(0, data.hausgeld - data.hausgeldNichtUml) : data.hausgeld))),
       row('Instandhaltung / Jahr',money(data.flaeche*data.instand*12)),

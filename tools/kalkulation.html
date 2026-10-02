@@ -95,7 +95,7 @@
         <div class="field"><label>davon nicht umlagefähig (€)</label><input id="hausgeldNichtUml" type="number" placeholder="60"><span class="hint">z. B. Verwaltung, Rücklage</span></div>
         <div class="field"><label>Verwaltung (% der KM)</label><input id="verwaltung" type="number" step="0.1" placeholder="0"><span class="hint">Nur eintragen, wenn Verwaltung zusätzlich anfällt; 0 wird als 0 gerechnet</span></div>
         <div class="field"><label>Instandhaltung (€/m²/Monat)</label><input id="instand" type="number" step="0.1" placeholder="nach Bewertung"><span class="hint">Wohnfläche × objektbezogener Monatsansatz; Richtwerte siehe Objektübersicht</span></div>
-        <div class="field"><label>Leerstand (Wochen/Jahr)</label><input id="leerstand" type="number" step="0.5" placeholder="2"><span class="hint">Startwert 2; objektbezogene Angaben gehen vor</span></div>
+        <div class="field"><label>Leerstand (% der Kaltmiete)</label><input id="leerstand" type="number" step="0.1" placeholder="2"><span class="hint">Startwert 2 %; objektbezogene Angaben gehen vor</span></div>
         <div class="field"><label>Mietrückstände (€)</label><input id="rueckstaende" type="number" placeholder="0"></div>
       </div>
     </div>
@@ -195,7 +195,7 @@ function readInputs() {
     hausgeld: F("hausgeld"), nebenkostenVorauszahlung: F("nebenkostenVorauszahlung"), hausgeldNichtUml: F("hausgeldNichtUml"),
     hausgeldNichtUmlEingegeben: String(document.getElementById("hausgeldNichtUml").value).trim() !== "",
     verwaltung: F("verwaltung"), instand: F("instand"),
-    leerstandWochen: F("leerstand"), rueckstaende: F("rueckstaende"),
+    leerstandProzent: F("leerstand"), rueckstaende: F("rueckstaende"),
     ek: F("ek"), zins: F("zins"), tilgung: F("tilgung"), bindung: F("bindung"), finNk: F("finNk"),
     ruecklage: F("ruecklage"), sonderumlage: F("sonderumlage"),
     zielBrutto: F("zielBrutto") || 4, zielCashflow: F("zielCashflow")
@@ -221,7 +221,7 @@ function calc(d) {
 
   // --- Miete & Kosten ---
   const jahresKalt = d.kaltmiete * 12;
-  const leerstandFaktor = 1 - (d.leerstandWochen / 52);
+  const leerstandFaktor = 1 - (d.leerstandProzent / 100);
   r.mieteEffektiv = jahresKalt * leerstandFaktor;
   const hausgeldNichtUml = d.hausgeldNichtUmlEingegeben
     ? d.hausgeldNichtUml
@@ -278,7 +278,7 @@ function calc(d) {
 
   // --- Break-Even Miete (Cashflow nach Finanzierung = 0) ---
   const fixKosten = r.hausgeldNichtUmlJahr + r.verwaltungJahr + r.instandJahr;
-  const lfBE = 1 - d.leerstandWochen / 52;
+  const lfBE = 1 - d.leerstandProzent / 100;
   r.breakEvenMiete = lfBE > 0 ? (r.rateMonat * 12 + fixKosten) / lfBE / 12 : 0;
 
   // --- Stress-Tests (jeweils einzeln) ---
@@ -293,7 +293,7 @@ function calc(d) {
   }
   // 2: Leerstand +2 Monate (8,7 Wochen)
   {
-    const lf = 1 - (d.leerstandWochen + 8.7) / 52;
+    const lf = 1 - (d.leerstandProzent + 2) / 100;
     const netto = jahresKalt * lf - r.hausgeldNichtUmlJahr - r.verwaltungJahr - r.instandJahr;
     mk("Leerstand +2 Monate", netto / 12 - r.rateMonat, {});
   }
@@ -480,7 +480,7 @@ function collectState() {
     },
     miete: {
       kaltmiete_monatlich_eur: d.kaltmiete, marktuebliche_miete_eur: d.marktmiete,
-      leerstand_wochen_pro_jahr: d.leerstandWochen, mietrueckstaende_eur: d.rueckstaende
+      leerstand_prozent: d.leerstandProzent, mietrueckstaende_eur: d.rueckstaende
     },
     laufende_kosten: {
       hausgeld_monatlich_eur: d.hausgeld,
@@ -506,7 +506,7 @@ function applyState(s) {
       sanierung: s.kauf?.sanierung_eur, sonstige: s.kauf?.sonstige_erwerbskosten_eur,
       grESt: s.kauf?.grunderwerbsteuer_prozent, notar: s.kauf?.notar_prozent, makler: s.kauf?.makler_prozent,
       kaltmiete: s.miete?.kaltmiete_monatlich_eur, marktmiete: s.miete?.marktuebliche_miete_eur,
-      leerstand: s.miete?.leerstand_wochen_pro_jahr, rueckstaende: s.miete?.mietrueckstaende_eur,
+      leerstand: s.miete?.leerstand_prozent ?? (s.miete?.leerstand_wochen_pro_jahr == null ? null : s.miete.leerstand_wochen_pro_jahr * 100 / 52), rueckstaende: s.miete?.mietrueckstaende_eur,
       hausgeld: s.laufende_kosten?.hausgeld_monatlich_eur,
       nebenkostenVorauszahlung: s.laufende_kosten?.nebenkostenvorauszahlung_monatlich_eur,
       hausgeldNichtUml: s.laufende_kosten?.nicht_umlagefaehige_kosten_monatlich_eur,
