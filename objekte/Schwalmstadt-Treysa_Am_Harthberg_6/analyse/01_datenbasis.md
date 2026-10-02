@@ -41,7 +41,7 @@
 | Eigenkapital | 20.000 EUR | NUTZER-VORGABE | Projektstandard |
 | Tilgung | 1,0 % | NUTZER-VORGABE | Projektstandard |
 | Leerstand | 2 % der Kaltmiete | NUTZER-VORGABE | Projektstandard |
-| Instandhaltung | 10 % der Kaltmiete | NUTZER-VORGABE | Projektstandard; technische Eingabe im bestehenden Tool prüfen |
+| Instandhaltung | 1,00 EUR/m²/Monat | NUTZER-VORGABE | Vorgabe des Nutzers |
 | Zinssatz | 4,20 % als Marktindikator, 10 Jahre | BELEGT (extern) | Interhyp-Zinstabelle, Konditionen 14.–20.09.2026, abgerufen 27.09.2026 |
 | Zinsbindung | 10 Jahre als Szenario | BELEGT (extern) | Interhyp-Zinstabelle |
 

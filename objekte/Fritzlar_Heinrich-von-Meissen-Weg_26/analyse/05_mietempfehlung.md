@@ -20,7 +20,7 @@ Immowelt weist fuer Wohnungen in Fritzlar im Oktober 2026 durchschnittlich 7,83 
 
 ### c) Tragfaehigkeit
 
-Mit 446 EUR Kaltmiete, 2 % Leerstand, 70 EUR nicht umlagefaehigem Hausgeld, 10 % Instandhaltung, 20.000 EUR EK, 4,2 % Zins und 1,0 % Tilgung ergibt sich ein negativer Cashflow von grob 233 EUR monatlich. Eine hoehere Miete verbessert den Cashflow, beseitigt das Finanzierungsproblem bei 132.500 EUR Kaufpreis aber voraussichtlich nicht.
+Mit 446 EUR Kaltmiete, 2 % Leerstand, 70 EUR nicht umlagefaehigem Hausgeld, 1,00 EUR/m2/Monat Instandhaltung, 20.000 EUR EK, 4,2 % Zins und 1,0 % Tilgung ergibt sich ein negativer Cashflow von grob 245 EUR monatlich. Eine hoehere Miete verbessert den Cashflow, beseitigt das Finanzierungsproblem bei 132.500 EUR Kaufpreis aber voraussichtlich nicht.
 
 ## 3. Szenarien
 

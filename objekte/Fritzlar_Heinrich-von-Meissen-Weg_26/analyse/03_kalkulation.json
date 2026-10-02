@@ -39,9 +39,9 @@
   "laufende_kosten": {
     "hausgeld_monatlich_eur": 233,
     "verwaltung_prozent_von_miete": 0,
-    "instandhaltung_eur_pro_m2_monat": 0.7833,
+    "instandhaltung_eur_pro_m2_monat": 1.0,
     "nicht_umlagefaehige_kosten_monatlich_eur": 70,
-    "status": "Hausgeld belegt; Aufteilung unbekannt. 70 EUR nicht umlagefaehig und 10 Prozent der Kaltmiete fuer Instandhaltung sind vorlaeufige Annahmen."
+    "status": "Hausgeld belegt; Aufteilung unbekannt. Instandhaltung gemaess Nutzer-Vorgabe mit 1 EUR/m2/Monat angesetzt."
   },
   "finanzierung": {
     "eigenkapital_eur": 20000,
@@ -67,10 +67,10 @@
     "Kaltmiete 446 EUR/Monat = 7,83 EUR/m2 x 57 m2; Marktindikator, keine Mietzusage.",
     "Leerstand 2 Prozent gemaess Nutzer-Vorgabe.",
     "Nicht umlagefaehiger Hausgeldanteil 70 EUR/Monat ist nicht belegt.",
-    "Instandhaltung 10 Prozent der Kaltmiete ist Nutzer-Vorgabe.",
+    "Instandhaltung 1 EUR/m2/Monat ist Nutzer-Vorgabe.",
     "Renovierungsreserve 5.000 EUR ist eine vorlaeufige Annahme.",
     "Zins 4,20 Prozent und Tilgung 1,0 Prozent; individuelles Bankangebot fehlt.",
-    "Indikative Rechnung: Gesamtinvest ca. 148.100 EUR, Darlehen ca. 128.100 EUR, Rate ca. 555 EUR, Cashflow ca. -233 EUR/Monat vor Steuer."
+    "Indikative Rechnung: Gesamtinvest ca. 148.100 EUR, Darlehen ca. 128.100 EUR, Rate ca. 555 EUR, Cashflow ca. -245 EUR/Monat vor Steuer."
   ],
   "quellen": [
     {"information": "Inserat", "wert": "132.500 EUR; 57 m2; 2 Zimmer; Baujahr 1957; Hausgeld 233 EUR; Stellplatz; leerstehend", "quelle": "Kleinanzeigen ID 3509214073, abgerufen 02.10.2026", "status": "BELEGT"},

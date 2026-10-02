@@ -4,7 +4,7 @@
 
 ## Kurzfazit
 
-**Investment-Status: ⚪ ZU WENIG DATEN**, mit klarer Tendenz zu **🟠 VERHANDELN**. Der aufgerufene Preis von 132.500 EUR entspricht 2.325 EUR/m2 und liegt damit unter dem Immowelt-Kaufpreisindikator fuer Fritzlar (2.783 EUR/m2 fuer Wohnungen, Oktober 2026). Das hilft dem Wertbild, kompensiert aber die schwache Mietrendite nicht: Bei ca. 446 EUR Kaltmiete, 20.000 EUR Eigenkapital und 4,2 % Zins bleibt der indikative Cashflow etwa **233 EUR/Monat negativ**.
+**Investment-Status: ⚪ ZU WENIG DATEN**, mit klarer Tendenz zu **🟠 VERHANDELN**. Der aufgerufene Preis von 132.500 EUR entspricht 2.325 EUR/m2 und liegt damit unter dem Immowelt-Kaufpreisindikator fuer Fritzlar (2.783 EUR/m2 fuer Wohnungen, Oktober 2026). Das hilft dem Wertbild, kompensiert aber die schwache Mietrendite nicht: Bei ca. 446 EUR Kaltmiete, 20.000 EUR Eigenkapital und 4,2 % Zins bleibt der indikative Cashflow etwa **245 EUR/Monat negativ**.
 
 ## Wirtschaftlichkeit (indikativ)
 
@@ -16,7 +16,7 @@
 | Bruttorendite auf Kaufpreis | ca. 4,04 % | ABGELEITET |
 | Darlehen bei 20.000 EUR EK | ca. 128.100 EUR | ABGELEITET |
 | Rate bei 4,2 % + 1,0 % | ca. 555 EUR/Monat | ABGELEITET |
-| Cashflow vor Steuer | ca. -233 EUR/Monat | ABGELEITET, 70 EUR nicht umlagefaehiges Hausgeld angenommen |
+| Cashflow vor Steuer | ca. -245 EUR/Monat | ABGELEITET, 70 EUR nicht umlagefaehiges Hausgeld angenommen |
 | Rechnerischer CF-Nullpreis | ca. 83.000 EUR | ABGELEITET, kein Verkehrswert |
 
 Der CF-Nullpreis ist kein Gutachten und keine Kaufpreisempfehlung. Er zeigt nur, dass die Finanzierung mit den Nutzer-Vorgaben und der statistischen Marktmiete nicht selbsttragend ist. Bei 500 EUR Kaltmiete verbessert sich der Cashflow grob um 50 EUR/Monat, bleibt aber voraussichtlich negativ.

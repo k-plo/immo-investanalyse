@@ -41,6 +41,7 @@
 | Mietspanne fuer die Vorpruefung | ca. 400-500 EUR kalt/Monat | ANNAHME | Marktindikator plus Zustand/Stellplatz; Inseratvergleich fehlt |
 | Leerstand | 2 % = ca. 1,04 Wochen/Jahr | ANNAHME | Nutzer-Vorgabe |
 | Mietvertrag/Mietrueckstaende | nicht vorhanden | UNBEKANNT | Wohnung leer |
+| Instandhaltung | 1,00 EUR/m2/Monat | NUTZER-VORGABE | Vorgabe des Nutzers |
 
 ## 4. Finanzierung
 
