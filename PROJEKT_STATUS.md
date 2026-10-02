@@ -30,7 +30,7 @@ Die folgenden Einträge dokumentieren frühere Stände und sind nicht als aktuel
 | **Homberg – Magdeburger Straße 5** | `objekte/Homberg_Magdeburger_Strasse_5/` | ⚪ Erstprüfung, Übersicht aktiv | **?** | KP 148.000 € · 72 m² · Miete ca. 542 €/M · Mietstatus widersprüchlich, WEG und Finanzierung offen |
 | **Neuental-Waltersbrück – Am Frankenhain 14** | `objekte/Waltersbrück_Am_Frankenhain_14/` | 🟡 Nur mit Klärung, Übersicht aktiv | **?** | KP 119.000 € · 136 m² · Energieklasse H · Marktmiete ca. 1.096 €/M nur abgeleitet · Sanierung, Grundbuch und Gartengrundstück offen |
 | _VORLAGE | `objekte/_VORLAGE/` | Vorlage für neue Objekte | – | Übersicht + Analyse-MDs generisch |
-| **Fritzlar – Heinrich-von-Meißen-Weg 26** | `objekte/Fritzlar_Heinrich-von-Meissen-Weg_26/` | ⚪ Voranalyse, DB-Import offen | **?** | KP 132.500 € · 57 m² · 2 Zi. · Hausgeld 233 € · indikativ ca. −233 €/M Cashflow bei 20.000 € EK |
+| **Fritzlar – Heinrich-von-Meißen-Weg 26** | `objekte/Fritzlar_Heinrich-von-Meissen-Weg_26/` | ⚪ Voranalyse, DB integriert | **D** | KP 132.500 € · 57 m² · 2 Zi. · Hausgeld 233 € · indikativ ca. −233 €/M Cashflow bei 20.000 € EK |
 
 ---
 
@@ -128,7 +128,7 @@ Die folgenden Einträge dokumentieren frühere Stände und sind nicht als aktuel
 
 ## ⏭️ Offene Punkte / Nächste Schritte
 
-- [ ] **Fritzlar – Heinrich-von-Meißen-Weg 26:** Übersicht/DB-Datensatz über den vorgesehenen Anzeigenimport anlegen · 🔴 Grundbuch/Teilungserklärung/WEG-Unterlagen anfordern · 🔴 Energieausweis und Heizung 1995 prüfen · 🟠 Hausgeldaufteilung und Rücklage 100.000 € belegen · 🟠 Mietvergleich und Besichtigung durchführen
+- [ ] **Fritzlar – Heinrich-von-Meißen-Weg 26:** 🔴 Grundbuch/Teilungserklärung/WEG-Unterlagen anfordern · 🔴 Energieausweis und Heizung 1995 prüfen · 🟠 Hausgeldaufteilung und Rücklage 100.000 € belegen · 🟠 Mietvergleich und Besichtigung durchführen
 
 - [ ] **Gombeth:** 🔴 gültigen Kaufpreis bestätigen (109.000 € vs. 134.000 €) · 🔴 zwei Versicherungsfälle und Kostenfolgen klären · 🔴 Mietvertrag/Mietkonto prüfen · 🔴 WEG-Unterlagen, Hausgeld und Rücklage anfordern · 🟠 Grundbuch/Teilungserklärung prüfen · 🟡 Besichtigung nach ca. 10.10.2026
 - [ ] **Kerstenhausen:** 🔴 Grundbuchauszug anfordern · 🔴 Miet-/Nutzungssituation + Einliegerwohnung klären · 🟠 Besichtigung (Renovierungsumfang, Öl-Tank) · 🟠 Baujahr/Wohnfläche-Widersprüche klären · 🟡 Bankgespräch mit frischen Zinsen (Live-Recherche 18.09. deutet auf > 4,5 %)

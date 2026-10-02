@@ -59,9 +59,8 @@ def main():
 </style>
 <style>{dashboard_css}</style>
 <style>
-  .appearance-controls.has-brand {{ position: absolute; top: 78px; right: max(14px, calc((100vw - 1240px) / 2)); flex-direction: row-reverse; align-items: center; gap: 12px; margin: 0; }}
-  .appearance-controls.has-brand .portfolio-brand {{ width: 220px; height: 100px; }}
-  @media (max-width: 760px) {{ .appearance-controls.has-brand {{ top: 54px; right: 14px; }} .appearance-controls.has-brand .portfolio-brand {{ width: 150px; height: 82px; }} }}
+  .appearance-controls.has-brand {{ position: fixed; top: 0; right: 0; width: auto; flex-direction: column; align-items: flex-end; gap: 3px; margin: 0; }}
+  .appearance-controls.has-brand .portfolio-brand {{ width: 164px; height: auto; }}
 </style>
 <script data-dashboard-theme>{theme_js}</script>
 </head>
