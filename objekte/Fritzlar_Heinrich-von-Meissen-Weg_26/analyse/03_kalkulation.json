@@ -1,0 +1,87 @@
+{
+  "objekt": {
+    "name": "Fritzlar - Heinrich-von-Meissen-Weg 26",
+    "adresse": "Heinrich-von-Meissen-Weg 26, 34560 Fritzlar",
+    "objektart": "Etagenwohnung",
+    "baujahr": 1957,
+    "wohnflaeche_m2": 57,
+    "anzahl_einheiten": 1,
+    "zimmer": 2,
+    "etage": 2,
+    "stellplaetze": 1,
+    "energieklasse": null,
+    "heizung": "Oelheizung, Viessmann Baujahr 1995"
+  },
+  "kauf": {
+    "angebotspreis_eur": 132500,
+    "grunderwerbsteuer_prozent": 6.0,
+    "notar_prozent": 2.0,
+    "grundbuch_prozent": 0.0,
+    "makler_prozent": 0.0,
+    "renovierung_eur": 5000,
+    "sanierung_eur": null,
+    "sonstige_erwerbskosten_eur": 0,
+    "renovierung_sanierung_status": "ANNAHME: 5.000 EUR Reserve trotz Renovierung 2016; Gemeinschaftssanierung und Einzelzustand offen"
+  },
+  "miete": {
+    "kaltmiete_monatlich_eur": 446,
+    "nebenkosten_monatlich_eur": null,
+    "leerstand_wochen_pro_jahr": 1.04,
+    "marktuebliche_miete_eur": 446,
+    "mietempfehlung": {
+      "empfohlene_kaltmiete_eur": 446,
+      "spanne_eur": [400, 500],
+      "eur_pro_m2": 7.83,
+      "status": "ABGELEITET / ORIENTIERUNG",
+      "begruendung": "Immowelt Mietpreise Fritzlar: 7,83 EUR/m2 fuer Wohnungen, aktualisiert 01.10.2026; Stellplatz und Zustand muessen lokal verifiziert werden"
+    }
+  },
+  "laufende_kosten": {
+    "hausgeld_monatlich_eur": 233,
+    "verwaltung_prozent_von_miete": 0,
+    "instandhaltung_eur_pro_m2_monat": 0.7833,
+    "nicht_umlagefaehige_kosten_monatlich_eur": 70,
+    "status": "Hausgeld belegt; Aufteilung unbekannt. 70 EUR nicht umlagefaehig und 10 Prozent der Kaltmiete fuer Instandhaltung sind vorlaeufige Annahmen."
+  },
+  "finanzierung": {
+    "eigenkapital_eur": 20000,
+    "zinssatz_prozent": 4.2,
+    "tilgung_prozent": 1.0,
+    "zinsbindung_jahre": 10,
+    "zinsrecherche": {
+      "quelle": "Interhyp Bauzinsen",
+      "spanne_prozent": [4.15, 4.52],
+      "abgerufen": "2026-10-02",
+      "konditionszeitraum": "2026-09-21 bis 2026-09-27",
+      "status": "BELEGT (Marktindikator, kein individuelles Angebot)"
+    }
+  },
+  "weg": {
+    "zutreffend": true,
+    "einheiten": 18,
+    "hausverwaltung": "SVI Homberg",
+    "instandhaltungsruecklage_eur": 100000,
+    "geplante_sonderumlagen_eur": null
+  },
+  "annahmen": [
+    "Kaltmiete 446 EUR/Monat = 7,83 EUR/m2 x 57 m2; Marktindikator, keine Mietzusage.",
+    "Leerstand 2 Prozent gemaess Nutzer-Vorgabe.",
+    "Nicht umlagefaehiger Hausgeldanteil 70 EUR/Monat ist nicht belegt.",
+    "Instandhaltung 10 Prozent der Kaltmiete ist Nutzer-Vorgabe.",
+    "Renovierungsreserve 5.000 EUR ist eine vorlaeufige Annahme.",
+    "Zins 4,20 Prozent und Tilgung 1,0 Prozent; individuelles Bankangebot fehlt.",
+    "Indikative Rechnung: Gesamtinvest ca. 148.100 EUR, Darlehen ca. 128.100 EUR, Rate ca. 555 EUR, Cashflow ca. -233 EUR/Monat vor Steuer."
+  ],
+  "quellen": [
+    {"information": "Inserat", "wert": "132.500 EUR; 57 m2; 2 Zimmer; Baujahr 1957; Hausgeld 233 EUR; Stellplatz; leerstehend", "quelle": "Kleinanzeigen ID 3509214073, abgerufen 02.10.2026", "status": "BELEGT"},
+    {"information": "WEG/Heizung", "wert": "18 Einheiten; Ruecklage 100.000 EUR; Oelheizung Viessmann 1995", "quelle": "Beschreibung im Kleinanzeigen-Inserat", "status": "BELEGT / Unterlagenpruefung offen"},
+    {"information": "Mietniveau Fritzlar", "wert": "7,83 EUR/m2 fuer Wohnungen; 446 EUR/Monat abgeleitet", "quelle": "Immowelt Mietpreise Fritzlar, aktualisiert 01.10.2026, abgerufen 02.10.2026", "status": "BELEGT / ABGELEITET"},
+    {"information": "Bauzinsen", "wert": "Effektiver Jahreszins 4,15-4,52 Prozent fuer 10 Jahre", "quelle": "Interhyp, Konditionsangebote 21.-27.09.2026, abgerufen 02.10.2026", "status": "BELEGT (Marktindikator)"}
+  ],
+  "widersprueche": [
+    "Inserat zeigt 132.500 EUR und 132.750 EUR.",
+    "Frisch renoviert versus Sanierung 2016: Umfang und Qualitaet offen.",
+    "100.000 EUR WEG-Ruecklage nicht durch Unterlagen belegt.",
+    "Hausgeldaufteilung und individueller Ruecklagenanteil fehlen."
+  ]
+}
