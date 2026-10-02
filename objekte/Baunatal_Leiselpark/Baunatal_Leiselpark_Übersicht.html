@@ -1044,7 +1044,7 @@ function calc(d) {
       [`Bruttorendite ${pct(r.bruttoR)} ≥ Ziel 5,00 %`, r.bruttoR >= 5],
       [`Cashflow ${eur(r.cf)}/Monat ≥ 0 €`, r.cf >= 0],
       [`Kaufpreisfaktor ${fmt(r.kaufpreisfaktor, 2)} ≤ 20`, r.kaufpreisfaktor <= 20],
-      [`Angebot ${eur(d.preis)} ≤ Maximalpreis ${eur(r.maxPreis)} (Spielraum ${eur(r.spielraum)})`, d.preis <= r.maxPreis],
+      [`Angebot ${eur(d.preis)} ≤ Maximalpreis ${eur(r.maxPreis)} + 10 % Puffer (${eur(r.maxPreis * 1.1)})`, d.preis <= r.maxPreis * 1.1],
     ];
     const erfuellt = kriterien.filter(k => k[1]).length;
     if (erfuellt === 4) { status = "🟢 WEITER PRÜFEN"; klasse = "b-green"; }
