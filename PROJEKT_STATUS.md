@@ -5,9 +5,9 @@
 
 ---
 
-## 🕐 Aktueller Stand (30.09.2026)
+## 🕐 Aktueller Stand (02.10.2026)
 
-Die bisherigen Objekt-State-JSON-Dateien einschließlich der neuen Analyse **Schwalmstadt-Treysa Amselweg** wurden einmalig in `immo_datenbank.db` importiert. SQLite ist jetzt die einzige Laufzeitquelle für Portfolio und Objektübersichten; Live-Änderungen speichern mit Revisionsprüfung direkt in der DB. Alle bestehenden Objekte haben eine persistente UUID. Der Anzeigenlink-Import legt gleichnamige Orte getrennt an, importiert nur öffentlich auslesbare Fakten und markiert neue Objekte als Voranalyse. Objektfotos können importiert oder im Objekt ergänzt werden und erscheinen in der Übersicht und als verschwommener Portfolio-Hintergrund. Die Datenbankdatei ist Git-versioniert; parallele Änderungen auf mehreren Rechnern müssen vermieden werden. Technischer Ablauf und Einschränkungen: `README.md`.
+Neues Objekt **Baunatal – Leiselpark** (Dachgeschosswohnung, 86 m², KP 190.000 €) aus einer Kleinanzeigen-Anzeige als Voranalyse angelegt: Analyse-Dateien 01–05, Übersicht aus der aktuellen Vorlage, SQLite-Datensatz und Portfolio-Karte. Die Objektdaten-Zeile unter dem Link wird jetzt für alle aktiven Übersichten automatisch aus den DB-Metadaten gefüllt. Alle aktiven Übersichten zeigen in Abschnitt 2 zusätzlich die Zeilen Steuerwirkung und Cashflow nach Steuern (feste Modellannahmen im Tooltip: 29,93 % Grenzsteuersatz, 2 % AfA auf 80 % Gebäudeanteil).
 
 Die folgenden Einträge dokumentieren frühere Stände und sind nicht als aktuelle Datenquelle zu verwenden.
 
@@ -31,6 +31,7 @@ Die folgenden Einträge dokumentieren frühere Stände und sind nicht als aktuel
 | **Neuental-Waltersbrück – Am Frankenhain 14** | `objekte/Waltersbrück_Am_Frankenhain_14/` | 🟡 Nur mit Klärung, Übersicht aktiv | **?** | KP 119.000 € · 136 m² · Energieklasse H · Marktmiete ca. 1.096 €/M nur abgeleitet · Sanierung, Grundbuch und Gartengrundstück offen |
 | _VORLAGE | `objekte/_VORLAGE/` | Vorlage für neue Objekte | – | Übersicht + Analyse-MDs generisch |
 | **Fritzlar – Heinrich-von-Meißen-Weg 26** | `objekte/Fritzlar_Heinrich-von-Meissen-Weg_26/` | ⚪ Voranalyse, DB integriert | **D** | KP 132.500 € · 57 m² · 2 Zi. · Hausgeld 233 € · indikativ ca. −233 €/M Cashflow bei 20.000 € EK |
+| **Baunatal – Leiselpark** | `objekte/Baunatal_Leiselpark/` | ⚪ Voranalyse, DB integriert | **F** | KP 190.000 € · 86 m² · 3 Zi. · DG 7. Etage · Hausgeld 378 € · Energieklasse C · CF −384 €/M bei 20.000 € EK · Maximalpreis 118.376 € · 🔴 Grundbuch/WEG/Adresse offen |
 
 ---
 

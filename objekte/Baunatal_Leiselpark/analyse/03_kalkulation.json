@@ -1,0 +1,83 @@
+{
+  "objekt": {
+    "name": "Baunatal - Leiselpark",
+    "adresse": "34225 Baunatal (nahe Leiselpark, genaue Strasse nicht veroeffentlicht)",
+    "objektart": "Dachgeschosswohnung (Hochhaus mit Aufzug)",
+    "baujahr": 1970,
+    "wohnflaeche_m2": 86,
+    "anzahl_einheiten": null,
+    "zimmer": 3,
+    "etage": 7,
+    "stellplaetze": 1,
+    "energieklasse": "C",
+    "energieverbrauch_kwh_m2a": 90.3,
+    "heizung": "Nahwaerme",
+    "energieausweis": "Energieverbrauchsausweis, gueltig bis 2028-04-30"
+  },
+  "kauf": {
+    "angebotspreis_eur": 190000,
+    "grunderwerbsteuer_prozent": 6.0,
+    "notar_prozent": 2.0,
+    "grundbuch_prozent": 0.0,
+    "makler_prozent": 3.0,
+    "renovierung_eur": 0,
+    "sanierung_eur": null,
+    "sonstige_erwerbskosten_eur": 0,
+    "renovierung_sanierung_status": "Keine Renovierung kalkuliert; Objekt laut Inserat modernisiert (2008). Gemeinschaftssanierung und Einzelzustand offen."
+  },
+  "miete": {
+    "kaltmiete_monatlich_eur": 729,
+    "nebenkosten_monatlich_eur": null,
+    "leerstand_prozent": 2.0,
+    "marktuebliche_miete_eur": 729,
+    "mietempfehlung": {
+      "empfohlene_kaltmiete_eur": 729,
+      "spanne_eur": [650, 800],
+      "eur_pro_m2": 8.48,
+      "status": "ABGELEITET / ORIENTIERUNG",
+      "begruendung": "Immowelt Mietpreise Baunatal: 8,48 EUR/m2 fuer Wohnungen, aktualisiert 01.10.2026; 8,48 x 86 m2 = 729 EUR/Monat. Wohnung wird leer uebergeben."
+    }
+  },
+  "laufende_kosten": {
+    "hausgeld_monatlich_eur": 378,
+    "verwaltung_prozent_von_miete": 0,
+    "instandhaltung_eur_pro_m2_monat": 1.0,
+    "nicht_umlagefaehige_kosten_monatlich_eur": 90,
+    "status": "Hausgeld 378 EUR belegt; Aufteilung (umlagefaehig/nicht umlagefaehig/Ruecke) unbekannt, 90 EUR nicht umlagefaehig geschaetzt. Instandhaltung gemaess Nutzer-Vorgabe mit 1 EUR/m2/Monat angesetzt."
+  },
+  "finanzierung": {
+    "eigenkapital_eur": 20000,
+    "zinssatz_prozent": 4.8,
+    "tilgung_prozent": 1.0,
+    "zinsbindung_jahre": 10,
+    "zinsrecherche": {
+      "quelle": "Nutzer-Vorgabe",
+      "status": "VORGABE: 4,80 % (keine Recherche, Nutzer-Entscheidung 02.10.2026)"
+    }
+  },
+  "weg": {
+    "zutreffend": true,
+    "einheiten": null,
+    "hausverwaltung": null,
+    "instandhaltungsruecklage_eur": null,
+    "geplante_sonderumlagen_eur": null
+  },
+  "annahmen": [
+    "Kaltmiete 729 EUR/Monat = 8,48 EUR/m2 x 86 m2; Marktindikator, keine Mietzusage; Wohnung wird leer uebergeben.",
+    "Leerstand 2 Prozent gemaess Nutzer-Vorgabe.",
+    "Nicht umlagefaehiger Hausgeldanteil 90 EUR/Monat ist eine Schaetzung; Hausgeldaufteilung unbekannt.",
+    "Instandhaltung 1 EUR/m2/Monat ist Nutzer-Vorgabe.",
+    "Keine Renovierungs-/Sanierungskosten kalkuliert; Besichtigung und Unterlagen offen.",
+    "Zins 4,80 Prozent und Tilgung 1,0 Prozent; Zins ist Nutzer-Vorgabe, kein Bankangebot.",
+    "Kaeuferprovision 3,00 Prozent inkl. MwSt. laut Inserat."
+  ],
+  "quellen": [
+    {"information": "Inserat", "wert": "190.000 EUR; 86 m2; 3 Zimmer; Dachgeschoss 7. Etage; Baujahr 1970; Hausgeld 378 EUR; Energieklasse C (90,3 kWh/m2a, Nahwaerme); Aufzug, Keller, Stellplatz; frei ab 01.05.2026", "quelle": "Kleinanzeigen-ID 3496848954, Anbieter Hoedtke & Morold GmbH, abgerufen 02.10.2026", "status": "BELEGT"},
+    {"information": "Mietniveau Baunatal", "wert": "8,48 EUR/m2 fuer Wohnungen; 729 EUR/Monat abgeleitet", "quelle": "Immowelt Mietpreise Baunatal, aktualisiert 01.10.2026, abgerufen 02.10.2026", "status": "BELEGT / ABGELEITET"},
+    {"information": "Zinssatz", "wert": "4,80 Prozent nominal fuer 10 Jahre", "quelle": "Nutzer-Vorgabe vom 02.10.2026", "status": "VORGABE"}
+  ],
+  "widersprueche": [
+    "Verfuegbar ab 01.05.2026, aber Inserat vom 27.09.2026 - Verfuegbarkeitsdatum und Aktualitaet pruefen.",
+    "Hausgeld 378 EUR ist hoch; Aufteilung nicht belegt."
+  ]
+}
