@@ -688,8 +688,7 @@ li{margin-bottom:8px}
       </section>
     </div>
     <div class="box yellow" id="preliminaryNotice" hidden>Voranalyse aus einer Online-Anzeige: Angaben sind ungeprüft. Mietdaten, Unterlagen, Zustand und Rechtslage fehlen noch; daraus abgeleitete Kennzahlen sind keine belastbare Investmententscheidung.</div>
-    <div class="sub">Etagenwohnung &middot; Fritzlar &middot; 57 m&sup2; &middot; Baujahr 1957 &middot; Energieklasse unbekannt</div>
-
+    <div class="sub" id="objectMetaRow">Etagenwohnung &middot; Fritzlar &middot; 57 m&sup2; &middot; Baujahr 1957 &middot; Energieklasse unbekannt</div>
     <div class="toolbar">
       <button class="btn" onclick="zumPortfolio()">🏠 Zum Portfolio</button>
       <button class="btn secondary" onclick="exportJson()">💾 State speichern (Download)</button>
@@ -859,6 +858,7 @@ const DEFAULTS = {
 };
 const IDS = Object.keys(DEFAULTS);
 let lastLoadedState = {};
+let objektMeta = {};
 const INPUT_GROUPS = [
   { title: "Kauf und Erwerbskosten", fields: ["preis", "flaeche", "renovierung", "sanierung", "grESt", "notar", "makler", "sonstige"] },
   { title: "Miete und laufende Kosten", fields: ["kaltmiete", "hausgeldNichtUml", "instand", "leerstand"] },
@@ -1460,6 +1460,34 @@ function applyState(s) {
   aktualisiereExterneLink();
   render();
 }
+// Objektdaten-Zeile unter dem Link automatisch aus den Objekt-Metadaten (DB) und Eingaben füllen.
+function ortAusAdresse(adresse) {
+  const text = String(adresse || "").trim();
+  if (!text) return "";
+  const parts = text.split(",").map(p => p.trim()).filter(Boolean);
+  const last = parts[parts.length - 1] || "";
+  return last.replace(/^\d{4,5}\s*/, "").trim() || last;
+}
+function fuellObjektMeta() {
+  const el = document.getElementById("objectMetaRow");
+  if (!el) return;
+  const current = el.textContent.trim();
+  const istPlatzhalter = !current || /^Objektart\b.*\bOrt\b.*\bWohnfläche\b.*\bBaujahr\b.*\bEnergieklasse\b/.test(current);
+  if (!istPlatzhalter) return; // manuell gepflegte Zeile unangetastet lassen
+  const d = readInputs();
+  const teile = [];
+  const art = String(objektMeta.objektart || "").trim();
+  if (art) teile.push(art);
+  const ort = ortAusAdresse(objektMeta.adresse);
+  if (ort) teile.push(ort);
+  const flaeche = Number(objektMeta.wohnflaeche) || d.flaeche || 0;
+  if (flaeche > 0) teile.push(fmt(flaeche, flaeche % 1 ? 2 : 0) + " m²");
+  const bj = Number(objektMeta.baujahr);
+  if (bj > 0) teile.push("Baujahr " + String(Math.round(bj)));
+  if (!teile.length) return; // ohne Daten den Platzhalter stehen lassen
+  teile.push("Energieklasse unbekannt");
+  el.textContent = teile.join(" · ");
+}
 function aktualisiereExterneLink() {
   const url = document.getElementById("externeUrl");
   const button = document.getElementById("externeLinkBtn");
@@ -1539,7 +1567,9 @@ async function exportJson() {
   try {
     const saved = await ImmoDb.load(OBJEKT_ORDNER);
     lastLoadedState = { ...(saved.state || {}) };
+    objektMeta = saved.meta || {};
     applyState(saved.state);
+    fuellObjektMeta();
     document.getElementById("objectIdLabel").textContent = `Objekt-ID: ${saved.id}`;
     document.getElementById("savedNote").textContent = `DB-Revision ${saved.revision}`;
     document.getElementById("preliminaryNotice").hidden = !["quellenpruefung_offen", "abruf_blockiert"].includes(saved.analysis_status);

@@ -51,7 +51,7 @@ def connection() -> sqlite3.Connection:
 def get_object(name: str) -> dict | None:
     with closing(connection()) as conn:
         row = conn.execute(
-            "SELECT name, public_id, display_name, source_url, image_path, analysis_status, revision, state_json, status, geaendert_am FROM objekte WHERE public_id=? OR name=? ORDER BY CASE WHEN public_id=? THEN 0 ELSE 1 END LIMIT 1",
+            "SELECT name, public_id, display_name, source_url, image_path, analysis_status, revision, state_json, status, geaendert_am, adresse, objektart, baujahr, wohnflaeche FROM objekte WHERE public_id=? OR name=? ORDER BY CASE WHEN public_id=? THEN 0 ELSE 1 END LIMIT 1",
             (name, name, name),
         ).fetchone()
         if row is None:
@@ -64,6 +64,10 @@ def get_object(name: str) -> dict | None:
         "analysis_status": row["analysis_status"],
         "revision": row["revision"], "status": row["status"],
         "updated_at": row["geaendert_am"], "state": state,
+        "meta": {
+            "adresse": row["adresse"], "objektart": row["objektart"],
+            "baujahr": row["baujahr"], "wohnflaeche": row["wohnflaeche"],
+        },
     }
 
 
@@ -290,10 +294,10 @@ def import_listing(url: str) -> dict:
         now = datetime.now(timezone.utc).isoformat(timespec="seconds")
         with closing(connection()) as conn, conn:
             conn.execute("""INSERT INTO objekte
-                (name,public_id,display_name,source_url,analysis_status,image_path,adresse,zimmer,status,html_pfad,state_json,erstellt_am,geaendert_am,revision)
-                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,0)""",
+                (name,public_id,display_name,source_url,analysis_status,image_path,adresse,zimmer,wohnflaeche,status,html_pfad,state_json,erstellt_am,geaendert_am,revision)
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,0)""",
                 (name, public_id, data["title"], final_url, "abruf_blockiert" if blocked else "quellenpruefung_offen", image_path,
-                 data["address"], data["rooms"], "aktiv", f"objekte/{name}/{html_name}",
+                 data["address"], data["rooms"], data["area"], "aktiv", f"objekte/{name}/{html_name}",
                  json.dumps(state, ensure_ascii=False), now, now))
             object_id = conn.execute("SELECT id FROM objekte WHERE public_id=?", (public_id,)).fetchone()[0]
             conn.execute("INSERT INTO kalkulation(objekt_id) VALUES (?)", (object_id,))
