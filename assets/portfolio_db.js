@@ -11,7 +11,7 @@
     const value = factorNumber(price, rent);
     return value == null ? '–' : value.toLocaleString('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2});
   };
-  const bruttoRenditeClass = value => value == null ? '' : Number(value) > 7 ? 'pos' : 'neg';
+  const bruttoRenditeClass = value => value == null ? '' : Number(value) >= 5 ? 'pos' : 'neg';
   const perM2 = (value, area) => value == null || !area ? '–' : eur(value / area);
   function detail(item) {
     const type = (item.objektart || '').toLowerCase();
@@ -35,7 +35,7 @@
     const rentPerArea = item.kaltmiete != null && item.wohnflaeche
       ? '≈ ' + (item.kaltmiete / item.wohnflaeche).toLocaleString('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' €/m²' : '';
     const factorValue = factorNumber(item.kaufpreis, item.kaltmiete);
-    const factorClass = factorValue == null ? '' : factorValue <= 15 ? 'pos' : 'neg';
+    const factorClass = factorValue == null ? '' : factorValue <= 20 ? 'pos' : 'neg';
     const photo = item.image_path && /^\/objekte\/[a-z0-9äöüß_-]+\/titelbild\.(jpg|png|webp|avif)$/i.test(item.image_path)
       ? `<div class="karte-photo-bg" style="background-image:url('${esc(item.image_path)}')"></div>` : '';
     return `<a class="karte${photo ? ' has-photo' : ''}" data-rating="${esc(rating)}" href="${href}">${photo}

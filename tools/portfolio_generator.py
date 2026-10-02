@@ -94,7 +94,7 @@ def main():
     ⚠️ Modellrechnungen – keine rechtliche, steuerliche oder finanzielle Beratung. 🔄 <b>Aktualisieren</b> liest aktuelle Werte direkt aus der Datenbank.
   </footer>
 </div>
-<script src="assets/portfolio_db.js?v=4"></script>
+<script src="assets/portfolio_db.js?v=5"></script>
 </body>
 </html>"""
     OUT.write_text(html, encoding="utf-8")

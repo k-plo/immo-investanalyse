@@ -1034,22 +1034,24 @@ function calc(d) {
     return { zins, label, rate, cf, maxPreis };
   });
 
-  // Status (nach der Berechnung – überschreibt den ausstehend-Status mit den echten Zahlen)
+  // Status aus vier Kriterien (Bruttorendite, Cashflow, Kaufpreisfaktor, Maximalpreis)
   if (d.preis <= 0 || d.kaltmiete <= 0 || d.flaeche <= 0) {
     status = "⚪ ZU WENIG DATEN"; klasse = "b-gray";
     gruende.push("Kaufpreis, Kaltmiete oder Wohnfläche fehlen – keine belastbare Berechnung möglich.");
-  } else if (r.cf >= 0 && r.bruttoR >= 4) {
-    status = "🟢 WEITER PRÜFEN"; klasse = "b-green";
-    gruende.push(`Positiver Cashflow (${eur(r.cf)}/Monat) und Bruttorendite ${pct(r.bruttoR)} ≥ Ziel 4,00 %.`);
-  } else if (r.cf >= 0) {
-    status = "🟡 NUR MIT KLÄRUNG"; klasse = "b-yellow";
-    gruende.push(`Cashflow neutral/positiv, aber Bruttorendite ${pct(r.bruttoR)} unter Ziel 4,00 %.`);
-  } else if (r.bruttoR >= 4) {
-    status = "🟠 VERHANDELN"; klasse = "b-orange";
-    gruende.push(`Rendite ${pct(r.bruttoR)} erreicht Ziel, aber Cashflow ${eur(r.cf)}/Monat negativ → Preis oder Finanzierung anpassen.`);
   } else {
-    status = "🔴 NICHT WEITER VERFOLGEN"; klasse = "b-red";
-    gruende.push(`Weder Rendite (${pct(r.bruttoR)} < 4,00 %) noch Cashflow (${eur(r.cf)}/Monat) erfüllen die Ziele.`);
+    const kriterien = [
+      [`Bruttorendite ${pct(r.bruttoR)} ≥ Ziel 5,00 %`, r.bruttoR >= 5],
+      [`Cashflow ${eur(r.cf)}/Monat ≥ 0 €`, r.cf >= 0],
+      [`Kaufpreisfaktor ${fmt(r.kaufpreisfaktor, 2)} ≤ 20`, r.kaufpreisfaktor <= 20],
+      [`Angebot ${eur(d.preis)} ≤ Maximalpreis ${eur(r.maxPreis)} (Spielraum ${eur(r.spielraum)})`, d.preis <= r.maxPreis],
+    ];
+    const erfuellt = kriterien.filter(k => k[1]).length;
+    if (erfuellt === 4) { status = "🟢 WEITER PRÜFEN"; klasse = "b-green"; }
+    else if (erfuellt === 3) { status = "🟡 NUR MIT KLÄRUNG"; klasse = "b-yellow"; }
+    else if (erfuellt === 2) { status = "🟠 VERHANDELN"; klasse = "b-orange"; }
+    else { status = "🔴 NICHT WEITER VERFOLGEN"; klasse = "b-red"; }
+    gruende.push(`${erfuellt} von 4 Kriterien erfüllt:`);
+    kriterien.forEach(([text, ok]) => gruende.push(`${ok ? "✅" : "❌"} ${text}`));
   }
   r.status = { status, klasse, gruende };
   return r;
@@ -1074,15 +1076,15 @@ function render() {
   const kpis = r.berechenbar ? [
     { l: tip("Kaufpreis", "preis"), v: eur(d.preis), s: d.flaeche > 0 ? eur(r.kpProM2) + "/m² · BELEGT" : "" },
     { l: tip("Gesamtinvestition", "gesamt"), v: eur(r.gesamt), s: eur(r.giProM2) + "/m²" },
-    { l: tip("Bruttorendite", "bruttoR"), v: pct(r.bruttoR), s: "bei KM " + eur(d.kaltmiete) + "/M", c: r.bruttoR > 7 ? "pos" : "neg" },
+    { l: tip("Bruttorendite", "bruttoR"), v: pct(r.bruttoR), s: "bei KM " + eur(d.kaltmiete) + "/M", c: r.bruttoR >= 5 ? "pos" : "neg" },
     { l: tip("Cashflow (EK " + eur(d.ek) + ")", "cf"), v: eur(r.cf) + "/M", s: "Rate " + eur(r.rate) + "/M", c: cls(r.cf) },
-    { l: tip("Kaufpreisfaktor", "kaufpreisfaktor"), v: fmt(r.kaufpreisfaktor, 2), s: "Zielwert unter 15", c: r.kaufpreisfaktor <= 15 ? "pos" : "neg" }
+    { l: tip("Kaufpreisfaktor", "kaufpreisfaktor"), v: fmt(r.kaufpreisfaktor, 2), s: "Zielwert ≤ 20", c: r.kaufpreisfaktor <= 20 ? "pos" : "neg" }
   ] : [
     { l: tip("Kaufpreis", "preis"), v: d.preis > 0 ? eur(d.preis) : "–", s: d.flaeche > 0 ? eur(r.kpProM2 || 0) + "/m² · BELEGT" : "Wohnfläche fehlt" },
     { l: tip("Gesamtinvestition", "gesamt"), v: "–", s: "wartet auf: " + d.fehlend.map(f => FELDLABEL[f] || f).join(", ") },
     { l: tip("Bruttorendite", "bruttoR"), v: "–", s: "Kaltmiete fehlt" },
     { l: tip("Cashflow", "cf"), v: "–", s: "Eingaben unvollständig" },
-    { l: tip("Kaufpreisfaktor", "kaufpreisfaktor"), v: "–", s: "Zielwert unter 15" }
+    { l: tip("Kaufpreisfaktor", "kaufpreisfaktor"), v: "–", s: "Zielwert ≤ 20" }
   ];
   document.getElementById("kpis").innerHTML = kpis.map(k =>
     `<div class="kpi"><div class="l">${k.l}</div><div class="v ${k.c || ""}">${k.v}</div><div class="s">${k.s || ""}</div></div>`).join("");
@@ -1261,7 +1263,7 @@ const TIPS = {
   ek: "Eigenkapital = dein eigenes Geld, das du einbringst. Mehr EK = kleinere Rate, aber weniger Rendite auf dein Geld. Weniger EK = größere Rate, höheres Risiko. Das Tool berechnet unten Break-Even-EK je Zinsszenario.",
   zins: "Der jährliche Zinssatz des Darlehens. Aktuelles Marktniveau recherchieren (z. B. CHECK24/FMH) und hier als Quelle eintragen. Bei hohem Beleihungsauslauf verlangen Banken mehr.",
   tilgung: "Der Teil der Rate, der das Darlehen abbaut (Rest: Zinsen). 2 % anfängliche Tilgung = Standard; höher = schneller schuldenfrei, aber höhere Rate.",
-  bruttoR: "BRUTTOMIETRENDITE = Jahreskaltmiete ÷ Kaufpreis × 100. Zeigt, wie viel Prozent des Kaufpreises die Miete pro Jahr einbringt – OHNE Kosten. Zielwert über 7 %. Aber: Sehr hohe Bruttorendite kann auch auf Sanierungsstau hindeuten!",
+  bruttoR: "BRUTTOMIETRENDITE = Jahreskaltmiete ÷ Kaufpreis × 100. Zeigt, wie viel Prozent des Kaufpreises die Miete pro Jahr einbringt – OHNE Kosten. Zielwert über 5 %. Aber: Sehr hohe Bruttorendite kann auch auf Sanierungsstau hindeuten!",
   nettoR: "NETTOMIETRENDITE = (Miete minus laufende Kosten) ÷ Kaufpreis × 100. Realistischer als die Bruttorendite, weil Hausgeld-Anteile, Verwaltung und Instandhaltungsrückstellung abgezogen werden. Das bleibt, bevor die Bank bedient wird.",
   cfVor: "CASHFLOW VOR FINANZIERUNG = Netto-Mieteinnahmen pro Monat, bevor die Kreditrate abgezogen wird. Abgezogen werden: Leerstand, nicht umlagefähiges Hausgeld, ausdrücklich eingetragene Verwaltung und Instandhaltungsrückstellung.",
   rate: "MONATSRATE = Zins + Tilgung auf das Darlehen. Bleibt während der Zinsbindung konstant (Annuitätendarlehen): Am Anfang ist der Zinsanteil hoch, mit der Zeit steigt der Tilgungsanteil.",
@@ -1276,7 +1278,7 @@ const TIPS = {
   spielraum: "SPIELRAUM = Maximalpreis − Angebotspreis. Positiv = das Angebot ist rechnerisch tragfähig, du kannst es so kaufen (oder mit Puffer darunter verhandeln). Negativ = das Angebot ist zu teuer für einen neutralen Cashflow – du müsstest den Preis um diesen Betrag drücken oder die Rahmenbedingungen ändern.",
   gesamt: "GESAMTINVESTITION = Kaufpreis + alle Nebenkosten (GrESt, Notar, Makler) + Renovierung + Sanierung. Das Geld, das insgesamt in die Immobilie fließt – nicht nur der Kaufpreis!",
   kpProM2: "KAUFPREIS PRO m² = Kaufpreis ÷ Wohnfläche. Der wichtigste Vergleichswert: Wie teuer ist diese Immobilie im Vergleich zu anderen in der Region? Zielwert unter 2.000 €/m².",
-  kaufpreisfaktor: "KAUFPREISFAKTOR = Kaufpreis ÷ Jahreskaltmiete. Zielwert unter 15. Je niedriger der Faktor, desto schneller amortisiert sich der Kaufpreis über die Miete.",
+  kaufpreisfaktor: "KAUFPREISFAKTOR = Kaufpreis ÷ Jahreskaltmiete. Zielwert 20 oder darunter. Je niedriger der Faktor, desto schneller amortisiert sich der Kaufpreis über die Miete.",
   giProM2: "GESAMTINVESTITION PRO m² = Gesamtinvestition ÷ Wohnfläche. Realistischer als der reine Kaufpreis/m², weil Sanierungskosten enthalten sind. Zum Vergleich mit sanierten Objekten.",
   mieteEffektiv: "EFFEKTIVE MIETE = Kaltmiete × 12, reduziert um den anteiligen Leerstand. Realistisch, weil keine Wohnung 365 Tage/Jahr vermietet ist.",
   netto: "NETTO-MIETEINNAHMEN = effektive Miete minus nicht umlagefähiges Hausgeld, Verwaltung und Instandhaltungsrückstellung. Das ist das, was tatsächlich in deiner Tasche landet, bevor die Bank bezahlt wird.",
