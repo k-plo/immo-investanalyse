@@ -59,7 +59,7 @@ def main():
 </style>
 <style>{dashboard_css}</style>
 <style>
-  .appearance-controls.has-brand {{ position: fixed; top: 0; right: 0; width: auto; flex-direction: column; align-items: flex-end; gap: 3px; margin: 0; }}
+  .appearance-controls.has-brand {{ position: fixed; top: 0; left: auto; right: 0; width: auto; flex-direction: column; align-items: flex-end; gap: 3px; margin: 0; }}
   .appearance-controls.has-brand .portfolio-brand {{ width: 164px; height: auto; }}
 </style>
 <script data-dashboard-theme>{theme_js}</script>
