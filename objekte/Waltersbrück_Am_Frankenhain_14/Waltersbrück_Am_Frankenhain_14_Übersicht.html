@@ -1085,18 +1085,18 @@ function render() {
   // Erwerbsrechnung: fehlende Werte als "ausstehend" zeigen
   const w = v => v === null ? AUSSTEHEND : eur(v);
   document.getElementById("tblErwerb").innerHTML =
-    row([{ v: "Position", num: false }, { v: "Aktuell", num: true }, { v: "Kaufpreis −10 %", num: true }, { v: "", num: false }, { v: "Status / Quelle", num: false }], true) +
-    row(["Kaufpreis (Angebot)", { v: eur(d.preis), num: true }, { v: eur(d10?.preis), num: true }, "", "BELEGT · Quelle eintragen"]) +
-    row(["Grunderwerbsteuer", { v: eur(r.nkAnteile?.grESt), num: true }, { v: eur(r10?.nkAnteile?.grESt), num: true }, "", pct(d.grESt) + " · ANNAHME (Hessen)"]) +
-    row(["Notar + Grundbuch", { v: eur(r.nkAnteile?.notar), num: true }, { v: eur(r10?.nkAnteile?.notar), num: true }, "", pct(d.notar) + " · ANNAHME"]) +
-    row(["Maklerprovision", { v: eur(r.nkAnteile?.makler), num: true }, { v: eur(r10?.nkAnteile?.makler), num: true }, "", pct(d.makler) + " · BELEGT Satz"]) +
-    row(["Renovierung", { v: w(d.renovierung), num: true }, { v: w(d.renovierung), num: true }, "", d.renovierung === null ? "FEHLT – bitte eingeben" : "ANNAHME ⚠️"]) +
-    row(["Sanierung", { v: w(d.sanierung), num: true }, { v: w(d.sanierung), num: true }, "", d.sanierung === null ? "FEHLT – bitte eingeben" : "ANNAHME ⚠️"]) +
-    row(["Sonstige Erwerbskosten", { v: eur(d.sonstige), num: true }, { v: eur(d.sonstige), num: true }, "", "–"]) +
-    row(["<b>Gesamtinvestition</b>", { v: r.berechenbar ? "<b>" + eur(r.gesamt) + "</b>" : AUSSTEHEND, num: true }, { v: r10 ? "<b>" + eur(r10.gesamt) + "</b>" : AUSSTEHEND, num: true }, "", "ABGELEITET"]) +
-    row(["Eigenkapital", { v: eur(d.ek), num: true }, { v: eur(d.ek), num: true }, "", "NUTZER-VORGABE"]) +
-    row(["<b>Darlehensbetrag</b>", { v: r.berechenbar ? "<b>" + eur(r.darlehen) + "</b>" : AUSSTEHEND, num: true }, { v: r10 ? "<b>" + eur(r10.darlehen) + "</b>" : AUSSTEHEND, num: true }, "", "Gesamtinvestition − Eigenkapital"]) +
-    row(["Gesamtinvestition / m²", { v: r.berechenbar ? eur(r.giProM2) : AUSSTEHEND, num: true }, { v: r10 ? eur(r10.giProM2) : AUSSTEHEND, num: true }, "", d.flaeche > 0 ? fmt(d.flaeche, 1) + " m²" : "—"]);
+    row([{ v: "Position", num: false }, { v: "Aktuell", num: true }, { v: "Kaufpreis −10 %", num: true }, { v: "", num: false }], true) +
+    row(["Kaufpreis (Angebot)", { v: eur(d.preis), num: true }, { v: eur(d10?.preis), num: true }, ""]) +
+    row(["Grunderwerbsteuer", { v: eur(r.nkAnteile?.grESt), num: true }, { v: eur(r10?.nkAnteile?.grESt), num: true }, ""]) +
+    row(["Notar + Grundbuch", { v: eur(r.nkAnteile?.notar), num: true }, { v: eur(r10?.nkAnteile?.notar), num: true }, ""]) +
+    row(["Maklerprovision", { v: eur(r.nkAnteile?.makler), num: true }, { v: eur(r10?.nkAnteile?.makler), num: true }, ""]) +
+    row(["Renovierung", { v: w(d.renovierung), num: true }, { v: w(d.renovierung), num: true }, ""]) +
+    row(["Sanierung", { v: w(d.sanierung), num: true }, { v: w(d.sanierung), num: true }, ""]) +
+    row(["Sonstige Erwerbskosten", { v: eur(d.sonstige), num: true }, { v: eur(d.sonstige), num: true }, ""]) +
+    row(["<b>Gesamtinvestition</b>", { v: r.berechenbar ? "<b>" + eur(r.gesamt) + "</b>" : AUSSTEHEND, num: true }, { v: r10 ? "<b>" + eur(r10.gesamt) + "</b>" : AUSSTEHEND, num: true }, ""]) +
+    row(["Eigenkapital", { v: eur(d.ek), num: true }, { v: eur(d.ek), num: true }, ""]) +
+    row(["<b>Darlehensbetrag</b>", { v: r.berechenbar ? "<b>" + eur(r.darlehen) + "</b>" : AUSSTEHEND, num: true }, { v: r10 ? "<b>" + eur(r10.darlehen) + "</b>" : AUSSTEHEND, num: true }, ""]) +
+    row(["Gesamtinvestition / m²", { v: r.berechenbar ? eur(r.giProM2) : AUSSTEHEND, num: true }, { v: r10 ? eur(r10.giProM2) : AUSSTEHEND, num: true }, ""]);
 
   const cash = value => value < 0 ? "−" + eur(Math.abs(value)) : eur(value);
   document.getElementById("tblCashflow").innerHTML = r.berechenbar
