@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fritzlar – Heinrich-von-Meißen-Weg 26 – Übersicht</title>
+<style>
+  :root { --ink:#152d39; --muted:#607580; --accent:#116d72; --line:#dce5e8; --canvas:#f2f5f6; }
+  * { box-sizing:border-box; }
+  body { margin:0; padding:40px 20px 60px; color:var(--ink); background:radial-gradient(ellipse at 100% 0,#e0eeee 0,transparent 42%),var(--canvas); font:14px/1.6 "Segoe UI",Arial,sans-serif; }
+  main { max-width:1100px; margin:auto; }
+  section { margin:22px 0; padding:28px; background:#fff; border:1px solid var(--line); border-radius:16px; box-shadow:0 5px 18px #16354108; }
+  h1 { margin:0 0 8px; font-size:clamp(28px,4vw,44px); line-height:1.15; }
+  h2 { margin:0 0 16px; padding-bottom:9px; border-bottom:1px solid var(--line); font-size:18px; }
+  .sub,.note { color:var(--muted); }
+  .status { display:inline-block; margin:14px 0 18px; padding:7px 13px; border-radius:999px; background:#fdf3dd; color:#8b6200; font-weight:700; }
+  .kpis { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:12px; }
+  .kpi { padding:14px; border-radius:12px; background:#eef5f5; }
+  .kpi label { display:block; color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.06em; }
+  .kpi strong { display:block; margin-top:4px; font-size:22px; }
+  table { width:100%; border-collapse:collapse; }
+  th,td { padding:9px 10px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+  th { color:var(--muted); font-size:11px; text-transform:uppercase; }
+  .risk { padding:14px 16px; border-left:4px solid #c25e12; background:#fff7ed; }
+  ul { margin:8px 0 0; padding-left:22px; }
+  a { color:var(--accent); font-weight:650; }
+  @media (max-width:760px) { body { padding:20px 12px 40px; } section { padding:20px; } .kpis { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+</style>
+</head>
+<body>
+<main>
+  <section>
+    <h1>Fritzlar – Heinrich-von-Meißen-Weg 26</h1>
+    <p class="sub">Eigentumswohnung mit Stellplatz, Küche und Keller · Voranalyse vom 02.10.2026</p>
+    <div class="status">⚪ ZU WENIG DATEN · DB-IMPORT OFFEN</div>
+    <div class="kpis">
+      <div class="kpi"><label>Kaufpreis</label><strong>132.500 €</strong></div>
+      <div class="kpi"><label>Wohnfläche</label><strong>57 m²</strong></div>
+      <div class="kpi"><label>Hausgeld</label><strong>233 €/M</strong></div>
+      <div class="kpi"><label>Bruttorendite</label><strong>4,04 %</strong></div>
+      <div class="kpi"><label>Cashflow</label><strong>−233 €/M</strong></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Wirtschaftlichkeit</h2>
+    <table>
+      <tr><th>Position</th><th>Wert</th><th>Status</th></tr>
+      <tr><td>Gesamtinvestition inkl. Nebenkosten und Reserve</td><td>148.100 €</td><td>indikativ</td></tr>
+      <tr><td>Eigenkapital</td><td>20.000 €</td><td>Nutzerannahme</td></tr>
+      <tr><td>Darlehen</td><td>128.100 €</td><td>berechnet</td></tr>
+      <tr><td>Monatliche Kreditrate</td><td>555,10 €</td><td>4,20 % Zins · 1,00 % Tilgung</td></tr>
+      <tr><td>Startmiete</td><td>446 €/Monat</td><td>regional recherchiert · Spanne 400–500 €</td></tr>
+      <tr><td>Cashflow vor Steuer</td><td>−232,62 €/Monat</td><td>bei aktueller Annahmenlage</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>Entscheidung und offene Prüfung</h2>
+    <div class="risk"><strong>Keine Kaufentscheidung auf Basis der Anzeige.</strong><br>Die Wirtschaftlichkeit ist aktuell negativ. Vor einer Verhandlung müssen insbesondere Hausgeldaufteilung, Rücklage, WEG-Unterlagen, Energieausweis und die Heizung von 1995 belegt werden.</div>
+    <ul>
+      <li>Grundbuch, Teilungserklärung und Protokolle der Eigentümerversammlungen anfordern</li>
+      <li>Hausgeldabrechnung, Wirtschaftsplan und Nachweis zur Rücklage von 100.000 € prüfen</li>
+      <li>Energieausweis, Heizungszustand und mögliche Sonderumlagen klären</li>
+      <li>Mietvergleich und Besichtigung durchführen</li>
+      <li>Objekt über den vorgesehenen Anzeigenimport in SQLite aufnehmen</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Dokumente</h2>
+    <ul>
+      <li><a href="unterlagen/01_kleinanzeigen_inserat.txt">Inserat und Quellenablage</a></li>
+      <li><a href="analyse/01_datenbasis.md">01 Datenbasis</a></li>
+      <li><a href="analyse/02_dokumentenpruefung.md">02 Dokumentenprüfung</a></li>
+      <li><a href="analyse/03_kalkulation.json">03 Kalkulation</a></li>
+      <li><a href="analyse/04_investmentbericht.md">04 Investmentbericht</a></li>
+      <li><a href="analyse/05_mietempfehlung.md">05 Mietempfehlung</a></li>
+    </ul>
+    <p class="note">Quelle des Angebots: <a href="https://www.kleinanzeigen.de/s-anzeige/eigentumswohnung-zentral-mit-stellplatz-kueche-keller/3509214073-196-4751">Kleinanzeigen-Inserat</a></p>
+  </section>
+</main>
+</body>
+</html>
