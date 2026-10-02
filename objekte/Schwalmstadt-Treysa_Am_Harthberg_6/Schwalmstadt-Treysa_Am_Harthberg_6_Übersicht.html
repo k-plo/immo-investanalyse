@@ -974,6 +974,15 @@ function calc(d) {
   r.tilgJahr = Math.max(0, r.rate * 12 - r.zinsJahr);
   r.coc = d.ek > 0 ? (r.cf * 12 + r.tilgJahr) / d.ek * 100 : 0;
 
+  // Steuern – feste Modellannahmen (siehe Tooltip): 29,93 % Grenzsteuersatz,
+  // 2,0 % AfA p. a. auf 80 % Gebäudeanteil der Gesamtinvestition. Schuldzinsen abzugsfähig, Tilgung nicht.
+  const STEUERSATZ = 0.2993, AFA_SATZ = 0.02, GEBAEUDEANTEIL = 0.80;
+  r.afaJahr = r.gesamt * GEBAEUDEANTEIL * AFA_SATZ;
+  r.steuerErgebnis = r.cfVor * 12 - r.zinsJahr - r.afaJahr;
+  r.steuerJahr = -r.steuerErgebnis * STEUERSATZ;
+  r.steuerMonat = r.steuerJahr / 12;
+  r.cfNachSteuer = r.cf + r.steuerMonat;
+
   r.zinsSzenarien = getZinsSzenarien(d.zins);
 
   // EK-Empfehlung: Break-Even-EK je Zinsszenario (mit aktueller Tilgung)
@@ -1111,7 +1120,9 @@ function render() {
       row(["Zinsanteil " + pct(d.zins), { v: "−" + eur(r.zinsJahr / 12), num: true }, { v: "−" + eur(r10.zinsJahr / 12), num: true }, "", { v: "−" + eur(r.zinsJahr), num: true }, { v: "−" + eur(r10.zinsJahr), num: true }]) +
       row(["Tilgungsanteil " + pct(d.tilgung), { v: "−" + eur(r.tilgJahr / 12), num: true }, { v: "−" + eur(r10.tilgJahr / 12), num: true }, "", { v: "−" + eur(r.tilgJahr), num: true }, { v: "−" + eur(r10.tilgJahr), num: true }]) +
       row(["<b>Kreditrate gesamt</b>", { v: "<b>−" + eur(r.rate) + "</b>", num: true }, { v: "<b>−" + eur(r10.rate) + "</b>", num: true }, "", { v: "<b>−" + eur(r.rate * 12) + "</b>", num: true }, { v: "<b>−" + eur(r10.rate * 12) + "</b>", num: true }]) +
-      row(["<b>Cashflow nach Finanzierung</b>", { v: `<b class="${cls(r.cf)}">${cash(r.cf)}</b>`, num: true }, { v: `<b class="${cls(r10.cf)}">${cash(r10.cf)}</b>`, num: true }, "", { v: `<b class="${cls(r.cf)}">${cash(r.cf * 12)}</b>`, num: true }, { v: `<b class="${cls(r10.cf)}">${cash(r10.cf * 12)}</b>`, num: true }])
+      row(["<b>Cashflow nach Finanzierung</b>", { v: `<b class="${cls(r.cf)}">${cash(r.cf)}</b>`, num: true }, { v: `<b class="${cls(r10.cf)}">${cash(r10.cf)}</b>`, num: true }, "", { v: `<b class="${cls(r.cf)}">${cash(r.cf * 12)}</b>`, num: true }, { v: `<b class="${cls(r10.cf)}">${cash(r10.cf * 12)}</b>`, num: true }]) +
+      row([tip("Steuerwirkung", "steuerWirkung"), { v: `<span class="${cls(r.steuerMonat)}">${cash(r.steuerMonat)}</span>`, num: true }, { v: `<span class="${cls(r10.steuerMonat)}">${cash(r10.steuerMonat)}</span>`, num: true }, "", { v: `<span class="${cls(r.steuerJahr)}">${cash(r.steuerJahr)}</span>`, num: true }, { v: `<span class="${cls(r10.steuerJahr)}">${cash(r10.steuerJahr)}</span>`, num: true }]) +
+      row([tip("Cashflow nach Steuern", "cfNachSteuer"), { v: `<b class="${cls(r.cfNachSteuer)}">${cash(r.cfNachSteuer)}</b>`, num: true }, { v: `<b class="${cls(r10.cfNachSteuer)}">${cash(r10.cfNachSteuer)}</b>`, num: true }, "", { v: `<b class="${cls(r.cfNachSteuer)}">${cash(r.cfNachSteuer * 12)}</b>`, num: true }, { v: `<b class="${cls(r10.cfNachSteuer)}">${cash(r10.cfNachSteuer * 12)}</b>`, num: true }])
     : row([{ v: "Position", num: false }, { v: "Aktuell / Monat", num: true }, { v: "−10 % / Monat", num: true }, { v: "", num: false }, { v: "Aktuell / Jahr", num: true }, { v: "−10 % / Jahr", num: true }], true) +
       row(["Berechnung ausstehend", { v: AUSSTEHEND, num: true }, { v: AUSSTEHEND, num: true }, "", { v: AUSSTEHEND, num: true }, { v: AUSSTEHEND, num: true }]);
 
@@ -1255,6 +1266,8 @@ const TIPS = {
   cfVor: "CASHFLOW VOR FINANZIERUNG = Netto-Mieteinnahmen pro Monat, bevor die Kreditrate abgezogen wird. Abgezogen werden: Leerstand, nicht umlagefähiges Hausgeld, ausdrücklich eingetragene Verwaltung und Instandhaltungsrückstellung.",
   rate: "MONATSRATE = Zins + Tilgung auf das Darlehen. Bleibt während der Zinsbindung konstant (Annuitätendarlehen): Am Anfang ist der Zinsanteil hoch, mit der Zeit steigt der Tilgungsanteil.",
   cf: "CASHFLOW NACH FINANZIERUNG = was monatlich übrig bleibt, nachdem die Bankrate bezahlt ist. Positiv = die Immobilie zahlt dir Geld aus. Negativ = du musst monatlich zuzahlen. Der wichtigste Einzelwert für die Tragfähigkeit!",
+  steuerWirkung: "STEUERWIRKUNG = geschätzte jährliche Steuerentlastung bzw. -last aus der Immobilie, verteilt auf den Monat. Feste Modellannahmen: Grenzsteuersatz 29,93 %, AfA 2,0 % p. a. auf 80 % Gebäudeanteil der Gesamtinvestition. Schuldzinsen sind abzugsfähig, die Tilgung NICHT. Steuerliches Ergebnis = Cashflow vor Finanzierung × 12 − Schuldzinsen − AfA. Positive Zahl = Erstattung, negative Zahl = Nachzahlung. Ersetzt keine Steuerberatung.",
+  cfNachSteuer: "CASHFLOW NACH STEUERN = Cashflow nach Finanzierung + Steuerwirkung. Zeigt, was nach Abzug von Kreditrate und geschätzter Einkommensteuerwirkung monatlich übrig bleibt. Grundlage sind die festen Modellannahmen aus dem Tooltip zur Steuerwirkung (29,93 % Grenzsteuersatz, 2,0 % AfA auf 80 % Gebäudeanteil). Modellrechnung – keine steuerliche Beratung.",
   coc: "EK-RENDITE (CASH-ON-CASH) = (Jahres-Cashflow + Tilgungsanteil) ÷ Eigenkapital × 100. Zeigt, wie viel Prozent Rendite dein eingesetztes Geld abwirft – inklusive dem Teil der Rate, der Schulden abbaut. Zum Vergleich: Tagesgeld bringt aktuell ~2–3 %.",
   darlehen: "DARLEHEN = Gesamtinvestition − Eigenkapital. Der Betrag, den du von der Bank leihst.",
   ltv: "BELEIHUNGSAUSLAUF = Darlehen ÷ Kaufpreis × 100. Unter 80 % = gute Konditionen. 80–100 % = teurer. Über 100 % (hier der Fall, weil Sanierung mitfinanziert wird) = Banken prüfen genau, oft Zinsaufschlag.",
