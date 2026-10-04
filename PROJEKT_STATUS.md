@@ -5,7 +5,13 @@
 
 ---
 
-## 🕐 Aktueller Stand (02.10.2026)
+## 🕐 Aktueller Stand (04.10.2026)
+
+**Neue Funktion „Schnellanalyse":** Im Portfolio-Dashboard gibt es einen gut sichtbaren Button „⚡ Schnellanalyse – Angebot in ~2 Minuten prüfen". Er öffnet die eigenständige Seite `schnellanalyse.html`, mit der ein Immobilienangebot in wenigen Feldern bewertet wird (Kaufpreis, Kaltmiete, nicht umlagefähige Kosten, Rücklage, optionale sonstige Kosten, Finanzierung). Berechnet werden Bruttomietrendite, Kaufpreisfaktor, monatlicher Cashflow nach Finanzierung und ein Gesamtstatus, jeweils für die Basisvariante und ein Szenario „Kaufpreis 10 % niedriger" – inklusive Vergleichstabelle (absolute/prozentuale Verbesserung). Die Logik liegt testbar in `assets/schnellanalyse_core.js`, Zielwerte zentral in `SCHWELLEN` (Rendite > 5 %, Cashflow > 0 €, Faktor < 20; exakte Grenzwerte gelten als nicht erfüllt). Die Seite rechnet nur temporär und schreibt nichts in Datenbank oder Objektordner. Tests: `node tests/test_schnellanalyse.js` (14 Tests). Details siehe Abschnitte „Was gebaut ist" → „Schnellanalyse (04.10.)".
+
+Die folgenden Einträge dokumentieren frühere Stände und sind nicht als aktuelle Datenquelle zu verwenden.
+
+## 🕐 Vorheriger Stand (02.10.2026)
 
 Neues Objekt **Baunatal – Leiselpark** (Dachgeschosswohnung, 86 m², KP 190.000 €) aus einer Kleinanzeigen-Anzeige als Voranalyse angelegt: Analyse-Dateien 01–05, Übersicht aus der aktuellen Vorlage, SQLite-Datensatz und Portfolio-Karte. Die Objektdaten-Zeile unter dem Link wird jetzt für alle aktiven Übersichten automatisch aus den DB-Metadaten gefüllt. Alle aktiven Übersichten zeigen in Abschnitt 2 zusätzlich die Zeilen Steuerwirkung und Cashflow nach Steuern (feste Modellannahmen im Tooltip: 29,93 % Grenzsteuersatz, 2 % AfA auf 80 % Gebäudeanteil).
 
@@ -107,6 +113,16 @@ Die folgenden Einträge dokumentieren frühere Stände und sind nicht als aktuel
 - 🔐 **Sichere Darstellung:** Importierte Texte und Portfolio-Metadaten werden nicht mehr ungefiltert als ausführbares HTML eingesetzt.
 - ✅ **Verifikation:** Lokaler Sync mit Arnsbach, Kerstenhausen und archiviertem Haarhausen; Python-/JavaScript-Syntax, Rechenwirkung, dynamische Listen, Restore und Konsistenzprüfung getestet.
 
+### Schnellanalyse (04.10.)
+- ⚡ **Dashboard-Button:** `tools/portfolio_generator.py` fügt im Portfolio einen hervorgehobenen Button ein, der `schnellanalyse.html` öffnet.
+- 🧮 **Testbare Rechenlogik:** `assets/schnellanalyse_core.js` kapselt die Formeln (UMD, ohne DOM/Netz/Speicherung) und wird überall aus einer Quelle verwendet – Basisvariante und 10-%-Szenario nutzen dieselbe Funktion `berechne()` mit unterschiedlichem Kaufpreis (keine Duplikate).
+- 🧾 **Zentrale Zielwerte:** `SCHWELLEN` = { Bruttorendite > 5,00 %, Cashflow > 0 €, Kaufpreisfaktor < 20 }. Exakte Grenzwerte gelten als nicht erfüllt. Nirgends sonst hartcodiert.
+- 💰 **Formeln:** Bruttomietrendite = jährliche Kaltmiete / (reiner) Kaufpreis; Kaufpreisfaktor = Kaufpreis / jährliche Kaltmiete; Rate = Darlehen × (Zins + Tilgung) / 100 / 12 (identisch zu `rechenkern.py`/`db_manager.py`); Cashflow = Kaltmiete − nicht umlagefähige Kosten − Rücklage − Rate − sonstige Kosten. Die Bruttorendite-Basis (reiner Kaufpreis) wird in der Oberfläche ausgewiesen.
+- 🔁 **10-%-Szenario:** Szenario-Kaufpreis = 0,90 × Kaufpreis; Miete/Kosten unverändert. Finanzierung ausdrücklich wählbar: **fester Darlehensbetrag** (bleibt im Szenario konstant) oder **prozentualer Anteil** (skaliert mit dem reduzierten Kaufpreis). Die gewählte Annahme wird sichtbar angezeigt; kein stiller Wechsel.
+- 📱 **Umsetzung:** Wiederverwendung von `assets/dashboard.css` und `assets/theme.js` (Dark/Light + responsive), keine neuen Abhängigkeiten. Basis und Szenario stehen nebeneinander/untereinander plus Vergleichstabelle.
+- 💾 **Keine Persistenz:** Die Schnellanalyse rechnet nur im Browser; es werden keine DB-Einträge oder Objektordner verändert. Eingaben sind optional mit Nutzer-Standardwerten vorbelegt (Tilgung 1,0 %).
+- 🧪 **Tests:** `tests/test_schnellanalyse.js` (Node, 14 Tests) deckt Rendite, Faktor, Cashflow, Statusgrenzen, 10-%-Nachlass, feste und prozentuale Darlehenssumme, Validierung und Gesamtstatus ab. Beispiel (KP 300.000 €, KM 1.500 €, Kosten 150 €, Rücklage 150 €, Darlehen 270.000 €, Zins 4 %, Tilgung 2 %) ergibt Bruttorendite 6,00 % / Faktor 16,67 und im Szenario 6,67 % / 15,00 / Kaufpreis 270.000 €.
+
 ---
 
 ## 🔧 Bekannte Eigenheiten / Wichtige Regeln
@@ -152,6 +168,9 @@ Die folgenden Einträge dokumentieren frühere Stände und sind nicht als aktuel
 | `tools/portfolio_generator.py` | Generiert portfolio.html aus der DB |
 | `tools/kalkulation.html` | Generisches Kalkulationstool (für neue Objekte vor der Übersicht) |
 | `tools/rechenkern.py` | Python-Rechenkern (identische Logik, Klartext-Report) |
+| `schnellanalyse.html` | Eigenständige Schnellanalyse (Basis + 10-%-Szenario, keine Speicherung) |
+| `assets/schnellanalyse_core.js` | Testbare Berechnungslogik der Schnellanalyse (zentrale Zielwerte) |
+| `tests/test_schnellanalyse.js` | Node-Tests der Schnellanalyse-Formeln und Statusgrenzen |
 | `objekte/<Name>/<Name>_Übersicht.html` | Hybrid-Übersicht pro Objekt (Eingaben + Ergebnisse + Auto-Sync) |
 | `objekte/<Name>/analyse/` | Analyse-Dokumente (01–05) |
 | `objekte/<Name>/unterlagen/` | Original-Dokumente |

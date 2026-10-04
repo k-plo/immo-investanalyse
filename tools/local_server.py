@@ -150,8 +150,8 @@ class PortfolioHandler(SimpleHTTPRequestHandler):
 
 def main() -> None:
     port = int(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_PORT
-    server = ThreadingHTTPServer(("127.0.0.1", port), PortfolioHandler)
-    print(f"Immobilien-Portfolio: http://127.0.0.1:{port}/")
+    server = ThreadingHTTPServer(("0.0.0.0", port), PortfolioHandler)
+    print(f"Immobilien-Portfolio: http://0.0.0.0:{port}/")
     try:
         server.serve_forever()
     except KeyboardInterrupt:

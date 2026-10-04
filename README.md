@@ -242,6 +242,10 @@ INVESTMENT-STATUS: 🟢 WEITER PRÜFEN | 🟡 NUR MIT KLÄRUNG | 🟠 VERHANDELN
 
 **`tools/rechenkern.py`** – dieselbe Logik in Python, damit jede Zahl nachvollziehbar und prüfbar ist (Ausgabe als Klartext-Report).
 
+### Schnellanalyse (~2 Minuten)
+
+**`schnellanalyse.html`** (vom Portfolio-Button „⚡ Schnellanalyse" aus erreichbar) bewertet ein Immobilienangebot direkt im Browser: Kaufpreis, monatliche Kaltmiete, nicht umlagefähige Kosten, Rücklage, optional sonstige Kosten und Finanzierung. Ausgegeben werden Bruttomietrendite, Kaufpreisfaktor, Cashflow nach Finanzierung und ein Gesamtstatus – jeweils für die Basisvariante und ein Szenario „Kaufpreis 10 % niedriger" samt Vergleich. Die Zielwerte (Rendite > 5 %, Cashflow > 0 €, Faktor < 20; exakte Grenzwerte gelten als nicht erfüllt) liegen zentral in `assets/schnellanalyse_core.js`. Die Finanzierung ist als fester Darlehensbetrag oder als prozentualer Anteil des Kaufpreises wählbar; die gewählte Annahme wird angezeigt und im Szenario beibehalten. Die Seite rechnet nur temporär und speichert nichts. Tests: `node tests/test_schnellanalyse.js`.
+
 ---
 
 ## 7. Goldene Regeln (gelten für jede Analyse)

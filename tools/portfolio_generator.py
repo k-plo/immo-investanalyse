@@ -32,6 +32,7 @@ def main():
   .filter button.sync {{ background: #1a4fa0; color: #fff; border-color: #1a4fa0; margin-left: auto; font-weight: 600; }}
   .filter button.sync:disabled {{ opacity: .55; cursor: wait; }}
   .filter button.analyse {{ flex-basis: 100%; text-align: left; }}
+  .filter button.quick {{ background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700; }}
   #importForm[hidden] {{ display: none !important; }}
   .grid {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }}
   .karte {{ background: #fff; border-radius: 12px; padding: 18px 20px; box-shadow: 0 3px 12px rgba(15,20,32,.10); transition: transform .15s; }}
@@ -79,6 +80,7 @@ def main():
     <button class="sync" onclick="portfolioAktualisieren(this)">🔄 Aktualisieren</button>
     <button class="analyse" type="button" onclick="document.getElementById('importForm').hidden = !document.getElementById('importForm').hidden">🔗 Anzeigenlink importieren</button>
     <button class="analyse" onclick="neueObjekteAnalysieren(this)">➕ Neue Objekte analysieren</button>
+    <button class="analyse quick" type="button" onclick="location.href='schnellanalyse.html'">⚡ Schnellanalyse – Angebot in ~2 Minuten prüfen</button>
   </div>
   <form id="importForm" hidden onsubmit="importListing(event)" style="margin:-6px 0 20px;display:flex;gap:8px;flex-wrap:wrap">
     <input id="listingUrl" type="url" required placeholder="https://www.immowelt.de/..." aria-label="Link zur Immobilienanzeige" style="flex:1 1 300px;min-height:44px;padding:8px 12px;border:1px solid var(--line);border-radius:10px">

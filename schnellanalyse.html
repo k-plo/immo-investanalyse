@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Schnellanalyse – Immobilien-Investment</title>
+<!-- Shared visual layer (same source as portfolio + object pages). -->
+<link rel="stylesheet" href="assets/dashboard.css">
+<style>
+  /* Only page-specific additions; all tokens/base come from dashboard.css. */
+  .sa-note { font-size: 12px; color: var(--muted); line-height: 1.7; margin: 0 0 22px; }
+  .sa-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+  .sa-field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .sa-field label { font-size: 12px; color: #405b68; line-height: 1.35; }
+  .sa-field input, .sa-field select { font-size: 16px; font-weight: 650; min-height: 46px; padding: 11px 13px; border: 1px solid #ccdadf; border-radius: 10px; background: #f8fafb; color: var(--ink); width: 100%; }
+  .sa-field input:focus, .sa-field select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px #116d7214; outline: none; }
+  .sa-field .hint { font-size: 10px; color: var(--muted); }
+  .sa-error { color: #c0392b; font-size: 11px; min-height: 14px; line-height: 1.3; }
+  .sa-field.invalid input, .sa-field.invalid select { border-color: #c0392b; background: #fff5f3; }
+  .sa-subhead { font-size: 13px; font-weight: 700; color: var(--ink); margin: 22px 0 12px; }
+  .sa-fin { display: flex; gap: 18px; flex-wrap: wrap; margin: 4px 0 6px; }
+  .sa-fin label { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink); cursor: pointer; min-height: 44px; }
+  .sa-fin input { width: 18px; height: 18px; accent-color: var(--accent); }
+  .sa-assumption { font-size: 12px; line-height: 1.6; color: var(--ink); background: #eef5f5; border-left: 4px solid var(--accent); border-radius: 10px; padding: 10px 14px; margin: 8px 0 0; }
+  .sa-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+  .sa-variant { border: 1px solid var(--line); border-radius: 14px; padding: 16px; background: #f8fafb; min-width: 0; }
+  .sa-variant.szenario { background: #f4f8fd; }
+  .sa-variant h3 { margin: 0 0 4px; font-size: 14px; }
+  .sa-variant .price { font-size: 12px; color: var(--muted); margin-bottom: 12px; }
+  .sa-kpi { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; padding: 10px 0; border-top: 1px solid var(--line); }
+  .sa-kpi:first-of-type { border-top: 0; }
+  .sa-kpi .k { font-size: 12px; color: var(--ink); }
+  .sa-kpi .target { font-size: 10px; color: var(--muted); }
+  .sa-kpi .val { font-size: 17px; font-weight: 750; text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .sa-kpi .state { grid-column: 1 / -1; font-size: 12px; font-weight: 700; }
+  .sa-pass { color: #1a7f4b; }
+  .sa-fail { color: #c0392b; }
+  .sa-overall { font-size: 18px; font-weight: 800; letter-spacing: -0.02em; }
+  .sa-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .sa-table th, .sa-table td { padding: 11px 12px; border-bottom: 1px solid var(--line); text-align: right; }
+  .sa-table th:first-child, .sa-table td:first-child { text-align: left; }
+  .sa-table th { font-size: 10px; text-transform: uppercase; letter-spacing: .05em; color: #536975; background: #f1f5f7; }
+  .sa-pending { color: var(--muted); font-size: 13px; padding: 14px 0; }
+  @media (max-width: 760px) {
+    .sa-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .sa-compare { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 420px) {
+    .sa-grid { grid-template-columns: 1fr; }
+  }
+  [data-theme="dark"] .sa-field input, [data-theme="dark"] .sa-field select { background: #1b333e; color: var(--ink); border-color: #365261; }
+  [data-theme="dark"] .sa-field input:focus, [data-theme="dark"] .sa-field select:focus { background: #23404a; border-color: var(--accent); }
+  [data-theme="dark"] .sa-field label { color: #acc0cc; }
+  [data-theme="dark"] .sa-variant { background: #14232e; border-color: var(--line); }
+  [data-theme="dark"] .sa-assumption { background: #1c3043; }
+  [data-theme="dark"] .sa-field.invalid input { background: #35272c; border-color: #ef958b; }
+  [data-theme="dark"] .sa-error { color: #ffaba1; }
+  [data-theme="dark"] .sa-table th { background: #1b303d; color: #acc0cc; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Schnellanalyse</h1>
+  <p class="sa-note">
+    In rund zwei Minuten bewerten: Kaufpreis, Kaltmiete, nicht umlagefähige Kosten, Rücklage und Finanzierung eingeben.
+    Es wird laufend gerechnet – <strong>es wird nichts gespeichert und kein bestehendes Objekt verändert</strong>.
+    Die Berechnung nutzt dieselbe Finanzierungslogik wie die Objektübersichten (Rate = Darlehen × (Zins + Tilgung) / 100 / 12).
+  </p>
+
+  <div class="card">
+    <h2 style="margin-top:0">Eingaben</h2>
+    <div class="sa-grid">
+      <div class="sa-field" data-field="kaufpreis">
+        <label for="kaufpreis">Kaufpreis (€)</label>
+        <input id="kaufpreis" type="number" step="1000" inputmode="decimal" placeholder="z. B. 300000">
+        <span class="sa-error" data-error="kaufpreis"></span>
+      </div>
+      <div class="sa-field" data-field="kaltmiete">
+        <label for="kaltmiete">Monatliche Kaltmiete (€)</label>
+        <input id="kaltmiete" type="number" step="10" inputmode="decimal" placeholder="z. B. 1500">
+        <span class="sa-error" data-error="kaltmiete"></span>
+      </div>
+      <div class="sa-field" data-field="nichtUmlagefaehig">
+        <label for="nichtUmlagefaehig">Nicht umlagefähige Kosten (€ / Monat)</label>
+        <input id="nichtUmlagefaehig" type="number" step="5" inputmode="decimal" placeholder="0">
+        <span class="sa-error" data-error="nichtUmlagefaehig"></span>
+      </div>
+      <div class="sa-field" data-field="ruecklage">
+        <label for="ruecklage">Rücklage / Instandhaltungsrücklage (€ / Monat)</label>
+        <input id="ruecklage" type="number" step="5" inputmode="decimal" placeholder="0">
+        <span class="sa-error" data-error="ruecklage"></span>
+      </div>
+      <div class="sa-field" data-field="sonstigeKosten">
+        <label for="sonstigeKosten">Sonstige monatliche Kosten (€) <span class="hint">optional</span></label>
+        <input id="sonstigeKosten" type="number" step="5" inputmode="decimal" placeholder="0">
+        <span class="sa-error" data-error="sonstigeKosten"></span>
+      </div>
+      <div class="sa-field" data-field="zins">
+        <label for="zins">Sollzinssatz (% p. a.)</label>
+        <input id="zins" type="number" step="0.01" inputmode="decimal" placeholder="z. B. 4,0">
+        <span class="sa-error" data-error="zins"></span>
+      </div>
+      <div class="sa-field" data-field="tilgung">
+        <label for="tilgung">Anfängliche Tilgung (% p. a.)</label>
+        <input id="tilgung" type="number" step="0.1" inputmode="decimal" value="1.0">
+        <span class="sa-error" data-error="tilgung"></span>
+      </div>
+      <div class="sa-field" data-field="finanzierungsanteil">
+        <label for="finanzierungsanteil">Finanzierungsanteil (% des Kaufpreises)</label>
+        <input id="finanzierungsanteil" type="number" step="1" inputmode="decimal" placeholder="z. B. 90">
+        <span class="sa-error" data-error="finanzierungsanteil"></span>
+      </div>
+      <div class="sa-field" data-field="darlehen">
+        <label for="darlehen">Darlehensbetrag (€)</label>
+        <input id="darlehen" type="number" step="1000" inputmode="decimal" placeholder="z. B. 270000">
+        <span class="sa-error" data-error="darlehen"></span>
+      </div>
+    </div>
+
+    <div class="sa-subhead">Finanzierung – welche Annahme gilt?</div>
+    <div class="sa-fin">
+      <label><input type="radio" name="finanzierungsart" value="anteil" checked> Prozentualer Anteil des Kaufpreises</label>
+      <label><input type="radio" name="finanzierungsart" value="betrag"> Fester Darlehensbetrag</label>
+    </div>
+    <p class="sa-assumption" id="finanzierungsHinweis"></p>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">Ergebnis</h2>
+    <div id="overallStatus"></div>
+    <div id="results"></div>
+  </div>
+
+  <footer style="margin-top:24px;color:var(--muted);font-size:11px;line-height:1.7">
+    Modellrechnung – keine rechtliche, steuerliche oder finanzielle Beratung.
+    Bruttorendite-Basis: reiner Kaufpreis (ohne Erwerbsnebenkosten). Leerstand, Nebenkosten-Vorauszahlungen und Steuern sind nicht enthalten.
+  </footer>
+</div>
+<script src="assets/theme.js"></script>
+<script src="assets/schnellanalyse_core.js"></script>
+<script>
+(function () {
+  'use strict';
+  var core = window.Schnellanalyse;
+  var FIELDS = ['kaufpreis', 'kaltmiete', 'nichtUmlagefaehig', 'ruecklage', 'sonstigeKosten', 'zins', 'tilgung', 'finanzierungsanteil', 'darlehen'];
+
+  function el(id) { return document.getElementById(id); }
+  function fmtEur(v) {
+    if (v === null || v === undefined || isNaN(v)) return '–';
+    return v.toLocaleString('de-DE', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + ' €';
+  }
+  function fmtPct(v) {
+    if (v === null || v === undefined || isNaN(v)) return '–';
+    return v.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' %';
+  }
+  function fmtFactor(v) {
+    if (v === null || v === undefined || isNaN(v)) return '–';
+    return v.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  function fmtDeltaEur(v) {
+    if (v === null || v === undefined || isNaN(v)) return '–';
+    var s = v.toLocaleString('de-DE', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + ' €';
+    return (v > 0 ? '+' : '') + s;
+  }
+  function fmtDeltaPct(v) {
+    if (v === null || v === undefined || isNaN(v)) return '–';
+    return (v > 0 ? '+' : '') + v.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' %';
+  }
+  function pctFromRaw(v) { return v === null || v === undefined ? '–' : (v * 100).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' %'; }
+
+  function currentInput() {
+    var art = document.querySelector('input[name="finanzierungsart"]:checked');
+    return {
+      kaufpreis: el('kaufpreis').value,
+      kaltmiete: el('kaltmiete').value,
+      nichtUmlagefaehig: el('nichtUmlagefaehig').value,
+      ruecklage: el('ruecklage').value,
+      sonstigeKosten: el('sonstigeKosten').value,
+      zins: el('zins').value,
+      tilgung: el('tilgung').value,
+      finanzierungsart: art ? art.value : core.FINANZIERUNGS_ANTEIL,
+      finanzierungsanteil: el('finanzierungsanteil').value,
+      darlehen: el('darlehen').value
+    };
+  }
+
+  function applyFieldVisibility() {
+    var art = document.querySelector('input[name="finanzierungsart"]:checked').value;
+    var isAnteil = art === core.FINANZIERUNGS_ANTEIL;
+    document.querySelector('[data-field="finanzierungsanteil"]').style.display = isAnteil ? '' : 'none';
+    document.querySelector('[data-field="darlehen"]').style.display = isAnteil ? 'none' : '';
+    var hinweis = el('finanzierungsHinweis');
+    if (isAnteil) {
+      hinweis.textContent = 'Annahme: Das Darlehen ist ein prozentualer Anteil des Kaufpreises. Im 10-%-Szenario sinkt der Kaufpreis – und damit auch der Darlehensbetrag entsprechend.';
+    } else {
+      hinweis.textContent = 'Annahme: Das Darlehen ist ein fester Betrag. Er bleibt im 10-%-Szenario ausdrücklich unverändert (kein stiller Wechsel der Annahme).';
+    }
+  }
+
+  function clearErrors() {
+    FIELDS.forEach(function (id) {
+      var err = document.querySelector('[data-error="' + id + '"]');
+      if (err) err.textContent = '';
+      var field = document.querySelector('[data-field="' + id + '"]');
+      if (field) field.classList.remove('invalid');
+    });
+  }
+
+  function showErrors(errors) {
+    Object.keys(errors).forEach(function (id) {
+      var err = document.querySelector('[data-error="' + id + '"]');
+      if (err) err.textContent = errors[id];
+      var field = document.querySelector('[data-field="' + id + '"]');
+      if (field) field.classList.add('invalid');
+    });
+  }
+
+  function kpiRow(k, target, value, state, stateText) {
+    return '<div class="sa-kpi"><span class="k">' + k + '</span><span class="val">' + value + '</span>' +
+      '<span class="target">' + target + '</span>' +
+      '<span class="state ' + (state ? 'sa-pass' : 'sa-fail') + '">' + (state ? '✓ ' : '✗ ') + stateText + '</span></div>';
+  }
+
+  function variantBlock(title, subtitle, res, status, cls) {
+    return '<div class="sa-variant ' + cls + '">' +
+      '<h3>' + title + '</h3><div class="price">' + subtitle + '</div>' +
+      kpiRow('Bruttomietrendite', 'Ziel: &gt; 5,00 %', fmtPct(res.bruttoRendite), status.bruttoRendite, status.bruttoRendite ? 'erfüllt' : 'nicht erfüllt') +
+      kpiRow('Kaufpreisfaktor', 'Ziel: &lt; 20', fmtFactor(res.kaufpreisfaktor), status.kaufpreisfaktor, status.kaufpreisfaktor ? 'erfüllt' : 'nicht erfüllt') +
+      kpiRow('Cashflow nach Finanzierung', 'Ziel: &gt; 0 €/Monat', fmtEur(res.cashflowMonat), status.cashflow, status.cashflow ? 'erfüllt' : 'nicht erfüllt') +
+      '<div class="sa-kpi"><span class="k">Monatliche Rate</span><span class="val">' + fmtEur(res.rateMonat) + '</span>' +
+      '<span class="target">Zins ' + fmtEur(res.zinsMonat) + ' + Tilgung ' + fmtEur(res.tilgungMonat) + '</span><span></span></div>' +
+      '<div class="sa-kpi"><span class="k">Darlehensbetrag</span><span class="val">' + fmtEur(res.darlehen) + '</span><span class="target"></span><span></span></div>' +
+      '<div class="sa-kpi"><span class="k">Gesamtstatus</span><span class="state ' + (status.bestanden ? 'sa-pass' : 'sa-fail') + '" style="grid-column:1/-1">' + (status.bestanden ? '✓ ' : '✗ ') + status.text + '</span><span class="target"></span></div>' +
+    '</div>';
+  }
+
+  function comparisonTable(a) {
+    var v = a.vergleich;
+    return '<div class="sa-subhead">Vergleich Basis vs. Szenario (10 % Preisnachlass)</div>' +
+      '<div class="table-scroll" tabindex="0" role="region" aria-label="Vergleichstabelle – horizontal scrollbar">' +
+      '<table class="sa-table"><thead><tr><th>Kennzahl</th><th>Basis</th><th>Szenario</th><th>Veränderung</th></tr></thead><tbody>' +
+      '<tr><td>Kaufpreis</td><td>' + fmtEur(a.basis.kaufpreis) + '</td><td>' + fmtEur(a.szenario.kaufpreis) + '</td><td>' + fmtDeltaEur(v.kaufpreis.absolut) + ' (' + fmtDeltaPct(v.kaufpreis.prozent) + ')</td></tr>' +
+      '<tr><td>Bruttomietrendite</td><td>' + fmtPct(a.basis.bruttoRendite) + '</td><td>' + fmtPct(a.szenario.bruttoRendite) + '</td><td>' + fmtDeltaPct(v.bruttoRendite.absolut).replace(' %', '') + ' %-Punkte</td></tr>' +
+      '<tr><td>Kaufpreisfaktor</td><td>' + fmtFactor(a.basis.kaufpreisfaktor) + '</td><td>' + fmtFactor(a.szenario.kaufpreisfaktor) + '</td><td>' + (v.kaufpreisfaktor.absolut > 0 ? '+' : '') + fmtFactor(v.kaufpreisfaktor.absolut) + '</td></tr>' +
+      '<tr><td>Cashflow nach Finanzierung</td><td>' + fmtEur(a.basis.cashflowMonat) + '/M</td><td>' + fmtEur(a.szenario.cashflowMonat) + '/M</td><td>' + fmtDeltaEur(v.cashflowMonat.absolut) + '/M</td></tr>' +
+      '<tr><td>Darlehensbetrag</td><td>' + fmtEur(a.basis.darlehen) + '</td><td>' + fmtEur(a.szenario.darlehen) + '</td><td>' + fmtDeltaEur(v.darlehen.absolut) + '</td></tr>' +
+      '</tbody></table></div>';
+  }
+
+  function render() {
+    clearErrors();
+    var a = core.analyse(currentInput());
+    var results = el('results');
+    var overall = el('overallStatus');
+
+    if (!a.ok) {
+      showErrors(a.errors);
+      overall.innerHTML = '<div class="box yellow">Bitte die markierten Pflichtfelder prüfen. Es wird erst gerechnet, wenn alle Pflichtfelder gültig sind.</div>';
+      results.innerHTML = '<p class="sa-pending">Noch keine Berechnung – Pflichtfelder fehlen oder sind ungültig.</p>';
+      return;
+    }
+
+    var basisPass = a.status.basis.bestanden;
+    var szenarioPass = a.status.szenario.bestanden;
+    overall.innerHTML = '<div class="box ' + (basisPass ? 'green' : 'red') + '">' +
+      '<div class="sa-overall">Basisvariante: ' + (basisPass ? '✓ ' : '✗ ') + a.status.basis.text + '</div>' +
+      '<div class="small" style="margin-top:4px">Szenario „Kaufpreis 10 % niedriger": ' + (szenarioPass ? '✓ ' : '✗ ') + a.status.szenario.text + '</div></div>';
+
+    var assumption = a.finanzierungsart === core.FINANZIERUNGS_BETRAG
+      ? 'Finanzierung: fester Darlehensbetrag (im Szenario unverändert).'
+      : 'Finanzierung: ' + fmtPct(a.values.finanzierungsanteil) + ' des Kaufpreises (im Szenario mit dem reduzierten Kaufpreis neu berechnet).';
+
+    results.innerHTML =
+      '<p class="sa-assumption" style="margin-bottom:16px">' + assumption + ' Bruttorendite-Basis: reiner Kaufpreis = ' + fmtEur(a.basis.kaufpreis) + '.</p>' +
+      '<div class="sa-compare">' +
+        variantBlock('Basisvariante', 'Kaufpreis ' + fmtEur(a.basis.kaufpreis), a.basis, a.status.basis, '') +
+        variantBlock('Szenario: Kaufpreis 10 % niedriger', 'Szenario-Kaufpreis ' + fmtEur(a.szenario.kaufpreis), a.szenario, a.status.szenario, 'szenario') +
+      '</div>' +
+      comparisonTable(a) +
+      '<p class="small" style="margin-top:14px">Zielwerte: Bruttorendite &gt; 5,00 %, Cashflow &gt; 0 €/Monat, Kaufpreisfaktor &lt; 20. Grenzwerte gelten exakt – genau 5,00 %, genau 0 € bzw. genau 20 gelten als <strong>nicht erfüllt</strong>.</p>';
+  }
+
+  document.querySelectorAll('.sa-field input, .sa-fin input').forEach(function (input) {
+    input.addEventListener('input', render);
+    input.addEventListener('change', render);
+  });
+  document.addEventListener('DOMContentLoaded', function () {
+    applyFieldVisibility();
+    render();
+  });
+  applyFieldVisibility();
+  render();
+})();
+</script>
+</body>
+</html>
