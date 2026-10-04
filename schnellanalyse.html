@@ -103,14 +103,15 @@
       <div class="sa-field" data-field="darlehen">
         <label for="darlehen">Darlehensbetrag (€)</label>
         <input id="darlehen" type="number" step="1000" inputmode="decimal" placeholder="z. B. 270000">
+        <span class="hint">Wird beim Moduswechsel aus Kaufpreis × Anteil neu gesetzt, solange das Feld nicht manuell geändert wurde.</span>
         <span class="sa-error" data-error="darlehen"></span>
       </div>
     </div>
 
     <div class="sa-subhead">Finanzierung – welche Annahme gilt?</div>
     <div class="sa-fin">
-      <label><input type="radio" name="finanzierungsart" value="anteil" checked> Prozentualer Anteil des Kaufpreises</label>
-      <label><input type="radio" name="finanzierungsart" value="betrag"> Fester Darlehensbetrag</label>
+      <label><input type="radio" name="finanzierungsart" id="artBetrag" value="betrag"> Fester Darlehensbetrag</label>
+      <label><input type="radio" name="finanzierungsart" id="artAnteil" value="anteil" checked> Prozentualer Anteil des Kaufpreises</label>
     </div>
     <p class="sa-assumption" id="finanzierungsHinweis"></p>
   </div>
@@ -133,6 +134,8 @@
   'use strict';
   var core = window.Schnellanalyse;
   var FIELDS = ['kaufpreis', 'kaltmiete', 'zins', 'tilgung', 'finanzierungsanteil', 'darlehen'];
+  var DEFAULT_ANTEIL = 90; // Standard-Finanzierungsanteil, falls kein Anteil eingegeben ist
+  var darlehenManuell = false; // true, sobald der Nutzer den Darlehensbetrag selbst geändert hat
 
   function el(id) { return document.getElementById(id); }
   function fmtEur(v) {
@@ -174,6 +177,29 @@
   function applyPauschale() {
     var anzeige = el('pauschaleAnzeige');
     if (anzeige) anzeige.value = core.PAUSCHALE_KOSTEN_PROZENT.toLocaleString('de-DE', { maximumFractionDigits: 2 }) + ' % der Kaltmiete';
+  }
+
+  function readNumber(id) {
+    var node = el(id);
+    if (!node) return null;
+    var raw = String(node.value).trim();
+    if (raw === '') return null;
+    var value = parseFloat(raw.replace(',', '.'));
+    return isFinite(value) ? value : null;
+  }
+
+  // Hält den (ggf. ausgeblendeten) Darlehensbetrag mit Kaufpreis × Anteil konsistent,
+  // damit nie ein alter Wert aus dem anderen Finanzierungsmodus stehen bleibt.
+  function syncDarlehenAusAnteil(force) {
+    var anteil = readNumber('finanzierungsanteil');
+    if (anteil === null) {
+      anteil = DEFAULT_ANTEIL;
+      if (force) el('finanzierungsanteil').value = String(DEFAULT_ANTEIL);
+    }
+    var preis = readNumber('kaufpreis');
+    if (preis !== null && preis > 0 && (force || !darlehenManuell)) {
+      el('darlehen').value = String(Math.round(preis * anteil / 100));
+    }
   }
 
   function applyFieldVisibility() {
@@ -274,8 +300,23 @@
   }
 
   document.querySelectorAll('.sa-field input, .sa-fin input').forEach(function (input) {
-    input.addEventListener('input', render);
+    if (input.type === 'radio') return;
+    input.addEventListener('input', function () {
+      if (input.id === 'darlehen') darlehenManuell = true;
+      if (input.id === 'kaufpreis' || input.id === 'finanzierungsanteil') syncDarlehenAusAnteil(false);
+      render();
+    });
     input.addEventListener('change', render);
+  });
+  document.querySelectorAll('input[name="finanzierungsart"]').forEach(function (radio) {
+    radio.addEventListener('change', function () {
+      // Beim Moduswechsel wird der Darlehensbetrag frisch aus Kaufpreis × Anteil abgeleitet,
+      // damit kein alter Wert (z. B. 270.000 €) stehen bleibt.
+      darlehenManuell = false;
+      syncDarlehenAusAnteil(true);
+      applyFieldVisibility();
+      render();
+    });
   });
   document.addEventListener('DOMContentLoaded', function () {
     applyPauschale();
