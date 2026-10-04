@@ -62,7 +62,7 @@
 <div class="wrap">
   <h1>Schnellanalyse</h1>
   <p class="sa-note">
-    In rund zwei Minuten bewerten: Kaufpreis, Kaltmiete, nicht umlagefähige Kosten, Rücklage und Finanzierung eingeben.
+    In rund zwei Minuten bewerten: Kaufpreis, Kaltmiete und Finanzierung eingeben. Nicht umlagefähige Kosten, Rücklage und sonstige Kosten sind pauschal mit <strong>20 % der Kaltmiete</strong> angesetzt.
     Es wird laufend gerechnet – <strong>es wird nichts gespeichert und kein bestehendes Objekt verändert</strong>.
     Die Berechnung nutzt dieselbe Finanzierungslogik wie die Objektübersichten (Rate = Darlehen × (Zins + Tilgung) / 100 / 12).
   </p>
@@ -80,20 +80,10 @@
         <input id="kaltmiete" type="number" step="10" inputmode="decimal" placeholder="z. B. 1500">
         <span class="sa-error" data-error="kaltmiete"></span>
       </div>
-      <div class="sa-field" data-field="nichtUmlagefaehig">
-        <label for="nichtUmlagefaehig">Nicht umlagefähige Kosten (€ / Monat)</label>
-        <input id="nichtUmlagefaehig" type="number" step="5" inputmode="decimal" placeholder="0">
-        <span class="sa-error" data-error="nichtUmlagefaehig"></span>
-      </div>
-      <div class="sa-field" data-field="ruecklage">
-        <label for="ruecklage">Rücklage / Instandhaltungsrücklage (€ / Monat)</label>
-        <input id="ruecklage" type="number" step="5" inputmode="decimal" placeholder="0">
-        <span class="sa-error" data-error="ruecklage"></span>
-      </div>
-      <div class="sa-field" data-field="sonstigeKosten">
-        <label for="sonstigeKosten">Sonstige monatliche Kosten (€) <span class="hint">optional</span></label>
-        <input id="sonstigeKosten" type="number" step="5" inputmode="decimal" placeholder="0">
-        <span class="sa-error" data-error="sonstigeKosten"></span>
+      <div class="sa-field" data-static>
+        <label>Nicht umlagefähige Kosten, Rücklage &amp; sonstige Kosten</label>
+        <input type="text" id="pauschaleAnzeige" value="20 % der Kaltmiete" readonly tabindex="-1" aria-label="Pauschale Kosten: 20 Prozent der Kaltmiete">
+        <span class="hint">Pauschale (nicht umlagefähige Kosten + Rücklage + sonstige), in der Oberfläche ausgewiesen.</span>
       </div>
       <div class="sa-field" data-field="zins">
         <label for="zins">Sollzinssatz (% p. a.)</label>
@@ -133,7 +123,7 @@
 
   <footer style="margin-top:24px;color:var(--muted);font-size:11px;line-height:1.7">
     Modellrechnung – keine rechtliche, steuerliche oder finanzielle Beratung.
-    Bruttorendite-Basis: reiner Kaufpreis (ohne Erwerbsnebenkosten). Leerstand, Nebenkosten-Vorauszahlungen und Steuern sind nicht enthalten.
+    Bruttorendite-Basis: reiner Kaufpreis (ohne Erwerbsnebenkosten). Nicht umlagefähige Kosten, Rücklage und sonstige Kosten pauschal 20 % der Kaltmiete. Leerstand, Nebenkosten-Vorauszahlungen und Steuern sind nicht enthalten.
   </footer>
 </div>
 <script src="assets/theme.js"></script>
@@ -142,7 +132,7 @@
 (function () {
   'use strict';
   var core = window.Schnellanalyse;
-  var FIELDS = ['kaufpreis', 'kaltmiete', 'nichtUmlagefaehig', 'ruecklage', 'sonstigeKosten', 'zins', 'tilgung', 'finanzierungsanteil', 'darlehen'];
+  var FIELDS = ['kaufpreis', 'kaltmiete', 'zins', 'tilgung', 'finanzierungsanteil', 'darlehen'];
 
   function el(id) { return document.getElementById(id); }
   function fmtEur(v) {
@@ -173,15 +163,17 @@
     return {
       kaufpreis: el('kaufpreis').value,
       kaltmiete: el('kaltmiete').value,
-      nichtUmlagefaehig: el('nichtUmlagefaehig').value,
-      ruecklage: el('ruecklage').value,
-      sonstigeKosten: el('sonstigeKosten').value,
       zins: el('zins').value,
       tilgung: el('tilgung').value,
       finanzierungsart: art ? art.value : core.FINANZIERUNGS_ANTEIL,
       finanzierungsanteil: el('finanzierungsanteil').value,
       darlehen: el('darlehen').value
     };
+  }
+
+  function applyPauschale() {
+    var anzeige = el('pauschaleAnzeige');
+    if (anzeige) anzeige.value = core.PAUSCHALE_KOSTEN_PROZENT.toLocaleString('de-DE', { maximumFractionDigits: 2 }) + ' % der Kaltmiete';
   }
 
   function applyFieldVisibility() {
@@ -226,6 +218,7 @@
       '<h3>' + title + '</h3><div class="price">' + subtitle + '</div>' +
       kpiRow('Bruttomietrendite', 'Ziel: &gt; 5,00 %', fmtPct(res.bruttoRendite), status.bruttoRendite, status.bruttoRendite ? 'erfüllt' : 'nicht erfüllt') +
       kpiRow('Kaufpreisfaktor', 'Ziel: &lt; 20', fmtFactor(res.kaufpreisfaktor), status.kaufpreisfaktor, status.kaufpreisfaktor ? 'erfüllt' : 'nicht erfüllt') +
+      '<div class="sa-kpi"><span class="k">Kosten-Pauschale</span><span class="val">− ' + fmtEur(res.pauschaleKostenMonat) + '</span><span class="target">' + res.pauschaleKostenProzent + ' % der Kaltmiete</span><span></span></div>' +
       kpiRow('Cashflow nach Finanzierung', 'Ziel: &gt; 0 €/Monat', fmtEur(res.cashflowMonat), status.cashflow, status.cashflow ? 'erfüllt' : 'nicht erfüllt') +
       '<div class="sa-kpi"><span class="k">Monatliche Rate</span><span class="val">' + fmtEur(res.rateMonat) + '</span>' +
       '<span class="target">Zins ' + fmtEur(res.zinsMonat) + ' + Tilgung ' + fmtEur(res.tilgungMonat) + '</span><span></span></div>' +
@@ -271,7 +264,7 @@
       : 'Finanzierung: ' + fmtPct(a.values.finanzierungsanteil) + ' des Kaufpreises (im Szenario mit dem reduzierten Kaufpreis neu berechnet).';
 
     results.innerHTML =
-      '<p class="sa-assumption" style="margin-bottom:16px">' + assumption + ' Bruttorendite-Basis: reiner Kaufpreis = ' + fmtEur(a.basis.kaufpreis) + '.</p>' +
+      '<p class="sa-assumption" style="margin-bottom:16px">' + assumption + ' Bruttorendite-Basis: reiner Kaufpreis = ' + fmtEur(a.basis.kaufpreis) + '. Kosten-Pauschale: ' + a.basis.pauschaleKostenProzent + ' % der Kaltmiete = ' + fmtEur(a.basis.pauschaleKostenMonat) + '/Monat.</p>' +
       '<div class="sa-compare">' +
         variantBlock('Basisvariante', 'Kaufpreis ' + fmtEur(a.basis.kaufpreis), a.basis, a.status.basis, '') +
         variantBlock('Szenario: Kaufpreis 10 % niedriger', 'Szenario-Kaufpreis ' + fmtEur(a.szenario.kaufpreis), a.szenario, a.status.szenario, 'szenario') +
@@ -285,9 +278,11 @@
     input.addEventListener('change', render);
   });
   document.addEventListener('DOMContentLoaded', function () {
+    applyPauschale();
     applyFieldVisibility();
     render();
   });
+  applyPauschale();
   applyFieldVisibility();
   render();
 })();

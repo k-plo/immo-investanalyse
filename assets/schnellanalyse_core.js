@@ -15,7 +15,8 @@
     kaufpreisfaktorMax: 20.0 // Kaufpreisfaktor muss KLEINER als 20 sein
   });
 
-  var SZENARIO_FAKTOR = 0.90;        // Verhandlungsszenario: Kaufpreis 10 % niedriger
+  var SZENARIO_FAKTOR = 0.90;            // Verhandlungsszenario: Kaufpreis 10 % niedriger
+  var PAUSCHALE_KOSTEN_PROZENT = 20.0;   // Pauschale für nicht umlagefähige Kosten, Rücklage und sonstige Kosten in % der Kaltmiete
   var FINANZIERUNGS_ANTEIL = 'anteil';
   var FINANZIERUNGS_BETRAG = 'betrag';
 
@@ -32,19 +33,12 @@
     var values = {
       kaufpreis: num(input.kaufpreis),
       kaltmiete: num(input.kaltmiete),
-      nichtUmlagefaehig: num(input.nichtUmlagefaehig),
-      ruecklage: num(input.ruecklage),
-      sonstigeKosten: num(input.sonstigeKosten),
       zins: num(input.zins),
       tilgung: num(input.tilgung),
       finanzierungsart: input.finanzierungsart === FINANZIERUNGS_BETRAG ? FINANZIERUNGS_BETRAG : FINANZIERUNGS_ANTEIL,
       darlehen: num(input.darlehen),
       finanzierungsanteil: num(input.finanzierungsanteil)
     };
-    // Optional: leere optionale Kostenfelder gelten als 0 (bestehende Tool-Logik).
-    values.nichtUmlagefaehig = values.nichtUmlagefaehig === null ? 0 : values.nichtUmlagefaehig;
-    values.ruecklage = values.ruecklage === null ? 0 : values.ruecklage;
-    values.sonstigeKosten = values.sonstigeKosten === null ? 0 : values.sonstigeKosten;
 
     if (values.kaufpreis === null) errors.kaufpreis = 'Kaufpreis ist ein Pflichtfeld.';
     else if (values.kaufpreis <= 0) errors.kaufpreis = 'Kaufpreis muss größer als 0 sein.';
@@ -57,10 +51,6 @@
 
     if (values.tilgung === null) errors.tilgung = 'Anfängliche Tilgung ist ein Pflichtfeld.';
     else if (values.tilgung < 0) errors.tilgung = 'Tilgung darf nicht negativ sein.';
-
-    if (values.nichtUmlagefaehig < 0) errors.nichtUmlagefaehig = 'Nicht umlagefähige Kosten dürfen nicht negativ sein.';
-    if (values.ruecklage < 0) errors.ruecklage = 'Rücklage darf nicht negativ sein.';
-    if (values.sonstigeKosten < 0) errors.sonstigeKosten = 'Sonstige Kosten dürfen nicht negativ sein.';
 
     if (values.finanzierungsart === FINANZIERUNGS_ANTEIL) {
       if (values.finanzierungsanteil === null) errors.finanzierungsanteil = 'Finanzierungsanteil ist ein Pflichtfeld.';
@@ -87,9 +77,6 @@
   // Reine Kennzahlenberechnung für EINEN Kaufpreis.
   function berechne(values, kaufpreis) {
     var kaltmiete = values.kaltmiete || 0;
-    var nichtUmlagefaehig = values.nichtUmlagefaehig || 0;
-    var ruecklage = values.ruecklage || 0;
-    var sonstigeKosten = values.sonstigeKosten || 0;
     var zins = values.zins || 0;
     var tilgung = values.tilgung || 0;
 
@@ -101,7 +88,9 @@
     var rate = darlehen * (zins + tilgung) / 100 / 12;
     var zinsMonat = darlehen * zins / 100 / 12;
     var tilgungMonat = darlehen * tilgung / 100 / 12;
-    var cashflow = kaltmiete - nichtUmlagefaehig - ruecklage - rate - sonstigeKosten;
+    // Pauschale Kosten (nicht umlagefähig + Rücklage + sonstige) als % der Kaltmiete.
+    var pauschaleKosten = kaltmiete * PAUSCHALE_KOSTEN_PROZENT / 100;
+    var cashflow = kaltmiete - pauschaleKosten - rate;
 
     return {
       kaufpreis: kaufpreis,
@@ -109,6 +98,8 @@
       jahresKaltmiete: jahresKaltmiete,
       bruttoRendite: bruttoRendite,
       kaufpreisfaktor: kaufpreisfaktor,
+      pauschaleKostenProzent: PAUSCHALE_KOSTEN_PROZENT,
+      pauschaleKostenMonat: pauschaleKosten,
       darlehen: darlehen,
       zinsMonat: zinsMonat,
       tilgungMonat: tilgungMonat,
@@ -187,6 +178,7 @@
   var api = {
     SCHWELLEN: SCHWELLEN,
     SZENARIO_FAKTOR: SZENARIO_FAKTOR,
+    PAUSCHALE_KOSTEN_PROZENT: PAUSCHALE_KOSTEN_PROZENT,
     FINANZIERUNGS_ANTEIL: FINANZIERUNGS_ANTEIL,
     FINANZIERUNGS_BETRAG: FINANZIERUNGS_BETRAG,
     validate: validate,

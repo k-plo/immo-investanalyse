@@ -22,8 +22,10 @@ function assertClose(actual, expected, eps, message) {
 function assertTrue(value, message) { if (!value) throw new Error((message || 'assertTrue') + ': ' + value); }
 function assertFalse(value, message) { if (value) throw new Error((message || 'assertFalse') + ': ' + value); }
 
+// Beispiel: nicht umlagefähige Kosten, Rücklage und sonstige Kosten sind
+// pauschal 20 % der Kaltmiete (1.500 € → 300 €).
 const BEISPIEL = {
-  kaufpreis: 300000, kaltmiete: 1500, nichtUmlagefaehig: 150, ruecklage: 150,
+  kaufpreis: 300000, kaltmiete: 1500,
   zins: 4, tilgung: 2, finanzierungsart: core.FINANZIERUNGS_BETRAG, darlehen: 270000
 };
 
@@ -40,9 +42,10 @@ test('Kaufpreisfaktor Basis = 16,67', () => {
   assertClose(a.basis.kaufpreisfaktor, 300000 / 18000, 1e-9);
 });
 
-// 3) Cashflow nach Finanzierung
-test('Cashflow nach Finanzierung (Rate 1.350 €) = −150 €/Monat', () => {
+// 3) Cashflow nach Finanzierung (inkl. 20-%-Kostenpauschale)
+test('Cashflow nach Finanzierung (Rate 1.350 €, Pauschale 300 €) = −150 €/Monat', () => {
   const a = core.analyse(BEISPIEL);
+  assertClose(a.basis.pauschaleKostenMonat, 300, 1e-9, 'Pauschale');
   assertClose(a.basis.rateMonat, 1350, 1e-9, 'Rate');
   assertClose(a.basis.cashflowMonat, -150, 1e-9, 'Cashflow');
   assertClose(a.basis.cashflowJahr, -1800, 1e-9, 'Cashflow/Jahr');
@@ -55,8 +58,9 @@ test('Rendite genau 5,00 % gilt als nicht erfüllt', () => {
   assertFalse(a.status.basis.bruttoRendite, 'exakt 5 %');
 });
 test('Cashflow genau 0 € gilt als nicht erfüllt', () => {
-  const a = core.analyse({ kaufpreis: 200000, kaltmiete: 1000, nichtUmlagefaehig: 0, ruecklage: 0,
-    sonstigeKosten: 0, zins: 6, tilgung: 0, finanzierungsart: core.FINANZIERUNGS_ANTEIL, finanzierungsanteil: 100 });
+  // Pauschale 20 % von 1.000 € = 200 €; Rate = 160.000 × 6 % / 12 = 800 € → Cashflow 0 €.
+  const a = core.analyse({ kaufpreis: 200000, kaltmiete: 1000, zins: 6, tilgung: 0,
+    finanzierungsart: core.FINANZIERUNGS_ANTEIL, finanzierungsanteil: 80 });
   assertClose(a.basis.cashflowMonat, 0, 1e-9);
   assertFalse(a.status.basis.cashflow, 'exakt 0 €');
 });
@@ -73,10 +77,10 @@ test('Szenario-Kaufpreis = 270.000 €, Rendite 6,67 %, Faktor 15,00', () => {
   assertClose(a.szenario.bruttoRendite, 18000 / 270000 * 100, 1e-9);
   assertClose(a.szenario.kaufpreisfaktor, 15.0, 1e-9);
 });
-test('Szenario lässt Miete und Kosten unverändert', () => {
+test('Szenario lässt Miete und Kostenpauschale unverändert', () => {
   const a = core.analyse(BEISPIEL);
   assertClose(a.szenario.kaltmiete, a.basis.kaltmiete, 1e-9);
-  assertClose(a.szenario.jahresKaltmiete, a.basis.jahresKaltmiete, 1e-9);
+  assertClose(a.szenario.pauschaleKostenMonat, a.basis.pauschaleKostenMonat, 1e-9);
 });
 
 // 6) Feste Darlehenssumme bleibt im Szenario unverändert
@@ -121,8 +125,8 @@ test('Validierung: Kaufpreis 0, negative Kaltmiete, negativer Zins, fehlende Pfl
 
 // 9) Vollständiger Schnellcheck – bestanden und nicht bestanden
 test('Schnellcheck bestanden (alle drei Kriterien erfüllt)', () => {
-  const a = core.analyse({ kaufpreis: 200000, kaltmiete: 1000, nichtUmlagefaehig: 0, ruecklage: 0,
-    sonstigeKosten: 0, zins: 3, tilgung: 1, finanzierungsart: core.FINANZIERUNGS_ANTEIL, finanzierungsanteil: 50 });
+  const a = core.analyse({ kaufpreis: 200000, kaltmiete: 1000, zins: 3, tilgung: 1,
+    finanzierungsart: core.FINANZIERUNGS_ANTEIL, finanzierungsanteil: 50 });
   assertTrue(a.ok);
   assertTrue(a.status.basis.bruttoRendite && a.status.basis.cashflow && a.status.basis.kaufpreisfaktor);
   assertTrue(a.status.basis.bestanden);
@@ -134,14 +138,14 @@ test('Schnellcheck nicht bestanden (Cashflow negativ)', () => {
   assertEqual(a.status.basis.text, 'Schnellcheck nicht bestanden');
 });
 
-// Zusatz: leere optionale Kostenfelder gelten als 0
-test('Leere optionale Kostenfelder zählen als 0', () => {
-  const a = core.analyse({ kaufpreis: 200000, kaltmiete: 1000, zins: 3, tilgung: 1,
-    finanzierungsart: core.FINANZIERUNGS_ANTEIL, finanzierungsanteil: 50 });
-  assertTrue(a.ok);
-  assertEqual(a.values.nichtUmlagefaehig, 0);
-  assertEqual(a.values.ruecklage, 0);
-  assertEqual(a.values.sonstigeKosten, 0);
+// Zusatz: Kostenpauschale zentral und korrekt angewandt
+test('Kostenpauschale = 20 % der Kaltmiete', () => {
+  assertEqual(core.PAUSCHALE_KOSTEN_PROZENT, 20);
+  const a = core.analyse(BEISPIEL);
+  assertClose(a.basis.pauschaleKostenMonat, a.basis.kaltmiete * 0.20, 1e-9);
+  assertClose(a.basis.pauschaleKostenProzent, 20, 1e-9);
+  // Cashflow = Kaltmiete − Pauschale − Rate
+  assertClose(a.basis.cashflowMonat, a.basis.kaltmiete - a.basis.pauschaleKostenMonat - a.basis.rateMonat, 1e-9);
 });
 
 console.log('\n' + passed + ' bestanden, ' + failed + ' fehlgeschlagen.');
