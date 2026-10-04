@@ -22,11 +22,11 @@ function assertClose(actual, expected, eps, message) {
 function assertTrue(value, message) { if (!value) throw new Error((message || 'assertTrue') + ': ' + value); }
 function assertFalse(value, message) { if (value) throw new Error((message || 'assertFalse') + ': ' + value); }
 
-// Beispiel: nicht umlagefähige Kosten, Rücklage und sonstige Kosten sind
-// pauschal 20 % der Kaltmiete (1.500 € → 300 €).
+// Beispiel: Eigenkapital 30.000 € fest, Kaufpreis 300.000 € → Darlehen 270.000 €.
+// Kosten (nicht umlagefähig + Rücklage + sonstige) sind pauschal 20 % der Kaltmiete.
 const BEISPIEL = {
   kaufpreis: 300000, kaltmiete: 1500,
-  zins: 4, tilgung: 2, finanzierungsart: core.FINANZIERUNGS_BETRAG, darlehen: 270000
+  zins: 4, tilgung: 2, ekModus: core.EK_MODUS_BETRAG, ek: 30000
 };
 
 // 1) Bruttomietrendite
@@ -42,9 +42,11 @@ test('Kaufpreisfaktor Basis = 16,67', () => {
   assertClose(a.basis.kaufpreisfaktor, 300000 / 18000, 1e-9);
 });
 
-// 3) Cashflow nach Finanzierung (inkl. 20-%-Kostenpauschale)
-test('Cashflow nach Finanzierung (Rate 1.350 €, Pauschale 300 €) = −150 €/Monat', () => {
+// 3) Darlehen = Kaufpreis − Eigenkapital, Cashflow nach Finanzierung
+test('Darlehen 270.000 €, Rate 1.350 €, Cashflow −150 €/Monat', () => {
   const a = core.analyse(BEISPIEL);
+  assertClose(a.basis.ek, 30000, 1e-9, 'EK');
+  assertClose(a.basis.darlehen, 270000, 1e-9, 'Darlehen');
   assertClose(a.basis.pauschaleKostenMonat, 300, 1e-9, 'Pauschale');
   assertClose(a.basis.rateMonat, 1350, 1e-9, 'Rate');
   assertClose(a.basis.cashflowMonat, -150, 1e-9, 'Cashflow');
@@ -58,9 +60,10 @@ test('Rendite genau 5,00 % gilt als nicht erfüllt', () => {
   assertFalse(a.status.basis.bruttoRendite, 'exakt 5 %');
 });
 test('Cashflow genau 0 € gilt als nicht erfüllt', () => {
-  // Pauschale 20 % von 1.000 € = 200 €; Rate = 160.000 × 6 % / 12 = 800 € → Cashflow 0 €.
+  // Pauschale 20 % von 1.000 € = 200 €; EK 20 % = 40.000 € → Darlehen 160.000 €;
+  // Rate = 160.000 × 6 % / 12 = 800 € → Cashflow 0 €.
   const a = core.analyse({ kaufpreis: 200000, kaltmiete: 1000, zins: 6, tilgung: 0,
-    finanzierungsart: core.FINANZIERUNGS_ANTEIL, finanzierungsanteil: 80 });
+    ekModus: core.EK_MODUS_ANTEIL, ekAnteil: 20 });
   assertClose(a.basis.cashflowMonat, 0, 1e-9);
   assertFalse(a.status.basis.cashflow, 'exakt 0 €');
 });
@@ -83,25 +86,28 @@ test('Szenario lässt Miete und Kostenpauschale unverändert', () => {
   assertClose(a.szenario.pauschaleKostenMonat, a.basis.pauschaleKostenMonat, 1e-9);
 });
 
-// 6) Feste Darlehenssumme bleibt im Szenario unverändert
-test('Fester Darlehensbetrag im Szenario unverändert (270.000 €)', () => {
+// 6) Festes Eigenkapital bleibt im Szenario unverändert
+test('Festes Eigenkapital im Szenario unverändert (30.000 €)', () => {
   const a = core.analyse(BEISPIEL);
-  assertEqual(a.finanzierungsart, core.FINANZIERUNGS_BETRAG);
-  assertClose(a.szenario.darlehen, 270000, 1e-9);
-  assertClose(a.vergleich.darlehen.absolut, 0, 1e-9);
+  assertEqual(a.ekModus, core.EK_MODUS_BETRAG);
+  assertClose(a.szenario.ek, 30000, 1e-9);
+  assertClose(a.szenario.darlehen, 240000, 1e-9); // 270.000 − 30.000
+  assertClose(a.vergleich.ek.absolut, 0, 1e-9);
 });
 
-// 7) Prozentualer Finanzierungsanteil skaliert im Szenario
-test('Prozentualer Finanzierungsanteil (90 %) skaliert im Szenario', () => {
-  const a = core.analyse({ ...BEISPIEL, finanzierungsart: core.FINANZIERUNGS_ANTEIL, finanzierungsanteil: 90 });
-  assertClose(a.basis.darlehen, 270000, 1e-9, 'Basis-Darlehen');
-  assertClose(a.szenario.darlehen, 243000, 1e-9, 'Szenario-Darlehen');
-  assertClose(a.szenario.rateMonat, 243000 * 0.06 / 12, 1e-9, 'Szenario-Rate');
-  assertClose(a.vergleich.darlehen.absolut, -27000, 1e-9);
+// 7) Eigenkapital als Anteil skaliert im Szenario
+test('Eigenkapital als Anteil (20 %) skaliert im Szenario', () => {
+  const a = core.analyse({ ...BEISPIEL, ekModus: core.EK_MODUS_ANTEIL, ekAnteil: 20 });
+  assertClose(a.basis.ek, 60000, 1e-9, 'Basis-EK');
+  assertClose(a.basis.darlehen, 240000, 1e-9, 'Basis-Darlehen');
+  assertClose(a.szenario.ek, 54000, 1e-9, 'Szenario-EK');
+  assertClose(a.szenario.darlehen, 216000, 1e-9, 'Szenario-Darlehen');
+  assertClose(a.szenario.rateMonat, 216000 * 0.06 / 12, 1e-9, 'Szenario-Rate');
+  assertClose(a.vergleich.darlehen.absolut, -24000, 1e-9);
 });
 
 // 8) Eingabevalidierung
-test('Validierung: Kaufpreis 0, negative Kaltmiete, negativer Zins, fehlende Pflichtfelder', () => {
+test('Validierung: Kaufpreis 0, negative Kaltmiete, negativer Zins, negatives EK, EK-Anteil > 100 %, fehlende Pflichtfelder', () => {
   const zero = core.analyse({ ...BEISPIEL, kaufpreis: 0 });
   assertFalse(zero.ok);
   assertTrue(!!zero.errors.kaufpreis);
@@ -114,19 +120,23 @@ test('Validierung: Kaufpreis 0, negative Kaltmiete, negativer Zins, fehlende Pfl
   assertFalse(negZins.ok);
   assertTrue(!!negZins.errors.zins);
 
+  const negEk = core.analyse({ ...BEISPIEL, ekModus: core.EK_MODUS_BETRAG, ek: -5000 });
+  assertFalse(negEk.ok);
+  assertTrue(!!negEk.errors.ek);
+
   const missing = core.analyse({ kaufpreis: 300000 });
   assertFalse(missing.ok);
   assertTrue(!!missing.errors.kaltmiete && !!missing.errors.zins && !!missing.errors.tilgung);
 
-  const badAnteil = core.analyse({ ...BEISPIEL, finanzierungsart: core.FINANZIERUNGS_ANTEIL, finanzierungsanteil: 150 });
+  const badAnteil = core.analyse({ ...BEISPIEL, ekModus: core.EK_MODUS_ANTEIL, ekAnteil: 150 });
   assertFalse(badAnteil.ok);
-  assertTrue(!!badAnteil.errors.finanzierungsanteil);
+  assertTrue(!!badAnteil.errors.ekAnteil);
 });
 
 // 9) Vollständiger Schnellcheck – bestanden und nicht bestanden
 test('Schnellcheck bestanden (alle drei Kriterien erfüllt)', () => {
   const a = core.analyse({ kaufpreis: 200000, kaltmiete: 1000, zins: 3, tilgung: 1,
-    finanzierungsart: core.FINANZIERUNGS_ANTEIL, finanzierungsanteil: 50 });
+    ekModus: core.EK_MODUS_ANTEIL, ekAnteil: 50 });
   assertTrue(a.ok);
   assertTrue(a.status.basis.bruttoRendite && a.status.basis.cashflow && a.status.basis.kaufpreisfaktor);
   assertTrue(a.status.basis.bestanden);

@@ -3,6 +3,7 @@
  * Formeln identisch zur bestehenden Logik in tools/db_manager.py / tools/rechenkern.py:
  *   Bruttomietrendite = jährliche Kaltmiete / Kaufpreis
  *   Kaufpreisfaktor  = Kaufpreis / jährliche Kaltmiete
+ *   Darlehen         = Kaufpreis − Eigenkapital
  *   Rate             = Darlehen * (Zins + Tilgung) / 100 / 12
  */
 (function (root) {
@@ -17,8 +18,8 @@
 
   var SZENARIO_FAKTOR = 0.90;            // Verhandlungsszenario: Kaufpreis 10 % niedriger
   var PAUSCHALE_KOSTEN_PROZENT = 20.0;   // Pauschale für nicht umlagefähige Kosten, Rücklage und sonstige Kosten in % der Kaltmiete
-  var FINANZIERUNGS_ANTEIL = 'anteil';
-  var FINANZIERUNGS_BETRAG = 'betrag';
+  var EK_MODUS_ANTEIL = 'anteil';        // Eigenkapital als Prozent des Kaufpreises
+  var EK_MODUS_BETRAG = 'betrag';        // Eigenkapital als fester Betrag
 
   function num(value) {
     if (value === null || value === undefined || value === '') return null;
@@ -35,9 +36,9 @@
       kaltmiete: num(input.kaltmiete),
       zins: num(input.zins),
       tilgung: num(input.tilgung),
-      finanzierungsart: input.finanzierungsart === FINANZIERUNGS_BETRAG ? FINANZIERUNGS_BETRAG : FINANZIERUNGS_ANTEIL,
-      darlehen: num(input.darlehen),
-      finanzierungsanteil: num(input.finanzierungsanteil)
+      ekModus: input.ekModus === EK_MODUS_BETRAG ? EK_MODUS_BETRAG : EK_MODUS_ANTEIL,
+      ek: num(input.ek),
+      ekAnteil: num(input.ekAnteil)
     };
 
     if (values.kaufpreis === null) errors.kaufpreis = 'Kaufpreis ist ein Pflichtfeld.';
@@ -52,12 +53,12 @@
     if (values.tilgung === null) errors.tilgung = 'Anfängliche Tilgung ist ein Pflichtfeld.';
     else if (values.tilgung < 0) errors.tilgung = 'Tilgung darf nicht negativ sein.';
 
-    if (values.finanzierungsart === FINANZIERUNGS_ANTEIL) {
-      if (values.finanzierungsanteil === null) errors.finanzierungsanteil = 'Finanzierungsanteil ist ein Pflichtfeld.';
-      else if (values.finanzierungsanteil < 0 || values.finanzierungsanteil > 100) errors.finanzierungsanteil = 'Finanzierungsanteil muss zwischen 0 und 100 % liegen.';
+    if (values.ekModus === EK_MODUS_ANTEIL) {
+      if (values.ekAnteil === null) errors.ekAnteil = 'Eigenkapital-Anteil ist ein Pflichtfeld.';
+      else if (values.ekAnteil < 0 || values.ekAnteil > 100) errors.ekAnteil = 'Eigenkapital-Anteil muss zwischen 0 und 100 % liegen.';
     } else {
-      if (values.darlehen === null) errors.darlehen = 'Darlehensbetrag ist ein Pflichtfeld.';
-      else if (values.darlehen < 0) errors.darlehen = 'Darlehensbetrag darf nicht negativ sein.';
+      if (values.ek === null) errors.ek = 'Eigenkapital ist ein Pflichtfeld.';
+      else if (values.ek < 0) errors.ek = 'Eigenkapital darf nicht negativ sein.';
     }
 
     return {
@@ -67,11 +68,16 @@
     };
   }
 
-  // Darlehen je Szenario. Fester Betrag bleibt immer unverändert; ein
-  // prozentualer Anteil skaliert mit dem (ggf. reduzierten) Kaufpreis.
+  // Eigenkapital je Szenario. Fester Betrag bleibt unverändert; ein prozentualer
+  // Anteil skaliert mit dem (ggf. reduzierten) Kaufpreis.
+  function ekFuer(values, kaufpreis) {
+    if (values.ekModus === EK_MODUS_BETRAG) return Math.max(0, values.ek || 0);
+    return Math.max(0, kaufpreis * (values.ekAnteil || 0) / 100);
+  }
+
+  // Darlehen = Kaufpreis − Eigenkapital.
   function darlehenFuer(values, kaufpreis) {
-    if (values.finanzierungsart === FINANZIERUNGS_BETRAG) return Math.max(0, values.darlehen || 0);
-    return Math.max(0, kaufpreis * (values.finanzierungsanteil || 0) / 100);
+    return Math.max(0, kaufpreis - ekFuer(values, kaufpreis));
   }
 
   // Reine Kennzahlenberechnung für EINEN Kaufpreis.
@@ -84,7 +90,8 @@
     var bruttoRendite = kaufpreis > 0 ? jahresKaltmiete / kaufpreis * 100 : null;
     var kaufpreisfaktor = jahresKaltmiete > 0 ? kaufpreis / jahresKaltmiete : null;
 
-    var darlehen = darlehenFuer(values, kaufpreis);
+    var ek = ekFuer(values, kaufpreis);
+    var darlehen = Math.max(0, kaufpreis - ek);
     var rate = darlehen * (zins + tilgung) / 100 / 12;
     var zinsMonat = darlehen * zins / 100 / 12;
     var tilgungMonat = darlehen * tilgung / 100 / 12;
@@ -100,6 +107,7 @@
       kaufpreisfaktor: kaufpreisfaktor,
       pauschaleKostenProzent: PAUSCHALE_KOSTEN_PROZENT,
       pauschaleKostenMonat: pauschaleKosten,
+      ek: ek,
       darlehen: darlehen,
       zinsMonat: zinsMonat,
       tilgungMonat: tilgungMonat,
@@ -160,7 +168,7 @@
       errors: {},
       values: v,
       schwellen: SCHWELLEN,
-      finanzierungsart: v.finanzierungsart,
+      ekModus: v.ekModus,
       szenarioFaktor: SZENARIO_FAKTOR,
       basis: basis,
       szenario: szenario,
@@ -169,6 +177,7 @@
         bruttoRendite: delta(basis.bruttoRendite, szenario.bruttoRendite),
         kaufpreisfaktor: delta(basis.kaufpreisfaktor, szenario.kaufpreisfaktor),
         cashflowMonat: delta(basis.cashflowMonat, szenario.cashflowMonat),
+        ek: delta(basis.ek, szenario.ek),
         darlehen: delta(basis.darlehen, szenario.darlehen),
         kaufpreis: delta(basis.kaufpreis, szenario.kaufpreis)
       }
@@ -179,8 +188,8 @@
     SCHWELLEN: SCHWELLEN,
     SZENARIO_FAKTOR: SZENARIO_FAKTOR,
     PAUSCHALE_KOSTEN_PROZENT: PAUSCHALE_KOSTEN_PROZENT,
-    FINANZIERUNGS_ANTEIL: FINANZIERUNGS_ANTEIL,
-    FINANZIERUNGS_BETRAG: FINANZIERUNGS_BETRAG,
+    EK_MODUS_ANTEIL: EK_MODUS_ANTEIL,
+    EK_MODUS_BETRAG: EK_MODUS_BETRAG,
     validate: validate,
     berechne: berechne,
     statusFuer: statusFuer,

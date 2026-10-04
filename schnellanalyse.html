@@ -62,9 +62,9 @@
 <div class="wrap">
   <h1>Schnellanalyse</h1>
   <p class="sa-note">
-    In rund zwei Minuten bewerten: Kaufpreis, Kaltmiete und Finanzierung eingeben. Nicht umlagefähige Kosten, Rücklage und sonstige Kosten sind pauschal mit <strong>20 % der Kaltmiete</strong> angesetzt.
+    In rund zwei Minuten bewerten: Kaufpreis, Kaltmiete, Eigenkapital und Finanzierung eingeben. Nicht umlagefähige Kosten, Rücklage und sonstige Kosten sind pauschal mit <strong>20 % der Kaltmiete</strong> angesetzt.
     Es wird laufend gerechnet – <strong>es wird nichts gespeichert und kein bestehendes Objekt verändert</strong>.
-    Die Berechnung nutzt dieselbe Finanzierungslogik wie die Objektübersichten (Rate = Darlehen × (Zins + Tilgung) / 100 / 12).
+    Das Darlehen ergibt sich aus Kaufpreis − Eigenkapital (Rate = Darlehen × (Zins + Tilgung) / 100 / 12).
   </p>
 
   <div class="card">
@@ -95,23 +95,23 @@
         <input id="tilgung" type="number" step="0.1" inputmode="decimal" value="1.0">
         <span class="sa-error" data-error="tilgung"></span>
       </div>
-      <div class="sa-field" data-field="finanzierungsanteil">
-        <label for="finanzierungsanteil">Finanzierungsanteil (% des Kaufpreises)</label>
-        <input id="finanzierungsanteil" type="number" step="1" inputmode="decimal" placeholder="z. B. 90">
-        <span class="sa-error" data-error="finanzierungsanteil"></span>
+      <div class="sa-field" data-field="ekAnteil">
+        <label for="ekAnteil">Eigenkapital (% des Kaufpreises)</label>
+        <input id="ekAnteil" type="number" step="1" inputmode="decimal" placeholder="z. B. 20">
+        <span class="sa-error" data-error="ekAnteil"></span>
       </div>
-      <div class="sa-field" data-field="darlehen">
-        <label for="darlehen">Darlehensbetrag (€)</label>
-        <input id="darlehen" type="number" step="1000" inputmode="decimal" placeholder="z. B. 270000">
-        <span class="hint">Wird beim Moduswechsel aus Kaufpreis × Anteil neu gesetzt, solange das Feld nicht manuell geändert wurde.</span>
-        <span class="sa-error" data-error="darlehen"></span>
+      <div class="sa-field" data-field="ek">
+        <label for="ek">Eigenkapital (€)</label>
+        <input id="ek" type="number" step="1000" inputmode="decimal" placeholder="z. B. 60000">
+        <span class="hint">Das Darlehen ergibt sich aus Kaufpreis − Eigenkapital.</span>
+        <span class="sa-error" data-error="ek"></span>
       </div>
     </div>
 
-    <div class="sa-subhead">Finanzierung – welche Annahme gilt?</div>
+    <div class="sa-subhead">Eigenkapital – welche Annahme gilt?</div>
     <div class="sa-fin">
-      <label><input type="radio" name="finanzierungsart" id="artBetrag" value="betrag"> Fester Darlehensbetrag</label>
-      <label><input type="radio" name="finanzierungsart" id="artAnteil" value="anteil" checked> Prozentualer Anteil des Kaufpreises</label>
+      <label><input type="radio" name="ekModus" id="ekModusBetrag" value="betrag"> Festes Eigenkapital</label>
+      <label><input type="radio" name="ekModus" id="ekModusAnteil" value="anteil" checked> Eigenkapital als % des Kaufpreises</label>
     </div>
     <p class="sa-assumption" id="finanzierungsHinweis"></p>
   </div>
@@ -133,9 +133,9 @@
 (function () {
   'use strict';
   var core = window.Schnellanalyse;
-  var FIELDS = ['kaufpreis', 'kaltmiete', 'zins', 'tilgung', 'finanzierungsanteil', 'darlehen'];
-  var DEFAULT_ANTEIL = 90; // Standard-Finanzierungsanteil, falls kein Anteil eingegeben ist
-  var darlehenManuell = false; // true, sobald der Nutzer den Darlehensbetrag selbst geändert hat
+  var FIELDS = ['kaufpreis', 'kaltmiete', 'zins', 'tilgung', 'ekAnteil', 'ek'];
+  var DEFAULT_EK_ANTEIL = 20; // Standard-Eigenkapitalanteil, falls kein Anteil eingegeben ist
+  var ekManuell = false; // true, sobald der Nutzer den Eigenkapitalbetrag selbst geändert hat
 
   function el(id) { return document.getElementById(id); }
   function fmtEur(v) {
@@ -162,15 +162,15 @@
   function pctFromRaw(v) { return v === null || v === undefined ? '–' : (v * 100).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' %'; }
 
   function currentInput() {
-    var art = document.querySelector('input[name="finanzierungsart"]:checked');
+    var art = document.querySelector('input[name="ekModus"]:checked');
     return {
       kaufpreis: el('kaufpreis').value,
       kaltmiete: el('kaltmiete').value,
       zins: el('zins').value,
       tilgung: el('tilgung').value,
-      finanzierungsart: art ? art.value : core.FINANZIERUNGS_ANTEIL,
-      finanzierungsanteil: el('finanzierungsanteil').value,
-      darlehen: el('darlehen').value
+      ekModus: art ? art.value : core.EK_MODUS_ANTEIL,
+      ekAnteil: el('ekAnteil').value,
+      ek: el('ek').value
     };
   }
 
@@ -188,30 +188,30 @@
     return isFinite(value) ? value : null;
   }
 
-  // Hält den (ggf. ausgeblendeten) Darlehensbetrag mit Kaufpreis × Anteil konsistent,
-  // damit nie ein alter Wert aus dem anderen Finanzierungsmodus stehen bleibt.
-  function syncDarlehenAusAnteil(force) {
-    var anteil = readNumber('finanzierungsanteil');
+  // Hält den (ggf. ausgeblendeten) festen Eigenkapitalbetrag mit Kaufpreis × Anteil konsistent,
+  // damit nie ein alter Wert aus dem anderen Modus stehen bleibt.
+  function syncEkAusAnteil(force) {
+    var anteil = readNumber('ekAnteil');
     if (anteil === null) {
-      anteil = DEFAULT_ANTEIL;
-      if (force) el('finanzierungsanteil').value = String(DEFAULT_ANTEIL);
+      anteil = DEFAULT_EK_ANTEIL;
+      if (force) el('ekAnteil').value = String(DEFAULT_EK_ANTEIL);
     }
     var preis = readNumber('kaufpreis');
-    if (preis !== null && preis > 0 && (force || !darlehenManuell)) {
-      el('darlehen').value = String(Math.round(preis * anteil / 100));
+    if (preis !== null && preis > 0 && (force || !ekManuell)) {
+      el('ek').value = String(Math.round(preis * anteil / 100));
     }
   }
 
   function applyFieldVisibility() {
-    var art = document.querySelector('input[name="finanzierungsart"]:checked').value;
-    var isAnteil = art === core.FINANZIERUNGS_ANTEIL;
-    document.querySelector('[data-field="finanzierungsanteil"]').style.display = isAnteil ? '' : 'none';
-    document.querySelector('[data-field="darlehen"]').style.display = isAnteil ? 'none' : '';
+    var art = document.querySelector('input[name="ekModus"]:checked').value;
+    var isAnteil = art === core.EK_MODUS_ANTEIL;
+    document.querySelector('[data-field="ekAnteil"]').style.display = isAnteil ? '' : 'none';
+    document.querySelector('[data-field="ek"]').style.display = isAnteil ? 'none' : '';
     var hinweis = el('finanzierungsHinweis');
     if (isAnteil) {
-      hinweis.textContent = 'Annahme: Das Darlehen ist ein prozentualer Anteil des Kaufpreises. Im 10-%-Szenario sinkt der Kaufpreis – und damit auch der Darlehensbetrag entsprechend.';
+      hinweis.textContent = 'Annahme: Das Eigenkapital ist ein prozentualer Anteil des Kaufpreises. Im 10-%-Szenario sinkt der Kaufpreis – und damit auch das Eigenkapital entsprechend; das Darlehen ergibt sich aus Kaufpreis − Eigenkapital.';
     } else {
-      hinweis.textContent = 'Annahme: Das Darlehen ist ein fester Betrag. Er bleibt im 10-%-Szenario ausdrücklich unverändert (kein stiller Wechsel der Annahme).';
+      hinweis.textContent = 'Annahme: Das Eigenkapital ist ein fester Betrag. Es bleibt im 10-%-Szenario unverändert; das Darlehen sinkt dort mit dem reduzierten Kaufpreis.';
     }
   }
 
@@ -248,7 +248,7 @@
       kpiRow('Cashflow nach Finanzierung', 'Ziel: &gt; 0 €/Monat', fmtEur(res.cashflowMonat), status.cashflow, status.cashflow ? 'erfüllt' : 'nicht erfüllt') +
       '<div class="sa-kpi"><span class="k">Monatliche Rate</span><span class="val">' + fmtEur(res.rateMonat) + '</span>' +
       '<span class="target">Zins ' + fmtEur(res.zinsMonat) + ' + Tilgung ' + fmtEur(res.tilgungMonat) + '</span><span></span></div>' +
-      '<div class="sa-kpi"><span class="k">Darlehensbetrag</span><span class="val">' + fmtEur(res.darlehen) + '</span><span class="target"></span><span></span></div>' +
+      '<div class="sa-kpi"><span class="k">Darlehensbetrag</span><span class="val">' + fmtEur(res.darlehen) + '</span><span class="target">EK ' + fmtEur(res.ek) + '</span><span></span></div>' +
       '<div class="sa-kpi"><span class="k">Gesamtstatus</span><span class="state ' + (status.bestanden ? 'sa-pass' : 'sa-fail') + '" style="grid-column:1/-1">' + (status.bestanden ? '✓ ' : '✗ ') + status.text + '</span><span class="target"></span></div>' +
     '</div>';
   }
@@ -262,6 +262,7 @@
       '<tr><td>Bruttomietrendite</td><td>' + fmtPct(a.basis.bruttoRendite) + '</td><td>' + fmtPct(a.szenario.bruttoRendite) + '</td><td>' + fmtDeltaPct(v.bruttoRendite.absolut).replace(' %', '') + ' %-Punkte</td></tr>' +
       '<tr><td>Kaufpreisfaktor</td><td>' + fmtFactor(a.basis.kaufpreisfaktor) + '</td><td>' + fmtFactor(a.szenario.kaufpreisfaktor) + '</td><td>' + (v.kaufpreisfaktor.absolut > 0 ? '+' : '') + fmtFactor(v.kaufpreisfaktor.absolut) + '</td></tr>' +
       '<tr><td>Cashflow nach Finanzierung</td><td>' + fmtEur(a.basis.cashflowMonat) + '/M</td><td>' + fmtEur(a.szenario.cashflowMonat) + '/M</td><td>' + fmtDeltaEur(v.cashflowMonat.absolut) + '/M</td></tr>' +
+      '<tr><td>Eigenkapital</td><td>' + fmtEur(a.basis.ek) + '</td><td>' + fmtEur(a.szenario.ek) + '</td><td>' + fmtDeltaEur(v.ek.absolut) + '</td></tr>' +
       '<tr><td>Darlehensbetrag</td><td>' + fmtEur(a.basis.darlehen) + '</td><td>' + fmtEur(a.szenario.darlehen) + '</td><td>' + fmtDeltaEur(v.darlehen.absolut) + '</td></tr>' +
       '</tbody></table></div>';
   }
@@ -285,9 +286,9 @@
       '<div class="sa-overall">Basisvariante: ' + (basisPass ? '✓ ' : '✗ ') + a.status.basis.text + '</div>' +
       '<div class="small" style="margin-top:4px">Szenario „Kaufpreis 10 % niedriger": ' + (szenarioPass ? '✓ ' : '✗ ') + a.status.szenario.text + '</div></div>';
 
-    var assumption = a.finanzierungsart === core.FINANZIERUNGS_BETRAG
-      ? 'Finanzierung: fester Darlehensbetrag (im Szenario unverändert).'
-      : 'Finanzierung: ' + fmtPct(a.values.finanzierungsanteil) + ' des Kaufpreises (im Szenario mit dem reduzierten Kaufpreis neu berechnet).';
+    var assumption = a.ekModus === core.EK_MODUS_BETRAG
+      ? 'Finanzierung: festes Eigenkapital von ' + fmtEur(a.basis.ek) + ' (im Szenario unverändert).'
+      : 'Finanzierung: Eigenkapital ' + fmtPct(a.values.ekAnteil) + ' des Kaufpreises (im Szenario mit dem reduzierten Kaufpreis neu berechnet).';
 
     results.innerHTML =
       '<p class="sa-assumption" style="margin-bottom:16px">' + assumption + ' Bruttorendite-Basis: reiner Kaufpreis = ' + fmtEur(a.basis.kaufpreis) + '. Kosten-Pauschale: ' + a.basis.pauschaleKostenProzent + ' % der Kaltmiete = ' + fmtEur(a.basis.pauschaleKostenMonat) + '/Monat.</p>' +
@@ -302,18 +303,18 @@
   document.querySelectorAll('.sa-field input, .sa-fin input').forEach(function (input) {
     if (input.type === 'radio') return;
     input.addEventListener('input', function () {
-      if (input.id === 'darlehen') darlehenManuell = true;
-      if (input.id === 'kaufpreis' || input.id === 'finanzierungsanteil') syncDarlehenAusAnteil(false);
+      if (input.id === 'ek') ekManuell = true;
+      if (input.id === 'kaufpreis' || input.id === 'ekAnteil') syncEkAusAnteil(false);
       render();
     });
     input.addEventListener('change', render);
   });
-  document.querySelectorAll('input[name="finanzierungsart"]').forEach(function (radio) {
+  document.querySelectorAll('input[name="ekModus"]').forEach(function (radio) {
     radio.addEventListener('change', function () {
-      // Beim Moduswechsel wird der Darlehensbetrag frisch aus Kaufpreis × Anteil abgeleitet,
-      // damit kein alter Wert (z. B. 270.000 €) stehen bleibt.
-      darlehenManuell = false;
-      syncDarlehenAusAnteil(true);
+      // Beim Moduswechsel wird der Eigenkapitalbetrag frisch aus Kaufpreis × Anteil abgeleitet,
+      // damit kein alter Wert stehen bleibt.
+      ekManuell = false;
+      syncEkAusAnteil(true);
       applyFieldVisibility();
       render();
     });
