@@ -60,15 +60,27 @@ def main():
 </style>
 <style>{dashboard_css}</style>
 <style>
-  .appearance-controls.has-brand {{ position: fixed; top: 0; left: auto; right: 0; width: auto; flex-direction: column; align-items: flex-end; gap: 3px; margin: 0; }}
-  .appearance-controls.has-brand .portfolio-brand {{ width: 164px; height: auto; }}
+  body {{ padding-top: 104px; }}
+  .pf-header {{ position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: #ffffffed; border-bottom: 1px solid var(--line); box-shadow: 0 4px 18px #16354112; backdrop-filter: blur(12px); }}
+  .pf-header-inner {{ max-width: 1240px; margin: 0 auto; padding: 10px 24px; display: flex; align-items: center; justify-content: space-between; gap: 14px; min-height: 68px; }}
+  .pf-header-inner h1 {{ margin: 0; }}
+  .pf-controls {{ display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }}
+  .pf-controls .portfolio-brand {{ width: auto; height: 52px; opacity: .85; }}
+  [data-theme="dark"] .pf-header {{ background: #14232eed; }}
+  @media (max-width: 760px) {{ .pf-header-inner {{ padding: 8px 16px; }} .pf-controls .portfolio-brand {{ height: 40px; }} }}
 </style>
 <script data-dashboard-theme>{theme_js}</script>
 </head>
 <body>
-<img class="portfolio-brand" src="assets/kp-immobilien-logo.png" alt="KP Immobilien" width="164" height="109">
+<div class="pf-header">
+  <div class="pf-header-inner">
+    <h1>Immobilien-Portfolio</h1>
+    <div class="pf-controls" id="pfControls">
+      <img class="portfolio-brand" src="assets/kp-immobilien-logo.png" alt="KP Immobilien" width="164" height="109">
+    </div>
+  </div>
+</div>
 <div class="wrap">
-  <h1>Immobilien-Portfolio</h1>
   <div class="sub" id="stand">Übersicht aller analysierten Objekte · Quelle: immo_datenbank.db · Live-Werte werden geladen</div>
 
   <div class="filter">
