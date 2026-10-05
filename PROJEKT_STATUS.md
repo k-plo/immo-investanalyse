@@ -5,7 +5,13 @@
 
 ---
 
-## 🕐 Aktueller Stand (04.10.2026)
+## 🕐 Aktueller Stand (05.10.2026)
+
+**Kosten-Switch + neues Objekt Kassel:** In allen aktiven Objektübersichten gibt es jetzt oben neben „Miete und laufende Kosten" einen Umschalter **„Einzeln | Pauschal"**. Pauschal rechnet die laufenden Kosten als **Prozentsatz der Kaltmiete** (vorbelegt 20 %, frei einstellbar) und ersetzt die drei Einzelfelder (Hausgeld, Instandhaltung, Leerstand); die Einzelwerte bleiben gespeichert. Einheitlich umgesetzt in Übersicht, Druckbericht (`assets/print_report.js`) und Portfolio-Rating (`tools/db_manager.py`). Neues Objekt **Kassel – Ysenburgstraße (Wesertor)** aus ohne-makler.net OM-475285 angelegt (230.000 €, 100 m², 4 Zi., Kernsanierung 2019, provisionsfrei) – Kaltmiete 950 € (Nutzer-Vorgabe), Zins 4,60 % (Nutzer-Vorgabe), **Pauschalmodus 20 %**; Analyse-Dateien 01–05, Übersicht, SQLite-Datensatz und Portfolio-Karte vorhanden. Rating **F (31,9)**, Cashflow ca. **−301 €/M** bei 20.000 € EK.
+
+Die folgenden Einträge dokumentieren frühere Stände und sind nicht als aktuelle Datenquelle zu verwenden.
+
+## 🕐 Vorheriger Stand (04.10.2026)
 
 **Neue Funktion „Schnellanalyse":** Im Portfolio-Dashboard gibt es einen gut sichtbaren Button „⚡ Schnellanalyse – Angebot in ~2 Minuten prüfen". Er öffnet die eigenständige Seite `schnellanalyse.html`, mit der ein Immobilienangebot in wenigen Feldern bewertet wird (Kaufpreis, Kaltmiete, Finanzierung). Nicht umlagefähige Kosten, Rücklage und sonstige Kosten werden pauschal mit 20 % der Kaltmiete angesetzt (in der Oberfläche ausgewiesen und zentral in `PAUSCHALE_KOSTEN_PROZENT` definiert). Berechnet werden Bruttomietrendite, Kaufpreisfaktor, monatlicher Cashflow nach Finanzierung und ein Gesamtstatus, jeweils für die Basisvariante und ein Szenario „Kaufpreis 10 % niedriger" – inklusive Vergleichstabelle (absolute/prozentuale Verbesserung). Die Logik liegt testbar in `assets/schnellanalyse_core.js`, Zielwerte zentral in `SCHWELLEN` (Rendite > 5 %, Cashflow > 0 €, Faktor < 20; exakte Grenzwerte gelten als nicht erfüllt). Die Seite rechnet nur temporär und schreibt nichts in Datenbank oder Objektordner. Tests: `node tests/test_schnellanalyse.js` (14 Tests). Details siehe Abschnitte „Was gebaut ist" → „Schnellanalyse (04.10.)".
 

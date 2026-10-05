@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Neuental-Waltersbrück – Am Frankenhain 14 – Übersicht</title>
+<title>Kassel – Ysenburgstraße – Übersicht</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: "Segoe UI", Arial, sans-serif; font-size: 12px; color: #1a2332; line-height: 1.45; background: #e8edf4; padding: 20px 12px 60px; }
@@ -679,13 +679,13 @@ li{margin-bottom:8px}
 
 <button class="print-btn" onclick="window.print()">🖨️ Als PDF drucken</button>
 <div class="saved-note" id="savedNote">✓ Gespeichert</div>
-<script type="application/json" id="inspectionData">{"checks":["Dach, Fenster, Fassade, Kellerfeuchte, Öl-Heizung, Tank und Elektroinstallation dokumentieren.","Wohnfläche, Nebengebäude, Garagen und Gartengrundstück mit Unterlagen und Realität abgleichen.","Energetischen Sanierungsbedarf und grobe Kostenpositionen für Gebäudehülle und Heizung erfassen.","Zufahrt, Erschließung und Eigentumsgrenzen des entfernten Gartengrundstücks prüfen."],"questions":["Warum nennt der Text drei Garagen, der Dateiname aber eine Doppelgarage?","Sind Nebengebäude, Dachgeschossausbau und Gartengrundstück genehmigt und rechtlich zugeordnet?","Wie alt sind Kessel und Öltank, wie hoch war der Ölverbrauch der letzten Jahre?","Welche Grundbuchlasten, Baulasten, Wegerechte oder Altlasten bestehen?"]}</script>
+<script type="application/json" id="inspectionData">{"checks": ["Zustand der Kernsanierung 2019, Heizung und fehlenden Energieausweis vor Ort prüfen.", "Hausgeld, Rücklagenstand und WEG-Beschlüsse aus Wirtschaftsplan/Protokollen abgleichen.", "Bestehende Mietverträge der 4 Studenten und tatsächliche Kaltmiete dokumentieren."], "questions": ["Wie hoch ist die aktuelle Kaltmiete der vier Studenten und welche Laufzeiten bestehen?", "Wie hoch sind Hausgeld, Rücklagenstand und beschlossene Sonderumlagen der WEG?", "Welches Baujahr, welche Heizung und welcher Energieausweis liegen vor?", "Wie sind Kellerabteil, Garten und etwaige Stellplätze laut Teilungserklärung zugeordnet?"]}</script>
 
 <div class="wrap">
 
   <!-- ================= KOPF + EINGABEN ================= -->
   <div class="card">
-    <h1>Neuental-Waltersbrück – Am Frankenhain 14</h1>
+    <h1>Kassel – Ysenburgstraße (Wesertor)</h1>
     <div class="sub" id="objectIdLabel">Objekt-ID wird geladen …</div>
     <div class="hero-status-grid">
       <div class="object-media">
@@ -708,7 +708,7 @@ li{margin-bottom:8px}
       </section>
     </div>
     <div class="box yellow" id="preliminaryNotice" hidden>Voranalyse aus einer Online-Anzeige: Angaben sind ungeprüft. Mietdaten, Unterlagen, Zustand und Rechtslage fehlen noch; daraus abgeleitete Kennzahlen sind keine belastbare Investmententscheidung.</div>
-    <div class="sub" id="objectMetaRow">Einfamilienhaus &middot; Neuental-Waltersbrück &middot; 136 m² &middot; Baujahr 1940 &middot; Energieklasse H</div>
+    <div class="sub" id="objectMetaRow">Objektart &middot; Ort &middot; Wohnfläche &middot; Baujahr &middot; Energieklasse</div>
 
     <div class="toolbar">
       <button class="btn" onclick="zumPortfolio()">🏠 Zum Portfolio</button>
@@ -856,7 +856,7 @@ li{margin-bottom:8px}
 
 <script>
 "use strict";
-const OBJEKT_ORDNER = "Waltersbrück_Am_Frankenhain_14";
+const OBJEKT_ORDNER = "Kassel_Ysenburgstrasse";
 const fmt = (v, d = 0) => (v === null || v === undefined || isNaN(v) ? "–" : v.toLocaleString("de-DE", { minimumFractionDigits: d, maximumFractionDigits: d }));
 const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, c => ({
   "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
@@ -1171,18 +1171,18 @@ function render() {
   // Erwerbsrechnung: fehlende Werte als "ausstehend" zeigen
   const w = v => v === null ? AUSSTEHEND : eur(v);
   document.getElementById("tblErwerb").innerHTML =
-    row([{ v: "Position", num: false }, { v: "Aktuell", num: true }, { v: "Kaufpreis −10 %", num: true }, { v: "", num: false }], true) +
-    row(["Kaufpreis (Angebot)", { v: eur(d.preis), num: true }, { v: eur(d10?.preis), num: true }, ""]) +
-    row(["Grunderwerbsteuer", { v: eur(r.nkAnteile?.grESt), num: true }, { v: eur(r10?.nkAnteile?.grESt), num: true }, ""]) +
-    row(["Notar + Grundbuch", { v: eur(r.nkAnteile?.notar), num: true }, { v: eur(r10?.nkAnteile?.notar), num: true }, ""]) +
-    row(["Maklerprovision", { v: eur(r.nkAnteile?.makler), num: true }, { v: eur(r10?.nkAnteile?.makler), num: true }, ""]) +
-    row(["Renovierung", { v: w(d.renovierung), num: true }, { v: w(d.renovierung), num: true }, ""]) +
-    row(["Sanierung", { v: w(d.sanierung), num: true }, { v: w(d.sanierung), num: true }, ""]) +
-    row(["Sonstige Erwerbskosten", { v: eur(d.sonstige), num: true }, { v: eur(d.sonstige), num: true }, ""]) +
-    row(["<b>Gesamtinvestition</b>", { v: r.berechenbar ? "<b>" + eur(r.gesamt) + "</b>" : AUSSTEHEND, num: true }, { v: r10 ? "<b>" + eur(r10.gesamt) + "</b>" : AUSSTEHEND, num: true }, ""]) +
-    row(["Eigenkapital", { v: eur(d.ek), num: true }, { v: eur(d.ek), num: true }, ""]) +
-    row(["<b>Darlehensbetrag</b>", { v: r.berechenbar ? "<b>" + eur(r.darlehen) + "</b>" : AUSSTEHEND, num: true }, { v: r10 ? "<b>" + eur(r10.darlehen) + "</b>" : AUSSTEHEND, num: true }, ""]) +
-    row(["Gesamtinvestition / m²", { v: r.berechenbar ? eur(r.giProM2) : AUSSTEHEND, num: true }, { v: r10 ? eur(r10.giProM2) : AUSSTEHEND, num: true }, ""]);
+    row([{ v: "Position", num: false }, { v: "Aktuell", num: true }, { v: "Kaufpreis −10 %", num: true }, { v: "", num: false }, { v: "Status / Quelle", num: false }], true) +
+    row(["Kaufpreis (Angebot)", { v: eur(d.preis), num: true }, { v: eur(d10?.preis), num: true }, "", "BELEGT · Quelle eintragen"]) +
+    row(["Grunderwerbsteuer", { v: eur(r.nkAnteile?.grESt), num: true }, { v: eur(r10?.nkAnteile?.grESt), num: true }, "", pct(d.grESt) + " · ANNAHME (Hessen)"]) +
+    row(["Notar + Grundbuch", { v: eur(r.nkAnteile?.notar), num: true }, { v: eur(r10?.nkAnteile?.notar), num: true }, "", pct(d.notar) + " · ANNAHME"]) +
+    row(["Maklerprovision", { v: eur(r.nkAnteile?.makler), num: true }, { v: eur(r10?.nkAnteile?.makler), num: true }, "", pct(d.makler) + " · BELEGT Satz"]) +
+    row(["Renovierung", { v: w(d.renovierung), num: true }, { v: w(d.renovierung), num: true }, "", d.renovierung === null ? "FEHLT – bitte eingeben" : "ANNAHME ⚠️"]) +
+    row(["Sanierung", { v: w(d.sanierung), num: true }, { v: w(d.sanierung), num: true }, "", d.sanierung === null ? "FEHLT – bitte eingeben" : "ANNAHME ⚠️"]) +
+    row(["Sonstige Erwerbskosten", { v: eur(d.sonstige), num: true }, { v: eur(d.sonstige), num: true }, "", "–"]) +
+    row(["<b>Gesamtinvestition</b>", { v: r.berechenbar ? "<b>" + eur(r.gesamt) + "</b>" : AUSSTEHEND, num: true }, { v: r10 ? "<b>" + eur(r10.gesamt) + "</b>" : AUSSTEHEND, num: true }, "", "ABGELEITET"]) +
+    row(["Eigenkapital", { v: eur(d.ek), num: true }, { v: eur(d.ek), num: true }, "", "NUTZER-VORGABE"]) +
+    row(["<b>Darlehensbetrag</b>", { v: r.berechenbar ? "<b>" + eur(r.darlehen) + "</b>" : AUSSTEHEND, num: true }, { v: r10 ? "<b>" + eur(r10.darlehen) + "</b>" : AUSSTEHEND, num: true }, "", "Gesamtinvestition − Eigenkapital"]) +
+    row(["Gesamtinvestition / m²", { v: r.berechenbar ? eur(r.giProM2) : AUSSTEHEND, num: true }, { v: r10 ? eur(r10.giProM2) : AUSSTEHEND, num: true }, "", d.flaeche > 0 ? fmt(d.flaeche, 1) + " m²" : "—"]);
 
   const cash = value => value < 0 ? "−" + eur(Math.abs(value)) : eur(value);
   const kostenRows = r.pauschal

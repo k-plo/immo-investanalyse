@@ -1,0 +1,88 @@
+{
+  "objekt": {
+    "name": "Kassel - Ysenburgstrasse",
+    "adresse": "Ysenburgstraße, 34125 Kassel (Stadtteil Wesertor)",
+    "objektart": "Eigentumswohnung (Mehrfamilienhaus)",
+    "baujahr": null,
+    "wohnflaeche_m2": 100,
+    "nutzflaeche_m2": null,
+    "grundstuecksflaeche_m2": null,
+    "anzahl_einheiten": 10,
+    "zimmer": 4,
+    "etage": 1,
+    "stellplaetze": null,
+    "energieklasse": "",
+    "heizung": ""
+  },
+  "kauf": {
+    "angebotspreis_eur": 230000,
+    "grunderwerbsteuer_prozent": 6.0,
+    "notar_prozent": 1.04,
+    "grundbuch_prozent": 0.53,
+    "makler_prozent": 0.0,
+    "makler_anteil_verkaeufer_prozent": 0,
+    "renovierung_eur": 0,
+    "sanierung_eur": null,
+    "sonstige_erwerbskosten_eur": 0,
+    "renovierung_sanierung_status": "Keine Renovierung kalkuliert; Wohnung laut Inserat 2019 komplett kernsaniert. Gemeinschaftssanierung und Einzelzustand offen."
+  },
+  "miete": {
+    "kaltmiete_monatlich_eur": 950,
+    "nebenkosten_monatlich_eur": null,
+    "leerstand_prozent": 0,
+    "kostenmodus": "pauschal",
+    "pauschale_prozent": 20,
+    "marktuebliche_miete_eur": null,
+    "miete_status": "NUTZER-VORGABE 950 EUR/Monat (9,50 EUR/m²). Inserat nennt keine Miethöhe, obwohl die Wohnung als voll vermietet an 4 Studenten beschrieben ist.",
+    "mietempfehlung": {
+      "empfohlene_kaltmiete_eur": 950,
+      "spanne_eur": [850, 1100],
+      "eur_pro_m2": 9.50,
+      "status": "NUTZER-VORGABE / ORIENTIERUNG",
+      "begruendung": "Nutzer-Entscheidung vom 05.10.2026. Keine belegte Ist-Miete; kein Mietspiegelwert recherchiert. Kasseler Studentenwohnungen grob 8-11 EUR/m²."
+    }
+  },
+  "laufende_kosten": {
+    "modell": "pauschal",
+    "pauschale_prozent_der_kaltmiete": 20,
+    "pauschale_monatlich_eur": 190,
+    "hausgeld_monatlich_eur": null,
+    "verwaltung_prozent_von_miete": 0,
+    "instandhaltung_eur_pro_m2_monat": null,
+    "nicht_umlagefaehige_kosten_monatlich_eur": null,
+    "status": "NUTZER-VORGABE 05.10.2026: laufende Kosten pauschal 20 % der Kaltmiete (nicht umlagefähige Kosten + Instandhaltung + Leerstandsrisiko). Hausgeldaufteilung unbekannt."
+  },
+  "finanzierung": {
+    "eigenkapital_eur": 20000,
+    "zinssatz_prozent": 4.6,
+    "tilgung_prozent": 1.0,
+    "zinsbindung_jahre": 10,
+    "zinsrecherche": {
+      "quelle": "Nutzer-Vorgabe",
+      "status": "VORGABE: 4,60 % (keine Recherche, Nutzer-Entscheidung 05.10.2026)"
+    }
+  },
+  "weg": {
+    "zutreffend": true,
+    "einheiten": 10,
+    "hausverwaltung": null,
+    "instandhaltungsruecklage_eur": null,
+    "geplante_sonderumlagen_eur": null
+  },
+  "annahmen": [
+    "Kaltmiete 950 EUR/Monat ist Nutzer-Vorgabe (05.10.2026); keine belegte Ist-Miete.",
+    "Laufende Kosten pauschal 20 % der Kaltmiete (Nutzer-Vorgabe 05.10.2026); Leerstand im Pauschalmodus nicht separat.",
+    "Zins 4,60 % und Tilgung 1,0 %; Zins ist Nutzer-Vorgabe, kein Bankangebot.",
+    "Keine Renovierungs-/Sanierungskosten kalkuliert; Kernsanierung 2019 laut Inserat, Besichtigung und Unterlagen offen.",
+    "Maklerprovision 0 EUR (provisionsfreier Direktverkauf laut Inserat)."
+  ],
+  "quellen": [
+    {"information": "Inserat", "wert": "230.000 EUR; 100 m²; 4 Zimmer; 1. Obergeschoss; Ysenburgstraße 34125 Kassel; Kernsanierung 2019; voll vermietet an 4 Studenten; provisionsfrei; Kellerabteil; gemeinschaftlicher Garten; 10 Wohnungen im Haus", "quelle": "ohne-makler.net OM-475285, abgerufen 05.10.2026", "status": "BELEGT"},
+    {"information": "Kaufnebenkosten", "wert": "GrESt 6,0 % (13.800 EUR), Notar 1,04 % (2.395 EUR), Grundbuch 0,53 % (1.211 EUR), Makler 0 EUR", "quelle": "Anbieterkalkulation ohne-makler.net, abgerufen 05.10.2026", "status": "BELEGT"},
+    {"information": "Kaltmiete / Zins / Pauschale", "wert": "950 EUR Kaltmiete, 4,60 % Zins, 20 % Pauschale", "quelle": "Nutzer-Vorgabe vom 05.10.2026", "status": "VORGABE"}
+  ],
+  "widersprueche": [
+    "Inserat nennt keine Miethöhe, bezeichnet die Wohnung aber als voll vermietet an 4 Studenten - tatsächliche Kaltmiete und Verträge prüfen.",
+    "Baujahr, Heizungsart und Energieausweis nicht genannt - energetische Bewertung nicht möglich."
+  ]
+}
