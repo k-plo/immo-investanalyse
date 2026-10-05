@@ -19,8 +19,6 @@
   };
   apply(choice || (system.matches ? 'dark' : 'light'));
   document.addEventListener('DOMContentLoaded', () => {
-    const controls = document.createElement('div');
-    controls.className = 'appearance-controls';
     button = document.createElement('button');
     button.type = 'button';
     button.className = 'theme-toggle';
@@ -29,6 +27,15 @@
       try { localStorage.setItem(key, choice); } catch (_) {}
       apply(choice);
     });
+    // Portfolio: der Dunkelmodus-Schalter gehört in den normalen Inhalt (scrollt mit).
+    const host = document.getElementById('pfControls');
+    if (host) {
+      host.append(button);
+      apply(document.documentElement.dataset.theme);
+      return;
+    }
+    const controls = document.createElement('div');
+    controls.className = 'appearance-controls';
     controls.append(button);
     const print = document.querySelector('body > .print-btn');
     if (print) controls.append(print);

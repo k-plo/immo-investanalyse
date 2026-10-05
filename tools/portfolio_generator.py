@@ -60,15 +60,21 @@ def main():
 </style>
 <style>{dashboard_css}</style>
 <style>
-  .appearance-controls.has-brand {{ position: fixed; top: 0; left: auto; right: 0; width: auto; flex-direction: column; align-items: flex-end; gap: 3px; margin: 0; }}
-  .appearance-controls.has-brand .portfolio-brand {{ width: 164px; height: auto; }}
+  .pf-top {{ display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }}
+  .pf-actions {{ display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }}
+  .pf-top .portfolio-brand {{ width: auto; height: 56px; opacity: .85; }}
+  @media (max-width: 760px) {{ .pf-top {{ align-items: center; }} .pf-top .portfolio-brand {{ height: 44px; }} }}
 </style>
 <script data-dashboard-theme>{theme_js}</script>
 </head>
-<body>
-<img class="portfolio-brand" src="assets/kp-immobilien-logo.png" alt="KP Immobilien" width="164" height="109">
+<body class="portfolio-app">
 <div class="wrap">
-  <h1>Immobilien-Portfolio</h1>
+  <div class="pf-top">
+    <h1>Immobilien-Portfolio</h1>
+    <div class="pf-actions" id="pfControls">
+      <img class="portfolio-brand" src="assets/kp-immobilien-logo.png" alt="KP Immobilien" width="164" height="109">
+    </div>
+  </div>
   <div class="sub" id="stand">Übersicht aller analysierten Objekte · Quelle: immo_datenbank.db · Live-Werte werden geladen</div>
 
   <div class="filter">
