@@ -112,7 +112,7 @@ code{overflow-wrap:anywhere}
 .appearance-controls .theme-toggle{margin-left:auto}
 .appearance-controls .print-btn{position:static}
 .appearance-controls .print-btn{margin:0}
-.appearance-controls.has-brand{position:fixed;top:0;right:0;width:auto;max-width:none;flex-direction:column;align-items:flex-end;gap:3px;margin:0}
+.appearance-controls.has-brand{position:fixed;top:0;left:auto;right:0;width:auto;max-width:none;flex-direction:column;align-items:flex-end;gap:3px;margin:0;background:transparent;border-bottom:0;box-shadow:none;backdrop-filter:none}
 .appearance-controls.has-brand .theme-toggle{flex:0 0 auto}
 .portfolio-brand{display:block;width:164px;height:auto;object-fit:contain;opacity:.78}
 [data-theme="dark"] .portfolio-brand{filter:invert(1);opacity:.82}
@@ -214,7 +214,15 @@ h2{font-size:16px;line-height:1.6;letter-spacing:-.015em;text-transform:none;col
 .card>h2:first-child{margin-top:0}
 .input-groups{display:grid;gap:24px}
 .input-group{padding:18px;border:1px solid var(--line);border-radius:12px;background:#f8fafb;min-width:0}
-.input-group h3{margin:0 0 16px;font-size:13px;line-height:1.4;color:var(--ink)}
+.field[hidden]{display:none}
+.input-group h3{margin:0 0 16px;font-size:13px;line-height:1.4;color:var(--ink);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.kosten-switch{display:inline-flex;flex:0 0 auto;border:1px solid var(--line);border-radius:999px;background:#fff;padding:2px;gap:2px}
+.kosten-switch button{appearance:none;border:0;background:transparent;color:var(--muted);font-size:11px;font-weight:650;line-height:1;padding:5px 12px;border-radius:999px;cursor:pointer;transition:background .15s,color .15s}
+.kosten-switch button.active{background:var(--accent);color:#fff}
+[data-theme="dark"] .kosten-switch{background:#10202b;border-color:#365261}
+[data-theme="dark"] .kosten-switch button{color:var(--muted)}
+[data-theme="dark"] .kosten-switch button.active{background:#62c9bd;color:#092a2c}
+@media print{.kosten-switch{display:none!important}}
 .inputs{grid-template-columns:repeat(4,minmax(0,1fr));gap:20px 18px}
 .field{min-width:0;gap:4px}
 .field label{font-size:12px;color:#405b68;min-height:0;line-height:1.35}
@@ -555,9 +563,11 @@ li{margin-bottom:8px}
     const missing = ['renovierung','sanierung','kaltmiete','hausgeld','nebenkostenVorauszahlung','hausgeldNichtUml'].filter(isEmpty);
     const rentMissing = isEmpty('kaltmiete');
     const canCalculate = Boolean(result.berechenbar);
-    const income = data.kaltmiete * 12 * (1 - data.leerstand / 100);
-    const hausgeldNichtUml = data.hausgeldNichtUmlEingegeben ? data.hausgeldNichtUml : Math.max(0, data.hausgeld - data.nebenkostenVorauszahlung);
-    const operating = hausgeldNichtUml * 12 + data.flaeche * data.instand * 12;
+    const pauschal = data.kostenModus === "pauschal";
+    const pauschalSatz = Number.isFinite(data.pauschalProzent) ? data.pauschalProzent : 20;
+    const income = data.kaltmiete * 12 * (pauschal ? 1 : (1 - data.leerstand / 100));
+    const hausgeldNichtUml = pauschal ? 0 : (data.hausgeldNichtUmlEingegeben ? data.hausgeldNichtUml : Math.max(0, data.hausgeld - data.nebenkostenVorauszahlung));
+    const operating = pauschal ? data.kaltmiete * 12 * pauschalSatz / 100 : hausgeldNichtUml * 12 + data.flaeche * data.instand * 12;
     let balance = canCalculate ? result.darlehen : 0;
     let cumIncome = 0, cumExpense = 0;
     const years = Array.from({length:10}, (_,i) => {
@@ -579,12 +589,15 @@ li{margin-bottom:8px}
       row('Renovierung und Sanierung',money(data.renovierung+data.sanierung)),
       row('Zusatzkosten gesamt',money(result.nk+data.renovierung+data.sanierung),true)
     ].join('') : row('Gesamtinvestition','Noch nicht berechenbar');
+    const operatingRows = pauschal
+      ? row('Pauschale laufende Kosten', `${pauschalSatz.toLocaleString('de-DE')} % der Kaltmiete (${money(data.kaltmiete * 12 * pauschalSatz / 100)} / Jahr)`)
+      : row('Leerstand',`${data.leerstand.toLocaleString('de-DE')} % der Kaltmiete`) +
+        row('Nicht umlagefähige Kosten / Monat',money(hausgeldNichtUml)) +
+        row('Voraussichtliche Erstattung/Nachzahlung Mieter',money(data.nebenkostenVorauszahlung - (data.hausgeldNichtUmlEingegeben ? Math.max(0, data.hausgeld - data.hausgeldNichtUml) : data.hausgeld))) +
+        row('Instandhaltung / Jahr',money(data.flaeche*data.instand*12));
     const operations = [
       row('Kaltmiete / Monat',money(data.kaltmiete)),
-      row('Leerstand',`${data.leerstand.toLocaleString('de-DE')} % der Kaltmiete`),
-      row('Nicht umlagefähige Kosten / Monat',money(hausgeldNichtUml)),
-      row('Voraussichtliche Erstattung/Nachzahlung Mieter',money(data.nebenkostenVorauszahlung - (data.hausgeldNichtUmlEingegeben ? Math.max(0, data.hausgeld - data.hausgeldNichtUml) : data.hausgeld))),
-      row('Instandhaltung / Jahr',money(data.flaeche*data.instand*12)),
+      operatingRows,
       row('Kreditrate / Monat',canCalculate?money(result.rate):'–')
     ].join('');
     const riskCells = [...document.querySelectorAll('#tblRisiken tr')].slice(1).map(tr => {
@@ -707,9 +720,11 @@ li{margin-bottom:8px}
       <div class="field"><label class="tip" data-tip="makler">Makler (%)<span class="tipbox"></span></label><input id="makler" type="number" step="0.01"></div>
       <div class="field"><label class="tip" data-tip="sonstige">Sonstige Erwerbskosten (€)<span class="tipbox"></span></label><input id="sonstige" type="number" step="500"></div>
       <div class="field"><label class="tip" data-tip="kaltmiete">Kaltmiete/Monat (€)<span class="tipbox"></span></label><input id="kaltmiete" type="number" step="10"></div>
-      <div class="field"><label class="tip" data-tip="hausgeldNichtUml">Nicht umlagefähiges Hausgeld (€ / Monat)<span class="tipbox"></span></label><input id="hausgeldNichtUml" type="number" step="5" value="35"></div>
-      <div class="field"><label class="tip" data-tip="instand">Instandhaltung (€ / m² / Monat)<span class="tipbox"></span></label><input id="instand" type="number" step="0.1"></div>
-      <div class="field"><label class="tip" data-tip="leerstand">Leerstand (% der Kaltmiete)<span class="tipbox"></span></label><input id="leerstand" type="number" step="0.1"></div>
+      <div class="field field-pauschal" hidden><label class="tip" data-tip="pauschal">Pauschale laufende Kosten (% der Kaltmiete)<span class="tipbox"></span></label><input id="pauschalProzent" type="number" step="0.5" min="0" max="100" data-persist="pauschalProzent" value="20"></div>
+      <div class="field" data-kosten-einzeln><label class="tip" data-tip="hausgeldNichtUml">Nicht umlagefähiges Hausgeld (€ / Monat)<span class="tipbox"></span></label><input id="hausgeldNichtUml" type="number" step="5" value="35"></div>
+      <div class="field" data-kosten-einzeln><label class="tip" data-tip="instand">Instandhaltung (€ / m² / Monat)<span class="tipbox"></span></label><input id="instand" type="number" step="0.1"></div>
+      <div class="field" data-kosten-einzeln><label class="tip" data-tip="leerstand">Leerstand (% der Kaltmiete)<span class="tipbox"></span></label><input id="leerstand" type="number" step="0.1"></div>
+      <input id="kostenModus" type="hidden" data-persist="kostenModus" value="einzeln">
       <div class="field"><label class="tip" data-tip="ek">Eigenkapital (€)<span class="tipbox"></span></label><input id="ek" type="number" step="1000"></div>
       <div class="field"><label class="tip" data-tip="zins">Zinssatz (%)<span class="tipbox"></span></label><input id="zins" type="number" step="0.01"></div>
       <div class="field"><label class="tip" data-tip="tilgung">Tilgung (%)<span class="tipbox"></span></label><input id="tilgung" type="number" step="0.1"></div>
@@ -854,9 +869,36 @@ const DEFAULTS = {
   preis: null, flaeche: null, renovierung: null, sanierung: null,
   grESt: 6.0, notar: 2.0, makler: 3.57, sonstige: 0,
   kaltmiete: null, nebenkostenVorauszahlung: null, hausgeldNichtUml: 35, instand: null, leerstand: 2,
+  pauschalProzent: 20,
   ek: 20000, zins: 4.2, tilgung: 1.0
 };
 const IDS = Object.keys(DEFAULTS);
+const PAUSCHAL_DEFAULT = 20;
+function getKostenModus() {
+  const el = document.getElementById("kostenModus");
+  return el && el.value === "pauschal" ? "pauschal" : "einzeln";
+}
+function aktualisiereKostenModusUI() {
+  const pauschal = getKostenModus() === "pauschal";
+  document.querySelectorAll("[data-kosten-einzeln]").forEach(el => { el.hidden = pauschal; });
+  const pf = document.querySelector(".field-pauschal");
+  if (pf) pf.hidden = !pauschal;
+  const input = document.getElementById("pauschalProzent");
+  if (input && String(input.value).trim() === "") input.value = PAUSCHAL_DEFAULT;
+  document.querySelectorAll(".kosten-switch button").forEach(b => {
+    const active = b.dataset.modus === getKostenModus();
+    b.classList.toggle("active", active);
+    b.setAttribute("aria-pressed", active ? "true" : "false");
+  });
+}
+function setKostenModus(modus) {
+  const el = document.getElementById("kostenModus");
+  if (!el) return;
+  el.value = modus === "pauschal" ? "pauschal" : "einzeln";
+  aktualisiereKostenModusUI();
+  render();
+  saveState();
+}
 let lastLoadedState = {};
 let objektMeta = {};
 const INPUT_GROUPS = [
@@ -884,11 +926,26 @@ function gruppiereEingaben() {
     instand: "Instandhaltung (€ / m² / Monat)",
     leerstand: "Leerstand (% der Kaltmiete)"
   };
-  INPUT_GROUPS.forEach(group => {
+  const KOSTEN_FELDER = ["kaltmiete", "pauschalProzent", "hausgeldNichtUml", "instand", "leerstand", "kostenModus"];
+  const gruppen = INPUT_GROUPS.map(group => ({ ...group, fields: group.fields.flatMap(id => KOSTEN_FELDER.includes(id) ? [] : [id]) }));
+  gruppen[1].fields.push(...KOSTEN_FELDER);
+  gruppen.forEach(group => {
     const section = document.createElement("section");
     section.className = "input-group";
     const heading = document.createElement("h3");
     heading.textContent = group.title;
+    if (group.title === "Miete und laufende Kosten") {
+      const sw = document.createElement("div");
+      sw.className = "kosten-switch";
+      sw.setAttribute("role", "group");
+      sw.setAttribute("aria-label", "Laufende Kosten: Einzelwerte oder Pauschale");
+      sw.innerHTML = '<button type="button" data-modus="einzeln" aria-pressed="false">Einzeln</button><button type="button" data-modus="pauschal" aria-pressed="false">Pauschal</button>';
+      sw.addEventListener("click", e => {
+        const btn = e.target.closest("button[data-modus]");
+        if (btn) setKostenModus(btn.dataset.modus);
+      });
+      heading.append(sw);
+    }
     const fields = document.createElement("div");
     fields.className = "inputs";
     group.fields.forEach(id => {
@@ -907,9 +964,12 @@ function readInputs() {
   const d = {};
   IDS.forEach(id => {
     const input = document.getElementById(id);
+    const visible = !input || !input.closest("[hidden]") || id === "pauschalProzent";
     const raw = input ? String(input.value).trim() : "";
-    d[id] = raw === "" ? 0 : (parseFloat(raw.replace(",", ".")) || 0);
+    d[id] = !visible ? null : (raw === "" ? 0 : (parseFloat(raw.replace(",", ".")) || 0));
   });
+  d.kostenModus = getKostenModus();
+  if (d.pauschalProzent === null) d.pauschalProzent = PAUSCHAL_DEFAULT;
   d.hausgeldNichtUmlEingegeben = String(document.getElementById("hausgeldNichtUml").value).trim() !== "";
   // Leere optionale Felder gelten als 0; nur die Rechengrundlage ist zwingend.
   d.fehlend = ["preis", "flaeche"].filter(id => d[id] <= 0);
@@ -948,17 +1008,22 @@ function calc(d) {
   r.giProM2 = d.flaeche > 0 ? r.gesamt / d.flaeche : 0;
 
   const jahresKalt = d.kaltmiete * 12;
-  const lf = Math.max(0, 1 - d.leerstand / 100);
+  const pauschal = d.kostenModus === "pauschal";
+  const pauschalSatz = d.pauschalProzent !== null && d.pauschalProzent !== undefined ? d.pauschalProzent : PAUSCHAL_DEFAULT;
+  const lf = pauschal ? 1 : Math.max(0, 1 - d.leerstand / 100);
+  r.pauschal = pauschal;
+  r.pauschalSatz = pauschalSatz;
   r.mieteEffektiv = jahresKalt * lf;
-  const hausgeldNichtUml = d.hausgeldNichtUmlEingegeben ? d.hausgeldNichtUml : 35;
+  const hausgeldNichtUml = pauschal ? 0 : (d.hausgeldNichtUmlEingegeben ? d.hausgeldNichtUml : 35);
   const umlagefaehigeKosten = 0;
   r.nebenkostenSaldoMonat = d.nebenkostenVorauszahlung - umlagefaehigeKosten;
   r.nebenkostenSaldoJahr = r.nebenkostenSaldoMonat * 12;
   r.hgUmlagefaehigJahr = 0;
   r.hgNichtUmlJahr = hausgeldNichtUml * 12;
   r.verwaltungJahr = 0;
-  r.instandJahr = d.flaeche * d.instand * 12;
-  r.netto = r.mieteEffektiv - r.hgNichtUmlJahr - r.verwaltungJahr - r.instandJahr;
+  r.instandJahr = pauschal ? 0 : d.flaeche * d.instand * 12;
+  r.pauschalJahr = pauschal ? jahresKalt * pauschalSatz / 100 : 0;
+  r.netto = r.mieteEffektiv - r.hgNichtUmlJahr - r.verwaltungJahr - r.instandJahr - r.pauschalJahr;
   r.cfVor = r.netto / 12;
 
   r.bruttoR = d.preis > 0 ? jahresKalt / d.preis * 100 : 0;
@@ -1000,15 +1065,17 @@ function calc(d) {
   r.fixInvest = fixInvest;
   r.nkPro = nkPro;
   r.maxPreis = zt > 0 ? Math.max(0, (r.cfVor + (d.ek - fixInvest) * zt) / ((1 + nkPro) * zt)) : 0;
-  r.breakEvenMiete = lf > 0 ? (r.rate * 12 + r.hgNichtUmlJahr + r.verwaltungJahr + r.instandJahr) / lf / 12 : 0;
+  r.breakEvenMiete = lf > 0 ? (r.rate * 12 + r.hgNichtUmlJahr + r.verwaltungJahr + r.instandJahr + r.pauschalJahr) / lf / 12 : 0;
   r.spielraum = r.maxPreis - d.preis;
 
   // Stress-Tests
-  const nettoMit = (kmJahr, instF = 1, lfF = lf) => kmJahr * lfF - r.hgNichtUmlJahr - r.verwaltungJahr - r.instandJahr * instF;
+  const nettoMit = (kmJahr, instF = 1, lfF = lf) => pauschal
+    ? kmJahr - kmJahr * pauschalSatz / 100
+    : kmJahr * lfF - r.hgNichtUmlJahr - r.verwaltungJahr - r.instandJahr * instF;
   r.stress = [
     ["Miete −10 %", nettoMit(jahresKalt * 0.9) / 12 - r.rate],
-    ["Leerstand +2 %-Punkte", nettoMit(jahresKalt, 1, Math.max(0, 1 - (d.leerstand + 2) / 100)) / 12 - r.rate],
-    ["Instandhaltung +50 %", nettoMit(jahresKalt, 1.5) / 12 - r.rate],
+    ["Leerstand +2 %-Punkte", pauschal ? r.cfVor - r.rate : nettoMit(jahresKalt, 1, Math.max(0, 1 - (d.leerstand + 2) / 100)) / 12 - r.rate],
+    ["Instandhaltung +50 %", pauschal ? r.cfVor - r.rate : nettoMit(jahresKalt, 1.5) / 12 - r.rate],
     ["Zins +2,0 %-Punkte", r.cfVor - r.darlehen * (d.zins + 2 + d.tilgung) / 100 / 12],
     ["Sanierung +10 % KP (finanziert)", r.cfVor - (r.darlehen + d.preis * 0.10) * zt],
     ["Wert −10 % (Einmal-Effekt)", r.cf]
@@ -1110,13 +1177,16 @@ function render() {
     row(["Gesamtinvestition / m²", { v: r.berechenbar ? eur(r.giProM2) : AUSSTEHEND, num: true }, { v: r10 ? eur(r10.giProM2) : AUSSTEHEND, num: true }, ""]);
 
   const cash = value => value < 0 ? "−" + eur(Math.abs(value)) : eur(value);
+  const kostenRows = r.pauschal
+    ? row(["<b>Pauschale " + fmt(r.pauschalSatz, r.pauschalSatz % 1 ? 1 : 0) + " % der Kaltmiete</b>", { v: "−" + eur(r.pauschalJahr / 12), num: true }, { v: "−" + eur(r10.pauschalJahr / 12), num: true }, "", { v: "−" + eur(r.pauschalJahr), num: true }, { v: "−" + eur(r10.pauschalJahr), num: true }])
+    : row(["Leerstand " + pct(d.leerstand), { v: "−" + eur(d.kaltmiete - r.mieteEffektiv / 12), num: true }, { v: "−" + eur(d.kaltmiete - r10.mieteEffektiv / 12), num: true }, "", { v: "−" + eur(d.kaltmiete * 12 - r.mieteEffektiv), num: true }, { v: "−" + eur(d.kaltmiete * 12 - r10.mieteEffektiv), num: true }]) +
+      row(["<b>Effektive Mieteinnahmen</b>", { v: "<b>" + eur(r.mieteEffektiv / 12) + "</b>", num: true }, { v: "<b>" + eur(r10.mieteEffektiv / 12) + "</b>", num: true }, "", { v: "<b>" + eur(r.mieteEffektiv) + "</b>", num: true }, { v: "<b>" + eur(r10.mieteEffektiv) + "</b>", num: true }]) +
+      row(["Nicht umlagefähiges Hausgeld inkl. Verwaltung", { v: "−" + eur(r.hgNichtUmlJahr / 12), num: true }, { v: "−" + eur(r10.hgNichtUmlJahr / 12), num: true }, "", { v: "−" + eur(r.hgNichtUmlJahr), num: true }, { v: "−" + eur(r10.hgNichtUmlJahr), num: true }]) +
+      row(["Instandhaltung", { v: "−" + eur(r.instandJahr / 12), num: true }, { v: "−" + eur(r10.instandJahr / 12), num: true }, "", { v: "−" + eur(r.instandJahr), num: true }, { v: "−" + eur(r10.instandJahr), num: true }]);
   document.getElementById("tblCashflow").innerHTML = r.berechenbar
     ? row([{ v: "Position", num: false }, { v: "Aktuell / Monat", num: true }, { v: "−10 % / Monat", num: true }, { v: "", num: false }, { v: "Aktuell / Jahr", num: true }, { v: "−10 % / Jahr", num: true }], true) +
       row(["Kaltmiete", { v: eur(d.kaltmiete), num: true }, { v: eur(d.kaltmiete), num: true }, "", { v: eur(d.kaltmiete * 12), num: true }, { v: eur(d.kaltmiete * 12), num: true }]) +
-      row(["Leerstand " + pct(d.leerstand), { v: "−" + eur(d.kaltmiete - r.mieteEffektiv / 12), num: true }, { v: "−" + eur(d.kaltmiete - r10.mieteEffektiv / 12), num: true }, "", { v: "−" + eur(d.kaltmiete * 12 - r.mieteEffektiv), num: true }, { v: "−" + eur(d.kaltmiete * 12 - r10.mieteEffektiv), num: true }]) +
-      row(["<b>Effektive Mieteinnahmen</b>", { v: "<b>" + eur(r.mieteEffektiv / 12) + "</b>", num: true }, { v: "<b>" + eur(r10.mieteEffektiv / 12) + "</b>", num: true }, "", { v: "<b>" + eur(r.mieteEffektiv) + "</b>", num: true }, { v: "<b>" + eur(r10.mieteEffektiv) + "</b>", num: true }]) +
-      row(["Nicht umlagefähiges Hausgeld inkl. Verwaltung", { v: "−" + eur(r.hgNichtUmlJahr / 12), num: true }, { v: "−" + eur(r10.hgNichtUmlJahr / 12), num: true }, "", { v: "−" + eur(r.hgNichtUmlJahr), num: true }, { v: "−" + eur(r10.hgNichtUmlJahr), num: true }]) +
-      row(["Instandhaltung", { v: "−" + eur(r.instandJahr / 12), num: true }, { v: "−" + eur(r10.instandJahr / 12), num: true }, "", { v: "−" + eur(r.instandJahr), num: true }, { v: "−" + eur(r10.instandJahr), num: true }]) +
+      kostenRows +
       row(["<b>Cashflow vor Finanzierung</b>", { v: "<b>" + eur(r.cfVor) + "</b>", num: true }, { v: "<b>" + eur(r10.cfVor) + "</b>", num: true }, "", { v: "<b>" + eur(r.cfVor * 12) + "</b>", num: true }, { v: "<b>" + eur(r10.cfVor * 12) + "</b>", num: true }]) +
       row(["Zinsanteil " + pct(d.zins), { v: "−" + eur(r.zinsJahr / 12), num: true }, { v: "−" + eur(r10.zinsJahr / 12), num: true }, "", { v: "−" + eur(r.zinsJahr), num: true }, { v: "−" + eur(r10.zinsJahr), num: true }]) +
       row(["Tilgungsanteil " + pct(d.tilgung), { v: "−" + eur(r.tilgJahr / 12), num: true }, { v: "−" + eur(r10.tilgJahr / 12), num: true }, "", { v: "−" + eur(r.tilgJahr), num: true }, { v: "−" + eur(r10.tilgJahr), num: true }]) +
@@ -1205,6 +1275,7 @@ function render() {
   dq.push(["Zinssätze (aktuelles Marktniveau recherchieren)", "BELEGT (extern)", "z. B. CHECK24, Datum eintragen"]);
   dq.push([d.kaltmiete === null ? "Kaltmiete: ausstehend" : `Kaltmiete ${eur(d.kaltmiete)}/M (${d.flaeche > 0 ? eur(d.kaltmiete / d.flaeche) : "–"}/m²)`, d.kaltmiete === null ? "AUSSTEHEND" : "EINGABE", d.kaltmiete === null ? "Bitte eingeben – Regionalvergleich recherchieren" : "Deine Eingabe"]);
   dq.push([d.ek === null ? "Eigenkapital: ausstehend" : `Eigenkapital ${eur(d.ek)}`, d.ek === null ? "AUSSTEHEND" : "EINGABE", d.ek === null ? "Bitte eingeben" : "Deine Eingabe"]);
+  const pauschalLabel = d.kostenModus === "pauschal" ? "Pauschale " + fmt(d.pauschalProzent, d.pauschalProzent % 1 ? 1 : 0) + " %" : null;
   const annahmeListe = [];
   if (d.renovierung === null) annahmeListe.push("Renovierung");
   else annahmeListe.push("Renovierung " + eur(d.renovierung));
@@ -1212,7 +1283,8 @@ function render() {
   else annahmeListe.push("Sanierung " + eur(d.sanierung));
   if (d.tilgung === null) annahmeListe.push("Tilgung");
   else annahmeListe.push("Tilgung " + pct(d.tilgung));
-  if (d.leerstand === null) annahmeListe.push("Leerstand");
+  if (pauschalLabel) annahmeListe.push(pauschalLabel + " der Kaltmiete (laufende Kosten inkl. Leerstand)");
+  else if (d.leerstand === null) annahmeListe.push("Leerstand");
   else annahmeListe.push("Leerstand " + fmt(d.leerstand, 1) + " % der Kaltmiete");
   dq.push([annahmeListe.join(", "), "ANNAHME", "Platzhalter – nicht belegt"]);
   dq.push(["Objekt-spezifische Annahmen hier eintragen (z. B. Heizstrom-Schätzung)", "ANNAHME (Orientierung)", "Rechenweg dokumentieren"]);
@@ -1257,6 +1329,7 @@ const TIPS = {
   nebenkostenVorauszahlung: "Monatliche Vorauszahlung des Mieters auf umlagefähige Betriebskosten. Sie ist keine zusätzliche Kaltmiete und wird dem Hausgeld gegenübergestellt.",
   nebenkostenSaldo: "Positiv: voraussichtliche Erstattung an den Mieter. Negativ: voraussichtliche Nachzahlung des Mieters. Null: Vorauszahlung entspricht den Kosten.",
   hausgeldNichtUml: "Kosten, die der Eigentümer monatlich selbst trägt. Ein belegter Wert aus Unterlagen bleibt maßgeblich; fehlt er, rechnet das Tool mit 35 € Pauschale.",
+  pauschal: "Pauschalmodus: Die laufenden Kosten werden als Prozentsatz der Kaltmiete angesetzt (Vorgabe 20 %). Das ersetzt nicht umlagefähiges Hausgeld, Instandhaltung und den Leerstandsabschlag in einer Position. Der Satz ist frei einstellbar; die drei Einzelfelder bleiben gespeichert und gelten wieder nach dem Zurückschalten auf Einzeln.",
   instand: "Monatlicher Ansatz nach Wohnfläche: 1,00–1,50 €/m²/Monat für neuere oder gepflegte Häuser, 2,00–5,00 €/m²/Monat für ältere Bestandsimmobilien. Quelle: Verband Privater Bauherren über Interhyp, abgerufen 25.09.2026. Berechnung: Wohnfläche × Eingabe.",
   leerstand: "Sicherheitsabschlag auf die Kaltmiete für Mieterwechsel und Vermietungsrisiko. Nutzer-Vorgabe: 2 % der Kaltmiete.",
   ek: "Eigenkapital = dein eigenes Geld, das du einbringst. Mehr EK = kleinere Rate, aber weniger Rendite auf dein Geld. Weniger EK = größere Rate, höheres Risiko. Das Tool berechnet unten Break-Even-EK je Zinsszenario.",
@@ -1460,6 +1533,7 @@ function applyState(s) {
   });
   renderRisiken(Array.isArray(s._risiken) ? s._risiken : []);
   aktualisiereExterneLink();
+  aktualisiereKostenModusUI();
   render();
 }
 // Objektdaten-Zeile unter dem Link automatisch aus den Objekt-Metadaten (DB) und Eingaben füllen.
@@ -1561,6 +1635,7 @@ async function exportJson() {
   window.addEventListener("scroll", closeTip, true);
   window.addEventListener("resize", closeTip);
   gruppiereEingaben();
+  aktualisiereKostenModusUI();
   IDS.forEach(id => {
     const input = document.getElementById(id);
     if (input) input.value = DEFAULTS[id];

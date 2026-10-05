@@ -224,7 +224,7 @@ def berechne_rating(state: dict, risiken: list) -> dict:
             return None
     felder = ["preis", "flaeche", "renovierung", "sanierung", "grESt", "notar",
               "makler", "sonstige", "kaltmiete", "hausgeld", "nebenkostenVorauszahlung", "hausgeldNichtUml",
-              "instand", "leerstand", "ek", "zins", "tilgung"]
+              "instand", "leerstand", "pauschalProzent", "ek", "zins", "tilgung"]
     werte = {feld: f(state.get(feld)) or 0 for feld in felder}
     km, preis = werte["kaltmiete"], werte["preis"]
     brutto = km * 12 / preis * 100 if preis > 0 and f(state.get("kaltmiete")) is not None else None
@@ -232,13 +232,16 @@ def berechne_rating(state: dict, risiken: list) -> dict:
     n1, p1 = note_rendite(brutto)
     if preis > 0 and werte["flaeche"] > 0:
         ek, tilg, zins = werte["ek"], werte["tilgung"], werte["zins"]
-        lf = max(0, 1 - werte["leerstand"] / 100)
-        hg = werte["hausgeldNichtUml"] if state.get("hausgeldNichtUml") not in (None, "") else 35
-        inst_jahr = werte["flaeche"] * werte["instand"] * 12
+        pauschal = (state.get("kostenModus") or state.get("p_kostenModus")) == "pauschal"
+        pauschal_satz = 20 if state.get("pauschalProzent") in (None, "") else werte["pauschalProzent"]
+        lf = 1 if pauschal else max(0, 1 - werte["leerstand"] / 100)
+        hg = 0 if pauschal else (werte["hausgeldNichtUml"] if state.get("hausgeldNichtUml") not in (None, "") else 35)
+        inst_jahr = 0 if pauschal else werte["flaeche"] * werte["instand"] * 12
+        pauschal_jahr = km * 12 * pauschal_satz / 100 if pauschal else 0
         hg_total = werte["hausgeld"]
         nk_proz = werte["grESt"] + werte["notar"] + werte["makler"]
         fix = werte["renovierung"] + werte["sanierung"] + werte["sonstige"]
-        netto_jahr = km * 12 * lf - hg * 12 - inst_jahr
+        netto_jahr = km * 12 * lf - hg * 12 - inst_jahr - pauschal_jahr
         cf_vor = netto_jahr / 12
         gesamt = preis * (1 + nk_proz / 100) + fix
         darlehen = max(0, gesamt - ek)
@@ -246,7 +249,7 @@ def berechne_rating(state: dict, risiken: list) -> dict:
         cf_nach = cf_vor - rate
         netto_rendite = netto_jahr / preis * 100
         ltv = darlehen / preis * 100
-        break_even = (rate * 12 + hg * 12 + inst_jahr) / lf / 12 if lf > 0 else None
+        break_even = (rate * 12 + hg * 12 + inst_jahr + pauschal_jahr) / lf / 12 if lf > 0 else None
         zt = (zins + tilg) / 100 / 12
         nk_faktor = 1 + nk_proz / 100
         max_preis = max(0, (cf_vor + (ek - fix) * zt) / (nk_faktor * zt)) if zt > 0 else 0

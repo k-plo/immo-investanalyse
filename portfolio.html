@@ -159,7 +159,14 @@ h2{font-size:16px;line-height:1.6;letter-spacing:-.015em;text-transform:none;col
 .card>h2:first-child{margin-top:0}
 .input-groups{display:grid;gap:24px}
 .input-group{padding:18px;border:1px solid var(--line);border-radius:12px;background:#f8fafb;min-width:0}
-.input-group h3{margin:0 0 16px;font-size:13px;line-height:1.4;color:var(--ink)}
+.input-group h3{margin:0 0 16px;font-size:13px;line-height:1.4;color:var(--ink);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.kosten-switch{display:inline-flex;flex:0 0 auto;border:1px solid var(--line);border-radius:999px;background:#fff;padding:2px;gap:2px}
+.kosten-switch button{appearance:none;border:0;background:transparent;color:var(--muted);font-size:11px;font-weight:650;line-height:1;padding:5px 12px;border-radius:999px;cursor:pointer;transition:background .15s,color .15s}
+.kosten-switch button.active{background:var(--accent);color:#fff}
+[data-theme="dark"] .kosten-switch{background:#10202b;border-color:#365261}
+[data-theme="dark"] .kosten-switch button{color:var(--muted)}
+[data-theme="dark"] .kosten-switch button.active{background:#62c9bd;color:#092a2c}
+@media print{.kosten-switch{display:none!important}}
 .inputs{grid-template-columns:repeat(4,minmax(0,1fr));gap:20px 18px}
 .field{min-width:0;gap:4px}
 .field label{font-size:12px;color:#405b68;min-height:0;line-height:1.35}

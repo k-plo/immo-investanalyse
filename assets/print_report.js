@@ -33,9 +33,11 @@
     const missing = ['renovierung','sanierung','kaltmiete','hausgeld','nebenkostenVorauszahlung','hausgeldNichtUml'].filter(isEmpty);
     const rentMissing = isEmpty('kaltmiete');
     const canCalculate = Boolean(result.berechenbar);
-    const income = data.kaltmiete * 12 * (1 - data.leerstand / 100);
-    const hausgeldNichtUml = data.hausgeldNichtUmlEingegeben ? data.hausgeldNichtUml : Math.max(0, data.hausgeld - data.nebenkostenVorauszahlung);
-    const operating = hausgeldNichtUml * 12 + data.flaeche * data.instand * 12;
+    const pauschal = data.kostenModus === "pauschal";
+    const pauschalSatz = Number.isFinite(data.pauschalProzent) ? data.pauschalProzent : 20;
+    const income = data.kaltmiete * 12 * (pauschal ? 1 : (1 - data.leerstand / 100));
+    const hausgeldNichtUml = pauschal ? 0 : (data.hausgeldNichtUmlEingegeben ? data.hausgeldNichtUml : Math.max(0, data.hausgeld - data.nebenkostenVorauszahlung));
+    const operating = pauschal ? data.kaltmiete * 12 * pauschalSatz / 100 : hausgeldNichtUml * 12 + data.flaeche * data.instand * 12;
     let balance = canCalculate ? result.darlehen : 0;
     let cumIncome = 0, cumExpense = 0;
     const years = Array.from({length:10}, (_,i) => {
@@ -57,12 +59,15 @@
       row('Renovierung und Sanierung',money(data.renovierung+data.sanierung)),
       row('Zusatzkosten gesamt',money(result.nk+data.renovierung+data.sanierung),true)
     ].join('') : row('Gesamtinvestition','Noch nicht berechenbar');
+    const operatingRows = pauschal
+      ? row('Pauschale laufende Kosten', `${pauschalSatz.toLocaleString('de-DE')} % der Kaltmiete (${money(data.kaltmiete * 12 * pauschalSatz / 100)} / Jahr)`)
+      : row('Leerstand',`${data.leerstand.toLocaleString('de-DE')} % der Kaltmiete`) +
+        row('Nicht umlagefähige Kosten / Monat',money(hausgeldNichtUml)) +
+        row('Voraussichtliche Erstattung/Nachzahlung Mieter',money(data.nebenkostenVorauszahlung - (data.hausgeldNichtUmlEingegeben ? Math.max(0, data.hausgeld - data.hausgeldNichtUml) : data.hausgeld))) +
+        row('Instandhaltung / Jahr',money(data.flaeche*data.instand*12));
     const operations = [
       row('Kaltmiete / Monat',money(data.kaltmiete)),
-      row('Leerstand',`${data.leerstand.toLocaleString('de-DE')} % der Kaltmiete`),
-      row('Nicht umlagefähige Kosten / Monat',money(hausgeldNichtUml)),
-      row('Voraussichtliche Erstattung/Nachzahlung Mieter',money(data.nebenkostenVorauszahlung - (data.hausgeldNichtUmlEingegeben ? Math.max(0, data.hausgeld - data.hausgeldNichtUml) : data.hausgeld))),
-      row('Instandhaltung / Jahr',money(data.flaeche*data.instand*12)),
+      operatingRows,
       row('Kreditrate / Monat',canCalculate?money(result.rate):'–')
     ].join('');
     const riskCells = [...document.querySelectorAll('#tblRisiken tr')].slice(1).map(tr => {
