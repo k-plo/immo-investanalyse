@@ -218,14 +218,8 @@ li{margin-bottom:8px}
 @media print{body{background:#fff;padding:0;font-size:10px}.wrap{max-width:none}.wrap::before{display:none}.card{border:0;border-radius:0;box-shadow:none;padding:10px 0}.card:first-child{border-top:0}.print-btn,.toolbar,.saved-note,.edit-hint,.filter{display:none!important}.inputs,.kpis{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.field input{min-height:0;padding:0;border:0;background:none;font-size:11px}.field label{min-height:0;font-size:9px}.kpi{padding:8px}.kpi .v{font-size:17px}.table-scroll{overflow:visible;border:0}.table-scroll table{min-width:0;font-size:10px}th,td{padding:5px}.box{padding:10px}h2{margin-top:20px;font-size:13px}.tipbox{display:none!important}.grid{grid-template-columns:1fr 1fr}.karte{break-inside:avoid}.karte::after{display:none}}
 </style>
 <style>
-  body { padding-top: 104px; }
-  .pf-header { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: #ffffffed; border-bottom: 1px solid var(--line); box-shadow: 0 4px 18px #16354112; backdrop-filter: blur(12px); }
-  .pf-header-inner { max-width: 1240px; margin: 0 auto; padding: 10px 24px; display: flex; align-items: center; justify-content: space-between; gap: 14px; min-height: 68px; }
-  .pf-header-inner h1 { margin: 0; }
-  .pf-controls { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
-  .pf-controls .portfolio-brand { width: auto; height: 52px; opacity: .85; }
-  [data-theme="dark"] .pf-header { background: #14232eed; }
-  @media (max-width: 760px) { .pf-header-inner { padding: 8px 16px; } .pf-controls .portfolio-brand { height: 40px; } }
+  .appearance-controls.has-brand { position: fixed; top: 0; left: auto; right: 0; width: auto; flex-direction: column; align-items: flex-end; gap: 3px; margin: 0; }
+  .appearance-controls.has-brand .portfolio-brand { width: 164px; height: auto; }
 </style>
 <script data-dashboard-theme>/* Presentation only: separate key, no access to property state or sync. */
 (() => {
@@ -248,6 +242,8 @@ li{margin-bottom:8px}
   };
   apply(choice || (system.matches ? 'dark' : 'light'));
   document.addEventListener('DOMContentLoaded', () => {
+    const controls = document.createElement('div');
+    controls.className = 'appearance-controls';
     button = document.createElement('button');
     button.type = 'button';
     button.className = 'theme-toggle';
@@ -256,15 +252,6 @@ li{margin-bottom:8px}
       try { localStorage.setItem(key, choice); } catch (_) {}
       apply(choice);
     });
-    // Portfolio: Dunkelmodus-Schalter sitzt im festen Kopfbereich neben Logo und Überschrift.
-    const host = document.getElementById('pfControls');
-    if (host) {
-      host.append(button);
-      apply(document.documentElement.dataset.theme);
-      return;
-    }
-    const controls = document.createElement('div');
-    controls.className = 'appearance-controls';
     controls.append(button);
     const print = document.querySelector('body > .print-btn');
     if (print) controls.append(print);
@@ -291,15 +278,9 @@ li{margin-bottom:8px}
 </script>
 </head>
 <body>
-<div class="pf-header">
-  <div class="pf-header-inner">
-    <h1>Immobilien-Portfolio</h1>
-    <div class="pf-controls" id="pfControls">
-      <img class="portfolio-brand" src="assets/kp-immobilien-logo.png" alt="KP Immobilien" width="164" height="109">
-    </div>
-  </div>
-</div>
+<img class="portfolio-brand" src="assets/kp-immobilien-logo.png" alt="KP Immobilien" width="164" height="109">
 <div class="wrap">
+  <h1>Immobilien-Portfolio</h1>
   <div class="sub" id="stand">Übersicht aller analysierten Objekte · Quelle: immo_datenbank.db · Live-Werte werden geladen</div>
 
   <div class="filter">
