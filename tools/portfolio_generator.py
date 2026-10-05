@@ -60,10 +60,11 @@ def main():
 </style>
 <style>{dashboard_css}</style>
 <style>
-  .pf-top {{ display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }}
+  body.portfolio-app {{ padding-top: 16px; }}
+  .pf-top {{ display: flex; align-items: center; justify-content: space-between; gap: 16px; }}
   .pf-actions {{ display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }}
-  .pf-top .portfolio-brand {{ width: auto; height: 56px; opacity: .85; }}
-  @media (max-width: 760px) {{ .pf-top {{ align-items: center; }} .pf-top .portfolio-brand {{ height: 44px; }} }}
+  .pf-top .portfolio-brand {{ width: auto; height: 96px; opacity: .85; }}
+  @media (max-width: 760px) {{ .pf-top .portfolio-brand {{ height: 56px; }} }}
 </style>
 <script data-dashboard-theme>{theme_js}</script>
 </head>
