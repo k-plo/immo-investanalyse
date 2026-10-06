@@ -1017,17 +1017,22 @@ function calc(d) {
   r.giProM2 = d.flaeche > 0 ? r.gesamt / d.flaeche : 0;
 
   const jahresKalt = d.kaltmiete * 12;
-  const lf = Math.max(0, 1 - d.leerstand / 100);
+  const pauschal = d.kostenModus === "pauschal";
+  const pauschalSatz = d.pauschalProzent !== null && d.pauschalProzent !== undefined ? d.pauschalProzent : PAUSCHAL_DEFAULT;
+  const lf = pauschal ? 1 : Math.max(0, 1 - d.leerstand / 100);
+  r.pauschal = pauschal;
+  r.pauschalSatz = pauschalSatz;
   r.mieteEffektiv = jahresKalt * lf;
-  const hausgeldNichtUml = d.hausgeldNichtUmlEingegeben ? d.hausgeldNichtUml : 64.88;
+  const hausgeldNichtUml = pauschal ? 0 : (d.hausgeldNichtUmlEingegeben ? d.hausgeldNichtUml : 64.88);
   const umlagefaehigeKosten = 0;
   r.nebenkostenSaldoMonat = d.nebenkostenVorauszahlung - umlagefaehigeKosten;
   r.nebenkostenSaldoJahr = r.nebenkostenSaldoMonat * 12;
   r.hgUmlagefaehigJahr = 0;
   r.hgNichtUmlJahr = hausgeldNichtUml * 12;
   r.verwaltungJahr = 0;
-  r.instandJahr = d.flaeche * d.instand * 12;
-  r.netto = r.mieteEffektiv - r.hgNichtUmlJahr - r.verwaltungJahr - r.instandJahr;
+  r.instandJahr = pauschal ? 0 : d.flaeche * d.instand * 12;
+  r.pauschalJahr = pauschal ? jahresKalt * pauschalSatz / 100 : 0;
+  r.netto = r.mieteEffektiv - r.hgNichtUmlJahr - r.verwaltungJahr - r.instandJahr - r.pauschalJahr;
   r.cfVor = r.netto / 12;
 
   r.bruttoR = d.preis > 0 ? jahresKalt / d.preis * 100 : 0;

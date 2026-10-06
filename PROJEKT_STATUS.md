@@ -5,9 +5,9 @@
 
 ---
 
-## 🕐 Aktueller Stand (05.10.2026)
+## 🕐 Aktueller Stand (06.10.2026)
 
-**Kosten-Switch + neues Objekt Kassel:** In allen aktiven Objektübersichten gibt es jetzt oben neben „Miete und laufende Kosten" einen Umschalter **„Einzeln | Pauschal"**. Pauschal rechnet die laufenden Kosten als **Prozentsatz der Kaltmiete** (vorbelegt 20 %, frei einstellbar) und ersetzt die drei Einzelfelder (Hausgeld, Instandhaltung, Leerstand); die Einzelwerte bleiben gespeichert. Einheitlich umgesetzt in Übersicht, Druckbericht (`assets/print_report.js`) und Portfolio-Rating (`tools/db_manager.py`). Neues Objekt **Kassel – Ysenburgstraße (Wesertor)** aus ohne-makler.net OM-475285 angelegt (230.000 €, 100 m², 4 Zi., Kernsanierung 2019, provisionsfrei) – Kaltmiete 950 € (Nutzer-Vorgabe), Zins 4,60 % (Nutzer-Vorgabe), **Pauschalmodus 20 %**; Analyse-Dateien 01–05, Übersicht, SQLite-Datensatz und Portfolio-Karte vorhanden. Rating **F (31,9)**, Cashflow ca. **−301 €/M** bei 20.000 € EK.
+**Kosten-Switch + Objekte Kassel/Schwalmstadt:** In den aktiven Objektübersichten gibt es neben „Miete und laufende Kosten" den Umschalter **„Einzeln | Pauschal"**. Pauschal rechnet die laufenden Kosten als **Prozentsatz der Kaltmiete** (vorbelegt 20 %, frei einstellbar) und ersetzt die drei Einzelfelder (Hausgeld, Instandhaltung, Leerstand); die Einzelwerte bleiben gespeichert. Einheitlich umgesetzt in Übersicht, Druckbericht (`assets/print_report.js`) und Portfolio-Rating (`tools/db_manager.py`). Neues Objekt **Kassel – Ysenburgstraße (Wesertor)** aus ohne-makler.net OM-475285 angelegt (230.000 €, 100 m², 4 Zi., Kernsanierung 2019, provisionsfrei) – Kaltmiete 950 € (Nutzer-Vorgabe), Zins 4,60 % (Nutzer-Vorgabe), **Pauschalmodus 20 %**; Analyse-Dateien 01–05, Übersicht, SQLite-Datensatz und Portfolio-Karte vorhanden. Rating **F (31,9)**, Cashflow ca. **−301 €/M** bei 20.000 € EK. Fehler in der Schwalmstadt-Übersicht behoben: `calc()` verwendete `pauschal` ohne Definition; Pauschalmodus wird nun auch dort in Cashflow und Kostenberechnung berücksichtigt. SQLite-Laden im Browser mit DB-Revision 138 ohne Dialog- oder JavaScript-Fehler verifiziert.
 
 Die folgenden Einträge dokumentieren frühere Stände und sind nicht als aktuelle Datenquelle zu verwenden.
 
