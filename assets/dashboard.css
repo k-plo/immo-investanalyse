@@ -94,7 +94,6 @@ button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-v
 .karte-name{font-size:19px;font-weight:750;letter-spacing:-.035em;line-height:1.25}
 .karte-type{display:inline-flex;align-items:center;padding:2px 7px;border:1px solid #c9e1de;border-radius:999px;background:#eaf5f3;color:#185f62;font-size:10px;font-weight:750;line-height:1.4;white-space:nowrap}
 [data-theme="dark"] .karte-type{background:#1d4245;border-color:#397375;color:#9ae0d4}
-.rating-badge{font-size:16px;border-radius:9px;min-width:34px;text-align:center;padding:4px 8px}
 .karte-sub{font-size:11px;line-height:1.45;margin:6px 0 9px;color:var(--muted)}
 .karte-details{font-size:10px;gap:5px;margin-bottom:9px}
 .karte-details span{background:#f4f7f8;border-radius:6px;padding:3px 6px;color:#526975}

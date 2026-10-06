@@ -118,13 +118,16 @@ def portfolio_rows() -> list[dict]:
                    o.adresse,o.objektart,o.baujahr,o.zimmer,o.stellplaetze,
                    o.grundstuecksflaeche,o.kaufpreis,o.wohnflaeche,o.status,o.html_pfad,
                    o.revision,o.geaendert_am,k.gesamtinvest,k.brutto_rendite,k.netto_rendite,
-                   k.cf_nach,k.coc,k.kaltmiete,k.ek,k.zins,k.tilgung,k.rate,
-                   r.gesamt_rating,r.punkte
+                   k.cf_nach,k.coc,k.kaltmiete,k.ek,k.zins,k.tilgung,k.rate
             FROM objekte o
             LEFT JOIN kalkulation k ON k.objekt_id=o.id
-            LEFT JOIN rating r ON r.objekt_id=o.id
             WHERE COALESCE(o.status,'aktiv') <> 'archiviert'
-            ORDER BY r.punkte DESC, o.name
+            ORDER BY CASE
+                WHEN json_extract(o.state_json, '$.p_statusFinanzierung') = 1 THEN 3
+                WHEN json_extract(o.state_json, '$.p_statusBesichtigung') = 1 THEN 2
+                WHEN json_extract(o.state_json, '$.p_statusAnfrage') = 1 THEN 1
+                ELSE 0
+            END, o.name
         """).fetchall()
     return [dict(row) for row in rows]
 

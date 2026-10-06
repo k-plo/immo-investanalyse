@@ -12,7 +12,6 @@
   .sub { color: #5a6a85; font-size: 12px; margin-bottom: 18px; }
   .filter { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
   .filter button { background: #fff; border: 1px solid #c9d4e6; border-radius: 20px; padding: 6px 14px; font-size: 12px; cursor: pointer; }
-  .filter button.aktiv { background: #1a4fa0; color: #fff; border-color: #1a4fa0; }
   .filter button.sync { background: #1a4fa0; color: #fff; border-color: #1a4fa0; margin-left: auto; font-weight: 600; }
   .filter button.sync:disabled { opacity: .55; cursor: wait; }
   .filter button.analyse { flex-basis: 100%; text-align: left; }
@@ -23,7 +22,6 @@
   .karte:hover { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(15,20,32,.15); }
   .karte-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
   .karte-name { font-size: 15px; font-weight: 700; }
-  .rating-badge { font-size: 20px; font-weight: 800; border-radius: 10px; padding: 6px 14px; }
   .karte-sub { color: #5a6a85; font-size: 11px; margin: 4px 0 10px; }
   .karte-details { display: flex; gap: 14px; flex-wrap: wrap; font-size: 11px; color: #3a4a65; margin-bottom: 10px; }
   .karte-kpis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 10px; }
@@ -138,7 +136,6 @@ button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-v
 .karte-name{font-size:19px;font-weight:750;letter-spacing:-.035em;line-height:1.25}
 .karte-type{display:inline-flex;align-items:center;padding:2px 7px;border:1px solid #c9e1de;border-radius:999px;background:#eaf5f3;color:#185f62;font-size:10px;font-weight:750;line-height:1.4;white-space:nowrap}
 [data-theme="dark"] .karte-type{background:#1d4245;border-color:#397375;color:#9ae0d4}
-.rating-badge{font-size:16px;border-radius:9px;min-width:34px;text-align:center;padding:4px 8px}
 .karte-sub{font-size:11px;line-height:1.45;margin:6px 0 9px;color:var(--muted)}
 .karte-details{font-size:10px;gap:5px;margin-bottom:9px}
 .karte-details span{background:#f4f7f8;border-radius:6px;padding:3px 6px;color:#526975}
@@ -298,11 +295,6 @@ li{margin-bottom:8px}
   <div class="sub" id="stand">Übersicht aller analysierten Objekte · Quelle: immo_datenbank.db · Live-Werte werden geladen</div>
 
   <div class="filter">
-    <button class="aktiv" onclick="filtern('alle', this)">Alle</button>
-    <button onclick="filtern('A', this)">Rating A</button>
-    <button onclick="filtern('B', this)">Rating B</button>
-    <button onclick="filtern('C', this)">Rating C</button>
-    <button onclick="filtern('DF', this)">Rating D/F</button>
     <button class="sync" onclick="portfolioAktualisieren(this)">🔄 Aktualisieren</button>
     <button class="analyse" type="button" onclick="document.getElementById('importForm').hidden = !document.getElementById('importForm').hidden">🔗 Anzeigenlink importieren</button>
     <button class="analyse" onclick="neueObjekteAnalysieren(this)">➕ Neue Objekte analysieren</button>
@@ -322,6 +314,6 @@ li{margin-bottom:8px}
     ⚠️ Modellrechnungen – keine rechtliche, steuerliche oder finanzielle Beratung. 🔄 <b>Aktualisieren</b> liest aktuelle Werte direkt aus der Datenbank.
   </footer>
 </div>
-<script src="assets/portfolio_db.js?v=5"></script>
+<script src="assets/portfolio_db.js?v=6"></script>
 </body>
 </html>

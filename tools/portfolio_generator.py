@@ -28,7 +28,6 @@ def main():
   .sub {{ color: #5a6a85; font-size: 12px; margin-bottom: 18px; }}
   .filter {{ display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }}
   .filter button {{ background: #fff; border: 1px solid #c9d4e6; border-radius: 20px; padding: 6px 14px; font-size: 12px; cursor: pointer; }}
-  .filter button.aktiv {{ background: #1a4fa0; color: #fff; border-color: #1a4fa0; }}
   .filter button.sync {{ background: #1a4fa0; color: #fff; border-color: #1a4fa0; margin-left: auto; font-weight: 600; }}
   .filter button.sync:disabled {{ opacity: .55; cursor: wait; }}
   .filter button.analyse {{ flex-basis: 100%; text-align: left; }}
@@ -39,7 +38,6 @@ def main():
   .karte:hover {{ transform: translateY(-3px); box-shadow: 0 6px 18px rgba(15,20,32,.15); }}
   .karte-head {{ display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }}
   .karte-name {{ font-size: 15px; font-weight: 700; }}
-  .rating-badge {{ font-size: 20px; font-weight: 800; border-radius: 10px; padding: 6px 14px; }}
   .karte-sub {{ color: #5a6a85; font-size: 11px; margin: 4px 0 10px; }}
   .karte-details {{ display: flex; gap: 14px; flex-wrap: wrap; font-size: 11px; color: #3a4a65; margin-bottom: 10px; }}
   .karte-kpis {{ display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 10px; }}
@@ -79,11 +77,6 @@ def main():
   <div class="sub" id="stand">Übersicht aller analysierten Objekte · Quelle: immo_datenbank.db · Live-Werte werden geladen</div>
 
   <div class="filter">
-    <button class="aktiv" onclick="filtern('alle', this)">Alle</button>
-    <button onclick="filtern('A', this)">Rating A</button>
-    <button onclick="filtern('B', this)">Rating B</button>
-    <button onclick="filtern('C', this)">Rating C</button>
-    <button onclick="filtern('DF', this)">Rating D/F</button>
     <button class="sync" onclick="portfolioAktualisieren(this)">🔄 Aktualisieren</button>
     <button class="analyse" type="button" onclick="document.getElementById('importForm').hidden = !document.getElementById('importForm').hidden">🔗 Anzeigenlink importieren</button>
     <button class="analyse" onclick="neueObjekteAnalysieren(this)">➕ Neue Objekte analysieren</button>
@@ -103,7 +96,7 @@ def main():
     ⚠️ Modellrechnungen – keine rechtliche, steuerliche oder finanzielle Beratung. 🔄 <b>Aktualisieren</b> liest aktuelle Werte direkt aus der Datenbank.
   </footer>
 </div>
-<script src="assets/portfolio_db.js?v=5"></script>
+<script src="assets/portfolio_db.js?v=6"></script>
 </body>
 </html>"""
     OUT.write_text(html, encoding="utf-8")
