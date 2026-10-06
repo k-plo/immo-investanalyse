@@ -118,18 +118,25 @@ def portfolio_rows() -> list[dict]:
                    o.adresse,o.objektart,o.baujahr,o.zimmer,o.stellplaetze,
                    o.grundstuecksflaeche,o.kaufpreis,o.wohnflaeche,o.status,o.html_pfad,
                    o.revision,o.geaendert_am,k.gesamtinvest,k.brutto_rendite,k.netto_rendite,
-                   k.cf_nach,k.coc,k.kaltmiete,k.ek,k.zins,k.tilgung,k.rate
+                   k.cf_nach,k.coc,k.kaltmiete,k.ek,k.zins,k.tilgung,k.rate,
+                   CASE
+                       WHEN json_extract(o.state_json, '$.p_statusFinanzierung') = 1 THEN 3
+                       WHEN json_extract(o.state_json, '$.p_statusBesichtigung') = 1 THEN 2
+                       WHEN json_extract(o.state_json, '$.p_statusAnfrage') = 1 THEN 1
+                       ELSE 0
+                   END AS status_stufe
             FROM objekte o
             LEFT JOIN kalkulation k ON k.objekt_id=o.id
             WHERE COALESCE(o.status,'aktiv') <> 'archiviert'
-            ORDER BY CASE
-                WHEN json_extract(o.state_json, '$.p_statusFinanzierung') = 1 THEN 3
-                WHEN json_extract(o.state_json, '$.p_statusBesichtigung') = 1 THEN 2
-                WHEN json_extract(o.state_json, '$.p_statusAnfrage') = 1 THEN 1
-                ELSE 0
-            END, o.name
+            ORDER BY status_stufe, o.name
         """).fetchall()
-    return [dict(row) for row in rows]
+    labels = {0: "Gefunden", 1: "Angefragt", 2: "Besichtigung", 3: "Finanzierungscheck"}
+    result = []
+    for row in rows:
+        item = dict(row)
+        item["status_label"] = labels.get(item["status_stufe"], "Gefunden")
+        result.append(item)
+    return result
 
 
 def new_candidates() -> list[dict]:
