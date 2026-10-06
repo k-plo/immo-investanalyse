@@ -102,7 +102,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-v
 .filter button.aktiv,.filter button.sync,.btn,.external-link button,.print-btn{background:var(--accent);border-color:var(--accent);color:#fff}
 .filter button.analyse{flex-basis:auto;margin-left:0;color:var(--accent);background:#eff7f6;border-color:#cee3e1}
 .filter button:hover,.btn:hover{filter:brightness(.96)}
-.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:stretch}
+.grid{grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;align-items:stretch}
 .karte{position:relative;display:flex;flex-direction:column;min-width:0;height:100%;box-sizing:border-box;text-decoration:none;color:inherit;border:1px solid var(--line);border-radius:var(--radius);padding:14px;background:#fff;box-shadow:0 5px 18px #16354105;transition:transform .18s,box-shadow .18s,border-color .18s;overflow:hidden;isolation:isolate}
 .karte-photo-bg{position:absolute;inset:-5px;background-size:cover;background-position:center;filter:blur(3px);opacity:.64;pointer-events:none;z-index:0}
 .karte-photo-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#fff3 0%,#fffa 62%,#fffe 100%)}
