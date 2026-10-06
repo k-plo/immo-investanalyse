@@ -35,14 +35,13 @@
       ? `<div class="karte-photo-bg" style="background-image:url('${esc(item.image_path)}')"></div>` : '';
     return `<a class="karte${photo ? ' has-photo' : ''}" data-status="${esc(item.status_stufe ?? 0)}" href="${href}">${photo}
       <div class="karte-head"><div class="karte-title"><div class="karte-name">${esc(item.display_name || item.name)}</div><span class="karte-type">${propertyType(item)}</span></div><span class="status-badge">${esc(item.status_label || 'Gefunden')}</span></div>
-      <div class="karte-sub"><small>Objekt-ID: ${esc(item.public_id)}</small></div>
       <div class="karte-details"><span>📐 ${item.wohnflaeche == null ? '–' : Math.round(item.wohnflaeche)} m²</span><span>📅 BJ ${item.baujahr == null ? '–' : Math.round(item.baujahr)}</span><span>🛏 ${item.zimmer == null ? '–' : Math.round(item.zimmer)} Zi.</span><span>${esc(detail(item))}</span></div>
       <div class="karte-kpis"><div><span class="l">Kaufpreis</span><span class="v">${eur(item.kaufpreis)}</span><span class="s">${perM2(item.kaufpreis,item.wohnflaeche)} /m²</span></div>
       <div><span class="l">Gesamtinvest</span><span class="v">${hideDerived ? '–' : eur(item.gesamtinvest)}</span><span class="s">${hideDerived ? 'Unterlagen offen' : perM2(item.gesamtinvest,item.wohnflaeche) + ' /m²'}</span></div>
+      <div><span class="l">Miete/Monat</span><span class="v">${eur(item.kaltmiete)}</span><span class="s">${rentPerArea}</span></div>
       <div><span class="l">Faktor</span><span class="v ${factorClass}">${factor(item.kaufpreis,item.kaltmiete)}</span></div>
-      <div><span class="l">BruttoR</span><span class="v ${hideDerived ? '' : bruttoRenditeClass(item.brutto_rendite)}">${hideDerived ? '–' : pct(item.brutto_rendite)}</span></div><div><span class="l">CF/M</span><span class="v">${hideDerived ? '–' : eur(item.cf_nach)}</span></div></div>
-      <div class="karte-fin"><div><span class="l">Miete/Monat</span><span class="v">${eur(item.kaltmiete)}</span><span class="s">${rentPerArea}</span></div>
-      <div><span class="l">Finanzierung</span><span class="v">${eur(item.ek)} EK · ${pct(item.zins)} · ${pct(item.tilgung)} Tilg.</span></div></div></a>`;
+      <div><span class="l">BruttoR</span><span class="v ${hideDerived ? '' : bruttoRenditeClass(item.brutto_rendite)}">${hideDerived ? '–' : pct(item.brutto_rendite)}</span></div>
+      <div><span class="l">CF/M</span><span class="v">${hideDerived ? '–' : eur(item.cf_nach)}</span></div></div></a>`;
   }
   function applyFilter() {
     document.querySelectorAll('#grid .karte').forEach(element => {
