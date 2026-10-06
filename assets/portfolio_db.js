@@ -14,6 +14,7 @@
   function detail(item) {
     const etage = String(item.etage || '').trim();
     if (etage) return '🧭 ' + etage;
+    if (item.grundstuecksflaeche > 0) return '🌳 ' + Math.round(item.grundstuecksflaeche).toLocaleString('de-DE') + ' m²';
     return '';
   }
   function card(item) {

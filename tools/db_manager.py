@@ -392,34 +392,35 @@ def sync_portfolio() -> None:
     mod.main()
 
 # ---------------------------------------------------------------- Backfill ---
-def _formatiere_etage(wert) -> "str | None":
-    """Wandelt Etagen-Angaben in kurze Stockwerksangaben um (EG, 3. OG, DG)."""
-    if wert is None or isinstance(wert, bool):
-        return None
-    if isinstance(wert, (int, float)):
-        n = int(wert)
-        return "EG" if n == 0 else f"{n}. OG"
-    text = str(wert).strip()
-    if not text:
-        return None
+def _formatiere_etage(wert, objektart="") -> "str | None":
+    """Wandelt Etagen-Angaben in kurze Stockwerksangaben um (EG, 3. OG, DG, ggf. '3. OG / DG')."""
+    text = "" if wert is None or isinstance(wert, bool) else str(wert).strip()
     low = text.lower()
-    if "dachgeschoss" in low or low in ("dg", "dach"):
+    art = str(objektart or "").lower()
+    ist_dg = "dachgeschoss" in low or low in ("dg", "dach") or "dachgeschoss" in art
+    nummer = None
+    if isinstance(wert, (int, float)) and not isinstance(wert, bool):
+        nummer = int(wert)
+    else:
+        match = re.search(r"(\d+)", low)
+        if match:
+            nummer = int(match.group(1))
+    if nummer is not None:
+        stock = "EG" if nummer == 0 else f"{nummer}. OG"
+        return f"{stock} / DG" if ist_dg else stock
+    if ist_dg:
         return "DG"
     if "erdgeschoss" in low or low == "eg":
         return "EG"
-    match = re.search(r"(\d+)", low)
-    if match:
-        n = int(match.group(1))
-        return "EG" if n == 0 else f"{n}. OG"
     if "obergeschoss" in low:
         return "OG"
-    return text
+    return text or None
 
 
 def backfill_etage() -> None:
     """Liest die Etage aus objekte/<name>/analyse/03_kalkulation.json in die DB-Spalte etage."""
     conn = db()
-    rows = conn.execute("SELECT id, name FROM objekte").fetchall()
+    rows = conn.execute("SELECT id, name, objektart FROM objekte").fetchall()
     aktualisiert = 0
     for row in rows:
         for basis in (BASE / "objekte" / row["name"], BASE / "objekte" / "_ARCHIV" / row["name"]):
@@ -432,7 +433,8 @@ def backfill_etage() -> None:
                 continue
             objekt = data.get("objekt")
             wert = objekt.get("etage") if isinstance(objekt, dict) else data.get("etage")
-            etage = _formatiere_etage(wert)
+            art = objekt.get("objektart") if isinstance(objekt, dict) else row["objektart"]
+            etage = _formatiere_etage(wert, art or row["objektart"])
             if etage:
                 conn.execute("UPDATE objekte SET etage=? WHERE id=?", (etage, row["id"]))
                 aktualisiert += 1
