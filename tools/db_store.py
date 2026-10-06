@@ -51,7 +51,7 @@ def connection() -> sqlite3.Connection:
 def get_object(name: str) -> dict | None:
     with closing(connection()) as conn:
         row = conn.execute(
-            "SELECT name, public_id, display_name, source_url, image_path, analysis_status, revision, state_json, status, geaendert_am, adresse, objektart, baujahr, wohnflaeche FROM objekte WHERE public_id=? OR name=? ORDER BY CASE WHEN public_id=? THEN 0 ELSE 1 END LIMIT 1",
+            "SELECT name, public_id, display_name, source_url, image_path, analysis_status, revision, state_json, status, geaendert_am, adresse, objektart, etage, baujahr, wohnflaeche FROM objekte WHERE public_id=? OR name=? ORDER BY CASE WHEN public_id=? THEN 0 ELSE 1 END LIMIT 1",
             (name, name, name),
         ).fetchone()
         if row is None:
@@ -65,7 +65,7 @@ def get_object(name: str) -> dict | None:
         "revision": row["revision"], "status": row["status"],
         "updated_at": row["geaendert_am"], "state": state,
         "meta": {
-            "adresse": row["adresse"], "objektart": row["objektart"],
+            "adresse": row["adresse"], "objektart": row["objektart"], "etage": row["etage"],
             "baujahr": row["baujahr"], "wohnflaeche": row["wohnflaeche"],
         },
     }
@@ -115,7 +115,7 @@ def portfolio_rows() -> list[dict]:
     with closing(connection()) as conn:
         rows = conn.execute("""
             SELECT o.name,o.public_id,o.display_name,o.source_url,o.image_path,o.analysis_status,
-                   o.adresse,o.objektart,o.baujahr,o.zimmer,o.stellplaetze,
+                   o.adresse,o.objektart,o.etage,o.baujahr,o.zimmer,o.stellplaetze,
                    o.grundstuecksflaeche,o.kaufpreis,o.wohnflaeche,o.status,o.html_pfad,
                    o.revision,o.geaendert_am,k.gesamtinvest,k.brutto_rendite,k.netto_rendite,
                    k.cf_nach,k.coc,k.kaltmiete,k.ek,k.zins,k.tilgung,k.rate,

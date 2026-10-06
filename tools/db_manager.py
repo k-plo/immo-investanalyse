@@ -23,6 +23,7 @@ import json
 import sqlite3
 import sys
 import html
+import re
 import uuid
 from pathlib import Path
 from datetime import datetime
@@ -42,6 +43,7 @@ CREATE TABLE IF NOT EXISTS objekte (
     image_path TEXT,
     adresse TEXT,
     objektart TEXT,
+    etage TEXT,
     baujahr REAL,
     zimmer REAL,
     stellplaetze REAL,
@@ -136,6 +138,8 @@ def init_db():
         conn.execute("ALTER TABLE objekte ADD COLUMN state_json TEXT")
     if "grundstuecksflaeche" not in vorhandene_spalten:
         conn.execute("ALTER TABLE objekte ADD COLUMN grundstuecksflaeche REAL")
+    if "etage" not in vorhandene_spalten:
+        conn.execute("ALTER TABLE objekte ADD COLUMN etage TEXT")
     if "revision" not in vorhandene_spalten:
         conn.execute("ALTER TABLE objekte ADD COLUMN revision INTEGER NOT NULL DEFAULT 0")
     for column in ("public_id", "display_name", "source_url", "analysis_status", "image_path"):
@@ -388,6 +392,56 @@ def sync_portfolio() -> None:
     mod.main()
 
 # ---------------------------------------------------------------- Backfill ---
+def _formatiere_etage(wert) -> "str | None":
+    """Wandelt Etagen-Angaben in kurze Stockwerksangaben um (EG, 3. OG, DG)."""
+    if wert is None or isinstance(wert, bool):
+        return None
+    if isinstance(wert, (int, float)):
+        n = int(wert)
+        return "EG" if n == 0 else f"{n}. OG"
+    text = str(wert).strip()
+    if not text:
+        return None
+    low = text.lower()
+    if "dachgeschoss" in low or low in ("dg", "dach"):
+        return "DG"
+    if "erdgeschoss" in low or low == "eg":
+        return "EG"
+    match = re.search(r"(\d+)", low)
+    if match:
+        n = int(match.group(1))
+        return "EG" if n == 0 else f"{n}. OG"
+    if "obergeschoss" in low:
+        return "OG"
+    return text
+
+
+def backfill_etage() -> None:
+    """Liest die Etage aus objekte/<name>/analyse/03_kalkulation.json in die DB-Spalte etage."""
+    conn = db()
+    rows = conn.execute("SELECT id, name FROM objekte").fetchall()
+    aktualisiert = 0
+    for row in rows:
+        for basis in (BASE / "objekte" / row["name"], BASE / "objekte" / "_ARCHIV" / row["name"]):
+            pfad = basis / "analyse" / "03_kalkulation.json"
+            if not pfad.exists():
+                continue
+            try:
+                data = json.loads(pfad.read_text(encoding="utf-8"))
+            except (OSError, ValueError):
+                continue
+            objekt = data.get("objekt")
+            wert = objekt.get("etage") if isinstance(objekt, dict) else data.get("etage")
+            etage = _formatiere_etage(wert)
+            if etage:
+                conn.execute("UPDATE objekte SET etage=? WHERE id=?", (etage, row["id"]))
+                aktualisiert += 1
+            break
+    conn.commit()
+    conn.close()
+    print(f"✓ Etage für {aktualisiert} Objekt(e) gesetzt")
+
+
 def backfill_status():
     """Sättigt leere status-Felder mit 'aktiv' für bestehende Objekte."""
     conn = db()
@@ -464,6 +518,8 @@ def main():
         list_objekte()
     elif cmd == "rating":
         print("Ratings werden bei jeder DB-Speicherung automatisch neu berechnet.")
+    elif cmd == "backfill-etage":
+        backfill_etage()
     elif cmd == "prune":
         prune(auto_yes="--yes" in sys.argv)
     else:

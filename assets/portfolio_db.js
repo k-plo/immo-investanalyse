@@ -12,16 +12,9 @@
   const bruttoRenditeClass = value => value == null ? '' : Number(value) >= 5 ? 'pos' : 'neg';
   const perM2 = (value, area) => value == null || !area ? '–' : eur(value / area);
   function detail(item) {
-    const type = (item.objektart || '').toLowerCase();
-    if (['wohnung', 'etw', 'apartment'].some(word => type.includes(word))) return '🏢 ' + item.objektart;
-    if (item.grundstuecksflaeche > 0) return '🌳 ' + Math.round(item.grundstuecksflaeche).toLocaleString('de-DE') + ' m²';
-    return item.objektart ? '🏠 ' + item.objektart : '';
-  }
-  function propertyType(item) {
-    const type = (item.objektart || '').toLowerCase();
-    if (/(wohnung|\betw\b|apartment)/.test(type)) return '🏢 Wohnung';
-    if (/(haus|bungalow|\befh\b|villa)/.test(type)) return '🏠 Haus';
-    return '🏘️ Immobilie';
+    const etage = String(item.etage || '').trim();
+    if (etage) return '🧭 ' + etage;
+    return '';
   }
   function card(item) {
     const hideDerived = item.analysis_status === 'abruf_blockiert';
@@ -34,7 +27,7 @@
     const photo = item.image_path && /^\/objekte\/[a-z0-9äöüß_-]+\/titelbild\.(jpg|png|webp|avif)$/i.test(item.image_path)
       ? `<div class="karte-photo-bg" style="background-image:url('${esc(item.image_path)}')"></div>` : '';
     return `<a class="karte${photo ? ' has-photo' : ''}" data-status="${esc(item.status_stufe ?? 0)}" href="${href}">${photo}
-      <div class="karte-head"><div class="karte-title"><div class="karte-name">${esc(item.display_name || item.name)}</div><span class="karte-type">${propertyType(item)}</span></div><span class="status-badge">${esc(item.status_label || 'Gefunden')}</span></div>
+      <div class="karte-head"><div class="karte-title"><div class="karte-name">${esc(item.display_name || item.name)}</div></div><span class="status-badge">${esc(item.status_label || 'Gefunden')}</span></div>
       <div class="karte-details"><span>📐 ${item.wohnflaeche == null ? '–' : Math.round(item.wohnflaeche)} m²</span><span>📅 BJ ${item.baujahr == null ? '–' : Math.round(item.baujahr)}</span><span>🛏 ${item.zimmer == null ? '–' : Math.round(item.zimmer)} Zi.</span><span>${esc(detail(item))}</span></div>
       <div class="karte-kpis"><div><span class="l">Kaufpreis</span><span class="v">${eur(item.kaufpreis)}</span><span class="s">${perM2(item.kaufpreis,item.wohnflaeche)} /m²</span></div>
       <div><span class="l">Gesamtinvest</span><span class="v">${hideDerived ? '–' : eur(item.gesamtinvest)}</span><span class="s">${hideDerived ? 'Unterlagen offen' : perM2(item.gesamtinvest,item.wohnflaeche) + ' /m²'}</span></div>

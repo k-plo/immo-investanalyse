@@ -705,7 +705,7 @@ li{margin-bottom:8px}
       </section>
     </div>
     <div class="box yellow" id="preliminaryNotice" hidden>Voranalyse aus einer Online-Anzeige: Angaben sind ungeprüft. Mietdaten, Unterlagen, Zustand und Rechtslage fehlen noch; daraus abgeleitete Kennzahlen sind keine belastbare Investmententscheidung.</div>
-    <div class="sub" id="objectMetaRow">Objektart &middot; Ort &middot; Wohnfläche &middot; Baujahr &middot; Energieklasse</div>
+    <div class="sub" id="objectMetaRow">Stock &middot; Ort &middot; Wohnfläche &middot; Baujahr &middot; Energieklasse</div>
 
     <div class="toolbar">
       <button class="btn" onclick="zumPortfolio()">🏠 Zum Portfolio</button>
@@ -1553,12 +1553,12 @@ function fuellObjektMeta() {
   const el = document.getElementById("objectMetaRow");
   if (!el) return;
   const current = el.textContent.trim();
-  const istPlatzhalter = !current || /^Objektart\b.*\bOrt\b.*\bWohnfläche\b.*\bBaujahr\b.*\bEnergieklasse\b/.test(current);
+  const istPlatzhalter = !current || /^(Objektart|Stock|Etage)\b.*\bOrt\b.*\bWohnfläche\b.*\bBaujahr\b.*\bEnergieklasse\b/.test(current);
   if (!istPlatzhalter) return; // manuell gepflegte Zeile unangetastet lassen
   const d = readInputs();
   const teile = [];
-  const art = String(objektMeta.objektart || "").trim();
-  if (art) teile.push(art);
+  const stock = String(objektMeta.etage || "").trim();
+  if (stock) teile.push(stock);
   const ort = ortAusAdresse(objektMeta.adresse);
   if (ort) teile.push(ort);
   const flaeche = Number(objektMeta.wohnflaeche) || d.flaeche || 0;
