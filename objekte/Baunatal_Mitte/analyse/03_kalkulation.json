@@ -1,0 +1,91 @@
+{
+  "objekt": {
+    "name": "Baunatal - Mitte",
+    "adresse": "34225 Baunatal (Mitte, laut Mietanzeige 'am Baunsberg')",
+    "objektart": "Etagenwohnung (Mehrfamilienhaus)",
+    "baujahr": 1996,
+    "wohnflaeche_m2": 53,
+    "nutzflaeche_m2": null,
+    "grundstuecksflaeche_m2": null,
+    "anzahl_einheiten": null,
+    "zimmer": 2,
+    "etage": 3,
+    "stellplaetze": 1,
+    "energieklasse": "",
+    "heizung": ""
+  },
+  "kauf": {
+    "angebotspreis_eur": 159500,
+    "grunderwerbsteuer_prozent": 6.0,
+    "notar_prozent": 1.04,
+    "grundbuch_prozent": 0.53,
+    "makler_prozent": 0.0,
+    "makler_anteil_verkaeufer_prozent": 0,
+    "renovierung_eur": 0,
+    "sanierung_eur": null,
+    "sonstige_erwerbskosten_eur": 0,
+    "renovierung_sanierung_status": "Keine Renovierung kalkuliert; laut Anzeige renoviert und Bad neu. Zustand und Sanierungsstau nach Besichtigung beurteilen."
+  },
+  "miete": {
+    "kaltmiete_monatlich_eur": 700,
+    "nebenkosten_monatlich_eur": 160,
+    "leerstand_prozent": 0,
+    "kostenmodus": "pauschal",
+    "pauschale_prozent": 20,
+    "marktuebliche_miete_eur": null,
+    "miete_status": "BELEGT aus Anzeige: geplante Kaltmiete 700 EUR/Monat, Nebenkosten ca. 160 EUR (Mieter). Wohnung aktuell leer, Vermietung steht aus.",
+    "mietempfehlung": {
+      "empfohlene_kaltmiete_eur": 700,
+      "spanne_eur": [640, 760],
+      "eur_pro_m2": 13.21,
+      "status": "BELEGT (geplante Miete)",
+      "begruendung": "Geplante Miete aus der Anzeige; keine eigene Mietspiegelrecherche. 13,21 EUR/m² ist für Baunatal ambitioniert – Mietniveau vor Ort prüfen."
+    }
+  },
+  "laufende_kosten": {
+    "modell": "pauschal",
+    "pauschale_prozent_der_kaltmiete": 20,
+    "pauschale_monatlich_eur": 140,
+    "hausgeld_monatlich_eur": 183,
+    "verwaltung_prozent_von_miete": 0,
+    "instandhaltung_eur_pro_m2_monat": null,
+    "nicht_umlagefaehige_kosten_monatlich_eur": null,
+    "status": "Pauschalmodus (Projektvorgabe): 20 % der Kaltmiete. Hausgeld 183 EUR/Monat BELEGT, Aufteilung unbekannt."
+  },
+  "finanzierung": {
+    "eigenkapital_eur": 20000,
+    "zinssatz_prozent": 4.6,
+    "tilgung_prozent": 1.0,
+    "zinsbindung_jahre": 10,
+    "zinsrecherche": {
+      "quelle": "Nutzer-Vorgabe",
+      "status": "VORGABE: 4,60 % (keine Recherche, Nutzer-Entscheidung 06.10.2026)"
+    }
+  },
+  "weg": {
+    "zutreffend": true,
+    "einheiten": null,
+    "hausverwaltung": null,
+    "instandhaltungsruecklage_eur": null,
+    "geplante_sonderumlagen_eur": null
+  },
+  "annahmen": [
+    "Kaltmiete 700 EUR/Monat ist BELEGT als geplante Miete; die Wohnung ist aktuell leer, kein laufender Zahlungseingang.",
+    "Laufende Kosten pauschal 20 % der Kaltmiete (Projektvorgabe); Leerstand im Pauschalmodus nicht separat.",
+    "Zins 4,60 % und Tilgung 1,0 %; Zins ist Nutzer-Vorgabe, kein Bankangebot.",
+    "Keine Renovierungs-/Sanierungskosten kalkuliert; Zustand und WEG-Rücklage offen.",
+    "Maklerprovision 0 EUR (provisionsfrei laut Anzeige).",
+    "Notar/Grundbuch 1,57 % marktüblich geschätzt (keine Anbieterangabe).",
+    "Etage 3 angesetzt (Anzeige)."
+  ],
+  "quellen": [
+    {"information": "Anzeige", "wert": "159.500 EUR; 53 m²; 2 Zimmer; Etage 3; BJ 1996; Etagenwohnung; renoviert, Bad neu; Balkon, Keller, PKW-Stellplatz, Einbauküche, Gartenmitnutzung; Hausgeld 183 EUR; Kaltmiete 700 EUR + NK ca. 160 EUR; provisionsfrei; aktuell leer, verfügbar ab 2027", "quelle": "kleinanzeigen.de Anzeigen-ID 3529339475, abgerufen 06.10.2026", "status": "BELEGT"},
+    {"information": "Kaufnebenkosten", "wert": "GrESt 6,0 % (9.570 EUR), Notar+Grundbuch 1,57 % (2.504 EUR, geschätzt), Makler 0 EUR", "quelle": "Hessen-Satz / marktüblich, abgerufen 06.10.2026", "status": "BELEGT/ANNAHME"},
+    {"information": "Zins / Pauschale", "wert": "4,60 % Zins, 20 % Pauschale", "quelle": "Nutzer-Vorgabe vom 06.10.2026", "status": "VORGABE"}
+  ],
+  "widersprueche": [
+    "Ortsangabe uneinheitlich: Verkaufsanzeige 'Baunatal Mitte', gleichlautende Mietanzeige desselben Anbieters 'am Baunsberg' (53 m², 2 Zi., 3. OG, 700 EUR).",
+    "Miete 700 EUR ist geplant, die Wohnung ist aktuell leer – kein Zahlungseingang gesichert.",
+    "Kein Energieausweis/Heizungsangabe – energetische Bewertung offen."
+  ]
+}

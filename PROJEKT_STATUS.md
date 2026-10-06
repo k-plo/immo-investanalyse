@@ -7,6 +7,8 @@
 
 ## 🕐 Aktueller Stand (06.10.2026)
 
+**Neues Objekt Baunatal – Mitte (3. OG):** Aus Kleinanzeigen-Anzeige 3529339475 als vollständige Voranalyse angelegt: Objektordner `objekte/Baunatal_Mitte/` mit Übersicht, Titelbild (`titelbild.jpg`), fünf Analyse-Dateien, Unterlagen-README, SQLite-Datensatz (ID `1d1146b9-6824-4a16-93a4-693c0f967569`) und Portfolio-Karte. Eckdaten: 159.500 € (provisionsfrei), 53 m², 2 Zi., 3. OG, BJ 1996, Balkon/Keller/Stellplatz/Einbauküche, Hausgeld 183 €, **geplante Kaltmiete 700 € (Wohnung aktuell leer)**. Kalkulation im Pauschalmodus 20 %, Zins 4,60 % (Nutzer-Vorgabe): Gesamtinvest 171.574 €, BruttoR 5,27 %, Faktor 18,99, Cashflow −147 €/M. Widerspruch dokumentiert: Ortsangabe „Mitte" vs. „am Baunsberg" (Mietanzeige desselben Anbieters). Status 🟠 VERHANDELN.
+
 **Neues Objekt Kassel – Vorderer Westen:** Aus Immowelt-Exposé 0ef3085a-3257-4136-bb24-71143269ed91 (Online-ID 269KMHTV91PT) als vollständige Voranalyse angelegt: Objektordner `objekte/Kassel_Vorderer_Westen/` mit Übersicht, Titelbild (`titelbild.jpg` aus dem Inserat), fünf Analyse-Dateien, Unterlagen-README, SQLite-Datensatz (ID `25703334-931e-49ef-bbe9-084e5f1cf993`) und Portfolio-Karte. Eckdaten: 171.000 €, 73,5 m², 3 Zi., 1. OG, BJ 1964, Energieklasse D (Öl, Massivhaus), Garage + Balkon + Keller, **Ist-Miete 653 €/Monat (BELEGT)**, Hausgeld 640,32 €. Kalkulation im Pauschalmodus 20 %, Zins 4,60 % (Nutzer-Vorgabe): Gesamtinvest 189.032 €, BruttoR 4,58 %, Faktor 21,82, Cashflow −266 €/M. Widerspruch dokumentiert: Etage (Kachel „EG" vs. Text „1. OG" vs. Merkmal „Erdgeschoss").
 
 ## 🕐 Vorheriger Stand (06.10.2026)
