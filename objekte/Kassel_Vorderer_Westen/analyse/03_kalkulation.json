@@ -1,0 +1,90 @@
+{
+  "objekt": {
+    "name": "Kassel - Vorderer Westen",
+    "adresse": "Vorderer Westen, 34119 Kassel",
+    "objektart": "Vermietete Eigentumswohnung (Wohnanlage)",
+    "baujahr": 1964,
+    "wohnflaeche_m2": 73.5,
+    "nutzflaeche_m2": null,
+    "grundstuecksflaeche_m2": null,
+    "anzahl_einheiten": null,
+    "zimmer": 3,
+    "etage": 1,
+    "stellplaetze": 1,
+    "energieklasse": "D",
+    "heizung": "Ölzentralheizung"
+  },
+  "kauf": {
+    "angebotspreis_eur": 171000,
+    "grunderwerbsteuer_prozent": 6.0,
+    "notar_prozent": 1.04,
+    "grundbuch_prozent": 0.53,
+    "makler_prozent": 2.975,
+    "makler_anteil_verkaeufer_prozent": 2.975,
+    "renovierung_eur": 0,
+    "sanierung_eur": null,
+    "sonstige_erwerbskosten_eur": 0,
+    "renovierung_sanierung_status": "Keine Renovierung kalkuliert; Zustand und möglicher Sanierungsstau (BJ 1964, Öl) erst nach Besichtigung beurteilbar."
+  },
+  "miete": {
+    "kaltmiete_monatlich_eur": 653,
+    "nebenkosten_monatlich_eur": null,
+    "leerstand_prozent": 0,
+    "kostenmodus": "pauschal",
+    "pauschale_prozent": 20,
+    "marktuebliche_miete_eur": null,
+    "miete_status": "BELEGT aus Inserat: Wohnung + Garage zu 653,00 EUR/Monat vermietet (Jahresnettokaltmiete 7.836,00 EUR).",
+    "mietempfehlung": {
+      "empfohlene_kaltmiete_eur": 653,
+      "spanne_eur": [600, 720],
+      "eur_pro_m2": 8.88,
+      "status": "BELEGT (Ist-Miete)",
+      "begruendung": "Ist-Miete aus dem Inserat belegt; keine eigene Recherche nötig. Mietsteigerungspotenzial nach Modernisierung möglich, aber vor Besichtigung nicht bezifferbar."
+    }
+  },
+  "laufende_kosten": {
+    "modell": "pauschal",
+    "pauschale_prozent_der_kaltmiete": 20,
+    "pauschale_monatlich_eur": 130.6,
+    "hausgeld_monatlich_eur": 640.32,
+    "verwaltung_prozent_von_miete": 0,
+    "instandhaltung_eur_pro_m2_monat": null,
+    "nicht_umlagefaehige_kosten_monatlich_eur": null,
+    "status": "Pauschalmodus (Projektvorgabe): 20 % der Kaltmiete. Hausgeld 640,32 EUR/Monat BELEGT, Aufteilung unbekannt."
+  },
+  "finanzierung": {
+    "eigenkapital_eur": 20000,
+    "zinssatz_prozent": 4.6,
+    "tilgung_prozent": 1.0,
+    "zinsbindung_jahre": 10,
+    "zinsrecherche": {
+      "quelle": "Nutzer-Vorgabe",
+      "status": "VORGABE: 4,60 % (keine Recherche, Nutzer-Entscheidung 06.10.2026)"
+    }
+  },
+  "weg": {
+    "zutreffend": true,
+    "einheiten": null,
+    "hausverwaltung": null,
+    "instandhaltungsruecklage_eur": null,
+    "geplante_sonderumlagen_eur": null
+  },
+  "annahmen": [
+    "Kaltmiete 653 EUR/Monat ist BELEGT aus dem Inserat (Ist-Miete, Wohnung + Garage).",
+    "Laufende Kosten pauschal 20 % der Kaltmiete (Projektvorgabe); Leerstand im Pauschalmodus nicht separat.",
+    "Zins 4,60 % und Tilgung 1,0 %; Zins ist Nutzer-Vorgabe, kein Bankangebot.",
+    "Keine Renovierungs-/Sanierungskosten kalkuliert; Zustand und WEG-Rücklage offen.",
+    "Maklerprovision 2,975 % Käuferanteil laut Inserat (provisionspflichtig).",
+    "Etage 1. Obergeschoss angesetzt (Inserat widersprüchlich: Kachel EG, Text 1. OG, Merkmal Erdgeschoss)."
+  ],
+  "quellen": [
+    {"information": "Inserat", "wert": "171.000 EUR; 73,5 m²; 3 Zimmer; 1. Obergeschoss; Vorderer Westen, 34119 Kassel; BJ 1964; Energieklasse D (Öl, Massivhaus); vermietet; Garage, Balkon, Keller, Bad mit Fenster; Hausgeld 640,32 EUR; Ist-Kaltmiete 653 EUR/Monat", "quelle": "Immowelt-Exposé 0ef3085a-3257-4136-bb24-71143269ed91 (Online-ID 269KMHTV91PT), abgerufen 06.10.2026", "status": "BELEGT"},
+    {"information": "Kaufnebenkosten", "wert": "GrESt 6,0 % (10.260 EUR), Notar+Grundbuch 1,57 % (2.685 EUR), Makler Käufer 2,975 % (5.087 EUR)", "quelle": "Inserat / Anbieterkalkulation, abgerufen 06.10.2026", "status": "BELEGT"},
+    {"information": "Zins / Pauschale", "wert": "4,60 % Zins, 20 % Pauschale", "quelle": "Nutzer-Vorgabe vom 06.10.2026", "status": "VORGABE"}
+  ],
+  "widersprueche": [
+    "Etage widersprüchlich im Inserat: Kachel nennt 'EG', Beschreibungstext '1. Obergeschoss', Merkmal 'Erdgeschoss'. Vor Besichtigung klären.",
+    "Hausgeld 640,32 EUR/Monat belegt, aber Aufteilung (umlagefähig/nicht umlagefähig/Rücklage) unbekannt.",
+    "Baujahr 1964 mit Öl-Heizung und Klasse D – energetischer Handlungsbedarf offen."
+  ]
+}
