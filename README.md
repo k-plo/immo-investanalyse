@@ -242,6 +242,21 @@ INVESTMENT-STATUS: 🟢 WEITER PRÜFEN | 🟡 NUR MIT KLÄRUNG | 🟠 VERHANDELN
 
 **`tools/rechenkern.py`** – dieselbe Logik in Python, damit jede Zahl nachvollziehbar und prüfbar ist (Ausgabe als Klartext-Report).
 
+### Automatische Schnellanalysen aus Suchalarm-E-Mails
+
+Der separat startbare Worker verarbeitet lokale Test-EMLs und speichert eigene
+Schnellanalysen/Jobs in SQLite. Die neue Dashboard-Kategorie **Schnellanalysen · Agent**
+bleibt vom regulären Portfolio getrennt. PDFs liegen in einem gemeinsamen
+Ausgabeverzeichnis; es entstehen keine Objektordner oder Vollanalysen.
+Gmail/Telegram sind standardmäßig nicht verbunden, Scout-Livezugriff ist nicht
+implementiert. Start, Testadapter, Profile, OAuth, Versand und sichere
+Git-Synchronisation: [geprüfte Betriebsanleitung](docs/AUTOMATISCHE_SCHNELLANALYSEN.md).
+Für den ersten Start: [Linux/macOS](docs/AUTOMATISCHE_SCHNELLANALYSEN.md#erste-lokale-nutzung-linuxmacos)
+oder [Windows/PowerShell](docs/AUTOMATISCHE_SCHNELLANALYSEN.md#erste-lokale-nutzung-windowspowershell).
+Die Demo verwendet eine neue temporäre Datenbank; Gmail/Telegram bleiben deaktiviert.
+Für Tests eine neue temporäre DB verwenden, niemals die Repository-DB kopieren.
+Ausgangsbasis dieser Erweiterung ist `portfolio-current-sync`.
+
 ### Schnellanalyse (~2 Minuten)
 
 **`schnellanalyse.html`** (vom Portfolio-Button „⚡ Schnellanalyse" aus erreichbar) bewertet ein Immobilienangebot direkt im Browser: Kaufpreis, monatliche Kaltmiete und Finanzierung. Nicht umlagefähige Kosten, Rücklage und sonstige Kosten werden pauschal mit 20 % der Kaltmiete angesetzt (zentral in `assets/schnellanalyse_core.js`, in der Oberfläche ausgewiesen). Ausgegeben werden Bruttomietrendite, Kaufpreisfaktor, Cashflow nach Finanzierung und ein Gesamtstatus – jeweils für die Basisvariante und ein Szenario „Kaufpreis 10 % niedriger" samt Vergleich. Die Zielwerte (Rendite > 5 %, Cashflow > 0 €, Faktor < 20; exakte Grenzwerte gelten als nicht erfüllt) liegen zentral in `assets/schnellanalyse_core.js`. Das Eigenkapital ist als fester Betrag oder als prozentualer Anteil des Kaufpreises wählbar; daraus ergibt sich das Darlehen (Kaufpreis − Eigenkapital). Die gewählte Annahme wird angezeigt und im Szenario beibehalten. Die Seite rechnet nur temporär und speichert nichts. Tests: `node tests/test_schnellanalyse.js`.

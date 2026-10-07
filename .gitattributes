@@ -1,0 +1,2 @@
+# EML fixtures preserve RFC-style CRLF bytes; CR is a line terminator, not whitespace.
+tests/fixtures/quick_analysis/**/*.eml -text whitespace=cr-at-eol

@@ -1,0 +1,20 @@
+{
+  "https://www.immobilienscout24.de/expose/900000001": {
+    "file": "listing-1.html"
+  },
+  "https://www.immobilienscout24.de/expose/900000002": {
+    "file": "listing-2.html"
+  },
+  "https://www.immobilienscout24.de/expose/900000003": {
+    "file": "listing-3.html"
+  },
+  "https://www.immobilienscout24.de/expose/900000004": {
+    "file": "listing-4.html"
+  },
+  "https://www.immobilienscout24.de/expose/900000005": {
+    "error": "TEST: HTTP 403"
+  },
+  "https://www.immobilienscout24.de/expose/900000006": {
+    "file": "listing-6.html"
+  }
+}

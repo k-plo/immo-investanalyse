@@ -1,0 +1,54 @@
+[
+  {
+    "postal_code": "12345",
+    "spatial_level": "PLZ",
+    "property_type": "Wohnung",
+    "district": "Testviertel",
+    "condition": "gepflegt",
+    "area": 60,
+    "as_of": "2026-10-01",
+    "retrieved_at": "2026-10-06T08:00:00+00:00",
+    "evidence": "TEST-FIXTURE: belegte Nettokalt-Angebotsmiete und Wohnfläche; keine Livequelle",
+    "url": "https://www.immobilienscout24.de/expose/900000007",
+    "cold_rent": 600
+  },
+  {
+    "postal_code": "12345",
+    "spatial_level": "PLZ",
+    "property_type": "Wohnung",
+    "district": "Testviertel",
+    "condition": "gepflegt",
+    "area": 60,
+    "as_of": "2026-10-01",
+    "retrieved_at": "2026-10-06T08:00:00+00:00",
+    "evidence": "TEST-FIXTURE: belegte Nettokalt-Angebotsmiete und Wohnfläche; keine Livequelle",
+    "url": "https://www.immobilienscout24.de/expose/900000008",
+    "cold_rent": 720
+  },
+  {
+    "postal_code": "12345",
+    "spatial_level": "PLZ",
+    "property_type": "Wohnung",
+    "district": "Testviertel",
+    "condition": "gepflegt",
+    "area": 60,
+    "as_of": "2026-10-01",
+    "retrieved_at": "2026-10-06T08:00:00+00:00",
+    "evidence": "TEST-FIXTURE: belegte Nettokalt-Angebotsmiete und Wohnfläche; keine Livequelle",
+    "url": "https://www.immobilienscout24.de/expose/900000007?utm_source=dup",
+    "cold_rent": 600
+  },
+  {
+    "postal_code": "12345",
+    "spatial_level": "Stadt",
+    "property_type": "Wohnung",
+    "district": "Testviertel",
+    "condition": "gepflegt",
+    "area": 60,
+    "as_of": "2026-10-01",
+    "retrieved_at": "2026-10-06T08:00:00+00:00",
+    "evidence": "TEST-FIXTURE: belegte Nettokalt-Angebotsmiete und Wohnfläche; keine Livequelle",
+    "url": "https://www.immobilienscout24.de/expose/900000009",
+    "cold_rent": 3000
+  }
+]

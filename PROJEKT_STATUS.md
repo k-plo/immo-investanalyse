@@ -5,7 +5,39 @@
 
 ---
 
-## 🕐 Aktueller Stand (06.10.2026)
+## 🕐 Aktueller Stand (06.10.2026) – automatische Schnellanalysen
+
+Auf `codex/automatische-schnellanalysen`, ausgehend von `portfolio-current-sync`
+(`a6ea2ee`), ist ein lokaler End-to-End-Ablauf implementiert: EML-Testadapter,
+Angebotsextraktion mit Herkunft/Widersprüchen, separate SQLite-Tabellen und
+Revisionen, persistente Worker-Jobs mit atomarer Übernahme/Backoff/Wiederanlauf,
+kanonischer Schnellanalysekern, zweitseitige PDF, Kategorie **Schnellanalysen · Agent**
+im reproduzierbaren Dashboard und lokaler Versandtest. Reguläre Objektanlage,
+Portfolio-Rechnung und Ratings bleiben getrennt. Die Repository-DB und vorhandene
+Immobilien wurden nicht verändert; Tests nutzen ausschließlich synthetische Daten.
+
+Gmail-OAuth/lesende API und Telegram Bot API sind vorbereitet und deaktiviert.
+ImmobilienScout24 liefert nur ausdrücklich belegte **Test**-Mietreferenzen;
+kein funktionierender Livezugriff wird behauptet. Kein KI-Anbieter/Modell oder
+kostenpflichtiger Dienst ist verbunden. Fehlende Miete/Finanzierung bleiben
+unbekannt; Marktmiet-Szenarien ersetzen keinen Ist-Cashflow. PDF-/Versandfehler
+können ohne erneute Analyse wiederholt werden. Kein rückwirkender Sammelversand.
+
+Betriebs- und Testanleitung: [docs/AUTOMATISCHE_SCHNELLANALYSEN.md](docs/AUTOMATISCHE_SCHNELLANALYSEN.md).
+Python-/Node-Voraussetzungen, Migration, Geheimnisse außerhalb des Webroots,
+Host `omarchy` als vorläufiger alleiniger Worker-Rechner und sicheres Stoppen vor
+Git-Sync sind dort dokumentiert. Der lokale Server verwendet Loopback/API 3;
+`start_portfolio.ps1` erkennt einen veralteten laufenden Server.
+
+Abnahme: 44 Python-Tests einschließlich HTTP, bestehende 14 Node-Tests,
+Chromium bei 1440/768/390/320 px (hell/dunkel, kein Seitenüberlauf oder JS-Fehler),
+PDF-Text/Links/zwei Seiten und visuelles Rendering. Konkrete Tests für Duplikate,
+Preisrevision, Referenzausfall, vermietet ohne Ist-Miete, Konflikte, fehlendes
+Profil, blockierten Abruf, PDF-/Versandfehler, Parallelität, Worker-Neustart,
+Gmail-Pagination/unterbrochenen Erstabruf und unveränderte Portfolio-Tabellen.
+Externe Live-Verbindungen und Live-Portal-Layouts sind noch nicht abgenommen.
+
+## 🕐 Vorheriger Stand (06.10.2026)
 
 **Neues Objekt Kassel – Vorderer Westen:** Aus Immowelt-Exposé 0ef3085a-3257-4136-bb24-71143269ed91 (Online-ID 269KMHTV91PT) als vollständige Voranalyse angelegt: Objektordner `objekte/Kassel_Vorderer_Westen/` mit Übersicht, Titelbild (`titelbild.jpg` aus dem Inserat), fünf Analyse-Dateien, Unterlagen-README, SQLite-Datensatz (ID `25703334-931e-49ef-bbe9-084e5f1cf993`) und Portfolio-Karte. Eckdaten: 171.000 €, 73,5 m², 3 Zi., 1. OG, BJ 1964, Energieklasse D (Öl, Massivhaus), Garage + Balkon + Keller, **Ist-Miete 653 €/Monat (BELEGT)**, Hausgeld 640,32 €. Kalkulation im Pauschalmodus 20 %, Zins 4,60 % (Nutzer-Vorgabe): Gesamtinvest 189.032 €, BruttoR 4,58 %, Faktor 21,82, Cashflow −266 €/M. Widerspruch dokumentiert: Etage (Kachel „EG" vs. Text „1. OG" vs. Merkmal „Erdgeschoss").
 

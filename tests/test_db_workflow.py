@@ -1,3 +1,4 @@
+from contextlib import closing
 import base64
 import json
 import shutil
@@ -11,7 +12,7 @@ from unittest.mock import patch
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 import db_store
-from db_manager import berechne_rating
+from db_manager import berechne_rating, SCHEMA
 from listing_import import extract_listing, validate_url, ListingError
 
 
@@ -43,7 +44,9 @@ class DbWorkflowTest(unittest.TestCase):
             shutil.copy2(ROOT / 'objekte' / '_VORLAGE' / 'Objektname_Übersicht.html',
                          base / 'objekte' / '_VORLAGE' / 'Objektname_Übersicht.html')
             db_path = base / 'immo_datenbank.db'
-            shutil.copy2(ROOT / 'immo_datenbank.db', db_path)
+            # Synthetic empty database: never copy real properties into test data.
+            with closing(sqlite3.connect(db_path)) as conn, conn:
+                conn.executescript(SCHEMA)
 
             def fake_fetch(url, limit=3_000_000):
                 if 'bilder.' in url:
@@ -70,7 +73,7 @@ class DbWorkflowTest(unittest.TestCase):
                 self.assertTrue((base / 'objekte' / '_ARCHIV' / first['name']).exists())
                 reactivated = db_store.set_archive_status(first['id'], False, 4)
                 self.assertEqual(reactivated['status'], 'aktiv')
-                with sqlite3.connect(db_path) as conn:
+                with closing(sqlite3.connect(db_path)) as conn, conn:
                     self.assertEqual(conn.execute('PRAGMA integrity_check').fetchone()[0], 'ok')
 
             with patch.object(db_store, 'BASE', base), patch.object(db_store, 'DB_PATH', db_path), patch.object(db_store, 'validate_url', side_effect=lambda url: url), patch.object(db_store, 'fetch_public', side_effect=ListingError('Anzeige nicht abrufbar (HTTP 403)')):

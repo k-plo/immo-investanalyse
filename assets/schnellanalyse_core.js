@@ -82,29 +82,30 @@
 
   // Reine Kennzahlenberechnung für EINEN Kaufpreis.
   function berechne(values, kaufpreis) {
-    var kaltmiete = values.kaltmiete || 0;
-    var zins = values.zins || 0;
-    var tilgung = values.tilgung || 0;
+    var kaltmiete = values.kaltmiete;
+    var zins = values.zins;
+    var tilgung = values.tilgung;
 
-    var jahresKaltmiete = kaltmiete * 12;
-    var bruttoRendite = kaufpreis > 0 ? jahresKaltmiete / kaufpreis * 100 : null;
+    var jahresKaltmiete = kaltmiete === null ? null : kaltmiete * 12;
+    var bruttoRendite = kaufpreis > 0 && jahresKaltmiete !== null ? jahresKaltmiete / kaufpreis * 100 : null;
     var kaufpreisfaktor = jahresKaltmiete > 0 ? kaufpreis / jahresKaltmiete : null;
 
-    var ek = ekFuer(values, kaufpreis);
-    var darlehen = Math.max(0, kaufpreis - ek);
-    var rate = darlehen * (zins + tilgung) / 100 / 12;
-    var zinsMonat = darlehen * zins / 100 / 12;
-    var tilgungMonat = darlehen * tilgung / 100 / 12;
+    var ekBekannt = (values.ekModus === EK_MODUS_BETRAG ? values.ek : values.ekAnteil) !== null;
+    var ek = kaufpreis !== null && ekBekannt ? ekFuer(values, kaufpreis) : null;
+    var darlehen = ek === null ? null : Math.max(0, kaufpreis - ek);
+    var rate = darlehen === null || zins === null || tilgung === null ? null : darlehen * (zins + tilgung) / 100 / 12;
+    var zinsMonat = darlehen === null || zins === null ? null : darlehen * zins / 100 / 12;
+    var tilgungMonat = darlehen === null || tilgung === null ? null : darlehen * tilgung / 100 / 12;
     // Pauschale Kosten (nicht umlagefähig + Rücklage + sonstige) als % der Kaltmiete.
-    var pauschaleKosten = kaltmiete * PAUSCHALE_KOSTEN_PROZENT / 100;
-    var cashflow = kaltmiete - pauschaleKosten - rate;
+    var pauschaleKosten = kaltmiete === null ? null : kaltmiete * PAUSCHALE_KOSTEN_PROZENT / 100;
+    var cashflow = kaltmiete === null || rate === null ? null : kaltmiete - pauschaleKosten - rate;
 
     return {
       kaufpreis: kaufpreis,
       kaltmiete: kaltmiete,
       jahresKaltmiete: jahresKaltmiete,
       bruttoRendite: bruttoRendite,
-      kaufpreisfaktor: kaufpreisfaktor,
+      kaufpreisfaktor: kaufpreis === null ? null : kaufpreisfaktor,
       pauschaleKostenProzent: PAUSCHALE_KOSTEN_PROZENT,
       pauschaleKostenMonat: pauschaleKosten,
       ek: ek,
@@ -113,7 +114,7 @@
       tilgungMonat: tilgungMonat,
       rateMonat: rate,
       cashflowMonat: cashflow,
-      cashflowJahr: cashflow * 12
+      cashflowJahr: cashflow === null ? null : cashflow * 12
     };
   }
 
@@ -136,12 +137,14 @@
     var cashflow = statusCashflow(ergebnis.cashflowMonat);
     var faktor = statusKaufpreisfaktor(ergebnis.kaufpreisfaktor);
     var alle = rendite === true && cashflow === true && faktor === true;
+    var gesamt = [rendite, cashflow, faktor].indexOf(false) >= 0 ? 'nicht bestanden' : alle ? 'bestanden' : 'unvollständig';
     return {
       bruttoRendite: rendite,
       cashflow: cashflow,
       kaufpreisfaktor: faktor,
       bestanden: alle,
-      text: alle ? 'Schnellcheck bestanden' : 'Schnellcheck nicht bestanden'
+      gesamt: gesamt,
+      text: 'Schnellcheck ' + gesamt
     };
   }
 
@@ -156,11 +159,13 @@
   // Vollständige Schnellanalyse: Basisvariante + 10-%-Szenario + Vergleich.
   function analyse(raw) {
     var check = validate(raw);
-    if (!check.ok) return { ok: false, errors: check.errors, values: check.values };
+    if (!check.ok && !(raw && raw._teilanalyse)) return { ok: false, errors: check.errors, values: check.values };
+    // Ungültig ist ebenso wenig berechenbar wie fehlend. Keine Null-Euro-Ersatzwerte.
+    Object.keys(check.errors).forEach(function (key) { check.values[key] = null; });
 
     var v = check.values;
     var basis = berechne(v, v.kaufpreis);
-    var szenarioKaufpreis = v.kaufpreis * SZENARIO_FAKTOR;
+    var szenarioKaufpreis = v.kaufpreis === null ? null : v.kaufpreis * SZENARIO_FAKTOR;
     var szenario = berechne(v, szenarioKaufpreis);
 
     return {

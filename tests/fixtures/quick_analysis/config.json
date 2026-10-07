@@ -1,0 +1,11 @@
+{
+  "interval": 30, "concurrency": 2, "max_attempts": 3, "backoff": 0,
+  "profile": {"name": "TEST – kein Bankangebot", "ekModus": "betrag", "ek": 30000, "zins": 4, "tilgung": 2},
+  "local": {
+    "mail_directory": "tests/fixtures/quick_analysis/emails",
+    "listing_directory": "tests/fixtures/quick_analysis",
+    "rent_file": "tests/fixtures/quick_analysis/rents.json",
+    "notification": true, "auto_deliver_test": true
+  },
+  "gmail": {"enabled": false}, "telegram": {"enabled": false}
+}

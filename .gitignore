@@ -36,3 +36,7 @@ node_modules/
 
 # ===== Git selbst =====
 *.orig
+
+# Automatic quick checks: runtime artifacts and OAuth tokens are not source code.
+ausgaben/schnellanalysen/
+*token*.json

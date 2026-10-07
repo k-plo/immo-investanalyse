@@ -5,6 +5,8 @@ from __future__ import annotations
 import json
 import sqlite3
 import sys
+import os
+import re
 from datetime import datetime, timezone
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -12,9 +14,13 @@ from urllib.parse import unquote, urlparse
 
 from db_store import RevisionConflict, get_object, import_listing, new_candidates, portfolio_rows, save_object, set_archive_status, set_photo
 from listing_import import ListingError
+from quick_store import QuickStore
+from quick_adapters import parse_eml
+from quick_extract import message_entries
+from quick_worker import load_config, DEFAULT_OUTPUT
 
 BASE = Path(__file__).resolve().parent.parent
-DB_PATH = BASE / "immo_datenbank.db"
+DB_PATH = Path(os.environ.get("IMMO_DB_PATH", BASE / "immo_datenbank.db"))
 DEFAULT_PORT = 8000
 
 
@@ -48,8 +54,36 @@ class PortfolioHandler(SimpleHTTPRequestHandler):
 
     def do_GET(self) -> None:
         path = urlparse(self.path).path.rstrip("/") or "/"
+        if path == '/api/quick-analyses':
+            payload = QuickStore(DB_PATH).dashboard()
+            config = load_config()
+            payload['connections'] = {
+                'gmail': 'Nicht verbunden – Liveprüfung im Worker ausstehend' if config.get('gmail',{}).get('enabled') else 'Nicht verbunden',
+                'telegram': 'Konfiguriert – Versand nur nach Einzelauftrag' if config.get('telegram',{}).get('enabled') else 'Telegram nicht verbunden',
+                'rent': 'ImmobilienScout24 nicht verbunden',
+            }
+            self.send_json(payload)
+            return
+        if path.startswith('/api/quick-analyses/pdf/'):
+            aid = path.rsplit('/',1)[-1]
+            try:
+                record = QuickStore(DB_PATH).analysis(aid)
+                name = record['pdf_name'] or ''
+                if record['pdf_status'] != 'erstellt' or not re.fullmatch(r'schnellanalyse-[a-f0-9-]+\.pdf', name):
+                    raise ValueError('PDF nicht verfügbar')
+                content = (DEFAULT_OUTPUT / name).read_bytes()
+            except (ValueError, OSError):
+                self.send_json({'error':'PDF nicht verfügbar'},404)
+                return
+            self.send_response(200)
+            self.send_header('Content-Type','application/pdf')
+            self.send_header('Content-Disposition', f'attachment; filename="{name}"')
+            self.send_header('Content-Length',str(len(content)))
+            self.end_headers()
+            self.wfile.write(content)
+            return
         if path == "/api/health":
-            self.send_json({"ok": True, "service": "immo-portfolio", "api_version": 2,
+            self.send_json({"ok": True, "service": "immo-portfolio", "api_version": 3,
                             "time": datetime.now(timezone.utc).isoformat()})
             return
         if path == "/api/portfolio":
@@ -85,7 +119,16 @@ class PortfolioHandler(SimpleHTTPRequestHandler):
             return
         if path == "/":
             self.path = "/portfolio.html"
+        decoded = unquote(path)
+        components = Path(decoded).parts
+        resolved = Path(self.translate_path(self.path)).resolve()
+        if not resolved.is_relative_to(BASE.resolve()) or any(part.startswith('.') and part not in ('/','.') for part in components) or re.search(r'(?:credentials|secret|token)|\.(?:db|sqlite)(?:-(?:wal|shm|journal))?(?:$|/)|\.(?:eml|pem|key)(?:$|/)', decoded, re.I) or decoded.startswith('/ausgaben/schnellanalysen'):
+            self.send_error(403, 'Privater Projektinhalt')
+            return
         super().do_GET()
+
+    def do_HEAD(self) -> None:
+        self.send_error(405, 'GET verwenden')
 
     def do_PUT(self) -> None:
         path = urlparse(self.path).path.rstrip("/")
@@ -113,6 +156,27 @@ class PortfolioHandler(SimpleHTTPRequestHandler):
 
     def do_POST(self) -> None:
         path = urlparse(self.path).path
+        if path in ('/api/quick-analyses/import-eml','/api/quick-analyses/retry'):
+            if not self.local_origin():
+                self.send_json({'error':'Fremder Ursprung'},403)
+                return
+            try:
+                data = self.read_json()
+                store = QuickStore(DB_PATH)
+                if path.endswith('/retry'):
+                    store.retry(int(data['job_id']))
+                    self.send_json({'status':'Wiederholung eingereiht; separater Worker verarbeitet den Job'})
+                else:
+                    eml = data['eml']
+                    if not isinstance(eml,str) or len(eml) > 1_000_000:
+                        raise ValueError('Ungültige EML-Datei')
+                    message = parse_eml(eml.encode('utf-8'))
+                    config = load_config()
+                    count = store.ingest('local',message,message_entries(message),config.get('profile'))
+                    self.send_json({'offers':count,'status':'Testimport gespeichert; separaten Worker starten'})
+            except (ValueError, KeyError, TypeError) as error:
+                self.send_json({'error':str(error)},400)
+            return
         if path != "/api/import-listing" and not (path.startswith("/api/objects/") and path.endswith(("/archive", "/reactivate", "/photo"))):
             self.send_json({"error": "Unbekannter Endpunkt"}, 404)
             return
@@ -150,8 +214,9 @@ class PortfolioHandler(SimpleHTTPRequestHandler):
 
 def main() -> None:
     port = int(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_PORT
-    server = ThreadingHTTPServer(("0.0.0.0", port), PortfolioHandler)
-    print(f"Immobilien-Portfolio: http://0.0.0.0:{port}/")
+    QuickStore(DB_PATH).migrate()
+    server = ThreadingHTTPServer(("127.0.0.1", port), PortfolioHandler)
+    print(f"Immobilien-Portfolio: http://127.0.0.1:{port}/")
     try:
         server.serve_forever()
     except KeyboardInterrupt:

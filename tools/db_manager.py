@@ -25,11 +25,12 @@ import sys
 import html
 import re
 import uuid
+import os
 from pathlib import Path
 from datetime import datetime
 
 BASE = Path(__file__).resolve().parent.parent
-DB_PATH = BASE / "immo_datenbank.db"
+DB_PATH = Path(os.environ.get("IMMO_DB_PATH", BASE / "immo_datenbank.db"))
 
 # ---------------------------------------------------------------- Schema ---
 SCHEMA = """
@@ -158,6 +159,8 @@ def init_db():
     conn.execute("INSERT OR IGNORE INTO meta (key, value) VALUES ('letzte_initialisierung', ?)", (now(),))
     conn.commit()
     conn.close()
+    from quick_store import QuickStore
+    QuickStore(DB_PATH).migrate()
     print(f"✓ DB initialisiert: {DB_PATH}")
 
 # ---------------------------------------------------------------- Rating ---

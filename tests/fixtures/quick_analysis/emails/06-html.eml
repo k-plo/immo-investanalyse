@@ -1,0 +1,26 @@
+From: test-alarm@example.invalid
+To: test@example.invalid
+Subject: TEST Suchalarm =?utf-8?b?4oCT?= keine realen Angebote
+Message-ID: <html@example.invalid>
+Date: Tue, 06 Oct 2026 10:00:00 +0200
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============0902889951687044730=="
+
+--===============0902889951687044730==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+TEST Nachricht mit HTML-Angeboten
+
+--===============0902889951687044730==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<html><body><p>TEST Suchalarm</p><div><a href=3D"https://www.immobilienscout2=
+4.de/expose/900000002?utm_campaign=3DTEST">TEST Angebot</a><p>Wohnfl=C3=A4che=
+: 60 m=C2=B2</p></div><a href=3D"https://example.invalid/unsubscribe">Abmelde=
+n</a></body></html>
+
+--===============0902889951687044730==--

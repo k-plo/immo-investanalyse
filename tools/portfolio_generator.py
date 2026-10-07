@@ -13,6 +13,7 @@ OUT = BASE / "portfolio.html"
 
 def main():
     dashboard_css = (BASE / "assets" / "dashboard.css").read_text(encoding="utf-8")
+    quick_css = (BASE / "assets" / "quick_analyses.css").read_text(encoding="utf-8")
     theme_js = (BASE / "assets" / "theme.js").read_text(encoding="utf-8")
     html = f"""<!DOCTYPE html>
 <html lang="de">
@@ -63,6 +64,7 @@ def main():
   footer {{ margin-top: 24px; color: #7a879c; font-size: 10px; }}
 </style>
 <style>{dashboard_css}</style>
+<style>{quick_css}</style>
 <style>
   body.portfolio-app {{ padding-top: 16px; }}
   .pf-top {{ display: flex; align-items: center; justify-content: space-between; gap: 16px; }}
@@ -103,11 +105,24 @@ def main():
     <div class="sub">Lade aktuelle Objekte aus SQLite …</div>
   </div>
 
+  <section class="qa-section" aria-labelledby="qaTitle">
+    <h2 id="qaTitle">Schnellanalysen <span class="status-badge">Agent</span></h2>
+    <p class="qa-meta" id="qaConnections">Nicht verbunden · Telegram nicht verbunden</p>
+    <p class="qa-meta">Automatische Vorprüfung · separat vom Portfolio · keine Objektanlage oder Portfolio-Summen.</p>
+    <div class="qa-actions">
+      <button class="btn secondary" id="qaRefresh" type="button">Schnellanalysen aktualisieren</button>
+      <label class="qa-upload">Lokaler Testimport (.eml) <input type="file" id="qaImport" accept=".eml,message/rfc822"></label>
+    </div>
+    <p id="qaImportStatus" role="status"></p><p class="qa-meta" id="qaJobs"></p>
+    <div class="grid" id="qaGrid"><p>Schnellanalysen werden geladen …</p></div>
+  </section>
+
   <footer>
     ⚠️ Modellrechnungen – keine rechtliche, steuerliche oder finanzielle Beratung. 🔄 <b>Aktualisieren</b> liest aktuelle Werte direkt aus der Datenbank.
   </footer>
 </div>
 <script src="assets/portfolio_db.js?v=10"></script>
+<script src="assets/quick_analyses.js?v=1"></script>
 </body>
 </html>"""
     OUT.write_text(html, encoding="utf-8")

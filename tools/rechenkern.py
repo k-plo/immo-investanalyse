@@ -14,8 +14,24 @@ Hinweis: Modellrechnung – keine rechtliche, steuerliche oder finanzielle Berat
 """
 import json
 import sys
+import subprocess
 from copy import deepcopy
 from pathlib import Path
+
+
+def schnellanalyse(values: dict) -> dict:
+    """Worker uses the browser's canonical quick-check formulas, including partials.
+
+    The full-analysis calculator below intentionally has a different acquisition
+    cost model. Never pass quick-check data through load_data/default_data.
+    """
+    core = Path(__file__).resolve().parents[1] / "assets" / "schnellanalyse_core.js"
+    runner = "const fs=require('fs'); const c=require(process.argv[1]); process.stdout.write(JSON.stringify(c.analyse(JSON.parse(fs.readFileSync(0,'utf8')))));"
+    completed = subprocess.run(
+        ["node", "-e", runner, str(core)], input=json.dumps({**values, "_teilanalyse": True}, allow_nan=False),
+        text=True, capture_output=True, timeout=15, check=True,
+    )
+    return json.loads(completed.stdout)
 
 # ---------------------------------------------------------------- Eingaben ---
 def default_data() -> dict:

@@ -1,0 +1,17 @@
+/* Additions use the existing dashboard tokens and theme. */
+.qa-section {margin-top:28px; padding-top:20px; border-top:1px solid var(--line)}
+.qa-section h2 {margin-bottom:10px}
+.qa-actions {display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin:14px 0}
+.qa-meta {color:var(--muted); font-size:12px; margin:8px 0; overflow-wrap:anywhere}
+.qa-card {gap:8px}
+.qa-card p, .qa-card a {overflow-wrap:anywhere}
+.qa-card .v {white-space:normal; overflow-wrap:anywhere}
+.qa-card .qa-assessment {font-size:15px}
+.qa-card details {margin-top:8px; min-width:0}
+.qa-card summary {cursor:pointer; padding:10px 0; min-height:44px; color:var(--accent)}
+.qa-card pre {white-space:pre-wrap; overflow-wrap:anywhere; font-size:12px; line-height:1.6}
+.qa-card table {font-size:12px; min-width:550px}
+.qa-card td {max-width:280px; overflow-wrap:anywhere; vertical-align:top}
+.qa-error {padding:8px; border:1px solid var(--line); border-radius:8px; color:var(--muted)}
+.qa-upload input {max-width:100%; font-size:16px}
+@media (max-width:420px) {.qa-section .grid {grid-template-columns:minmax(0,1fr)}}
