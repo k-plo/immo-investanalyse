@@ -7,6 +7,204 @@ weiter unten beschreibt die Betriebsprüfung vom 06.10.2026 vor dem Commit;
 den aktuellen Stand zeigen `git status` und `git log`. Abweichende historische
 Branch- und JSON-Sync-Angaben in README/Status sind keine alternative Ausgangsbasis.
 
+## Einrichtung im Portfolio ohne Textkonfiguration
+
+Seit 07.10.2026 befindet sich in **Schnellanalysen · Agent** das aufklappbare Menü
+**⚙ Agent einrichten / Einstellungen**. Es speichert Formulareingaben privat und
+startet den vorhandenen Worker auf ausdrücklichen Klick als separaten Prozess.
+Das Öffnen des Menüs und seine Statusabfragen lösen keine Verarbeitung aus.
+Python ≥ 3.10 und Node ≥ 18 müssen im PATH liegen. Für den lokalen Ablauf werden
+keine zusätzlichen Python-Pakete benötigt; die Gmail-Komponenten lassen sich im
+Menü in eine private virtuelle Python-Umgebung installieren. Auf Linux muss
+Python mit `venv`/`ensurepip` verfügbar sein. Die Einrichtung wurde unter Linux
+mit Chromium geprüft; Windows/macOS-Befehle sind unterstützt, aber nicht dort getestet.
+
+**Portfolio starten**, aus dem bestehenden Checkout, falls noch kein Server läuft:
+
+```bash
+python3 tools/local_server.py 8000
+```
+
+Windows/PowerShell:
+
+```powershell
+py -3 tools/local_server.py 8000
+```
+
+Dann **http://127.0.0.1:8000/portfolio.html#qaSettings** öffnen. Bei einem bereits
+laufenden Server mit API-Version kleiner als 4 diesen zuerst im bisherigen
+Terminal mit Strg+C beenden und neu starten. Ohne Demo-Umgebung nutzt dieser
+Start die bestehende Repository-DB; er führt nur die additive Migration aus.
+
+### Schritt für Schritt: echte Suchalarme
+
+1. **Finanzierung:** „Finanzierungsprofil verwenden“ wählen; Profilname, eigenes
+   Eigenkapital (Betrag oder Prozent), Sollzins und anfängliche Tilgung eintragen.
+   Kein Profil ist vorbelegt. Ohne Profil gibt es belegte Objektkennzahlen und
+   PDFs, aber keinen Finanzierungs-Cashflow. Kostenmodus bleibt die sichtbare
+   Annahme 20 % der Kaltmiete; Erwerbsnebenkosten, Steuern und Leerstand fehlen.
+2. **E-Mail-Eingang:** „Gmail-Suchalarme“ auswählen. Die tatsächliche Absenderadresse
+   aus einer Alarm-Mail, optional einen Betreffteil, einen bewussten Startzeitpunkt
+   und Prüfintervall eintragen. Frühere Mails werden nicht ungefragt übernommen.
+   Für den ersten Test im zusätzlichen Suchfilter `rfc822msgid:HEADER-ID` mit der
+   tatsächlichen Message-ID genau einer neuen Alarm-Mail verwenden; Zeitpunkt
+   unmittelbar davor wählen. Danach **Einstellungen speichern**.
+3. **Google Cloud:** Gmail API aktivieren, OAuth-Consent für das eigene Konto
+   einrichten (bei privatem Gmail External + eigener Testnutzer), unter Clients
+   einen **Desktop app**-Client erstellen und die JSON-Datei herunterladen.
+   Im Menü **Google-Desktop-OAuth-Datei auswählen**. Das ist die von Google
+   erzeugte Datei; keine JSON-Konfiguration selbst schreiben.
+   [Offizielle Google-Anleitung](https://developers.google.com/workspace/gmail/api/quickstart/python),
+   geprüft am 07.10.2026. Die Datei gehört außerhalb des Repositories.
+4. **Gmail-Komponenten einrichten** klicken. Dieser ausdrückliche Schritt benötigt
+   Internet zu PyPI und richtet die private Python-Venv ein. Auf „Komponenten bereit“
+   warten; dann **Mit Google anmelden**. Im geöffneten Google-Browserfenster das
+   eigene Konto auswählen und lesenden Zugriff erlauben. Der Code fordert nur
+   `gmail.readonly` an, mit dynamischer Redirect-URI
+   `http://localhost:<freier-Port>/`; kein Dashboard-Web-App-Redirect einzutragen.
+   Der Anmeldedialog hat fünf Minuten Zeitlimit. Wird kein Browser geöffnet,
+   erneut auf einem Rechner mit Desktop-Browser versuchen.
+5. **Jetzt einmal prüfen** starten. Das holt passende Mails und verarbeitet die
+   fälligen Analyse-/PDF-Jobs. Anschließend **Schnellanalysen aktualisieren**.
+   „Verbunden“ erscheint erst nach einem erfolgreichen Gmail-API-Abruf mit genau
+   der aktuellen Konfiguration; ein gespeicherter Token allein bestätigt das nicht.
+   Erwartung beim Ein-Mail-Test: genau diese Nachricht und ihre Angebote, PDF(s),
+   kein Telegram-Versand. Erneutes Prüfen erzeugt keine Nachrichtenduplikate.
+6. Wenn der Test stimmt: Worker stoppen/Prozessende abwarten, normalen gezielten
+   Suchfilter speichern und **Worker starten**. Der Worker prüft im eingestellten
+   Intervall, auch bei geschlossenem Browser. Der Rechner muss eingeschaltet bleiben;
+   nach einem Rechnerneustart hier erneut starten. Ein OS-Autostartdienst ist noch
+   nicht installiert. Gmail und echte Portal-Layouts wurden noch nicht live abgenommen.
+
+**Ergebnisse ansehen:** Karten zeigen Kennzahlen/Bewertung und getrennte Analyse-,
+PDF- und Versandstatus. **Details, Quellen und Annahmen** zeigt das gespeicherte
+Profil, beide Szenarien, Belege, Mietreferenzen, Widersprüche und fehlende Angaben.
+**PDF herunterladen** lädt das zu diesem Ergebnis gehörende Dokument.
+**Schritt wiederholen** reiht nur den betreffenden fehlgeschlagenen Schritt ein;
+Worker starten oder „Jetzt einmal prüfen“ führt ihn aus. Ein einmaliger Durchlauf
+wartet nicht auf noch nicht fällige Backoff-Wiederholungen. Blockierte Anzeigen
+können weiterhin blockiert sein; andere Angebote werden unabhängig verarbeitet.
+
+### EML statt Gmail und sichere Demo
+
+Für eine echte lokal gespeicherte Mail **Lokale EML-Dateien / Dashboard-Import**
+auswählen und speichern. **Lokaler Testimport (.eml)** öffnet den Dateidialog.
+Alternativ den im Menü angezeigten privaten Eingangsordner bei Bedarf anlegen und Dateien dort ablegen.
+Dann **Jetzt einmal prüfen** oder **Worker starten**. Für echte Mails verwendet
+normale Konfiguration öffentlich abrufbare Anzeigen. Lokale EMLs tragen derzeit
+auch bei echten Nachrichten das Testkennzeichen; sie lösen keinen automatischen
+Telegram-Liveversand aus. Weder Gmail-Anmeldung noch KI-Schlüssel sind nötig.
+
+**Die mitgelieferten Fixtures ausschließlich mit neuer temporärer DB und den
+lokalen Test-Anzeigen/Mietreferenzen verwenden.** Die folgenden Befehle bereiten
+alles vor; keine Datei von Hand bearbeiten. Beispiel Linux/macOS:
+
+```bash
+export IMMO_DEMO_DIR="$(mktemp -d)"
+export IMMO_DB_PATH="$IMMO_DEMO_DIR/demo.db"
+export IMMO_QUICK_OUTPUT="$IMMO_DEMO_DIR/pdfs"
+export IMMO_QUICK_HOME="$IMMO_DEMO_DIR/private"
+export IMMO_QUICK_CONFIG="$IMMO_QUICK_HOME/automation.json"
+python3 - <<'PYDEMO'
+import json, os
+from pathlib import Path
+home = Path(os.environ['IMMO_QUICK_HOME'])
+home.mkdir(mode=0o700)
+fixture = Path('tests/fixtures/quick_analysis').resolve()
+config = json.loads((fixture / 'config.json').read_text())
+config['local'].update(mail_directory=str(home / 'inbox'), listing_directory=str(fixture), rent_file=str(fixture / 'rents.json'), notification=False, auto_deliver_test=False)
+path = Path(os.environ['IMMO_QUICK_CONFIG'])
+path.write_text(json.dumps(config, ensure_ascii=False, indent=2))
+path.chmod(0o600)
+PYDEMO
+python3 tools/db_manager.py init
+python3 tools/local_server.py 8765
+```
+
+Windows/PowerShell, aus dem bestehenden Checkout:
+
+```powershell
+$env:IMMO_DEMO_DIR = Join-Path ([IO.Path]::GetTempPath()) ([Guid]::NewGuid().ToString())
+$env:IMMO_DB_PATH = Join-Path $env:IMMO_DEMO_DIR 'demo.db'
+$env:IMMO_QUICK_OUTPUT = Join-Path $env:IMMO_DEMO_DIR 'pdfs'
+$env:IMMO_QUICK_HOME = Join-Path $env:IMMO_DEMO_DIR 'private'
+$env:IMMO_QUICK_CONFIG = Join-Path $env:IMMO_QUICK_HOME 'automation.json'
+New-Item -ItemType Directory -Path $env:IMMO_QUICK_HOME -Force | Out-Null
+$fixture = (Resolve-Path 'tests/fixtures/quick_analysis').Path
+$config = Get-Content (Join-Path $fixture 'config.json') -Raw | ConvertFrom-Json
+$config.local.mail_directory = Join-Path $env:IMMO_QUICK_HOME 'inbox'
+$config.local.listing_directory = $fixture
+$config.local.rent_file = Join-Path $fixture 'rents.json'
+$config.local.notification = $false
+$config.local.auto_deliver_test = $false
+$config | ConvertTo-Json -Depth 10 | Set-Content -Encoding utf8 $env:IMMO_QUICK_CONFIG
+py -3 tools/db_manager.py init
+py -3 tools/local_server.py 8765
+```
+
+Öffnen: **http://127.0.0.1:8765/portfolio.html#qaSettings**. Menü öffnen, vorhandenes
+**TEST-Profil** prüfen (30.000 € festes EK, 4 % Zins, 2 % Tilgung), lokal bleiben,
+**Einstellungen speichern**. Über **Lokaler Testimport (.eml)**
+`tests/fixtures/quick_analysis/emails/01-single.eml` wählen und **Jetzt einmal prüfen**
+klicken. Danach aktualisieren: eine TEST-Karte, Basis-Cashflow −150 €/Monat,
+bei −10 % Preis 0 €/Monat, PDF „erstellt“, Telegram „nicht verbunden“.
+0 € besteht das strikte Ziel > 0 € nicht. PDFs liegen im temporären `pdfs`-Ordner.
+`02-multiple.eml` enthält zusätzliche künstliche Fälle; `rents.json` enthält
+**ausschließlich erfundene TEST-Mietangebote**, keine echte Scout-Datenquelle.
+Demo-Konfigurationen mit Test-Anzeigen/Mietreferenzen lassen sich im Menü nicht
+auf Gmail umstellen; für Livebetrieb eine eigene normale private Konfiguration nutzen.
+
+Der Server bleibt für Bedienung/Download offen. Ein separat geöffnetes
+Worker-Terminal ist beim Menüstart nicht erforderlich; das Menü startet denselben
+`quick_worker.py` im Hintergrund. Vor Ende **Worker stoppen**, auf „Worker gestoppt“
+warten, danach Server-Terminal Strg+C. Auch bei geschlossenem Server läuft ein
+schon gestarteter Worker weiter; nach Serverneustart erkennt das Menü ihn wieder.
+Für Autostart nach Rechnerneustart ist weiterhin eine Dienstinstallation nötig.
+
+### Private Speicherung und optionale Dienste
+
+Standardordner ohne Umgebungsüberschreibung:
+
+| System | Privater Ordner |
+|---|---|
+| Linux | `$XDG_CONFIG_HOME/immo-investanalyse`, sonst `~/.config/immo-investanalyse` |
+| macOS | `~/Library/Application Support/immo-investanalyse` |
+| Windows | `%LOCALAPPDATA%/immo-investanalyse` |
+
+Darin: `automation.json` (Profile/Filter/Pfade), `gmail/client.json`,
+`gmail/token.json`, optional `telegram/secret.json`, private Venv und
+Prozessstatus/Logs unter `runtime/`. Token/Client-Secret werden nie als
+Formularwerte zurückgeliefert und nicht in SQLite/Git gespeichert. POSIX-Dateien
+0600, neue private Ordner 0700; Windows benötigt passende Benutzer-ACLs.
+`IMMO_QUICK_HOME` überschreibt den privaten Ordner;
+`--config`/`IMMO_QUICK_CONFIG` bleiben für vorhandene CLI-Nutzung unterstützt.
+Ohne explizite Konfiguration liest auch der CLI-Worker die privat gespeicherten
+Menüeinstellungen. Die Oberfläche sperrt Änderungen solange Worker oder
+Gmail-Einrichtung läuft. „Einstellungen speichern“ setzt `worker_host` auf diesen
+Rechner; nur diesen Rechner für den automatischen Git-DB-Betrieb verwenden.
+
+Bei Google External + Testing kann `gmail.readonly` eine erneute Anmeldung nach
+sieben Tagen erfordern. Der Worker erneuert gültige Refresh-Tokens automatisch;
+Widerruf oder Adminregeln erfordern erneute Anmeldung.
+[Google-Tokenlaufzeiten](https://developers.google.com/identity/protocols/oauth2#expiration).
+Keine unbegrenzte Anmeldung oder erfolgreiche Live-Verbindung wird behauptet.
+
+**Telegram ist optional:** Bot bei BotFather anlegen und eigene numerische Chat-ID
+ermitteln (siehe Abschnitt unten). Im Menü Token/Chat-ID eintragen. Echten Versand
+nur ausdrücklich aktivieren; für automatische Zustellung zusätzlich „Neue
+Gmail-Analysen … automatisch senden“ und einen bewussten Startzeitpunkt setzen.
+Speichern deaktiviert beide lokalen Test-Versandflags. Bereits offene Versandjobs
+blockieren die Live-Aktivierung und den Menü-Workerstart, bis sie ausdrücklich
+geprüft wurden; bestehende Analysen werden nicht nachträglich gesammelt eingereiht.
+Der bestehende CLI-Einzelversand bleibt für bewusstes Testen verfügbar. Ein
+Bot-Erstellungs-/Chat-ID-Assistent und ein Versandtestknopf sind nicht implementiert.
+
+**ImmobilienScout24:** Live-Mietreferenzadapter weiterhin nicht implementiert;
+autorisierte Datenquelle und Adapterentwicklung fehlen. Ohne belegte Kaltmiete
+bleiben mietabhängige Kennzahlen unbekannt; Teilanalyse und PDF entstehen trotzdem.
+**KI:** Kein Modellaufruf und kein KI-Konto nötig. Parser extrahieren explizite
+Angaben; vorhandener deterministischer JS-Rechenkern berechnet die Kennzahlen.
+
 ## Umfang und Datenfluss
 
 `quick_adapters.MailAdapter` → `quick_extract.message_entries` →
@@ -26,8 +224,11 @@ Die Kategorie steht im Generator und bleibt nach `portfolio_generator.py` erhalt
 `/api/portfolio`, reguläre Summen und Ratings lesen weiterhin ausschließlich die
 bisherigen Tabellen. Neue Schnittstellen: `GET /api/quick-analyses`,
 `GET /api/quick-analyses/pdf/<ID>`, `POST /api/quick-analyses/import-eml` und
-`POST /api/quick-analyses/retry`. Öffnen/Aktualisieren erzeugt keine Jobs.
-Der Server läuft jetzt auf Loopback und meldet API-Version 3; das PowerShell-
+`POST /api/quick-analyses/retry`. Zusätzlich: `GET/POST /api/quick-analyses/settings`,
+`POST /api/quick-analyses/gmail-client` und `POST /api/quick-analyses/control` mit
+festen Aktionen `install-gmail`, `authorize-gmail`, `start-worker`, `check-once`,
+`stop-worker`. Öffnen/Aktualisieren erzeugt keine Jobs.
+Der Server läuft jetzt auf Loopback und meldet API-Version 4; das PowerShell-
 Startskript erkennt ältere laufende Server. DB-Dateien, SQLite-Nebenfiles,
 versteckte Pfade, EMLs und typische Geheimnisdateien werden nicht statisch
 herausgegeben. PDF-Downloads laufen über die Datenbank-ID.
@@ -76,12 +277,10 @@ Der Worker ist **separat startbar, aber kein installierter Autostartdienst**.
 Beim Betriebscheck am 06.10.2026 lief weder `quick_worker.py` noch `local_server.py`.
 Ein Browser ist nur für Bedienung/Anzeige nötig, nicht für die Verarbeitung.
 „Letzte Workerabfrage“ ist ein gespeicherter Zeitpunkt, kein Nachweis eines noch
-laufenden Prozesses. Die Verbindungsanzeigen sind Konfigurationsanzeigen:
-Gmail bleibt derzeit auch nach erfolgreichem API-Abruf mit „Liveprüfung ausstehend“
-beschriftet; Scout zeigt auch bei lokalen Testreferenzen „nicht verbunden“.
-Telegram zeigt bei Aktivierung „Versand nur nach Einzelauftrag“, selbst wenn
-`auto_send_new` zusätzlich aktiviert wurde. Ein verlässlicher Live-Zustandsindikator
-ist noch zu ergänzen; Nachrichtenherkunft und Versandbeleg sind die belastbaren Nachweise.
+laufenden Prozesses. Das Einstellungsmenü erkennt den gestarteten Prozess über private Prozessdaten;
+„Verbunden“ für Gmail setzt einen erfolgreichen API-Abruf mit der aktuellen
+Konfiguration voraus. Telegram-Aktivierung ist kein Versandnachweis; dafür gilt
+nur der gespeicherte Beleg je Analyse. Scout bleibt ohne Liveadapter nicht verbunden.
 
 ## Erste lokale Nutzung: Linux/macOS
 
@@ -484,7 +683,7 @@ Objekten ohne Ist-Miete gibt es ausschließlich ein gekennzeichnetes Marktszenar
 lesende REST-Aufrufe `messages.list`/`messages.get`, gezielte Suche, Pagination,
 Startzeitpunkt, lokale Absender-/Betreffprüfung und persistenter Synchronisationsstand.
 Kein Push, keine E-Mail-Modifikation. Die folgenden Schritte wurden nicht gegen
-ein Google-Konto ausgeführt. Offizielle Dokumentation am 06.10.2026 geprüft:
+ein Google-Konto ausgeführt. Offizielle Gmail-/OAuth-Dokumentation zuletzt am 07.10.2026 geprüft:
 [Python/Desktop-Client](https://developers.google.com/workspace/gmail/api/quickstart/python),
 [Installed-App-OAuth](https://developers.google.com/identity/protocols/oauth2/native-app),
 [run_local_server](https://googleapis.dev/python/google-auth-oauthlib/latest/reference/google_auth_oauthlib.flow.html),
@@ -499,7 +698,7 @@ ein Google-Konto ausgeführt. Offizielle Dokumentation am 06.10.2026 geprüft:
 2. OAuth-Client vom Typ **Desktop app** erstellen und Client-JSON herunterladen.
    Die Datei außerhalb des Repositories ablegen. Kein Web-App-Client und keine
    Dashboard-Redirect-URI verwenden. Der Code ruft
-   `InstalledAppFlow.run_local_server(port=0, access_type='offline', prompt='consent')`
+   `InstalledAppFlow.run_local_server(port=0, timeout_seconds=300, access_type='offline', prompt='consent')`
    auf: Redirect **`http://localhost:<dynamischer-freier-Port>/`**. Er wird vom
    lokalen OAuth-Hilfsserver gewählt, unabhängig von Dashboard-Port 8765/8000.
 3. Es wird ausschließlich **`https://www.googleapis.com/auth/gmail.readonly`**
@@ -577,16 +776,15 @@ Angebote erzeugen. Den Aufruf wiederholen: keine doppelte Nachrichtenverarbeitun
 Danach erst den regulären gezielten Filter setzen. Der Checkpoint wird nach
 vollständig beendetem Scan geschrieben, mit einem Tag Überlappung; Message-IDs
 verhindern Wiederverarbeitung. Ein Gmail-Fehler ist im Workerstatus sichtbar,
-verändert aber keine Nachricht. Die Dashboard-Verbindungsbeschriftung bestätigt
-gegenwärtig keinen erfolgreichen Login; diese Statusdarstellung ist noch zu verbessern.
+verändert aber keine Nachricht. Die Dashboard-Verbindungsbeschriftung zeigt
+nach dem erfolgreichen API-Abruf den zur aktuellen Konfiguration passenden Verbindungsstatus.
 
 Der Worker erneuert abgelaufene Access-Tokens über den Refresh-Token und schreibt
 die Token-Datei neu. Bei **External + Testing** läuft der Refresh-Token mit
 `gmail.readonly` laut Google nach sieben Tagen ab. Widerruf, Passwortwechsel,
 Nichtnutzung und Konten-/Adminbeschränkungen können ebenfalls erneute Anmeldung
 erfordern. Für Dauerbetrieb den passenden Veröffentlichungs-/Freigabestatus klären;
-kein unbegrenzt gültiges Token versprechen. Ein interaktiver OAuth-Dialog ohne
-Zeitlimit ist Einrichtungsarbeit, kein unbeaufsichtigter Worker-Autostart.
+kein unbegrenzt gültiges Token versprechen. Der interaktive OAuth-Dialog hat fünf Minuten Zeitlimit und muss vom Nutzer abgeschlossen werden; er ist kein unbeaufsichtigter Worker-Autostart.
 
 ## Telegram später ausdrücklich aktivieren
 
@@ -752,8 +950,10 @@ Atomare Leases gelten für dieselbe SQLite-Datei, nicht für Git-Kopien auf ande
 `tools/migrations/001_quick_analysis.sql` ergänzt ausschließlich `qa_*`-Tabellen.
 Serverstart, Workerstart und `db_manager.py init` führen die idempotente Migration
 aus; bestehende Objekte, Kalkulationen und Ratings bleiben erhalten. Die
-versionierte Repository-DB wurde bei der Entwicklung **nicht geändert**;
-die Migration erfolgt bei der späteren lokalen Inbetriebnahme.
+Entwicklungstests verwenden temporäre Datenbanken. Bei der anschließenden lokalen
+Inbetriebnahme des echten Servers am 07.10.2026 wurde die additive Migration in
+der Repository-DB ausgeführt; reguläre Datensätze blieben unverändert. Diese
+Laufzeitänderung gehört nicht zum Code-Commit des Einstellungsmenüs.
 
 Vor Git-Synchronisation Worker **und** Server sauber beenden, auf Prozessende
 warten, `python3 tools/db_manager.py check` ausführen und erst dann die DB
@@ -803,17 +1003,17 @@ CLI-Export nicht; der Fehler wurde hier nicht nebenbei repariert.
 | Komponente | Aktueller Stand | Konkrete nächste Handlung | Erforderlicher Zugang | Überprüfbares Erfolgskriterium |
 |---|---|---|---|---|
 | Lokaler Ablauf | Implementiert und unter Linux lokal geprüft | Demo mit eigener temporärer DB ausführen | Python/Node, keine Konten | Eine TEST-EML erzeugt Karte, gespeicherte Kennzahlen, zweitseitige PDF und lokalen Testbeleg |
-| Finanzierungsprofil | Implementiert/lokal geprüft; bisher TEST-Profil | Eigene EK-/Zins-/Tilgungswerte ausdrücklich konfigurieren | Eigene Finanzierungsentscheidung, ggf. Bankangebot | Neue Analyse speichert gewähltes Profil; Basis/−10 % nachvollziehbar |
+| Finanzierungsprofil | Formular und Berechnung implementiert/lokal geprüft; bisher TEST-Profil | Eigene EK-/Zins-/Tilgungswerte im Menü speichern | Eigene Finanzierungsentscheidung, ggf. Bankangebot | Neue Analyse speichert gewähltes Profil; Basis/−10 % nachvollziehbar |
 | Echte Alarmfilter/Portalformate | Konfigurationsfilter und Parser implementiert; echte Formate extern ungetestet | Einen echten Alarm als EML prüfen, Absender/Betreff/Linklayout abgleichen, Parser bei Bedarf erweitern | Tatsächliche Suchalarm-Mail; öffentliche Anzeige | Genau enthaltene Angebote, nachvollziehbare Felder, keine irrelevanten Links |
-| Gmail-OAuth | Implementiert, extern ungetestet | Cloud/Desktop-Client, Consent, Token und gezielten Ein-Mail-Test einrichten | Google-Konto, Cloud-Projekt, OAuth-Client/Token | Eine neue Mail mit adapter=gmail, Duplikat unterdrückt, keine Mailänderung |
+| Gmail-OAuth | Code und Menüassistent implementiert, extern ungetestet | Cloud/Desktop-Client im Menü hochladen, anmelden und gezielten Ein-Mail-Test durchführen | Google-Konto, Cloud-Projekt, OAuth-Client/Token | Eine neue Mail mit adapter=gmail, Duplikat unterdrückt, keine Mailänderung |
 | Scout-Mietreferenzen | Schnittstelle und Testadapter vorbereitet; Liveadapter noch nicht implementiert | Geeigneten Zugang klären, Adapter entwickeln und abnehmen | Autorisierte Datenquelle/Vertrag und eventuell API-Zugang | Fehlende Ist-Miete ergibt gekennzeichnete Schätzung mit echten Vergleichsquellen; Ausfall bleibt unbekannt |
 | Telegram | API-Sendecode implementiert, extern ungetestet; lokal deaktiviert | Bot/Chat-ID privat konfigurieren, Testflags entfernen, genau einen bewussten PDF-Versand testen | Bot-Token und erlaubte Chat-ID | PDF im richtigen Chat und persistenter echter Versandbeleg; kein Altbestand-Sammelversand |
-| Dauerhafter Worker | Polling/Queue/Hostbegrenzung implementiert und lokal geprüft; kein Dienst installiert | Einen Betriebsrechner festlegen, Dienst/Supervisor mit richtigen Pfaden installieren | Lokaler Benutzer-/Dienstzugriff; später Internet | Worker verarbeitet bei geschlossenem Browser/Editor und nach Neustart; saubere Stop-/Sync-Prozedur |
-| Live-Status und lokale EML-Kennzeichnung | Noch nicht sauber implementiert | Erfolgreiche Adapterzustände speichern, reale EML von Fixtures unterscheiden, Abruftext korrigieren | Keine neuen Zugangsdaten für Codearbeit | Statusanzeige stimmt mit tatsächlich gewähltem Adapter und nachgewiesenem Verbindungszustand überein |
+| Dauerhafter Worker | Menü-Start/Stop, Polling/Queue/Hostbegrenzung lokal geprüft; kein Autostartdienst installiert | Einen Betriebsrechner festlegen, Dienst/Supervisor mit richtigen Pfaden installieren | Lokaler Benutzer-/Dienstzugriff; später Internet | Worker verarbeitet bei geschlossenem Browser/Editor und nach Neustart; saubere Stop-/Sync-Prozedur |
+| Live-Status und lokale EML-Kennzeichnung | Gmail-Status nach erfolgreichem Scan implementiert/lokal simuliert geprüft; lokale EML weiterhin TEST | Reale EML-Kennzeichnung und Abruftext korrigieren; Gmail live abnehmen | Echte Alarm-Mail/Google-Zugang | Herkunft/Status stimmen mit tatsächlicher Quelle und bestätigtem Abruf überein |
 | KI-Extraktion | Noch nicht implementiert, derzeit nicht erforderlich | Nur bei Bedarf schema-/quellenvalidierte Schnittstelle mit Modell-/Kostenkonfiguration entwickeln | Falls gewählt Anbieter/API-Key | Expliziter Modellaufruf, validierte Datenherkunft und Kostenlimit; Rechenkern unverändert |
 | Git-Commit/Push | Übergabe aus dem lokalen Feature-Branch direkt nach `portfolio-current-sync` vereinbart; historischer Stand unten | Aktuellen Git-Stand prüfen, neuere Remote-Commits erhalten, ohne Force-Push übertragen | Eigene Autorangaben; GitHub-Schreibzugriff | Remote-Ziel enthält Implementierung, Betriebsanleitung und bestehende Portfolio-Commits |
 
-## Git-Zustand und Abschluss dieser Betriebsprüfung
+## Historischer Git-Zustand der Betriebsprüfung vom 06.10.2026
 
 Am Beginn der Betriebsprüfung am 06.10.2026 lag HEAD weiterhin auf `a6ea2ee`,
 identisch zur Ausgangsbasis `origin/portfolio-current-sync`. Der lokale Branch
@@ -882,3 +1082,18 @@ Erneut geprüft am 06.10.2026 mit einer frischen DB unter
 
 Die temporären Artefakte sind kein dauerhaft installierter Betrieb. Windows und
 macOS sowie echte Portal-Layouts und externe APIs wurden nicht live geprüft.
+
+## Abnahme des Einstellungsmenüs (07.10.2026)
+
+- 56 Python-Tests und 14 JavaScript-Rechentests bestanden. Die neuen Akzeptanztests mit privaten temporären Ordnern/DBs prüfen: Formularvalidierung,
+  private OAuth-Datei, keine Geheimnisse in Antworten/DB, keine GET-Nebenwirkungen,
+  blockierte Altbestand-Aktivierung, kein Gmail mit Test-Anzeigen/Mietreferenzen,
+  tatsächlicher separater Workerstart, Stop nach Controller-Neustart und EML→PDF.
+- Chromium: Menü bei 1440/768/390/320 px in beiden Themes, deutsche Zahlen
+  `30.000`/`4,60`, Speichern, Start/Stop und neue TEST-EML→Einzelprüfung→PDF-Download.
+  Neue TEST-Analyse: Basis-Cashflow −285 €/Monat (4,6 % Zins, 2 % Tilgung);
+  bestehende sieben Schnellanalysen und ein synthetischer Portfolio-Datensatz
+  unverändert. Keine echte Gmail-/Telegram-/Scout-Verbindung.
+- Komponenteninstallation und Google-Anmeldung wurden mit lokal simulierten
+  Prozessstarts geprüft, nicht tatsächlich gegen PyPI/Google ausgeführt.
+  Windows/macOS und echte Anzeigenlayouts weiterhin extern ungetestet.

@@ -7,6 +7,7 @@ import sqlite3
 import sys
 import os
 import re
+import threading
 from datetime import datetime, timezone
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -18,15 +19,23 @@ from quick_store import QuickStore
 from quick_adapters import parse_eml
 from quick_extract import message_entries
 from quick_worker import load_config, DEFAULT_OUTPUT
+from quick_settings import AutomationControl
 
 BASE = Path(__file__).resolve().parent.parent
 DB_PATH = Path(os.environ.get("IMMO_DB_PATH", BASE / "immo_datenbank.db"))
 DEFAULT_PORT = 8000
+CONTROL_LOCK = threading.Lock()
 
 
 class PortfolioHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(BASE), **kwargs)
+
+    def quick_control(self):
+        with CONTROL_LOCK:
+            if not hasattr(self.server, 'qa_control'):
+                self.server.qa_control = AutomationControl(QuickStore(DB_PATH), DEFAULT_OUTPUT)
+            return self.server.qa_control
 
     def send_json(self, payload: object, status: int = 200) -> None:
         body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
@@ -54,14 +63,19 @@ class PortfolioHandler(SimpleHTTPRequestHandler):
 
     def do_GET(self) -> None:
         path = urlparse(self.path).path.rstrip("/") or "/"
+        if path == '/api/quick-analyses/settings':
+            try:
+                self.send_json(self.quick_control().view())
+            except (ValueError, OSError, TypeError):
+                self.send_json({'error':'Agent-Einstellungen nicht lesbar; private Konfiguration prüfen'},400)
+            return
         if path == '/api/quick-analyses':
             payload = QuickStore(DB_PATH).dashboard()
-            config = load_config()
-            payload['connections'] = {
-                'gmail': 'Nicht verbunden – Liveprüfung im Worker ausstehend' if config.get('gmail',{}).get('enabled') else 'Nicht verbunden',
-                'telegram': 'Konfiguriert – Versand nur nach Einzelauftrag' if config.get('telegram',{}).get('enabled') else 'Telegram nicht verbunden',
-                'rent': 'ImmobilienScout24 nicht verbunden',
-            }
+            try:
+                config = load_config(allow_missing=True)
+                payload['connections'] = self.quick_control().connections(config)
+            except (ValueError, OSError, TypeError):
+                payload['connections'] = {'settings':'Agent-Konfiguration nicht lesbar; Einstellungen prüfen'}
             self.send_json(payload)
             return
         if path.startswith('/api/quick-analyses/pdf/'):
@@ -83,7 +97,7 @@ class PortfolioHandler(SimpleHTTPRequestHandler):
             self.wfile.write(content)
             return
         if path == "/api/health":
-            self.send_json({"ok": True, "service": "immo-portfolio", "api_version": 3,
+            self.send_json({"ok": True, "service": "immo-portfolio", "api_version": 4,
                             "time": datetime.now(timezone.utc).isoformat()})
             return
         if path == "/api/portfolio":
@@ -156,6 +170,35 @@ class PortfolioHandler(SimpleHTTPRequestHandler):
 
     def do_POST(self) -> None:
         path = urlparse(self.path).path
+        if path in ('/api/quick-analyses/settings','/api/quick-analyses/gmail-client','/api/quick-analyses/control'):
+            if not self.local_origin():
+                self.send_json({'error':'Fremder Ursprung'},403)
+                return
+            try:
+                data = self.read_json(120_000)
+                if not isinstance(data,dict):
+                    raise ValueError('Ungültige Eingaben')
+                control = self.quick_control()
+                if path.endswith('/settings'):
+                    result = control.save(data)
+                elif path.endswith('/gmail-client'):
+                    result = control.upload_client(data.get('client'))
+                else:
+                    action = data.get('action')
+                    if action in ('install-gmail','authorize-gmail'):
+                        result = control.start_operation(action)
+                    elif action in ('start-worker','check-once'):
+                        result = control.start_worker(once=action=='check-once')
+                    elif action == 'stop-worker':
+                        result = control.stop_worker()
+                    else:
+                        raise ValueError('Unbekannte Aktion')
+                self.send_json(result)
+            except (ValueError, KeyError, TypeError) as error:
+                self.send_json({'error':str(error)},400)
+            except (OSError, sqlite3.Error):
+                self.send_json({'error':'Einstellungen/Prozess konnten nicht gespeichert oder gestartet werden'},400)
+            return
         if path in ('/api/quick-analyses/import-eml','/api/quick-analyses/retry'):
             if not self.local_origin():
                 self.send_json({'error':'Fremder Ursprung'},403)
@@ -171,7 +214,7 @@ class PortfolioHandler(SimpleHTTPRequestHandler):
                     if not isinstance(eml,str) or len(eml) > 1_000_000:
                         raise ValueError('Ungültige EML-Datei')
                     message = parse_eml(eml.encode('utf-8'))
-                    config = load_config()
+                    config = load_config(allow_missing=True)
                     count = store.ingest('local',message,message_entries(message),config.get('profile'))
                     self.send_json({'offers':count,'status':'Testimport gespeichert; separaten Worker starten'})
             except (ValueError, KeyError, TypeError) as error:

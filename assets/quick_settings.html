@@ -1,0 +1,90 @@
+<details class="qa-settings" id="qaSettings">
+  <summary>⚙ Agent einrichten / Einstellungen</summary>
+  <p>Hier richtest du E-Mail-Eingang, Finanzierung und Hintergrundbetrieb ein. Die Einstellungen bleiben auf diesem Rechner; keine Text-Konfiguration ist nötig.</p>
+  <ol class="qa-setup-steps">
+    <li>Finanzierungsprofil und E-Mail-Quelle auswählen.</li>
+    <li>Für Gmail: Google-Desktop-Client auswählen, Komponenten einrichten und mit Google anmelden.</li>
+    <li>Alarm-Absender, Startzeitpunkt und Prüfintervall speichern.</li>
+    <li>„Jetzt einmal prüfen“, Ergebnis ansehen, danach „Worker starten“.</li>
+  </ol>
+  <p id="qaSettingsStatus" role="status" aria-live="polite"></p>
+  <form id="qaSettingsForm">
+    <fieldset id="qaEditable">
+      <legend>Einstellungen</legend>
+      <div class="qa-settings-group">
+        <h3>1. Finanzierung</h3>
+        <label class="qa-check"><input id="qaProfileEnabled" type="checkbox"> Finanzierungsprofil verwenden</label>
+        <p class="qa-meta">Ohne Profil werden belegte Objektkennzahlen berechnet; Finanzierungs-Cashflow bleibt unbekannt. Eigene Konditionen eintragen.</p>
+        <div id="qaProfileFields" class="qa-settings-fields" hidden>
+          <label>Profilname<input id="qaProfileName" type="text" maxlength="120" autocomplete="off"></label>
+          <label>Eigenkapital-Modus<select id="qaEkMode"><option value="betrag">Fester Betrag in €</option><option value="anteil">Anteil am Kaufpreis in %</option></select></label>
+          <label><span id="qaEkLabel">Eigenkapital (€)</span><input id="qaEkValue" type="text" inputmode="decimal" autocomplete="off" placeholder="z. B. 30.000"></label>
+          <label>Sollzins (% pro Jahr)<input id="qaInterest" type="text" inputmode="decimal" autocomplete="off" placeholder="Eigene Kondition"></label>
+          <label>Anfängliche Tilgung (% pro Jahr)<input id="qaRepayment" type="text" inputmode="decimal" autocomplete="off" placeholder="Eigene Vorgabe"></label>
+        </div>
+        <p class="qa-meta">Kostenmodus: 20 % der Kaltmiete. Belegte Kosten werden separat ausgewiesen. Cashflow vor Steuern; Erwerbsnebenkosten und Leerstand nicht enthalten.</p>
+      </div>
+      <div class="qa-settings-group">
+        <h3>2. E-Mail-Eingang</h3>
+        <label>Quelle<select id="qaMailSource"><option value="local">Lokale EML-Dateien / Dashboard-Import</option><option value="gmail">Gmail-Suchalarme</option></select></label>
+        <div id="qaLocalFields">
+          <label>Ordner für EML-Dateien<input id="qaMailDirectory" type="text" autocomplete="off"></label>
+          <p class="qa-meta">Alternativ den vorhandenen EML-Dateidialog im Dashboard verwenden. Lokale Importe tragen derzeit das Testkennzeichen.</p>
+        </div>
+        <div id="qaGmailFields" hidden>
+          <div class="qa-settings-fields">
+            <label>Alarm-Absender (eine Adresse pro Zeile)<textarea id="qaSenders" rows="2" placeholder="Tatsächliche Absenderadresse aus deiner Alarm-Mail"></textarea></label>
+            <label>Betreff enthält (optional, ein Begriff pro Zeile)<textarea id="qaSubjects" rows="2" placeholder="z. B. dein tatsächlicher Suchalarm-Betreff"></textarea></label>
+            <label>Nachrichten ab<input id="qaMailStart" type="datetime-local"></label>
+          </div>
+          <details><summary>Zusätzlicher Gmail-Suchfilter</summary><label>Gmail-Suchsyntax (optional)<input id="qaMailQuery" type="text" maxlength="1000" placeholder="z. B. rfc822msgid:… für genau eine neue Mail"></label></details>
+          <p class="qa-meta">Nur passende Nachrichten ab diesem Zeitpunkt. Kein Löschen, Verschieben oder Markieren. Zum ersten Test eine neue Alarm-Mail und einen engen Filter wählen.</p>
+        </div>
+      </div>
+      <div class="qa-settings-group">
+        <h3>3. Hintergrundbetrieb</h3>
+        <div class="qa-settings-fields">
+          <label>Prüfintervall (Sekunden)<input id="qaInterval" type="number" min="1" max="86400" step="1" required></label>
+          <label>Gleichzeitige Jobs<select id="qaConcurrency"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></label>
+        </div>
+        <p class="qa-meta">Der Worker läuft als eigener Prozess auch bei geschlossenem Browser. Dieser Rechner muss eingeschaltet bleiben. Nach einem Rechnerneustart hier erneut starten; ein Autostartdienst ist noch nicht eingerichtet.</p>
+      </div>
+      <details class="qa-settings-group">
+        <summary>Optional: Telegram</summary>
+        <p class="qa-meta">Für E-Mail-Verarbeitung, Schnellanalysen und PDFs nicht erforderlich. Token wird privat gespeichert und nie zurück angezeigt.</p>
+        <label class="qa-check"><input id="qaTelegramEnabled" type="checkbox"> Echten Telegram-Versand ausdrücklich aktivieren</label>
+        <div class="qa-settings-fields">
+          <label>Bot-Token<input id="qaBotToken" type="password" autocomplete="new-password" placeholder="Leer lassen, um gespeicherten Token zu behalten"></label>
+          <label>Erlaubte numerische Chat-ID<input id="qaChatId" type="text" inputmode="text" autocomplete="off"></label>
+        </div>
+        <label class="qa-check"><input id="qaAutoSend" type="checkbox"> Neue Gmail-Analysen nach PDF-Erstellung automatisch senden</label>
+        <label>Versand nur für neue Eingänge ab<input id="qaSendStart" type="datetime-local"></label>
+        <p class="qa-meta" id="qaTelegramSaved"></p>
+      </details>
+    </fieldset>
+    <div class="qa-actions"><button class="btn" id="qaSaveSettings" type="submit">Einstellungen speichern</button></div>
+  </form>
+  <div class="qa-settings-group">
+    <h3>Gmail-Anmeldung</h3>
+    <p>Einmal in Google Cloud: Gmail API aktivieren, OAuth-Consent mit deinem Testkonto einrichten und einen <strong>Desktop-OAuth-Client</strong> erstellen. Die heruntergeladene Datei hier auswählen.</p>
+    <p><a href="https://console.cloud.google.com/apis/library/gmail.googleapis.com" target="_blank" rel="noopener noreferrer">Gmail API in Google Cloud</a> · <a href="https://console.cloud.google.com/auth/clients" target="_blank" rel="noopener noreferrer">OAuth-Clients</a></p>
+    <div class="qa-actions"><label class="qa-upload">Google-Desktop-OAuth-Datei auswählen <input id="qaGoogleClient" type="file" accept=".json,application/json"></label></div>
+    <div class="qa-actions">
+      <button class="btn secondary" id="qaInstallGmail" type="button">Gmail-Komponenten einrichten</button>
+      <button class="btn secondary" id="qaAuthorizeGmail" type="button">Mit Google anmelden</button>
+    </div>
+    <p class="qa-meta" id="qaGmailSetupState"></p>
+    <p class="qa-meta">Anmeldung öffnet den Browser und erlaubt ausschließlich lesenden Zugriff. Zugangsdaten liegen außerhalb des Projektordners. Googles Testmodus kann eine erneute Anmeldung nach sieben Tagen erfordern.</p>
+  </div>
+  <div class="qa-settings-group">
+    <h3>Verarbeitung</h3>
+    <p id="qaWorkerState" role="status"></p>
+    <div class="qa-actions">
+      <button class="btn" id="qaStartWorker" type="button">Worker starten</button>
+      <button class="btn secondary" id="qaCheckOnce" type="button">Jetzt einmal prüfen</button>
+      <button class="btn secondary" id="qaStopWorker" type="button">Worker stoppen</button>
+    </div>
+    <p class="qa-meta">Zum Ändern der Einstellungen zuerst stoppen. Ein Klick startet die Verarbeitung; das Öffnen dieser Seite startet keine Jobs. Vor Git-Synchronisation Worker und Portfolio-Server beenden.</p>
+    <p class="qa-meta">ImmobilienScout24-Mietreferenzen: Liveadapter noch nicht implementiert. Ohne belegte Kaltmiete bleibt die Analyse teilweise; PDF wird trotzdem erstellt. Kein KI-Konto erforderlich.</p>
+  </div>
+</details>

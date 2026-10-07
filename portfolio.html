@@ -235,6 +235,26 @@ li{margin-bottom:8px}
 .qa-error {padding:8px; border:1px solid var(--line); border-radius:8px; color:var(--muted)}
 .qa-upload input {max-width:100%; font-size:16px}
 @media (max-width:420px) {.qa-section .grid {grid-template-columns:minmax(0,1fr)}}
+.qa-settings {margin:16px 0 22px;padding:16px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.qa-settings>summary {font-weight:700;color:var(--accent);cursor:pointer;min-height:44px;display:list-item;padding:10px 0}
+.qa-settings p,.qa-settings li {font-size:13px;line-height:1.6;overflow-wrap:anywhere}
+.qa-settings fieldset {border:0;margin:0;padding:0;min-width:0}
+.qa-settings legend {font-size:12px;color:var(--muted);margin:12px 0}
+.qa-settings-group {padding:16px 0;border-top:1px solid var(--line);min-width:0}
+.qa-settings h3 {font-size:15px;margin:0 0 12px}
+.qa-settings label {display:flex;flex-direction:column;gap:6px;font-size:13px;min-width:0;margin:10px 0}
+.qa-settings input:not([type=checkbox]),.qa-settings select,.qa-settings textarea {box-sizing:border-box;width:100%;min-width:0;min-height:44px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);font:inherit;font-size:16px}
+.qa-settings textarea {resize:vertical}
+.qa-settings .qa-check {flex-direction:row;align-items:center;min-height:44px}
+.qa-settings input[type=checkbox] {width:20px;height:20px;flex:0 0 auto;margin:0}
+.qa-settings-fields {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 16px}
+.qa-settings [hidden] {display:none!important}
+.qa-settings summary {cursor:pointer;min-height:44px;padding:10px 0;color:var(--accent)}
+.qa-settings button:disabled,.qa-settings fieldset:disabled {opacity:.6}
+.qa-setup-steps {margin:12px 0;padding-left:22px}
+@media(max-width:760px){.qa-settings-fields{grid-template-columns:minmax(0,1fr)}.qa-settings{padding:12px}.qa-settings .qa-actions button{flex:1 1 180px}}
+[data-theme="dark"] .qa-settings{background:#14232e}
+[data-theme="dark"] .qa-settings input:not([type=checkbox]),[data-theme="dark"] .qa-settings select,[data-theme="dark"] .qa-settings textarea{background:#1b333e;color:var(--ink);color-scheme:dark}
 </style>
 <style>
   body.portfolio-app { padding-top: 16px; }
@@ -345,6 +365,97 @@ li{margin-bottom:8px}
       <button class="btn secondary" id="qaRefresh" type="button">Schnellanalysen aktualisieren</button>
       <label class="qa-upload">Lokaler Testimport (.eml) <input type="file" id="qaImport" accept=".eml,message/rfc822"></label>
     </div>
+    <details class="qa-settings" id="qaSettings">
+  <summary>⚙ Agent einrichten / Einstellungen</summary>
+  <p>Hier richtest du E-Mail-Eingang, Finanzierung und Hintergrundbetrieb ein. Die Einstellungen bleiben auf diesem Rechner; keine Text-Konfiguration ist nötig.</p>
+  <ol class="qa-setup-steps">
+    <li>Finanzierungsprofil und E-Mail-Quelle auswählen.</li>
+    <li>Für Gmail: Google-Desktop-Client auswählen, Komponenten einrichten und mit Google anmelden.</li>
+    <li>Alarm-Absender, Startzeitpunkt und Prüfintervall speichern.</li>
+    <li>„Jetzt einmal prüfen“, Ergebnis ansehen, danach „Worker starten“.</li>
+  </ol>
+  <p id="qaSettingsStatus" role="status" aria-live="polite"></p>
+  <form id="qaSettingsForm">
+    <fieldset id="qaEditable">
+      <legend>Einstellungen</legend>
+      <div class="qa-settings-group">
+        <h3>1. Finanzierung</h3>
+        <label class="qa-check"><input id="qaProfileEnabled" type="checkbox"> Finanzierungsprofil verwenden</label>
+        <p class="qa-meta">Ohne Profil werden belegte Objektkennzahlen berechnet; Finanzierungs-Cashflow bleibt unbekannt. Eigene Konditionen eintragen.</p>
+        <div id="qaProfileFields" class="qa-settings-fields" hidden>
+          <label>Profilname<input id="qaProfileName" type="text" maxlength="120" autocomplete="off"></label>
+          <label>Eigenkapital-Modus<select id="qaEkMode"><option value="betrag">Fester Betrag in €</option><option value="anteil">Anteil am Kaufpreis in %</option></select></label>
+          <label><span id="qaEkLabel">Eigenkapital (€)</span><input id="qaEkValue" type="text" inputmode="decimal" autocomplete="off" placeholder="z. B. 30.000"></label>
+          <label>Sollzins (% pro Jahr)<input id="qaInterest" type="text" inputmode="decimal" autocomplete="off" placeholder="Eigene Kondition"></label>
+          <label>Anfängliche Tilgung (% pro Jahr)<input id="qaRepayment" type="text" inputmode="decimal" autocomplete="off" placeholder="Eigene Vorgabe"></label>
+        </div>
+        <p class="qa-meta">Kostenmodus: 20 % der Kaltmiete. Belegte Kosten werden separat ausgewiesen. Cashflow vor Steuern; Erwerbsnebenkosten und Leerstand nicht enthalten.</p>
+      </div>
+      <div class="qa-settings-group">
+        <h3>2. E-Mail-Eingang</h3>
+        <label>Quelle<select id="qaMailSource"><option value="local">Lokale EML-Dateien / Dashboard-Import</option><option value="gmail">Gmail-Suchalarme</option></select></label>
+        <div id="qaLocalFields">
+          <label>Ordner für EML-Dateien<input id="qaMailDirectory" type="text" autocomplete="off"></label>
+          <p class="qa-meta">Alternativ den vorhandenen EML-Dateidialog im Dashboard verwenden. Lokale Importe tragen derzeit das Testkennzeichen.</p>
+        </div>
+        <div id="qaGmailFields" hidden>
+          <div class="qa-settings-fields">
+            <label>Alarm-Absender (eine Adresse pro Zeile)<textarea id="qaSenders" rows="2" placeholder="Tatsächliche Absenderadresse aus deiner Alarm-Mail"></textarea></label>
+            <label>Betreff enthält (optional, ein Begriff pro Zeile)<textarea id="qaSubjects" rows="2" placeholder="z. B. dein tatsächlicher Suchalarm-Betreff"></textarea></label>
+            <label>Nachrichten ab<input id="qaMailStart" type="datetime-local"></label>
+          </div>
+          <details><summary>Zusätzlicher Gmail-Suchfilter</summary><label>Gmail-Suchsyntax (optional)<input id="qaMailQuery" type="text" maxlength="1000" placeholder="z. B. rfc822msgid:… für genau eine neue Mail"></label></details>
+          <p class="qa-meta">Nur passende Nachrichten ab diesem Zeitpunkt. Kein Löschen, Verschieben oder Markieren. Zum ersten Test eine neue Alarm-Mail und einen engen Filter wählen.</p>
+        </div>
+      </div>
+      <div class="qa-settings-group">
+        <h3>3. Hintergrundbetrieb</h3>
+        <div class="qa-settings-fields">
+          <label>Prüfintervall (Sekunden)<input id="qaInterval" type="number" min="1" max="86400" step="1" required></label>
+          <label>Gleichzeitige Jobs<select id="qaConcurrency"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></label>
+        </div>
+        <p class="qa-meta">Der Worker läuft als eigener Prozess auch bei geschlossenem Browser. Dieser Rechner muss eingeschaltet bleiben. Nach einem Rechnerneustart hier erneut starten; ein Autostartdienst ist noch nicht eingerichtet.</p>
+      </div>
+      <details class="qa-settings-group">
+        <summary>Optional: Telegram</summary>
+        <p class="qa-meta">Für E-Mail-Verarbeitung, Schnellanalysen und PDFs nicht erforderlich. Token wird privat gespeichert und nie zurück angezeigt.</p>
+        <label class="qa-check"><input id="qaTelegramEnabled" type="checkbox"> Echten Telegram-Versand ausdrücklich aktivieren</label>
+        <div class="qa-settings-fields">
+          <label>Bot-Token<input id="qaBotToken" type="password" autocomplete="new-password" placeholder="Leer lassen, um gespeicherten Token zu behalten"></label>
+          <label>Erlaubte numerische Chat-ID<input id="qaChatId" type="text" inputmode="text" autocomplete="off"></label>
+        </div>
+        <label class="qa-check"><input id="qaAutoSend" type="checkbox"> Neue Gmail-Analysen nach PDF-Erstellung automatisch senden</label>
+        <label>Versand nur für neue Eingänge ab<input id="qaSendStart" type="datetime-local"></label>
+        <p class="qa-meta" id="qaTelegramSaved"></p>
+      </details>
+    </fieldset>
+    <div class="qa-actions"><button class="btn" id="qaSaveSettings" type="submit">Einstellungen speichern</button></div>
+  </form>
+  <div class="qa-settings-group">
+    <h3>Gmail-Anmeldung</h3>
+    <p>Einmal in Google Cloud: Gmail API aktivieren, OAuth-Consent mit deinem Testkonto einrichten und einen <strong>Desktop-OAuth-Client</strong> erstellen. Die heruntergeladene Datei hier auswählen.</p>
+    <p><a href="https://console.cloud.google.com/apis/library/gmail.googleapis.com" target="_blank" rel="noopener noreferrer">Gmail API in Google Cloud</a> · <a href="https://console.cloud.google.com/auth/clients" target="_blank" rel="noopener noreferrer">OAuth-Clients</a></p>
+    <div class="qa-actions"><label class="qa-upload">Google-Desktop-OAuth-Datei auswählen <input id="qaGoogleClient" type="file" accept=".json,application/json"></label></div>
+    <div class="qa-actions">
+      <button class="btn secondary" id="qaInstallGmail" type="button">Gmail-Komponenten einrichten</button>
+      <button class="btn secondary" id="qaAuthorizeGmail" type="button">Mit Google anmelden</button>
+    </div>
+    <p class="qa-meta" id="qaGmailSetupState"></p>
+    <p class="qa-meta">Anmeldung öffnet den Browser und erlaubt ausschließlich lesenden Zugriff. Zugangsdaten liegen außerhalb des Projektordners. Googles Testmodus kann eine erneute Anmeldung nach sieben Tagen erfordern.</p>
+  </div>
+  <div class="qa-settings-group">
+    <h3>Verarbeitung</h3>
+    <p id="qaWorkerState" role="status"></p>
+    <div class="qa-actions">
+      <button class="btn" id="qaStartWorker" type="button">Worker starten</button>
+      <button class="btn secondary" id="qaCheckOnce" type="button">Jetzt einmal prüfen</button>
+      <button class="btn secondary" id="qaStopWorker" type="button">Worker stoppen</button>
+    </div>
+    <p class="qa-meta">Zum Ändern der Einstellungen zuerst stoppen. Ein Klick startet die Verarbeitung; das Öffnen dieser Seite startet keine Jobs. Vor Git-Synchronisation Worker und Portfolio-Server beenden.</p>
+    <p class="qa-meta">ImmobilienScout24-Mietreferenzen: Liveadapter noch nicht implementiert. Ohne belegte Kaltmiete bleibt die Analyse teilweise; PDF wird trotzdem erstellt. Kein KI-Konto erforderlich.</p>
+  </div>
+</details>
+
     <p id="qaImportStatus" role="status"></p><p class="qa-meta" id="qaJobs"></p>
     <div class="grid" id="qaGrid"><p>Schnellanalysen werden geladen …</p></div>
   </section>
@@ -354,6 +465,7 @@ li{margin-bottom:8px}
   </footer>
 </div>
 <script src="assets/portfolio_db.js?v=10"></script>
-<script src="assets/quick_analyses.js?v=1"></script>
+<script src="assets/quick_analyses.js?v=2"></script>
+<script src="assets/quick_settings.js?v=1"></script>
 </body>
 </html>

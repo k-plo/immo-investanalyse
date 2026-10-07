@@ -54,12 +54,15 @@
         <details><summary>Telegram-Nachrichtenvorschau · kein Versand</summary><pre>${esc(r.notification_preview)}</pre></details>
       </details></article>`;
   }
+  let refreshSequence = 0;
   async function refresh() {
+    const sequence = ++refreshSequence;
     const grid = document.getElementById('qaGrid');
     try {
       const response = await fetch('/api/quick-analyses',{cache:'no-store'});
       if (!response.ok) throw new Error('Schnellanalysen nicht erreichbar');
       const data = await response.json();
+      if(sequence !== refreshSequence)return;
       document.getElementById('qaConnections').textContent = Object.values(data.connections).join(' · ');
       grid.innerHTML = data.items.length ? data.items.map(i => card(i,data.jobs)).join('') : '<p>Noch keine automatischen Schnellanalysen.</p>';
       const states = {ready:'erkannt / ausstehend',running:'in Verarbeitung'};
@@ -67,7 +70,7 @@
       document.getElementById('qaJobs').textContent = pending.length + ' offene Jobs. ' + pending.map(j => `${j.kind}: ${states[j.state]}`).join(' · ') + (data.worker ? ` · Letzte Workerabfrage: ${data.worker.updated_at}` + (data.worker.status.poll_error ? ' · ' + data.worker.status.poll_error : '') : ' · Worker noch nicht gestartet');
       const orphan = data.jobs.filter(j => j.state === 'failed' && !j.result_id && !data.items.some(i => i.id === j.target));
       if (orphan.length) grid.insertAdjacentHTML('beforeend', orphan.map(j => `<p class="qa-error">Job ${j.id}: ${esc(j.error)} <button class="btn secondary" data-qa-retry="${j.id}">Schritt wiederholen</button></p>`).join(''));
-    } catch (error) { grid.textContent = error.message; }
+    } catch (error) { if(sequence === refreshSequence)grid.textContent = error.message; }
   }
   document.getElementById('qaRefresh').addEventListener('click', refresh);
   document.getElementById('qaImport').addEventListener('change', async event => {
@@ -96,5 +99,6 @@
       await refresh();
     } catch(error) { document.getElementById('qaImportStatus').textContent = error.message; button.disabled = false; }
   });
+  document.addEventListener('qa-settings-changed', refresh);
   refresh();
 })();

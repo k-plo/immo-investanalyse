@@ -5,7 +5,35 @@
 
 ---
 
-## 🕐 Aktueller Stand (06.10.2026) – automatische Schnellanalysen
+## 🕐 Aktueller Stand (07.10.2026) – Agent-Einstellungsmenü
+
+Portfolio **Schnellanalysen · Agent → ⚙ Agent einrichten / Einstellungen**:
+Formulare für Finanzierungsprofil, lokale EML/Gmail, gezielte Alarmfilter,
+Startzeitpunkt, Intervall/Parallelität und optional Telegram. Private Speicherung
+außerhalb des Webroots, Desktop-OAuth-Dateiauswahl, ausdrückliche Installation in
+privater Venv/Google-Anmeldung, Start/Einzelprüfung/Stop des vorhandenen Workers.
+Kein Verarbeitungsstart bei Seitenöffnung. Worker überlebt Server-/Browserende;
+Stop nach Serverneustart möglich. Ein OS-Autostartdienst fehlt weiterhin.
+Gmail „Verbunden“ setzt einen erfolgreichen Abruf mit der aktuellen Konfiguration
+voraus; Testadapter dürfen nicht als Gmail-Datenquelle benutzt werden.
+
+Abnahme unter Linux: 56 Python-Tests, 14 JavaScript-Rechentests und Chromium bei
+1440/768/390/320 px in hell/dunkel. Menü speichern mit deutschen Zahlen, tatsächlicher
+Hintergrundprozess Start/Stop und TEST-EML → neue Analyse → PDF-Download mit temporärer
+DB geprüft; bestehende Ergebnisse und synthetisches reguläres Objekt unverändert.
+Keine Live-Anmeldung, keine echten Mails, kein Telegram-Versand, kein Scout-Livezugriff.
+Komponenteninstallation/OAuth-Prozessstarts lokal simuliert; Windows/macOS ungetestet.
+
+Die bestehenden regulären Immobilien bleiben erhalten. Die beim vorherigen realen
+Serverstart entstandene additive Migration der Repository-DB bleibt als lokale
+Laufzeitänderung erhalten und wird nicht in den Code-Commit aufgenommen.
+Anleitung/README enthalten die Menübedienung einschließlich sicherer temporärer Demo:
+[docs/AUTOMATISCHE_SCHNELLANALYSEN.md](docs/AUTOMATISCHE_SCHNELLANALYSEN.md#einrichtung-im-portfolio-ohne-textkonfiguration).
+Feature-Branch weiter `codex/automatische-schnellanalysen`; vereinbartes Pushziel
+`origin/portfolio-current-sync`. Die vorherige Implementierung wurde mit
+`5da1db8` und Merge `c9e84fc` bereits dorthin übertragen.
+
+## 🕐 Vorheriger Stand (06.10.2026) – automatische Schnellanalysen
 
 Auf `codex/automatische-schnellanalysen`, ausgehend von `portfolio-current-sync`
 (`a6ea2ee`), ist ein lokaler End-to-End-Ablauf implementiert: EML-Testadapter,

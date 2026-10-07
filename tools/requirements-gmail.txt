@@ -1,4 +1,4 @@
 # Optional, only for explicit Gmail OAuth setup/live read access.
 google-auth>=2,<3
-google-auth-oauthlib>=1,<2
+google-auth-oauthlib>=1.2,<2
 requests>=2,<3

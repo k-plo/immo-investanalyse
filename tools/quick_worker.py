@@ -18,15 +18,14 @@ from quick_analysis import analyze, validate_profile
 from quick_extract import message_entries
 from quick_pdf import render_pdf
 from quick_store import QuickStore, dump, now
+from quick_settings import configuration_path, mail_signature
 
 BASE = Path(__file__).resolve().parents[1]
 DEFAULT_DB = Path(os.environ.get('IMMO_DB_PATH', BASE / 'immo_datenbank.db'))
 DEFAULT_OUTPUT = Path(os.environ.get('IMMO_QUICK_OUTPUT', BASE / 'ausgaben/schnellanalysen'))
 
 
-def load_config(path=None):
-    path = path or os.environ.get('IMMO_QUICK_CONFIG')
-    config = json.loads(Path(path).expanduser().read_text()) if path else {}
+def validate_config(config):
     config['profile'] = validate_profile(config.get('profile'))
     for key, default, low, high in (('interval',60,1,86400),('concurrency',1,1,4),('max_attempts',3,1,10),('backoff',30,0,3600)):
         value = config.get(key,default)
@@ -34,6 +33,14 @@ def load_config(path=None):
             raise ValueError('Ungültige Worker-Konfiguration: ' + key)
         config[key] = value
     return config
+
+
+def load_config(path=None, allow_missing=False):
+    selected = configuration_path(path)
+    config = json.loads(selected.read_text(encoding='utf-8-sig')) if selected.is_file() else {}
+    if not allow_missing and (path or os.environ.get('IMMO_QUICK_CONFIG')) and not selected.is_file():
+        raise ValueError('Konfigurationsdatei fehlt')
+    return validate_config(config)
 
 
 def make_adapters(config):
@@ -61,24 +68,46 @@ class Worker:
         self.pdf_renderer = pdf_renderer
         self.stop = threading.Event()
         self.poll_error = None
+        self.mail_scan_ok = False
+        self.last_mail_scan_at = None
+
+    def stop_requested(self):
+        marker = os.environ.get('IMMO_QUICK_STOP_FILE')
+        if marker and Path(marker).exists():
+            self.stop.set()
+        return self.stop.is_set()
+
+    def status(self, state='running'):
+        return {'mail':self.mail.status, 'notification':self.notification.status, 'poll_error':self.poll_error,
+                'mail_scan_ok':self.mail_scan_ok, 'mail_source':self.mail.name, 'mail_signature':mail_signature(self.config),
+                'last_mail_scan_at':self.last_mail_scan_at, 'pid':os.getpid(), 'host':socket.gethostname(), 'state':state,
+                'run_id':os.environ.get('IMMO_QUICK_RUN_ID')}
 
     def poll(self):
         count = 0
         checkpoint = now()
         try:
             for msg in self.mail.messages(self.store.cursor(self.mail.name), self.store.known_messages(self.mail.name)):
-                if self.stop.is_set():
+                if self.stop_requested():
                     break
                 count += self.store.ingest(self.mail.name, msg, message_entries(msg), self.config.get('profile'), advance_cursor=self.mail.name != 'gmail')
-            if self.mail.name == 'gmail' and not self.stop.is_set() and self.mail.credentials is not None:
+            if self.mail.name == 'gmail' and not self.stop_requested() and self.mail.credentials is not None:
                 # Do not advance a Gmail checkpoint until every result page committed.
                 # A failure halfway through the initial backlog must not skip older mail.
                 self.store.checkpoint(self.mail.name, checkpoint)
             self.poll_error = None
+            self.mail_scan_ok = self.mail.name != 'gmail' or self.mail.credentials is not None
+            if self.mail.name == 'gmail':
+                if self.mail_scan_ok:
+                    self.last_mail_scan_at = now()
+                    self.mail.status = 'Verbunden – nur lesender Zugriff'
+                else:
+                    self.poll_error = 'Gmail-Anmeldung fehlt; im Einstellungsmenü anmelden'
         except Exception:
             # External exception messages can contain tokens or private URLs.
             self.poll_error = 'E-Mail-Abruf fehlgeschlagen; Konfiguration und Verbindung prüfen'
-        self.store.runtime({'mail':self.mail.status,'notification':self.notification.status,'poll_error':self.poll_error})
+            self.mail_scan_ok = False
+        self.store.runtime(self.status())
         return count
 
     def process(self, job):
@@ -126,7 +155,7 @@ class Worker:
     def drain(self):
         """Finite pass: process due jobs, with bounded threads and bounded retries."""
         with ThreadPoolExecutor(max_workers=self.config['concurrency']) as executor:
-            while not self.stop.is_set():
+            while not self.stop_requested():
                 jobs = [job for _ in range(self.config['concurrency']) if (job := self.store.claim(max_attempts=self.config['max_attempts']))]
                 if not jobs:
                     break
@@ -134,14 +163,22 @@ class Worker:
                     future.result()
 
     def run(self, once=False):
-        while not self.stop.is_set():
-            count = self.poll()
-            self.drain()
-            print(f"Schnellanalysen: {count} Angebot(e) erkannt · {self.mail.status} · {self.notification.status}" +
-                  (' · ' + self.poll_error if self.poll_error else ''), flush=True)
-            if once:
-                return
-            self.stop.wait(self.config['interval'])
+        requested = self.stop_requested
+        try:
+            while not requested():
+                count = self.poll()
+                self.drain()
+                print(f"Schnellanalysen: {count} Angebot(e) erkannt · {self.mail.status} · {self.notification.status}" +
+                      (' · ' + self.poll_error if self.poll_error else ''), flush=True)
+                if once:
+                    return
+                deadline = time.monotonic() + self.config['interval']
+                # A private stop marker works across server restarts and platforms;
+                # closing the dashboard/server never creates this marker.
+                while not requested() and time.monotonic() < deadline:
+                    self.stop.wait(min(1, max(0, deadline - time.monotonic())))
+        finally:
+            self.store.runtime(self.status('stopped'))
 
 
 def main():

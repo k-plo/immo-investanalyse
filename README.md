@@ -251,7 +251,11 @@ Ausgabeverzeichnis; es entstehen keine Objektordner oder Vollanalysen.
 Gmail/Telegram sind standardmäßig nicht verbunden, Scout-Livezugriff ist nicht
 implementiert. Start, Testadapter, Profile, OAuth, Versand und sichere
 Git-Synchronisation: [geprüfte Betriebsanleitung](docs/AUTOMATISCHE_SCHNELLANALYSEN.md).
-Für den ersten Start: [Linux/macOS](docs/AUTOMATISCHE_SCHNELLANALYSEN.md#erste-lokale-nutzung-linuxmacos)
+**Ohne Textkonfiguration:** Im Portfolio **Schnellanalysen · Agent → ⚙ Agent einrichten / Einstellungen**
+öffnen. Dort Finanzierung, Alarmfilter, Google-Desktop-Client, Komponenteninstallation,
+Anmeldung sowie Worker-Start/Stop bedienen; Telegram optional. Kein KI-Konto nötig.
+[Schrittweise Menü-Einrichtung und sichere Demo](docs/AUTOMATISCHE_SCHNELLANALYSEN.md#einrichtung-im-portfolio-ohne-textkonfiguration).
+Für den ersten CLI-Start: [Linux/macOS](docs/AUTOMATISCHE_SCHNELLANALYSEN.md#erste-lokale-nutzung-linuxmacos)
 oder [Windows/PowerShell](docs/AUTOMATISCHE_SCHNELLANALYSEN.md#erste-lokale-nutzung-windowspowershell).
 Die Demo verwendet eine neue temporäre Datenbank; Gmail/Telegram bleiben deaktiviert.
 Für Tests eine neue temporäre DB verwenden, niemals die Repository-DB kopieren.

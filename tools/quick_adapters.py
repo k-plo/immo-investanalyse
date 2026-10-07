@@ -165,7 +165,7 @@ def authorize_gmail(config):
     client = external_secret(config['client_path'])
     token = external_secret(config['token_path'])
     flow = InstalledAppFlow.from_client_secrets_file(str(client), [GMAIL_SCOPE])
-    credentials = flow.run_local_server(port=0, access_type='offline', prompt='consent')
+    credentials = flow.run_local_server(port=0, access_type='offline', prompt='consent', timeout_seconds=300)
     token.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
     token.write_text(credentials.to_json())
     token.chmod(0o600)

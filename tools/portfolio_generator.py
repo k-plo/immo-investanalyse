@@ -13,6 +13,7 @@ OUT = BASE / "portfolio.html"
 
 def main():
     dashboard_css = (BASE / "assets" / "dashboard.css").read_text(encoding="utf-8")
+    settings_html = (BASE / "assets/quick_settings.html").read_text(encoding="utf-8")
     quick_css = (BASE / "assets" / "quick_analyses.css").read_text(encoding="utf-8")
     theme_js = (BASE / "assets" / "theme.js").read_text(encoding="utf-8")
     html = f"""<!DOCTYPE html>
@@ -113,6 +114,7 @@ def main():
       <button class="btn secondary" id="qaRefresh" type="button">Schnellanalysen aktualisieren</button>
       <label class="qa-upload">Lokaler Testimport (.eml) <input type="file" id="qaImport" accept=".eml,message/rfc822"></label>
     </div>
+    {settings_html}
     <p id="qaImportStatus" role="status"></p><p class="qa-meta" id="qaJobs"></p>
     <div class="grid" id="qaGrid"><p>Schnellanalysen werden geladen …</p></div>
   </section>
@@ -122,7 +124,8 @@ def main():
   </footer>
 </div>
 <script src="assets/portfolio_db.js?v=10"></script>
-<script src="assets/quick_analyses.js?v=1"></script>
+<script src="assets/quick_analyses.js?v=2"></script>
+<script src="assets/quick_settings.js?v=1"></script>
 </body>
 </html>"""
     OUT.write_text(html, encoding="utf-8")
