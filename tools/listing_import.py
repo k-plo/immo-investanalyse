@@ -53,8 +53,10 @@ def fetch_public(url: str, limit: int = 3_000_000) -> tuple[str, bytes, str]:
     for _ in range(5):
         url = validate_url(url)
         request = urllib.request.Request(url, headers={
-            "User-Agent": "Mozilla/5.0 (compatible; ImmoInvestanalyse/1.0)",
-            "Accept": "text/html,image/avif,image/webp,image/*;q=0.8,*/*;q=0.5",
+            # Realistischer Browser-UA: Portale wie Immowelt blockieren Bot-Kennungen (HTTP 403)
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,image/avif,image/webp,image/*;q=0.8,*/*;q=0.5",
+            "Accept-Language": "de-DE,de;q=0.9,en;q=0.8",
         })
         try:
             with opener.open(request, timeout=12) as response:
@@ -176,6 +178,8 @@ def extract_extra_facts(text: str) -> dict:
     kaltmiete = _number(_text_match(
         r"(?:netto)?kaltmiete(?:\s*ist)?[:\s]*(?:ca\.?\s*)?(?:von\s*)?([\d.,\s]+)\s*(?:€|eur|euro)",
         text))
+    if kaltmiete is None:
+        kaltmiete = _number(_text_match(r"([\d.,]+)\s*€\s*(?:netto)?kaltmiete", text))
     return {
         "baujahr": float(baujahr) if baujahr else None,
         "energieklasse": energie.rstrip("+") or None,
@@ -184,9 +188,45 @@ def extract_extra_facts(text: str) -> dict:
     }
 
 
+def extract_embedded_state(text: str) -> dict:
+    """Fallback fuer JS-gerenderte Portale (z. B. Immowelt): maskiertes JSON im Seiten-Payload."""
+    unesc = text.replace('\\\\"', '"').replace('\\"', '"')
+
+    def field(pattern: str, source: str = unesc) -> str | None:
+        match = re.search(pattern, source)
+        return match.group(1) if match else None
+
+    out: dict = {"title": field(r'"headline":"((?:[^"\\]|\\.)*)"\},"hardFacts"'),
+                 "price": _number(field(r'"price":(\d+)') or field(r'"price":\{"value":"([\d.,]+)')),
+                 "rooms": _number(field(r'"type":"numberOfRooms","value":"[^"]*","splitValue":"([\d,]+)"')),
+                 "area": _number(field(r'"type":"livingSpace","value":"[^"]*","splitValue":"([\d,]+)"')),
+                 "geschoss": field(r'"type":"numberOfFloors","value":"([^"]+)"'),
+                 "baujahr": _number(field(r'"type":"yearOfConstruction","label":"[^"]*","value":"(\d{4})"')),
+                 "energieklasse": field(r'"efficiencyClass":\{"rating":"([A-H]\+?)"')}
+    address = re.search(r'"address":\{([^{}]*)\},"isAddressPublished"', unesc) or \
+        re.search(r'"address":\{([^{}]*"zipCode"[^{}]*)\}', unesc)
+    if address:
+        block = address.group(1)
+        out["ort"] = field(r'"city":"([^"]*)"', block) or ""
+        out["plz"] = field(r'"zipCode":"([^"]*)"', block) or ""
+        out["stadtteil"] = field(r'"district":"([^"]*)"', block) or ""
+        out["strasse"] = field(r'"street":"([^"]*)"', block) or ""
+        out["hausnummer"] = field(r'"houseNumber":"([^"]*)"', block) or ""
+    extras = extract_extra_facts(unesc)
+    out["kaltmiete"] = extras["kaltmiete"]
+    if not out.get("baujahr"):
+        out["baujahr"] = extras["baujahr"]
+    if not out.get("energieklasse"):
+        out["energieklasse"] = extras["energieklasse"]
+    if not out.get("geschoss"):
+        out["geschoss"] = extras["geschoss"]
+    return out
+
+
 def extract_listing(page: bytes, base_url: str) -> dict:
+    raw_text = page.decode("utf-8", errors="replace")
     parser = ListingParser()
-    parser.feed(page.decode("utf-8", errors="replace"))
+    parser.feed(raw_text)
     nodes = list(_nodes(parser.jsonld))
     property_node = next((n for n in nodes if any(word in str(n.get("@type", "")).lower() for word in
                           ("residence", "house", "apartment", "realestate", "product"))), {})
@@ -212,7 +252,7 @@ def extract_listing(page: bytes, base_url: str) -> dict:
     if "-" in locality:
         locality_parts = locality.split("-", 1)
         locality, stadtteil = locality_parts[0].strip(), locality_parts[1].strip()
-    return {
+    result = {
         "title": title, "description": description,
         "price": _number(offers.get("price") if isinstance(offers, dict) else None),
         "area": _number(_first(property_node.get("floorSize"), property_node.get("size"))),
@@ -225,3 +265,20 @@ def extract_listing(page: bytes, base_url: str) -> dict:
         "baujahr": extras["baujahr"], "energieklasse": extras["energieklasse"],
         "geschoss": extras["geschoss"], "kaltmiete": extras["kaltmiete"],
     }
+    # Fallback fuer JS-gerenderte Portale: fehlende Felder aus eingebettetem JSON ergaenzen
+    fallback = extract_embedded_state(raw_text)
+    if fallback.get("title") and (result["title"] == "Neue Immobilie" or "zum Kauf" in result["title"]):
+        result["title"] = html.unescape(fallback["title"])[:180]
+    for key in ("price", "area", "rooms", "geschoss", "baujahr", "energieklasse", "kaltmiete"):
+        if result.get(key) in (None, "") and fallback.get(key) not in (None, ""):
+            result[key] = fallback[key]
+    for key in ("strasse", "hausnummer", "plz", "ort", "stadtteil"):
+        if not result.get(key) and fallback.get(key):
+            result[key] = fallback[key]
+    if not result["locality"] and result["ort"]:
+        result["locality"] = result["ort"]
+    if not result["address"]:
+        result["address"] = ", ".join(x for x in (
+            f"{result['strasse']} {result['hausnummer']}".strip(),
+            f"{result['plz']} {result['ort']}".strip()) if x)
+    return result

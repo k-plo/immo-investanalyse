@@ -110,6 +110,10 @@ class SchnellcheckTest(unittest.TestCase):
                        patch.object(db_store, 'validate_url', side_effect=lambda url: url),
                        patch.object(db_store, 'fetch_public', side_effect=fake_fetch))
             with patches[0], patches[1], patches[2], patches[3]:
+                # Die kopierte Echt-DB kann bereits Schnellchecks enthalten -> Tabelle leeren
+                with db_store.connection() as conn:
+                    conn.execute('DELETE FROM schnellcheck')
+                    conn.commit()
                 check = db_store.create_schnellcheck('https://example.org/anzeige/9')
                 self.assertFalse(check['existing'])
                 self.assertEqual(check['kaufpreis'], 189000)
