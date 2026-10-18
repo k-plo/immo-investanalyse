@@ -152,6 +152,38 @@ def _nodes(value):
             yield from _nodes(item)
 
 
+def split_street(street: str) -> tuple[str, str]:
+    """Split 'Hauptstr. 12a' in Strasse und Hausnummer (nur abschliessende Nummer)."""
+    match = re.match(r"^(.*?)[\s,]+(\d+\s*[a-zA-Z]?(?:\s*[-/]\s*\d+\s*[a-zA-Z]?)?)$", (street or "").strip())
+    if match:
+        return match.group(1).strip(), match.group(2).strip()
+    return (street or "").strip(), ""
+
+
+def _text_match(pattern: str, text: str) -> str:
+    match = re.search(pattern, text or "", re.IGNORECASE)
+    return match.group(1).strip() if match else ""
+
+
+def extract_extra_facts(text: str) -> dict:
+    """Konservative Zusatzfakten (Baujahr, Energieklasse, Geschoss, Kaltmiete) aus Freitext."""
+    baujahr = _text_match(r"baujahr[:\s]*(?:ca\.?\s*)?((?:18|19|20)\d{2})", text)
+    energie = _text_match(r"energie(?:effizienz)?klasse[:\s]*([A-H][+-]?)", text.upper()) or \
+        _text_match(r"effizienzklasse[:\s]*([A-H][+-]?)", text.upper())
+    geschoss = _text_match(
+        r"((?:\d{1,2})\.\s*(?:geschoss|og|obergeschoss|etage)|erdgeschoss|\beg\b|dachgeschoss|\bdg\b)",
+        text)
+    kaltmiete = _number(_text_match(
+        r"(?:netto)?kaltmiete(?:\s*ist)?[:\s]*(?:ca\.?\s*)?(?:von\s*)?([\d.,\s]+)\s*(?:€|eur|euro)",
+        text))
+    return {
+        "baujahr": float(baujahr) if baujahr else None,
+        "energieklasse": energie.rstrip("+") or None,
+        "geschoss": geschoss or None,
+        "kaltmiete": kaltmiete,
+    }
+
+
 def extract_listing(page: bytes, base_url: str) -> dict:
     parser = ListingParser()
     parser.feed(page.decode("utf-8", errors="replace"))
@@ -174,6 +206,12 @@ def extract_listing(page: bytes, base_url: str) -> dict:
         image = image.get("url")
     title = html.unescape(str(_first(property_node.get("name"), parser.meta.get("og:title"), parser.title, "Neue Immobilie"))).strip()[:180]
     description = html.unescape(str(_first(property_node.get("description"), parser.meta.get("og:description"), parser.meta.get("description"), ""))).strip()[:5000]
+    extras = extract_extra_facts(" ".join((title, description)))
+    strasse, hausnummer = split_street(street)
+    stadtteil = ""
+    if "-" in locality:
+        locality_parts = locality.split("-", 1)
+        locality, stadtteil = locality_parts[0].strip(), locality_parts[1].strip()
     return {
         "title": title, "description": description,
         "price": _number(offers.get("price") if isinstance(offers, dict) else None),
@@ -182,4 +220,8 @@ def extract_listing(page: bytes, base_url: str) -> dict:
         "address": ", ".join(x for x in (street, f"{postal} {locality}".strip()) if x),
         "locality": locality, "image_url": urllib.parse.urljoin(base_url, image) if image else None,
         "source_url": base_url,
+        "strasse": strasse, "hausnummer": hausnummer, "plz": postal or "",
+        "ort": locality, "stadtteil": stadtteil,
+        "baujahr": extras["baujahr"], "energieklasse": extras["energieklasse"],
+        "geschoss": extras["geschoss"], "kaltmiete": extras["kaltmiete"],
     }

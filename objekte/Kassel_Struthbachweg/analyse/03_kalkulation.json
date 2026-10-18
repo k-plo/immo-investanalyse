@@ -1,0 +1,91 @@
+{
+  "objekt": {
+    "name": "Kassel – Struthbachweg 39",
+    "adresse": "Struthbachweg 39, 34127 Kassel, Erdgeschoss links",
+    "objektart": "Vermietete Eigentumswohnung",
+    "baujahr": 1963,
+    "wohnflaeche_m2": 43.62,
+    "nutzflaeche_m2": null,
+    "grundstuecksflaeche_m2": null,
+    "anzahl_einheiten": 9,
+    "zimmer": 1.5,
+    "etage": "Erdgeschoss links",
+    "stellplaetze": null,
+    "energieklasse": "F (Exposéangabe)",
+    "heizung": "Fernwärme laut Exposé; Heizung Baujahr 2012"
+  },
+  "kauf": {
+    "angebotspreis_eur": 69000,
+    "grunderwerbsteuer_prozent": 6.0,
+    "notar_prozent": null,
+    "grundbuch_prozent": null,
+    "notar_grundbuch_gesamt_prozent": 2.0,
+    "makler_prozent": 6.1565,
+    "makler_anteil_verkaeufer_prozent": 0,
+    "maklerprovision_eur": 4248,
+    "renovierung_eur": 0,
+    "sanierung_eur": 0,
+    "sonstige_erwerbskosten_eur": 0,
+    "modellierte_erwerbsnebenkosten_eur": 9768,
+    "modellierte_gesamtinvestition_eur": 78768
+  },
+  "miete": {
+    "kaltmiete_monatlich_eur": 300,
+    "nebenkosten_monatlich_eur": 200,
+    "leerstand_wochen_pro_jahr": 1.04,
+    "marktuebliche_miete_eur": 411.34,
+    "mietrueckstaende_eur": null
+  },
+  "laufende_kosten": {
+    "hausgeld_monatlich_eur": 234.26,
+    "verwaltung_prozent_von_miete": 0,
+    "instandhaltung_eur_pro_m2_monat": 1.0,
+    "nicht_umlagefaehige_kosten_monatlich_eur": 25.45,
+    "bekannte_nicht_umlagefaehige_kosten_status": "Mindestansatz: Exposé weist 25,45 EUR Rücklagenbeitrag aus; weitere Eigentümerkosten unbekannt.",
+    "umlagefaehige_kosten_monatlich_eur": null
+  },
+  "finanzierung": {
+    "eigenkapital_eur": 20000,
+    "zinssatz_prozent": 4.5,
+    "tilgung_prozent": 1.0,
+    "zinsbindung_jahre": 10,
+    "finanzierungsnebenkosten_eur": 0,
+    "zinsstatus": "Markt-Startwert, kein persönliches Angebot"
+  },
+  "weg": {
+    "ruecklagenbeitrag_monatlich_eur": 25.45,
+    "instandhaltungsruecklage_eur": 3262.44,
+    "weg_gesamtruecklage_eur": 29947.57,
+    "ruecklagenstand_stichtag": "2025-12-31",
+    "ruecklagenstatus": "Maklerangabe ohne Verwalternachweis",
+    "geplante_sonderumlagen_eur": null
+  },
+  "annahmen": [
+    "Alle Objekt- und Mietangaben sind Maklerangaben aus dem Exposé und nicht unabhängig verifiziert.",
+    "Wohnfläche ca. 43,62 m² und Baujahr ca. 1963; Wohnflächenberechnung und Bauunterlagen fehlen.",
+    "Grunderwerbsteuer Hessen mit 6,0 % angesetzt.",
+    "Notar und Grundbuch zusammen mit 2,0 % als Kalkulationsannahme; keine Einzelaufteilung oder Anbieterbestätigung.",
+    "Provision 4.248 EUR aus dem Exposé; im Übersichtsrechner als 6,1565 % des Kaufpreises erfasst.",
+    "Renovierung, Sanierung und sonstige Erwerbskosten mit 0 EUR nur als Platzhalter mangels Besichtigung/Belegen; keine Kostenschätzung.",
+    "Umlagefähige Hausgeldkosten bleiben unbekannt und werden nicht aus Hausgeld minus Mietervorauszahlung hergeleitet.",
+    "25,45 EUR monatlicher Rücklagenbeitrag ist der bekannte Mindestansatz für Eigentümerkosten; zusätzliche nicht umlagefähige Kosten können anfallen.",
+    "Verwaltungskosten sind im Modell 0 EUR, weil kein Betrag vorliegt; dies ist keine Aussage, dass keine Kosten entstehen.",
+    "Finanzierung mit 20.000 EUR Eigenkapital, 4,5 % Zins, 1,0 % Anfangstilgung und 10 Jahren Zinsbindung modelliert; kein individuelles Bankangebot.",
+    "Instandhaltung 1 EUR/m²/Monat, Leerstand 2 %, Eigenkapital 20.000 EUR und Tilgung 1,0 % entsprechen den Nutzer-Startwerten.",
+    "Marktvergleich 411,34 EUR/Monat ist der Kasseler Angebotsdurchschnitt Q3 2026 mal 43,62 m²; nicht amtlich, nicht ortsteilgenau und nicht als rechtlich zulässige Miete bestätigt."
+  ],
+  "quellen": [
+    { "information": "Kaufpreis, Adresse, Objektmerkmale, Miete und Hausgeld", "wert": "Exposé Nr. 00271", "quelle": "Expose_Kassel_Struthbachweg_39.pdf, S. 1–3", "status": "MAKLERANGABE, NICHT UNABHÄNGIG VERIFIZIERT" },
+    { "information": "Käuferprovision", "wert": "4.248 EUR", "quelle": "Expose_Kassel_Struthbachweg_39.pdf, S. 1", "status": "MAKLERANGABE" },
+    { "information": "Energiekennwerte", "wert": "162,7 kWh/(m²·a), Klasse F, Fernwärme, Heizung Bj. 2012", "quelle": "Expose_Kassel_Struthbachweg_39.pdf, S. 1–2; Originalausweis fehlt", "status": "MAKLERANGABE" },
+    { "information": "Kasseler Angebotsmiete Q3 2026", "wert": "Ø 9,43 EUR/m²; Band 7,53–11,43 EUR/m²", "quelle": "https://www.immobilienscout24.de/immobilienpreise/hessen/kassel/mietspiegel", "status": "ANGEBOTSINDIKATOR, KEIN AMTLICHER MIETSPIEGEL; Stand 15.10.2026" },
+    { "information": "Zinsorientierung", "wert": "4,5 % bei 10 Jahren; effektive Angebots-Spanne 4,22–4,62 %", "quelle": "https://www.interhyp.de/zinsen/", "status": "MARKTREFERENZ, Stand 15.10.2026; Angebotszeitraum 05.–11.10.2026; kein persönliches Angebot" }
+  ],
+  "widersprueche": [
+    "Keine Unterlagen zu Mietvertrag, Mietzahlungen oder Betriebskostenabrechnung; Exposé-Miete ist daher nicht unabhängig bestätigt.",
+    "Hausgeld ist genannt, seine Aufteilung in umlagefähige und Eigentümerkosten fehlt.",
+    "WEG-Rücklagenstand und Wohnungsanteil sind nur im Exposé genannt und nicht durch Verwaltung oder Abrechnung belegt.",
+    "Energiekennwerte liegen nur als Exposéangabe vor; der Energieausweis selbst fehlt.",
+    "Wohnfläche ist ca.-Angabe; Grundriss ist nicht maßstabsgetreu und eine Wohnflächenberechnung fehlt."
+  ]
+}

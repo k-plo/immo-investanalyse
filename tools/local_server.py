@@ -10,7 +10,10 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import unquote, urlparse
 
-from db_store import RevisionConflict, get_object, import_listing, new_candidates, portfolio_rows, save_object, set_archive_status, set_photo
+from db_store import (RevisionConflict, create_schnellcheck, delete_schnellcheck, get_object,
+                      import_listing, new_candidates, portfolio_rows, save_object,
+                      schnellcheck_rows, schnellcheck_uebersicht, set_archive_status, set_photo,
+                      update_schnellcheck)
 from listing_import import ListingError
 
 BASE = Path(__file__).resolve().parent.parent
@@ -61,6 +64,12 @@ class PortfolioHandler(SimpleHTTPRequestHandler):
         if path == "/api/new-candidates":
             self.send_json({"items": new_candidates()})
             return
+        if path == "/api/schnellchecks":
+            try:
+                self.send_json({"items": schnellcheck_rows()})
+            except sqlite3.Error as error:
+                self.send_json({"error": f"Datenbankfehler: {error}"}, status=500)
+            return
         if path.startswith("/api/objects/"):
             name = unquote(path.removeprefix("/api/objects/"))
             if not name or "/" in name or "\\" in name:
@@ -89,6 +98,26 @@ class PortfolioHandler(SimpleHTTPRequestHandler):
 
     def do_PUT(self) -> None:
         path = urlparse(self.path).path.rstrip("/")
+        if path.startswith("/api/schnellcheck/"):
+            if not self.local_origin():
+                self.send_json({"error": "Fremder Ursprung"}, 403)
+                return
+            try:
+                data = self.read_json()
+                public_id = unquote(path.removeprefix("/api/schnellcheck/"))
+                if not public_id or "/" in public_id or "\\" in public_id:
+                    raise ValueError("Ungültige Schnellcheck-ID")
+                saved = update_schnellcheck(public_id, data.get("fields", {}), data.get("revision"))
+                self.send_json(saved)
+            except RevisionConflict as error:
+                self.send_json({"error": str(error)}, 409)
+            except KeyError:
+                self.send_json({"error": "Schnellcheck nicht in der Datenbank"}, 404)
+            except (ValueError, TypeError, json.JSONDecodeError) as error:
+                self.send_json({"error": str(error)}, 400)
+            except sqlite3.Error as error:
+                self.send_json({"error": str(error)}, 500)
+            return
         if not path.startswith("/api/objects/"):
             self.send_json({"error": "Unbekannter Endpunkt"}, 404)
             return
@@ -113,7 +142,10 @@ class PortfolioHandler(SimpleHTTPRequestHandler):
 
     def do_POST(self) -> None:
         path = urlparse(self.path).path
-        if path != "/api/import-listing" and not (path.startswith("/api/objects/") and path.endswith(("/archive", "/reactivate", "/photo"))):
+        allowed = (path in ("/api/import-listing", "/api/schnellcheck")
+                   or (path.startswith("/api/objects/") and path.endswith(("/archive", "/reactivate", "/photo")))
+                   or (path.startswith("/api/schnellcheck/") and path.endswith("/uebersicht")))
+        if not allowed:
             self.send_json({"error": "Unbekannter Endpunkt"}, 404)
             return
         if not self.local_origin():
@@ -126,6 +158,15 @@ class PortfolioHandler(SimpleHTTPRequestHandler):
             if path == "/api/import-listing":
                 result = import_listing(data.get("url"))
                 self.send_json(result, 200 if result["existing"] else 201)
+            elif path == "/api/schnellcheck":
+                result = create_schnellcheck(data.get("url"))
+                self.send_json(result, 200 if result["existing"] else 201)
+            elif path.endswith("/uebersicht"):
+                public_id = unquote(path.split("/")[3])
+                if not public_id or "\\" in public_id:
+                    raise ValueError("Ungültige Schnellcheck-ID")
+                result = schnellcheck_uebersicht(public_id)
+                self.send_json(result, 200 if result.get("existing") else 201)
             elif path.endswith("/photo"):
                 public_id = unquote(path.split("/")[3])
                 result = set_photo(public_id, data.get("data"), data.get("mime"), data.get("revision"))
@@ -139,6 +180,32 @@ class PortfolioHandler(SimpleHTTPRequestHandler):
         except KeyError:
             self.send_json({"error": "Objekt nicht in der Datenbank"}, 404)
         except (ValueError, TypeError, ListingError) as error:
+            self.send_json({"error": str(error)}, 400)
+        except sqlite3.Error as error:
+            self.send_json({"error": f"Datenbankfehler: {error}"}, 500)
+
+    def do_DELETE(self) -> None:
+        path = urlparse(self.path).path.rstrip("/")
+        if not path.startswith("/api/schnellcheck/"):
+            self.send_json({"error": "Unbekannter Endpunkt"}, 404)
+            return
+        if not self.local_origin():
+            self.send_json({"error": "Fremder Ursprung"}, 403)
+            return
+        try:
+            public_id = unquote(path.removeprefix("/api/schnellcheck/"))
+            if not public_id or "/" in public_id or "\\" in public_id:
+                raise ValueError("Ungültige Schnellcheck-ID")
+            data = self.read_json()
+            if not isinstance(data, dict):
+                raise ValueError("JSON-Objekt erwartet")
+            result = delete_schnellcheck(public_id, data.get("revision"))
+            self.send_json(result)
+        except RevisionConflict as error:
+            self.send_json({"error": str(error)}, 409)
+        except KeyError:
+            self.send_json({"error": "Schnellcheck nicht in der Datenbank"}, 404)
+        except (ValueError, TypeError, json.JSONDecodeError) as error:
             self.send_json({"error": str(error)}, 400)
         except sqlite3.Error as error:
             self.send_json({"error": f"Datenbankfehler: {error}"}, 500)

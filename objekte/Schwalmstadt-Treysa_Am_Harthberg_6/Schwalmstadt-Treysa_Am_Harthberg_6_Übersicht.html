@@ -564,7 +564,7 @@ li{margin-bottom:8px}
     const heading = document.querySelector('.wrap h1')?.textContent.replace(/^\s*🏠\s*/, '').trim() || 'Immobilienanalyse';
     const meta = document.querySelector('.wrap .sub')?.textContent.trim() || '';
     const date = new Date().toLocaleDateString('de-DE');
-    const missing = ['renovierung','sanierung','kaltmiete','hausgeld','nebenkostenVorauszahlung','hausgeldNichtUml'].filter(isEmpty);
+    const missing = ['renovierung','sanierung','kaltmiete','hausgeld','nebenkostenVorauszahlung','hausgeldNichtUml','umlagefaehigeKosten'].filter(isEmpty);
     const rentMissing = isEmpty('kaltmiete');
     const canCalculate = Boolean(result.berechenbar);
     const pauschal = data.kostenModus === "pauschal";
@@ -597,7 +597,7 @@ li{margin-bottom:8px}
       ? row('Pauschale laufende Kosten', `${pauschalSatz.toLocaleString('de-DE')} % der Kaltmiete (${money(data.kaltmiete * 12 * pauschalSatz / 100)} / Jahr)`)
       : row('Leerstand',`${data.leerstand.toLocaleString('de-DE')} % der Kaltmiete`) +
         row('Nicht umlagefähige Kosten / Monat',money(hausgeldNichtUml)) +
-        row('Voraussichtliche Erstattung/Nachzahlung Mieter',money(data.nebenkostenVorauszahlung - (data.hausgeldNichtUmlEingegeben ? Math.max(0, data.hausgeld - data.hausgeldNichtUml) : data.hausgeld))) +
+        row('Vorläufiger Nebenkostensaldo laut WP / Monat',money(result.nebenkostenSaldoMonat)) +
         row('Instandhaltung / Jahr',money(data.flaeche*data.instand*12));
     const operations = [
       row('Kaltmiete / Monat',money(data.kaltmiete)),
@@ -725,8 +725,11 @@ li{margin-bottom:8px}
       <div class="field"><label class="tip" data-tip="makler">Makler (%)<span class="tipbox"></span></label><input id="makler" type="number" step="0.01"></div>
       <div class="field"><label class="tip" data-tip="sonstige">Sonstige Erwerbskosten (€)<span class="tipbox"></span></label><input id="sonstige" type="number" step="500"></div>
       <div class="field"><label class="tip" data-tip="kaltmiete">Kaltmiete/Monat (€)<span class="tipbox"></span></label><input id="kaltmiete" type="number" step="10"></div>
+      <div class="field"><label class="tip" data-tip="nebenkostenVorauszahlung">Betriebskostenvorauszahlung Mieter/Monat (€)<span class="tipbox"></span></label><input id="nebenkostenVorauszahlung" type="number" step="1"></div>
+      <div class="field"><label class="tip" data-tip="hausgeld">Hausgeld-Vorschuss/Monat (€)<span class="tipbox"></span></label><input id="hausgeld" type="number" step="1"></div>
+      <div class="field" data-kosten-einzeln><label class="tip" data-tip="umlagefaehigeKosten">Umlagefähige WP-Kosten/Monat (€)<span class="tipbox"></span></label><input id="umlagefaehigeKosten" type="number" step="0.01"></div>
       <div class="field field-pauschal" hidden><label class="tip" data-tip="pauschal">Pauschale laufende Kosten (% der Kaltmiete)<span class="tipbox"></span></label><input id="pauschalProzent" type="number" step="0.5" min="0" max="100" data-persist="pauschalProzent" value="20"></div>
-      <div class="field" data-kosten-einzeln><label class="tip" data-tip="hausgeldNichtUml">Nicht umlagefähiges Hausgeld (€ / Monat)<span class="tipbox"></span></label><input id="hausgeldNichtUml" type="number" step="0.01" value="64.88"></div>
+      <div class="field" data-kosten-einzeln><label class="tip" data-tip="hausgeldNichtUml">Eigentümerkosten inkl. Rücklagen (€ / Monat)<span class="tipbox"></span></label><input id="hausgeldNichtUml" type="number" step="0.01" value="97.85"></div>
       <div class="field" data-kosten-einzeln><label class="tip" data-tip="instand">Instandhaltung (€ / m² / Monat)<span class="tipbox"></span></label><input id="instand" type="number" step="0.1"></div>
       <div class="field" data-kosten-einzeln><label class="tip" data-tip="leerstand">Leerstand (% der Kaltmiete)<span class="tipbox"></span></label><input id="leerstand" type="number" step="0.1"></div>
       <input id="kostenModus" type="hidden" data-persist="kostenModus" value="einzeln">
@@ -774,15 +777,16 @@ li{margin-bottom:8px}
     <div class="box green">
       <b>✅ Nachgewiesen:</b>
       <ul contenteditable="true" data-persist="chancenNachgewiesen">
-        <li>Vermietete 3-Zimmer-Dachgeschosswohnung mit Balkon, Keller und Stellplatz-Sondernutzungsrecht (BELEGT)</li>
-        <li>Balkonmaßnahmen 2024/2025 laut WEG-Protokollen abgeschlossen; zwölf Balkone instandgesetzt (BELEGT)</li>
-        <li>Teilungserklärung, Jahresabrechnung 2024 und Wirtschaftsplan 2027 erstmals verfügbar (BELEGT)</li>
+        <li>Vermietete 3-Zimmer-Dachgeschosswohnung mit Balkon laut Exposé (BELEGT)</li>
+        <li>Frühere WEG-Protokolle nennen Balkonmaßnahmen; Zuordnung zur WEG von Einheit 5 noch unbestätigt</li>
+        <li>Mietvertrag belegt 750 EUR Nettokaltmiete plus 200 EUR Betriebskostenvorauszahlung ab 01.03.2026 (BELEGT; Zahlungseingang ungeprüft)</li>
+        <li>Wirtschaftsplan 2027 für die richtige Einheit 5 liegt vor; Jahresgesamtsummen weichen voneinander ab (BELEGT, Klärung offen)</li>
       </ul>
     </div>
     <div class="box yellow">
       <b>❓ Hypothesen (zu prüfen):</b>
       <ul contenteditable="true" data-persist="chancenHypothese">
-        <li>750 EUR Kaltmiete nachhaltig erzielbar; Mietvertrag und Mietkonto fehlen (HYPOTHESE)</li>
+        <li>750 EUR Vertragsmiete nachhaltig und regelmäßig gezahlt; Mietkonto und Abrechnungen fehlen (HYPOTHESE)</li>
         <li>Wertstabilität nach abgeschlossener Balkonsanierung (HYPOTHESE)</li>
         <li>Heizungs-/Energieoptimierung als langfristiger Wertsicherungshebel (HYPOTHESE)</li>
       </ul>
@@ -796,19 +800,19 @@ li{margin-bottom:8px}
 
     <h2>10 · Offene Punkte <span class="edit-hint">(abhaken – Status wird gespeichert)</span></h2>
     <ul id="offenePunkte" data-list-persist="offenePunkte">
-      <li class="chk-li"><input type="checkbox" class="chk" data-persist="op1"><span class="txt" contenteditable="true" data-persist="op1t">🔴 Mietvertrag, Mietkonto, Nebenkostenabrechnungen und Grundbuchauszug anfordern</span><button class="btn delete" type="button" title="Punkt löschen" aria-label="Punkt löschen" onclick="deleteListItem(this)">×</button></li>
-      <li class="chk-li"><input type="checkbox" class="chk" data-persist="op2"><span class="txt" contenteditable="true" data-persist="op2t">🔴 Sprung des Hausgeldvorschusses auf 480 EUR und Nachzahlung 2024 von 2.355,88 EUR klären</span><button class="btn delete" type="button" title="Punkt löschen" aria-label="Punkt löschen" onclick="deleteListItem(this)">×</button></li>
-      <li class="chk-li"><input type="checkbox" class="chk" data-persist="op3"><span class="txt" contenteditable="true" data-persist="op3t">🟠 Abrechnung 2025, individueller Rücklagenstand und Balkonabrechnung prüfen</span><button class="btn delete" type="button" title="Punkt löschen" aria-label="Punkt löschen" onclick="deleteListItem(this)">×</button></li>
-      <li class="chk-li"><input type="checkbox" class="chk" data-persist="op4"><span class="txt" contenteditable="true" data-persist="op4t">🟠 Heizung, Dach, Fenster, Feuchtigkeit und Balkonanschlüsse besichtigen</span><button class="btn delete" type="button" title="Punkt löschen" aria-label="Punkt löschen" onclick="deleteListItem(this)">×</button></li>
+      <li class="chk-li"><input type="checkbox" class="chk" data-persist="op1"><span class="txt" contenteditable="true" data-persist="op1t">🔴 Mietkonto, Rückstände und Betriebskostenabrechnungen zum Mietvertrag prüfen</span><button class="btn delete" type="button" title="Punkt löschen" aria-label="Punkt löschen" onclick="deleteListItem(this)">×</button></li>
+      <li class="chk-li"><input type="checkbox" class="chk" data-persist="op2"><span class="txt" contenteditable="true" data-persist="op2t">🔴 Summendifferenz im Wirtschaftsplan 2027 mit der Verwaltung klären</span><button class="btn delete" type="button" title="Punkt löschen" aria-label="Punkt löschen" onclick="deleteListItem(this)">×</button></li>
+      <li class="chk-li"><input type="checkbox" class="chk" data-persist="op3"><span class="txt" contenteditable="true" data-persist="op3t">🟠 Abrechnung 2025, individueller Rücklagenstand und Balkonabrechnung für Einheit 5 prüfen</span><button class="btn delete" type="button" title="Punkt löschen" aria-label="Punkt löschen" onclick="deleteListItem(this)">×</button></li>
+      <li class="chk-li"><input type="checkbox" class="chk" data-persist="op4"><span class="txt" contenteditable="true" data-persist="op4t">🟠 Heizungsart klären; Dach, Fenster, Feuchtigkeit und Balkonanschlüsse besichtigen</span><button class="btn delete" type="button" title="Punkt löschen" aria-label="Punkt löschen" onclick="deleteListItem(this)">×</button></li>
     </ul>
     <button class="btn secondary" type="button" onclick="addOffenerPunkt()">+ Offenen Punkt hinzufügen</button>
 
     <h2>11 · Nächste Schritte <span class="edit-hint">(abhaken)</span></h2>
     <ul id="schritte" data-list-persist="schritte">
-      <li class="chk-li"><input type="checkbox" class="chk" data-persist="ns1"><span class="txt" contenteditable="true" data-persist="ns1t">1. Mietvertrag, Mietkonto und Abrechnungen vom Makler anfordern</span><button class="btn delete" type="button" title="Schritt löschen" aria-label="Schritt löschen" onclick="deleteListItem(this)">×</button></li>
-      <li class="chk-li"><input type="checkbox" class="chk" data-persist="ns2"><span class="txt" contenteditable="true" data-persist="ns2t">2. Grundbuchauszug, Aufteilungsplan und Einheit-6A-Zuordnung prüfen</span><button class="btn delete" type="button" title="Schritt löschen" aria-label="Schritt löschen" onclick="deleteListItem(this)">×</button></li>
-      <li class="chk-li"><input type="checkbox" class="chk" data-persist="ns3"><span class="txt" contenteditable="true" data-persist="ns3t">3. Abrechnung 2025, Rücklagenstand und Balkon-Sonderumlagen belegen lassen</span><button class="btn delete" type="button" title="Schritt löschen" aria-label="Schritt löschen" onclick="deleteListItem(this)">×</button></li>
-      <li class="chk-li"><input type="checkbox" class="chk" data-persist="ns4"><span class="txt" contenteditable="true" data-persist="ns4t">4. Gasheizung, Dach, Fenster, Feuchtigkeit und Balkone besichtigen</span><button class="btn delete" type="button" title="Schritt löschen" aria-label="Schritt löschen" onclick="deleteListItem(this)">×</button></li>
+      <li class="chk-li"><input type="checkbox" class="chk" data-persist="ns1"><span class="txt" contenteditable="true" data-persist="ns1t">1. Mietkonto und Betriebskostenabrechnungen prüfen</span><button class="btn delete" type="button" title="Schritt löschen" aria-label="Schritt löschen" onclick="deleteListItem(this)">×</button></li>
+      <li class="chk-li"><input type="checkbox" class="chk" data-persist="ns2"><span class="txt" contenteditable="true" data-persist="ns2t">2. Summendifferenz im Wirtschaftsplan mit der Verwaltung klären</span><button class="btn delete" type="button" title="Schritt löschen" aria-label="Schritt löschen" onclick="deleteListItem(this)">×</button></li>
+      <li class="chk-li"><input type="checkbox" class="chk" data-persist="ns3"><span class="txt" contenteditable="true" data-persist="ns3t">3. Grundbuchauszug, Teilungserklärung und Aufteilungsplan für Einheit 5 prüfen</span><button class="btn delete" type="button" title="Schritt löschen" aria-label="Schritt löschen" onclick="deleteListItem(this)">×</button></li>
+      <li class="chk-li"><input type="checkbox" class="chk" data-persist="ns4"><span class="txt" contenteditable="true" data-persist="ns4t">4. Heizungsart und Energieausweis-Zuordnung klären; Dach, Fenster, Feuchtigkeit und Balkone besichtigen</span><button class="btn delete" type="button" title="Schritt löschen" aria-label="Schritt löschen" onclick="deleteListItem(this)">×</button></li>
       <li class="chk-li"><input type="checkbox" class="chk" data-persist="ns5"><span class="txt" contenteditable="true" data-persist="ns5t">5. Bankangebot einholen und Zielpreis unter Cashflow-Maximalpreis verhandeln</span><button class="btn delete" type="button" title="Schritt löschen" aria-label="Schritt löschen" onclick="deleteListItem(this)">×</button></li>
     </ul>
     <button class="btn secondary" type="button" onclick="addSchritt()">+ Nächsten Schritt hinzufügen</button>
@@ -874,9 +878,9 @@ const getZinsSzenarien = zins => ZINS_OFFSETS.map(({ offset, label }) => ({
 const DEFAULTS = {
   preis: 159000, flaeche: 75.44, renovierung: 0, sanierung: 0,
   grESt: 6.0, notar: 2.0, makler: 3.57, sonstige: 0,
-  kaltmiete: 750, nebenkostenVorauszahlung: null, hausgeldNichtUml: 64.88, instand: 1.0, leerstand: 2,
+  kaltmiete: 750, nebenkostenVorauszahlung: 200, hausgeld: 380, umlagefaehigeKosten: 310.33, hausgeldNichtUml: 97.85, instand: 0.8, leerstand: 2,
   pauschalProzent: 20,
-  ek: 20000, zins: 4.2, tilgung: 1.0
+  ek: 20000, zins: 4.8, tilgung: 1.0
 };
 const IDS = Object.keys(DEFAULTS);
 const PAUSCHAL_DEFAULT = 20;
@@ -909,13 +913,13 @@ let lastLoadedState = {};
 let objektMeta = {};
 const INPUT_GROUPS = [
   { title: "Kauf und Erwerbskosten", fields: ["preis", "flaeche", "renovierung", "sanierung", "grESt", "notar", "makler", "sonstige"] },
-  { title: "Miete und laufende Kosten", fields: ["kaltmiete", "hausgeldNichtUml", "instand", "leerstand"] },
+  { title: "Miete und laufende Kosten", fields: ["kaltmiete", "nebenkostenVorauszahlung", "hausgeld", "umlagefaehigeKosten", "hausgeldNichtUml", "instand", "leerstand"] },
   { title: "Finanzierung", fields: ["ek", "zins", "tilgung"] }
 ];
 // Lesbare Namen für "ausstehend"-Meldungen
 const FELDLABEL = {
   renovierung: "Renovierung", sanierung: "Sanierung", kaltmiete: "Kaltmiete",
-  hausgeld: "Hausgeld/Betriebskosten gesamt", nebenkostenVorauszahlung: "Nebenkostenvorauszahlung Mieter", hausgeldNichtUml: "Hausgeld (nicht umlagefähig)",
+  hausgeld: "Hausgeld-Vorschuss", umlagefaehigeKosten: "Umlagefähige WP-Kosten", nebenkostenVorauszahlung: "Nebenkostenvorauszahlung Mieter", hausgeldNichtUml: "Hausgeld (nicht umlagefähig)",
   instand: "Instandhaltung €/m²/Monat", leerstand: "Leerstand", ek: "Eigenkapital",
   tilgung: "Tilgung", preis: "Kaufpreis", flaeche: "Wohnfläche",
   grESt: "Grunderwerbsteuer", notar: "Notar/Grundbuch", makler: "Makler", sonstige: "Sonstige Kosten", zins: "Zinssatz"
@@ -928,11 +932,12 @@ function gruppiereEingaben() {
   root.classList.remove("inputs");
   root.classList.add("input-groups");
   const labels = {
+    umlagefaehigeKosten: "Umlagefähige WP-Kosten (€ / Monat)",
     hausgeldNichtUml: "Nicht umlagefähiges Hausgeld (€ / Monat)",
     instand: "Instandhaltung (€ / m² / Monat)",
     leerstand: "Leerstand (% der Kaltmiete)"
   };
-  const KOSTEN_FELDER = ["kaltmiete", "pauschalProzent", "hausgeldNichtUml", "instand", "leerstand", "kostenModus"];
+  const KOSTEN_FELDER = ["kaltmiete", "nebenkostenVorauszahlung", "hausgeld", "umlagefaehigeKosten", "pauschalProzent", "hausgeldNichtUml", "instand", "leerstand", "kostenModus"];
   const gruppen = INPUT_GROUPS.map(group => ({ ...group, fields: group.fields.flatMap(id => KOSTEN_FELDER.includes(id) ? [] : [id]) }));
   gruppen[1].fields.push(...KOSTEN_FELDER);
   gruppen.forEach(group => {
@@ -1020,11 +1025,11 @@ function calc(d) {
   r.pauschal = pauschal;
   r.pauschalSatz = pauschalSatz;
   r.mieteEffektiv = jahresKalt * lf;
-  const hausgeldNichtUml = pauschal ? 0 : (d.hausgeldNichtUmlEingegeben ? d.hausgeldNichtUml : 64.88);
-  const umlagefaehigeKosten = 0;
+  const hausgeldNichtUml = pauschal ? 0 : d.hausgeldNichtUml;
+  const umlagefaehigeKosten = pauschal ? 0 : Math.max(0, d.umlagefaehigeKosten);
   r.nebenkostenSaldoMonat = d.nebenkostenVorauszahlung - umlagefaehigeKosten;
   r.nebenkostenSaldoJahr = r.nebenkostenSaldoMonat * 12;
-  r.hgUmlagefaehigJahr = 0;
+  r.hgUmlagefaehigJahr = umlagefaehigeKosten * 12;
   r.hgNichtUmlJahr = hausgeldNichtUml * 12;
   r.verwaltungJahr = 0;
   r.instandJahr = pauschal ? 0 : d.flaeche * d.instand * 12;
@@ -1331,12 +1336,13 @@ const TIPS = {
   makler: "Provision des Immobilienmaklers bei Kauf (hier 3,57 % inkl. MwSt., laut Exposé vom Käufer zu zahlen). In manchen Bundesländern teilt sich Käufer/Verkäufer.",
   sonstige: "Weitere Einmalkosten: Gutachten, Umzug, Möbel, Notgroschen-Polster. Meist klein, aber einplanen.",
   kaltmiete: "Die Miete OHNE Nebenkosten, die der Mieter monatlich zahlt. Basis für alle Rendite-Berechnungen. Aktuell eine Empfehlung (ABGELEITET aus Regionalvergleich) – nicht belegt!",
-  hausgeld: "Gesamtbetrag für Hausgeld/Betriebskosten. Bei einem EFH z. B. Grundsteuer, Gebäudeversicherung und Müllgebühren. Richtwert als Startannahme: ca. 1,00 €/m² Wohnfläche pro Monat. 0 bleibt 0; Verwaltung wird nicht automatisch ergänzt.",
-  nebenkostenVorauszahlung: "Monatliche Vorauszahlung des Mieters auf umlagefähige Betriebskosten. Sie ist keine zusätzliche Kaltmiete und wird dem Hausgeld gegenübergestellt.",
-  nebenkostenSaldo: "Positiv: voraussichtliche Erstattung an den Mieter. Negativ: voraussichtliche Nachzahlung des Mieters. Null: Vorauszahlung entspricht den Kosten.",
-  hausgeldNichtUml: "Kosten, die der Eigentümer monatlich selbst trägt. Ein belegter Wert aus Unterlagen bleibt maßgeblich; fehlt er, rechnet das Tool mit 35 € Pauschale.",
+  hausgeld: "Angepasster monatlicher Vorschuss im Wirtschaftsplan 2027 für Einheit 5. Die Jahressummen des Plans weichen voneinander ab und müssen mit der Verwaltung geklärt werden.",
+  nebenkostenVorauszahlung: "Monatliche Betriebskostenvorauszahlung von 200 EUR laut Mietvertrag. Sie ist keine zusätzliche Kaltmiete; tatsächliche Abrechnung und Zahlungseingang sind offen.",
+  umlagefaehigeKosten: "Aus den Einzelpositionen des WP 2027 rechnerisch 310,33 EUR/Monat. Gegenüber 200 EUR Mietervorauszahlung eine Differenz von 110,33 EUR/Monat; wegen WP-Summendifferenz und fehlender Abrechnung kein gesicherter Saldo oder Nachzahlungsbetrag.",
+  nebenkostenSaldo: "Vorläufiger rechnerischer Saldo: Positiv bedeutet Vorauszahlung über den WP-Kosten, negativ eine Differenz zugunsten des Vermieters. Kein Abrechnungsergebnis; tatsächliche Kosten und Umlagefähigkeit prüfen.",
+  hausgeldNichtUml: "Eigentümerkosten aus dem Wirtschaftsplan einschließlich Rücklagenbeiträge: 55,12 EUR nicht umlagefähige Kosten plus 42,73 EUR Rücklagen pro Monat. Zusammen 97,85 EUR; WP-Summendifferenz noch offen.",
   pauschal: "Pauschalmodus: Die laufenden Kosten werden als Prozentsatz der Kaltmiete angesetzt (Vorgabe 20 %). Das ersetzt nicht umlagefähiges Hausgeld, Instandhaltung und den Leerstandsabschlag in einer Position. Der Satz ist frei einstellbar; die drei Einzelfelder bleiben gespeichert und gelten wieder nach dem Zurückschalten auf Einzeln.",
-  instand: "Monatlicher Ansatz nach Wohnfläche: 1,00–1,50 €/m²/Monat für neuere oder gepflegte Häuser, 2,00–5,00 €/m²/Monat für ältere Bestandsimmobilien. Quelle: Verband Privater Bauherren über Interhyp, abgerufen 25.09.2026. Berechnung: Wohnfläche × Eingabe.",
+  instand: "Monatlicher Ansatz nach Wohnfläche: im gespeicherten Nutzer-State 0,80 EUR/m²/Monat. Der Richtwert ist objektspezifisch zu prüfen. Berechnung: Wohnfläche × Eingabe.",
   leerstand: "Sicherheitsabschlag auf die Kaltmiete für Mieterwechsel und Vermietungsrisiko. Nutzer-Vorgabe: 2 % der Kaltmiete.",
   ek: "Eigenkapital = dein eigenes Geld, das du einbringst. Mehr EK = kleinere Rate, aber weniger Rendite auf dein Geld. Weniger EK = größere Rate, höheres Risiko. Das Tool berechnet unten Break-Even-EK je Zinsszenario.",
   zins: "Der jährliche Zinssatz des Darlehens. Aktuelles Marktniveau recherchieren (z. B. CHECK24/FMH) und hier als Quelle eintragen. Bei hohem Beleihungsauslauf verlangen Banken mehr.",
@@ -1418,11 +1424,11 @@ function isTipElement(target, source) { return target && source && (target === s
 
 // ---------- Risiken (dynamisch) ----------
 const RISIKEN_DEFAULT = [
-  ["Cashflow bei 25.000 EUR EK negativ", "wirtschaftlich", "🔴", "Das Basismodell ergibt bei 159.000 EUR Kaufpreis rund -142 EUR/Monat nach Finanzierung; Break-even-Miete rund 895 EUR."],
-  ["Miete nicht rechtlich/nachhaltig belegt", "Mietrecht", "🔴", "750 EUR Kaltmiete stammen aus dem Exposé; Mietvertrag, Mietkonto und Nebenkostenabrechnungen fehlen."],
-  ["Hausgeldsprung und Nachzahlung", "WEG", "🟠", "2024 Nachzahlung 2.355,88 EUR; Wirtschaftsplan 2027 setzt 480 EUR Vorschuss monatlich an."],
-  ["Grundbuch und Aufteilungsplan offen", "rechtlich", "🟠", "Einheit 6A und Stellplatz sind aus der Teilungserklärung ableitbar, der aktuelle Grundbuchauszug fehlt."],
-  ["Gasheizung / Gemeinschaftseigentum", "technisch", "🟠", "Energieausweis empfiehlt Heizungsprüfung; Dach, Fenster und Feuchtigkeit sind nicht vor Ort geprüft."]
+  ["Cashflow bei 20.000 EUR EK negativ", "wirtschaftlich", "🔴", "Das vorläufige Basismodell ergibt bei 159.000 EUR Kaufpreis rund -184 EUR/Monat nach Finanzierung; WP-Summendifferenz noch klären."],
+  ["Vertragsmiete nicht durch Zahlungen bestätigt", "Mietrecht", "🔴", "Mietvertrag belegt 750 EUR nettokalt plus 200 EUR Betriebskostenvorauszahlung; Mietkonto und Abrechnungen fehlen."],
+  ["Wirtschaftsplan mit Summendifferenz", "WEG", "🔴", "Einheit 5: angepasst 4.560 EUR/Jahr, errechnet 4.898,15 EUR/Jahr; zusätzlich 310,33 EUR/Monat rechnerisch umlagefähige Kosten gegenüber 200 EUR Mietervorauszahlung. Verwaltung und Abrechnung prüfen."],
+  ["WEG-Unterlagen teilweise falscher Einheit", "rechtlich", "🟠", "Frühere Unterlagen zu Einheit 6A/6 gehören laut Nutzer zur falschen Wohnung; korrekte Teilungserklärung und Grundbuchunterlagen für Einheit 5 fehlen."],
+  ["Heizungsart widersprüchlich", "technisch", "🟠", "Mietvertrag nennt Öl-Zentralheizung, Energieausweis Gas-Zentralheizung."]
 ];
 function renderRisiken(risiken) {
   const tbl = document.getElementById("tblRisiken");

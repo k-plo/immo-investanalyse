@@ -19,6 +19,9 @@ PAGE = b'''<html><head><title>Haus in Neustadt</title>
 <meta property="og:image" content="https://bilder.example.org/haus.png">
 <script type="application/ld+json">{"@type":"House","name":"Haus in Neustadt","address":{"streetAddress":"Hauptstr. 1","postalCode":"12345","addressLocality":"Neustadt"},"floorSize":{"value":120},"numberOfRooms":4,"offers":{"price":"249.000"}}</script>
 </head><body></body></html>'''
+SC_PAGE = b'''<html><head><title>ETW Kassel-Wehlheiden</title>
+<script type="application/ld+json">{"@type":"Apartment","name":"ETW Kassel","description":"Gepflegte Wohnung, Baujahr: 1965, Energieeffizienzklasse D, 2. OG, Kaltmiete: 620 EUR","address":{"streetAddress":"Frankfurter Str. 12","postalCode":"34121","addressLocality":"Kassel-Wehlheiden"},"floorSize":{"value":75},"numberOfRooms":3,"offers":{"price":"189.000"}}</script>
+</head><body></body></html>'''
 PNG = base64.b64decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/l0cAAAAASUVORK5CYII=')
 
 
@@ -35,6 +38,17 @@ class DbWorkflowTest(unittest.TestCase):
         self.assertEqual(item['locality'], 'Neustadt')
         with self.assertRaises(ListingError):
             validate_url('http://127.0.0.1:8000/private')
+
+    def test_listing_parser_extra_facts(self):
+        item = extract_listing(SC_PAGE, 'https://example.org/anzeige/9')
+        self.assertEqual(item['strasse'], 'Frankfurter Str.')
+        self.assertEqual(item['hausnummer'], '12')
+        self.assertEqual(item['ort'], 'Kassel')
+        self.assertEqual(item['stadtteil'], 'Wehlheiden')
+        self.assertEqual(item['baujahr'], 1965)
+        self.assertEqual(item['energieklasse'], 'D')
+        self.assertEqual(item['geschoss'], '2. OG')
+        self.assertEqual(item['kaltmiete'], 620)
 
     def test_same_town_distinct_ids_and_revision_conflict(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -77,6 +91,68 @@ class DbWorkflowTest(unittest.TestCase):
                 blocked = db_store.import_listing('https://example.org/anzeige/3')
                 self.assertIn('Abruf blockiert', blocked['status'])
                 self.assertEqual(db_store.get_object(blocked['id'])['analysis_status'], 'abruf_blockiert')
+
+
+class SchnellcheckTest(unittest.TestCase):
+    def test_create_update_uebersicht_delete(self):
+        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+            base = Path(tmp)
+            (base / 'objekte' / '_VORLAGE').mkdir(parents=True)
+            shutil.copy2(ROOT / 'objekte' / '_VORLAGE' / 'Objektname_Übersicht.html',
+                         base / 'objekte' / '_VORLAGE' / 'Objektname_Übersicht.html')
+            db_path = base / 'immo_datenbank.db'
+            shutil.copy2(ROOT / 'immo_datenbank.db', db_path)
+
+            def fake_fetch(url, limit=3_000_000):
+                return url, SC_PAGE, 'text/html; charset=utf-8'
+
+            patches = (patch.object(db_store, 'BASE', base), patch.object(db_store, 'DB_PATH', db_path),
+                       patch.object(db_store, 'validate_url', side_effect=lambda url: url),
+                       patch.object(db_store, 'fetch_public', side_effect=fake_fetch))
+            with patches[0], patches[1], patches[2], patches[3]:
+                check = db_store.create_schnellcheck('https://example.org/anzeige/9')
+                self.assertFalse(check['existing'])
+                self.assertEqual(check['kaufpreis'], 189000)
+                self.assertEqual(check['strasse'], 'Frankfurter Str.')
+                self.assertEqual(check['ort'], 'Kassel')
+                self.assertEqual(check['energieklasse'], 'D')
+                self.assertEqual(check['kaltmiete_ist'], 620)
+                self.assertIsNone(check['objekt_id'])
+
+                duplicate = db_store.create_schnellcheck('https://example.org/anzeige/9')
+                self.assertTrue(duplicate['existing'])
+
+                updated = db_store.update_schnellcheck(
+                    check['public_id'], {'kaltmiete_pot': '780', 'miete_pot_quelle': 'Kasseler Mietspiegel, Mittelwert'}, 0)
+                self.assertEqual(updated['kaltmiete_pot'], 780)
+                self.assertEqual(updated['revision'], 1)
+                with self.assertRaises(db_store.RevisionConflict):
+                    db_store.update_schnellcheck(check['public_id'], {'kaltmiete_pot': 800}, 0)
+                with self.assertRaises(ValueError):
+                    db_store.update_schnellcheck(check['public_id'], {'unbekanntes_feld': 1}, 1)
+
+                uebersicht = db_store.schnellcheck_uebersicht(check['public_id'])
+                self.assertFalse(uebersicht['existing'])
+                linked = db_store.update_schnellcheck(check['public_id'], {'stadtteil': 'Wehlheiden'}, 2)
+                self.assertIsNotNone(linked['objekt_id'])
+                again = db_store.schnellcheck_uebersicht(check['public_id'])
+                self.assertTrue(again['existing'])
+                state = db_store.get_object(uebersicht['id'])['state']
+                self.assertEqual(state['kaltmiete'], '780.0')
+
+                rows = db_store.schnellcheck_rows()
+                self.assertEqual(len(rows), 1)
+                self.assertTrue(rows[0]['objekt_pfad'])
+                result = db_store.delete_schnellcheck(check['public_id'], 3)
+                self.assertTrue(result['deleted'])
+                self.assertEqual(db_store.schnellcheck_rows(), [])
+
+            with patch.object(db_store, 'BASE', base), patch.object(db_store, 'DB_PATH', db_path), \
+                    patch.object(db_store, 'validate_url', side_effect=lambda url: url), \
+                    patch.object(db_store, 'fetch_public', side_effect=ListingError('Anzeige nicht abrufbar (HTTP 403)')):
+                blocked = db_store.create_schnellcheck('https://example.org/anzeige/10')
+                self.assertIn('blockiert', blocked['status'])
+                self.assertIsNone(blocked['kaufpreis'])
 
 
 if __name__ == '__main__':

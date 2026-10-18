@@ -13,7 +13,7 @@ from contextlib import closing
 from datetime import datetime, timezone
 from pathlib import Path
 
-from db_manager import DB_PATH, berechne_rating
+from db_manager import DB_PATH, berechne_rating, ensure_runtime_schema
 from listing_import import ListingError, extract_listing, fetch_public, validate_url
 
 BASE = Path(__file__).resolve().parent.parent
@@ -45,6 +45,7 @@ def connection() -> sqlite3.Connection:
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys=ON")
     conn.execute("PRAGMA busy_timeout=10000")
+    ensure_runtime_schema(conn)
     return conn
 
 
@@ -392,3 +393,177 @@ def set_photo(public_id: str, encoded: str, mime: str, expected_revision: int) -
             if tmp.exists():
                 tmp.unlink()
         return {"id": public_id, "revision": expected_revision + 1, "image_path": image_path}
+
+
+# ------------------------------------------------------------ Schnellcheck ---
+SCHNELLCHECK_TEXT_FIELDS = (
+    "titel", "ort", "stadtteil", "strasse", "hausnummer", "plz",
+    "geschoss", "energieklasse", "miete_pot_quelle", "source_url",
+)
+SCHNELLCHECK_NUM_FIELDS = (
+    "wohnflaeche", "zimmer", "baujahr", "kaufpreis", "kaltmiete_ist", "kaltmiete_pot",
+)
+
+
+def _schnellcheck_payload(conn: sqlite3.Connection, public_id: str) -> dict:
+    row = conn.execute("""
+        SELECT s.*, o.html_pfad AS objekt_pfad, o.public_id AS objekt_public_id
+        FROM schnellcheck s LEFT JOIN objekte o ON o.id = s.objekt_id
+        WHERE s.public_id=?""", (public_id,)).fetchone()
+    if row is None:
+        raise KeyError(public_id)
+    return dict(row)
+
+
+def schnellcheck_rows() -> list[dict]:
+    with closing(connection()) as conn:
+        rows = conn.execute("""
+            SELECT s.*, o.html_pfad AS objekt_pfad, o.public_id AS objekt_public_id
+            FROM schnellcheck s LEFT JOIN objekte o ON o.id = s.objekt_id
+            ORDER BY s.erstellt_am DESC, s.id DESC""").fetchall()
+    return [dict(row) for row in rows]
+
+
+def create_schnellcheck(url: str) -> dict:
+    """Leichtgewichtigen Schnellcheck aus einem öffentlichen Anzeigenlink anlegen.
+
+    Es werden nur die für den Schnellcheck benötigten Felder übernommen;
+    es wird KEIN Objektordner und keine Übersicht erzeugt."""
+    final_url = validate_url(url)
+    data = None
+    try:
+        final_url, page, content_type = fetch_public(final_url)
+        if "html" not in content_type.lower():
+            raise ListingError("Der Link liefert keine HTML-Anzeige")
+        data = extract_listing(page, final_url)
+        if not any((data["price"], data["area"], data["address"], data["description"])):
+            data = None
+    except ListingError as error:
+        if not any(code in str(error) for code in ("HTTP 401", "HTTP 403", "HTTP 429")):
+            raise
+    with closing(connection()) as conn, conn:
+        existing = conn.execute("SELECT public_id FROM schnellcheck WHERE source_url=?", (final_url,)).fetchone()
+        if existing:
+            return {**_schnellcheck_payload(conn, existing["public_id"]), "existing": True,
+                    "status": "Schnellcheck zu diesem Link existiert bereits"}
+        public_id = str(uuid.uuid4())
+        now = datetime.now(timezone.utc).isoformat(timespec="seconds")
+        if data is None:
+            domain = final_url.split("/")[2]
+            values = {"titel": f"Anzeige von {domain} (Abruf blockiert – bitte manuell ergänzen)"}
+        else:
+            values = {
+                "titel": data["title"], "ort": data.get("ort") or "",
+                "stadtteil": data.get("stadtteil") or "", "strasse": data.get("strasse") or "",
+                "hausnummer": data.get("hausnummer") or "", "plz": data.get("plz") or "",
+                "wohnflaeche": data.get("area"), "zimmer": data.get("rooms"),
+                "geschoss": data.get("geschoss"), "baujahr": data.get("baujahr"),
+                "energieklasse": data.get("energieklasse"), "kaufpreis": data.get("price"),
+                "kaltmiete_ist": data.get("kaltmiete"),
+            }
+        columns = ["public_id", "source_url", *SCHNELLCHECK_TEXT_FIELDS, *SCHNELLCHECK_NUM_FIELDS,
+                   "erstellt_am", "geaendert_am"]
+        row_values = {key: values.get(key) for key in SCHNELLCHECK_TEXT_FIELDS + SCHNELLCHECK_NUM_FIELDS}
+        row_values["source_url"] = final_url
+        conn.execute(
+            f"INSERT INTO schnellcheck ({','.join(columns)}) VALUES ({','.join('?' for _ in columns)})",
+            [public_id if col == "public_id" else now if col in ("erstellt_am", "geaendert_am")
+             else row_values.get(col) for col in columns])
+        return {**_schnellcheck_payload(conn, public_id), "existing": False,
+                "status": "Schnellcheck angelegt" if data is not None
+                else "Abruf blockiert – leerer Schnellcheck zur manuellen Ergänzung angelegt"}
+
+
+def update_schnellcheck(public_id: str, fields: dict, expected_revision: int) -> dict:
+    if not isinstance(fields, dict) or not isinstance(expected_revision, int) or expected_revision < 0:
+        raise ValueError("Ungültige Schnellcheck-Daten")
+    updates: dict[str, object] = {}
+    for key, value in fields.items():
+        if key in SCHNELLCHECK_TEXT_FIELDS:
+            updates[key] = str(value)[:500] if value not in (None, "") else ""
+        elif key in SCHNELLCHECK_NUM_FIELDS:
+            updates[key] = _number(value) if value not in (None, "") else None
+        else:
+            raise ValueError(f"Feld nicht erlaubt: {key}")
+    if not updates:
+        raise ValueError("Keine Felder zum Aktualisieren")
+    now = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    with closing(connection()) as conn, conn:
+        conn.execute("BEGIN IMMEDIATE")
+        row = conn.execute("SELECT revision FROM schnellcheck WHERE public_id=?", (public_id,)).fetchone()
+        if row is None:
+            raise KeyError(public_id)
+        if row["revision"] != expected_revision:
+            raise RevisionConflict(f"DB-Revision {row['revision']}, Browser-Revision {expected_revision}")
+        assignments = ",".join(f'"{key}"=?' for key in updates)
+        conn.execute(f"UPDATE schnellcheck SET {assignments},geaendert_am=?,revision=revision+1 WHERE public_id=?",
+                     (*updates.values(), now, public_id))
+        return _schnellcheck_payload(conn, public_id)
+
+
+def delete_schnellcheck(public_id: str, expected_revision: int) -> dict:
+    if not isinstance(expected_revision, int) or expected_revision < 0:
+        raise ValueError("Ungültige Revision")
+    with closing(connection()) as conn, conn:
+        conn.execute("BEGIN IMMEDIATE")
+        row = conn.execute("SELECT revision FROM schnellcheck WHERE public_id=?", (public_id,)).fetchone()
+        if row is None:
+            raise KeyError(public_id)
+        if row["revision"] != expected_revision:
+            raise RevisionConflict(f"DB-Revision {row['revision']}, Browser-Revision {expected_revision}")
+        conn.execute("DELETE FROM schnellcheck WHERE public_id=?", (public_id,))
+    return {"id": public_id, "deleted": True}
+
+
+def schnellcheck_uebersicht(public_id: str) -> dict:
+    """Aus einem Schnellcheck eine vollständige Objektübersicht anlegen (Ordner + DB-Objekt)."""
+    with closing(connection()) as conn:
+        row = conn.execute("SELECT * FROM schnellcheck WHERE public_id=?", (public_id,)).fetchone()
+        if row is None:
+            raise KeyError(public_id)
+        check = dict(row)
+    if check.get("objekt_public_id") or check.get("objekt_id"):
+        with closing(connection()) as conn:
+            linked = conn.execute("SELECT public_id, html_pfad FROM objekte WHERE id=?", (check["objekt_id"],)).fetchone()
+        if linked:
+            return {"id": linked["public_id"], "path": "/" + linked["html_pfad"], "existing": True,
+                    "status": "Übersicht existiert bereits"}
+    if not check.get("source_url"):
+        raise ValueError("Kein Anzeigenlink hinterlegt – Übersicht bitte manuell anlegen")
+    result = import_listing(check["source_url"])
+    objekt = get_object(result["id"])
+    # Recherchierte Schnellcheck-Werte als Startwerte in die Übersicht übernehmen,
+    # ohne bereits vorhandene Werte zu überschreiben.
+    state = objekt["state"]
+    changed = False
+    mapping = (("kaufpreis", "preis"), ("wohnflaeche", "flaeche"))
+    for source, target in mapping:
+        if check.get(source) and not state.get(target):
+            state[target] = str(check[source])
+            changed = True
+    miete = check.get("kaltmiete_pot") or check.get("kaltmiete_ist")
+    if miete and not state.get("kaltmiete"):
+        state["kaltmiete"] = str(miete)
+        quelle = check.get("miete_pot_quelle") or "Schnellcheck"
+        state["p_tag-kaltmiete"] = f"RECHERCHE · {quelle} (aus Schnellcheck übernommen)"
+        changed = True
+    if changed:
+        save_object(result["id"], state, objekt["revision"])
+    now = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    with closing(connection()) as conn, conn:
+        objekt_row = conn.execute("SELECT id FROM objekte WHERE public_id=?", (result["id"],)).fetchone()
+        conn.execute("UPDATE schnellcheck SET objekt_id=?,geaendert_am=?,revision=revision+1 WHERE public_id=?",
+                     (objekt_row["id"], now, public_id))
+        for column, key in (("baujahr", "baujahr"), ("zimmer", "zimmer")):
+            if check.get(key):
+                conn.execute(f"UPDATE objekte SET {column}=COALESCE({column},?) WHERE public_id=?",
+                             (check[key], result["id"]))
+        if check.get("strasse"):
+            adresse = ", ".join(x for x in (
+                f"{check['strasse']} {check.get('hausnummer') or ''}".strip(),
+                f"{check.get('plz') or ''} {check.get('ort') or ''}".strip()) if x)
+            if adresse:
+                conn.execute("UPDATE objekte SET adresse=COALESCE(NULLIF(adresse,''),?) WHERE public_id=?",
+                             (adresse, result["id"]))
+    return {"id": result["id"], "path": result["path"], "existing": False,
+            "status": "Objektübersicht angelegt und mit Schnellcheck verknüpft"}

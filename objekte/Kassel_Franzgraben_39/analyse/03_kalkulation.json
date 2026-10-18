@@ -1,0 +1,114 @@
+{
+  "objekt": {
+    "name": "Kassel – Franzgraben 39 (Haus 39, W159)",
+    "adresse": "Franzgraben 35–39, Haus 39, Wohnung 159, 34125 Kassel",
+    "objektart": "Vermietete Eigentumswohnung, Studentenapartment als Maisonette",
+    "baujahr": 1993,
+    "wohnflaeche_m2": 33.16,
+    "nutzflaeche_m2": null,
+    "grundstuecksflaeche_m2": null,
+    "anzahl_einheiten": 167,
+    "zimmer": 2,
+    "etage": "2. OG / DG (Exposé widersprüchlich: einmal EG)",
+    "stellplaetze": null,
+    "energieklasse": "D (Gebäudeteil I: 119, Gebäudeteil II: 123 kWh/(m²·a))",
+    "heizung": "Gaszentralheizung, Baujahr 1994; Warmwasser enthalten"
+  },
+  "kauf": {
+    "angebotspreis_eur": 85000.0,
+    "grunderwerbsteuer_prozent": 6.0,
+    "notar_prozent": 2.0,
+    "grundbuch_prozent": 0.0,
+    "makler_prozent": 2.975,
+    "makler_anteil_verkaeufer_prozent": 50.0,
+    "maklerprovision_eur": 2528.75,
+    "renovierung_eur": 0.0,
+    "sanierung_eur": 0.0,
+    "sonstige_erwerbskosten_eur": 0.0,
+    "renovierung_sanierung_status": "0 EUR nur als Rechenplatzhalter; Zustand und etwaige Arbeiten sind mangels Besichtigung/Angeboten unbekannt"
+  },
+  "miete": {
+    "kaltmiete_monatlich_eur": 395.0,
+    "nebenkosten_monatlich_eur": null,
+    "leerstand_wochen_pro_jahr": 1.04,
+    "marktuebliche_miete_eur": 395.0,
+    "mietrueckstaende_eur": null,
+    "mietempfehlung": {
+      "empfohlene_kaltmiete_eur": 395.0,
+      "spanne_eur": [288.49, 395.0],
+      "eur_pro_m2": 11.91,
+      "status": "BELEGT laut Exposé; Mietvertrag und Zahlungseingang nicht vorgelegt. Angebotsvergleich nur indikativ.",
+      "begruendung": "395 EUR/Monat laut Exposé, Mietbeginn 01.03.2026 (11,91 EUR/m²). Als grober Vergleich: ImmoScout24 Nord-Holland Q2 2026 8,70 EUR/m² bzw. rund 288 EUR/Monat bei 33,16 m². Das ist kein Vergleich für ein kleines, studentisch gebundenes Maisonette-Apartment und keine rechtliche Mietpreisprüfung.",
+      "details": "siehe analyse/05_mietempfehlung.md"
+    }
+  },
+  "laufende_kosten": {
+    "hausgeld_monatlich_eur": 208.18,
+    "verwaltung_prozent_von_miete": 0.0,
+    "instandhaltung_eur_pro_m2_monat": 1.0,
+    "nicht_umlagefaehige_kosten_monatlich_eur": 52.8,
+    "status": "Wirtschaftsplan 2026: Hausgeld 185,16 EUR/Monat plus Rücklage 23,02 EUR/Monat = 208,18 EUR Gesamtzahlung. Nicht umlagefähige Plan-Kosten 633,61 EUR/Jahr = 52,80 EUR/Monat; Rücklagenzuführung separat. Instandhaltung 1 EUR/m²/Monat gemäß Nutzer-Startwert als vorsichtige Modellgröße; mögliche Überschneidung mit WEG-Rücklage beachten.",
+    "umlagefaehige_kosten_monatlich_eur": 135.86
+  },
+  "finanzierung": {
+    "eigenkapital_eur": 20000.0,
+    "zinssatz_prozent": 4.5,
+    "tilgung_prozent": 1.0,
+    "zinsbindung_jahre": 10,
+    "finanzierungsnebenkosten_eur": 0.0,
+    "ek_status": "NUTZER-VORGABE: 20.000 EUR Eigenkapital und 1,0 % Tilgung",
+    "zinsrecherche": {
+      "quelle": "Interhyp, Bauzinsen aktuell",
+      "spanne_prozent": [4.22, 4.62],
+      "abgerufen": "2026-10-16",
+      "angebotszeitraum": "2026-10-05 bis 2026-10-11",
+      "zinsbindung_jahre": 10,
+      "status": "BELEGT (externe Marktindikation, keine persönliche Finanzierungszusage); 4,5 % Modellwert"
+    }
+  },
+  "weg": {
+    "zutreffend": true,
+    "hausgeld_vorauszahlung_monatlich_eur": 185.16,
+    "ruecklagenbeitrag_monatlich_eur": 23.02,
+    "instandhaltungsruecklage_eur": 2190.1,
+    "ruecklage_waschereinrichtung_eur": 673.29,
+    "ruecklage_hausgeldausfaelle_eur": 150.43,
+    "weg_gesamtruecklage_eur": 257658.77,
+    "ruecklagenstand_stichtag": "2025-12-31",
+    "geplante_sonderumlagen_eur": null,
+    "ruecklagenstatus": "Einzelabrechnung 2025; Beträge laut Verwalterunterlage. Erhaltungsrücklage Gesamt-WEG 257.658,77 EUR, Wohnungsanteil 2.190,10 EUR. Wirtschaftsplan 2026 separat prüfen; keine Protokolle/Beschlüsse vorgelegt."
+  },
+  "annahmen": [
+    "BELEGT laut Exposé, nicht unabhängig verifiziert: Kaufpreis 85.000 EUR, Wohnfläche ca. 33,16 m² und Ist-Kaltmiete 395 EUR/Monat.",
+    "BELEGT laut Exposé: Miete seit 01.03.2026; tatsächlicher Vertrag und Zahlungseingänge fehlen.",
+    "BELEGT: Maklerprovision Käufer 2,975 % inkl. MwSt.; Verkäufer zahlt ebenfalls 2,975 %.",
+    "BELEGT: Grunderwerbsteuer Hessen 6,0 %; Notar/Grundbuch 2,0 % als Kalkulationsannahme.",
+    "ANNAHME/Platzhalter: Renovierung, Sanierung und sonstige Kosten jeweils 0 EUR, da keine Besichtigung, Angebote oder Rechnungen vorliegen. Die Werte sind nicht als Kostenschätzung zu verstehen.",
+    "BELEGT: Wirtschaftsplan 2026 nennt 185,16 EUR monatliche Hausgeldvorauszahlung plus 23,02 EUR Rücklage; Gesamtzahlung 208,18 EUR/Monat.",
+    "BELEGT: Nicht umlagefähige Plan-Kosten 633,61 EUR/Jahr (52,80 EUR/Monat); die Rücklagenzuführung 276,24 EUR/Jahr ist separat ausgewiesen.",
+    "NUTZER-STARTWERTE: 1 EUR/m²/Monat Instandhaltung, 2 % Leerstand, 20.000 EUR Eigenkapital, 1,0 % Tilgung. Die Instandhaltungsannahme kann sich mit WEG-Rücklage überschneiden.",
+    "BELEGT (extern): Interhyp-Zinsangebote für 10 Jahre 4,22–4,62 % effektiv, Zeitraum 05.–11.10.2026; Modellwert 4,5 %, kein persönliches Angebot.",
+    "ANNAHME: Laufende Verwaltungsgebühren der Gesamtanlage werden mit 0 EUR separat angesetzt, weil keine Zusatzgebühr pro Wohnung belegt ist; Verwaltung ist nicht kostenfrei nachgewiesen.",
+    "ABGELEITET: Gesamtinvestition 94.328,75 EUR ohne Renovierung/Sanierung; Darlehen 74.328,75 EUR bei 20.000 EUR Eigenkapital.",
+    "ABGELEITET: Der allgemeine Angebotsdurchschnitt Nord-Holland ist kein belastbarer Vergleich für das kleine, auf Studierende beschränkte Maisonette-Apartment; aktuelle Vertragsmiete wird nur als Startwert übernommen."
+  ],
+  "quellen": [
+    { "information": "Kaufpreis, Adresse, Einheit, Fläche, Zimmer, Baujahr, Ist-Miete, Hausgeld, Heizung, Energie", "wert": "85.000 EUR; 33,16 m²; 395 EUR/Monat; 208,18 EUR/Monat", "quelle": "Exposé_Franzgraben+39_W159.pdf, S. 1–5 und 21", "status": "BELEGT (Maklerangaben; Originalbelege teils fehlen)" },
+    { "information": "Mietbeginn und Beschränkung auf Studierende", "wert": "Mietbeginn 01.03.2026; Vermietung nur an Studierende", "quelle": "Exposé_Franzgraben+39_W159.pdf, S. 3; Baulastenauskunft erwähnt, nicht beigefügt", "status": "BELEGT laut Exposé" },
+    { "information": "Käuferprovision", "wert": "2,975 % inkl. MwSt. = 2.528,75 EUR; Verkäufer gleicher Satz", "quelle": "Exposé_Franzgraben+39_W159.pdf, S. 21", "status": "BELEGT / Betrag ABGELEITET" },
+    { "information": "Hausgeld und Kosten 2026", "wert": "185,16 EUR Hausgeld + 23,02 EUR Rücklage monatlich; nicht umlagefähige Kosten 633,61 EUR/Jahr", "quelle": "WP+26_Ap.+159_geschwärzt.pdf, S. 1–2", "status": "BELEGT (Verwalterunterlage; Beschlusswirksamkeit prüfen)" },
+    { "information": "Jahresabrechnung 2025", "wert": "Nachzahlung 545,37 EUR; Hausgeldzahlungen 167 EUR/Monat plus 23,02 EUR Rücklage", "quelle": "Hausgeldabrechnung+2025+W159_geschwärzt.pdf, S. 1–5", "status": "BELEGT (Verwalterunterlage; Beschluss/Fälligkeit prüfen)" },
+    { "information": "Erhaltungsrücklage zum 31.12.2025", "wert": "Gesamt-WEG 257.658,77 EUR; Anteil Einheit 2.190,10 EUR", "quelle": "Hausgeldabrechnung+2025+W159_geschwärzt.pdf, S. 6", "status": "BELEGT (Verwalterunterlage)" },
+    { "information": "Mietniveau Nord-Holland Q2 2026", "wert": "8,70 EUR/m² im Quartalsvergleich; rund 288,49 EUR/Monat bei 33,16 m²", "quelle": "ImmoScout24, Mietspiegel Nord-Holland 2026, Suchergebnis Q2 2026; https://www.immobilienscout24.de/immobilienpreise/hessen/kassel/nord-holland/mietspiegel", "status": "BELEGT (Angebotsindikator, kein amtlicher Vergleichswert)" },
+    { "information": "Qualifizierter Mietspiegel Kassel 2026", "wert": "Gültig 01.01.2026 bis 31.12.2027; konkrete Vergleichsmiete muss wohnungsbezogen berechnet werden", "quelle": "Stadt Kassel, https://www.kassel.de/bauen-und-wohnen/Mietspiegel_Broschuere_2026.pdf", "status": "BELEGT (amtliche Quelle, noch keine Einzelberechnung)" },
+    { "information": "Zinsorientierung 10 Jahre", "wert": "4,22–4,62 % effektiv; Marktwert 4,5 % am 15.10.2026", "quelle": "Interhyp, https://www.interhyp.de/zinsen/; Konditionsangebote 05.–11.10.2026", "status": "BELEGT (externe Marktindikation, kein persönliches Angebot)" },
+    { "information": "Grunderwerbsteuer Hessen", "wert": "6,0 %", "quelle": "Hessische Finanzverwaltung; https://finanzen.hessen.de/steuern/grunderwerbsteuer", "status": "BELEGT (gesetzlicher Steuersatz)" }
+  ],
+  "widersprueche": [
+    "Etage: Exposé S. 1 nennt 2. OG + DG, S. 3 einmal Erdgeschoss und S. 5 wieder 2. OG/Galerie; Wirtschaftsplan ordnet Einheit 159 als 2. OG/DG zu. Wohnungszuordnung vor Kauf anhand Aufteilungsplan/Teilungserklärung bestätigen.",
+    "Hausgeld: Exposé nennt 208,18 EUR derzeit. Die WEG-Abrechnung 2025 weist 167 EUR Hausgeld plus 23,02 EUR Rücklage aus; Wirtschaftsplan 2026 nennt 185,16 EUR plus 23,02 EUR = 208,18 EUR. Zeitliche Änderung und Fälligkeit bestätigen.",
+    "Miete: Exposé nennt 395 EUR Nettokaltmiete ab 01.03.2026; Mietvertrag, Zahlungsnachweise, Nebenkostenvorauszahlung und Mietrückstände fehlen.",
+    "Exposé nennt keine Eintragung in Abteilung II; zugleich wird eine bestehende Baulast erwähnt. Das ist kein zwingender Widerspruch, die Baulastenauskunft fehlt aber.",
+    "Energie: Verbrauchsausweis nennt für Gebäudeteil I 119 und Gebäudeteil II 123 kWh/(m²·a), jeweils Klasse D. Zuordnung der Einheit zu Gebäudeteil und Originalausweis fehlen."
+  ]
+}

@@ -116,9 +116,65 @@ INSERT OR IGNORE INTO archivierungsgruenden (name) VALUES
 ('purchase_price_too_high'), ('low_yield'), ('negative_cashflow'),
 ('technical_risk'), ('legal_risk'), ('location'), ('financing'),
 ('missing_documents'), ('sold'), ('withdrawn'), ('other');
+
+-- --- Schnellcheck: leichtgewichtige Erstbewertung ohne Objektübersicht (18.10.2026) ---
+CREATE TABLE IF NOT EXISTS schnellcheck (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    public_id TEXT UNIQUE NOT NULL,
+    source_url TEXT,
+    titel TEXT,
+    ort TEXT,
+    stadtteil TEXT,
+    strasse TEXT,
+    hausnummer TEXT,
+    plz TEXT,
+    wohnflaeche REAL,
+    zimmer REAL,
+    geschoss TEXT,
+    baujahr REAL,
+    energieklasse TEXT,
+    kaufpreis REAL,
+    kaltmiete_ist REAL,
+    kaltmiete_pot REAL,
+    miete_pot_quelle TEXT,
+    objekt_id INTEGER REFERENCES objekte(id) ON DELETE SET NULL,
+    erstellt_am TEXT,
+    geaendert_am TEXT,
+    revision INTEGER NOT NULL DEFAULT 0
+);
 """
 
 # ---------------------------------------------------------------- Helpers ---
+def ensure_runtime_schema(conn: sqlite3.Connection) -> None:
+    """Laufzeit-Tabellen anlegen, die ältere DB-Dateien noch nicht kennen (idempotent)."""
+    conn.execute("""
+    CREATE TABLE IF NOT EXISTS schnellcheck (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        public_id TEXT UNIQUE NOT NULL,
+        source_url TEXT,
+        titel TEXT,
+        ort TEXT,
+        stadtteil TEXT,
+        strasse TEXT,
+        hausnummer TEXT,
+        plz TEXT,
+        wohnflaeche REAL,
+        zimmer REAL,
+        geschoss TEXT,
+        baujahr REAL,
+        energieklasse TEXT,
+        kaufpreis REAL,
+        kaltmiete_ist REAL,
+        kaltmiete_pot REAL,
+        miete_pot_quelle TEXT,
+        objekt_id INTEGER REFERENCES objekte(id) ON DELETE SET NULL,
+        erstellt_am TEXT,
+        geaendert_am TEXT,
+        revision INTEGER NOT NULL DEFAULT 0
+    )""")
+    conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_schnellcheck_public_id ON schnellcheck(public_id)")
+
+
 def db():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row

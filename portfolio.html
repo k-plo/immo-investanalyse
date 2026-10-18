@@ -224,6 +224,21 @@ li{margin-bottom:8px}
   .pf-actions { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
   .pf-top .portfolio-brand { width: auto; height: 96px; opacity: .85; }
   @media (max-width: 760px) { .pf-top .portfolio-brand { height: 56px; } }
+  .sc-title { margin: 40px 0 6px; font-size: 22px; font-weight: 750; letter-spacing: -.02em; }
+  #scForm[hidden] { display: none !important; }
+  .sc-kpis { grid-template-columns: repeat(5, minmax(0, 1fr)) !important; margin-bottom: 10px; }
+  .sc-mieten { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 4px 0 8px; }
+  .sc-mieten .sc-quelle { grid-column: 1 / -1; }
+  .sc-mieten label, .sc-edit label { display: flex; flex-direction: column; gap: 3px; font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; font-weight: 650; }
+  .sc-mieten input, .sc-edit input { box-sizing: border-box; width: 100%; min-height: 34px; padding: 5px 8px; border: 1px solid var(--line); border-radius: 8px; background: #f8fafb; color: var(--ink); font-size: 13px; font-weight: 600; }
+  .sc-mieten input:focus, .sc-edit input:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 3px #116d7214; }
+  .sc-edit { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 0 0 8px; }
+  .sc-edit[hidden] { display: none !important; }
+  .sc-actions { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+  .sc-actions button, .sc-actions .sc-link { min-height: 36px; padding: 6px 12px; font-size: 12px; border-radius: 9px; }
+  .sc-actions .sc-del { margin-left: auto; }
+  [data-theme="dark"] .sc-mieten input, [data-theme="dark"] .sc-edit input { background: #1b333e; border-color: #365261; }
+  @media (max-width: 560px) { .sc-kpis { grid-template-columns: repeat(2, 1fr) !important; } .sc-edit { grid-template-columns: 1fr 1fr; } }
 </style>
 <script data-dashboard-theme>/* Presentation only: separate key, no access to property state or sync. */
 (() => {
@@ -319,10 +334,27 @@ li{margin-bottom:8px}
     <div class="sub">Lade aktuelle Objekte aus SQLite …</div>
   </div>
 
+  <h2 class="sc-title">⚡ Schnellcheck</h2>
+  <div class="sub" id="scStand">Schnelle Erstbewertung ohne Objektübersicht · Live-Werte werden geladen</div>
+  <div class="filter">
+    <button class="analyse quick" type="button" onclick="document.getElementById('scForm').hidden = !document.getElementById('scForm').hidden">🔗 Neuer Schnellcheck per Link</button>
+    <button class="sync" onclick="schnellcheckAktualisieren(this)">🔄 Aktualisieren</button>
+  </div>
+  <form id="scForm" hidden onsubmit="schnellcheckImport(event)" style="margin:-6px 0 20px;display:flex;gap:8px;flex-wrap:wrap">
+    <input id="scUrl" type="url" required placeholder="https://www.immobilienscout24.de/… oder immowelt.de/…" aria-label="Link zur Immobilienanzeige für den Schnellcheck" style="flex:1 1 300px;min-height:44px;padding:8px 12px;border:1px solid var(--line);border-radius:10px">
+    <button type="submit" class="btn">Check anlegen</button>
+    <span id="scImportStatus" role="status" style="flex-basis:100%"></span>
+  </form>
+  <p class="sub" style="margin-top:-8px">Es werden nur die Schnellcheck-Kennzahlen aus dem Link übernommen (Adresse, Fläche, Zimmer, Geschoss, Baujahr, Energieklasse, Kaufpreis, Kaltmiete ist). Die <b>pot. Kaltmiete</b> manuell recherchieren und eintragen: in Kassel über den <a href="https://www.kassel.de/buerger/bauen_und_wohnen/rund-ums-wohnen/mietspiegel-kassel.php" target="_blank" rel="noopener noreferrer">Kasseler Mietspiegel</a> (Straße, Hausnummer, Baujahr, m² eintragen, Mittelwert übernehmen), sonst offizieller Mietspiegel der Kommune, alternativ Immowelt. Es wird <b>keine Übersicht</b> angelegt – bei Bedarf per Button auf der Karte.</p>
+  <div class="grid" id="scGrid">
+    <div class="sub">Lade Schnellchecks …</div>
+  </div>
+
   <footer>
     ⚠️ Modellrechnungen – keine rechtliche, steuerliche oder finanzielle Beratung. 🔄 <b>Aktualisieren</b> liest aktuelle Werte direkt aus der Datenbank.
   </footer>
 </div>
 <script src="assets/portfolio_db.js?v=10"></script>
+<script src="assets/schnellcheck.js?v=1"></script>
 </body>
 </html>

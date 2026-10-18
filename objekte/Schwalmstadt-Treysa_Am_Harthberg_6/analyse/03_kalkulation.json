@@ -7,7 +7,7 @@
     "wohnflaeche_m2": 75.44,
     "nutzflaeche_m2": null,
     "grundstuecksflaeche_m2": null,
-    "anzahl_einheiten": 14,
+    "anzahl_einheiten": null,
     "zimmer": 3,
     "etage": "3. Geschoss / Dachgeschoss",
     "stellplaetze": 1,
@@ -27,54 +27,64 @@
   },
   "miete": {
     "kaltmiete_monatlich_eur": 750,
-    "nebenkosten_monatlich_eur": null,
+    "nebenkosten_monatlich_eur": 200,
     "leerstand_prozent": 2.0,
     "marktuebliche_miete_eur": 525.06,
     "mietrueckstaende_eur": null,
-    "mietbeginn": "01.03.2026"
+    "mietbeginn": "01.03.2026",
+    "mietdauer": "unbefristet",
+    "indexmiete": true,
+    "kaution_eur": 2250
   },
   "laufende_kosten": {
-    "hausgeld_monatlich_eur": 480,
+    "hausgeld_monatlich_eur": 380,
     "verwaltung_prozent_von_miete": 0,
-    "instandhaltung_eur_pro_m2_monat": 1.0,
-    "nicht_umlagefaehige_kosten_monatlich_eur": 64.88
+    "instandhaltung_eur_pro_m2_monat": 0.8,
+    "nicht_umlagefaehige_kosten_monatlich_eur": 97.85,
+    "umlagefaehige_kosten_wp_monatlich_eur": 310.33
   },
   "finanzierung": {
-    "eigenkapital_eur": 25000,
+    "eigenkapital_eur": 20000,
     "zinssatz_prozent": 4.8,
-    "zinsspanne_prozent": "4,80 (bestehender Nutzerwert)",
+    "zinsspanne_prozent": "4,22–4,62 % effektiv, 10 Jahre; gespeicherter Nutzerwert 4,80 % bleibt unverändert",
     "zinsbindung_jahre": 10,
     "tilgung_prozent": 1.0,
     "finanzierungsnebenkosten_eur": null
   },
   "weg": {
     "instandhaltungsruecklage_eur": null,
-    "ruecklagenbeitrag_eur_jahr": 603.50,
+    "ruecklagenbeitrag_eur_jahr": 512.76,
     "geplante_sonderumlagen_eur": 0
   },
   "annahmen": [
     "Grunderwerbsteuer 6,0 % für Hessen.",
     "Notar und Grundbuch zusammen 2,0 % als vorläufiger Kalkulationswert.",
     "Renovierung und Sanierung mit 0 EUR sind technische Startwerte, kein Zustandsbefund.",
-    "Eigenkapital 25.000 EUR und Zins 4,80 % entsprechen dem bestehenden Nutzer-State; Leerstand 2 % und Tilgung 1,0 % bleiben Nutzer-Vorgaben.",
-    "Zins 4,80 % und Eigenkapital 25.000 EUR entsprechen dem bestehenden, ausdrücklich gespeicherten Nutzer-State; individuelles Bankangebot und Zinsbindung sind noch zu verifizieren.",
-    "Wirtschaftsplan 2027: 480 EUR Monatsvorschuss; davon 64,88 EUR/Monat nicht umlagefähige Kosten und 50,29 EUR/Monat Beiträge zu zwei Rücklagen."
+    "Eigenkapital 20.000 EUR und Zins 4,80 % entsprechen dem aktuellen SQLite-State; individuelles Bankangebot und Zinsbindung sind noch zu verifizieren.",
+    "Mietvertrag vom 13.02.2026: 750 EUR Nettokaltmiete plus 200 EUR Betriebskostenvorauszahlung; unbefristet ab 01.03.2026, Indexmietvereinbarung.",
+    "Wirtschaftsplan 2027 für die bestätigte richtige Einheit 5: angepasster Vorschuss 380 EUR/Monat; Eigentümerkosten einschließlich Rücklagen 97,85 EUR/Monat (661,46 EUR/Jahr nicht umlagefähig plus 512,76 EUR/Jahr Rücklagenbeiträge).",
+    "Die Einzelpositionen ergeben rechnerisch 3.723,93 EUR/Jahr bzw. 310,33 EUR/Monat umlagefähige WP-Kosten. Gegenüber 200 EUR Vertragsvorauszahlung ergibt sich eine vorläufige Differenz von 110,33 EUR/Monat; rechtliche Umlagefähigkeit und tatsächliche Abrechnung bleiben zu prüfen.",
+    "Der Wirtschaftsplan ist rechnerisch nicht vollständig konsistent: errechnete Gesamtsumme 4.898,15 EUR/Jahr, angepasste Summe 4.560 EUR/Jahr; die Einzelpositionen der Bewirtschaftung ergeben 4.385,39 EUR statt der angepassten Kostentragung von 4.047,24 EUR. Verwaltung um Erläuterung bitten."
   ],
   "quellen": [
     {"information": "Kaufpreis, Fläche, Zimmer, Etage, Baujahr, Energie, Ausstattung", "wert": "159.000 EUR; 75,44 m²; 3 Zimmer; BJ 1995; Klasse D", "quelle": "Immowelt-Exposé https://www.immowelt.de/expose/2075ecd5-4021-44c1-a336-c88fae6c7f1c, abgerufen 27.09.2026", "status": "BELEGT"},
-    {"information": "Ist-Kaltmiete und Mietbeginn", "wert": "750 EUR/Monat seit 01.03.2026", "quelle": "Immowelt-Exposé, Weitere Informationen, abgerufen 27.09.2026", "status": "BELEGT"},
+    {"information": "Vertragsmiete und Betriebskostenvorauszahlung", "wert": "750 EUR Nettokaltmiete + 200 EUR Betriebskostenvorauszahlung monatlich; Mietbeginn 01.03.2026; unbefristet; Indexmietvereinbarung", "quelle": "Anonymisierter Mietvertrag, §§ 2–3, unterschrieben 13.02.2026", "status": "BELEGT (Vertrag; Zahlungseingang ungeprüft)"},
     {"information": "Mietmarkt Schwalmstadt", "wert": "Wohnungen 6,96 EUR/m²; Spanne 4,53–9,55 EUR/m²", "quelle": "Immowelt Mietpreise Schwalmstadt, aktualisiert 01.09.2026, https://www.immowelt.de/immobilienpreise/mietpreise/hessen/schwalmstadt-34613/ad08de2890", "status": "BELEGT/ABGELEITET"},
-    {"information": "Bauzinsen 10 Jahre", "wert": "4,08–4,49 % als externer Marktindikator; im State ist 4,80 % als Nutzerwert gespeichert", "quelle": "Interhyp Bauzinsen, Konditionsangebote 14.–20.09.2026, abgerufen 27.09.2026, https://www.interhyp.de/zinsen/", "status": "BELEGT (extern) / EINGABE zu verifizieren"},
+    {"information": "Bauzinsen 10 Jahre", "wert": "Effektiv 4,22–4,62 % (Tabelle 05.–11.10.2026); aktueller Richtwert 4,5 % am 15.10.2026; gespeicherte Eingabe 4,80 % bleibt unverändert", "quelle": "Interhyp Bauzinsen, https://www.interhyp.de/zinsen/, abgerufen 15.10.2026", "status": "BELEGT (extern) / Nutzer-Eingabe"},
     {"information": "Maklerprovision", "wert": "3,57 % inkl. MwSt.", "quelle": "Immowelt-Exposé, Preisdetails, abgerufen 27.09.2026", "status": "BELEGT"},
-    {"information": "Energieausweis", "wert": "Verbrauch 119 kWh/(m²·a), Primärenergie 130 kWh/(m²·a), Gas, Baujahr Gebäude/Wärmeerzeuger 1995, gültig bis 10.01.2028", "quelle": "Energieausweis ista, Registriernummer HE-2018-001627641, ausgestellt 10.01.2018", "status": "BELEGT"},
-    {"information": "Teilungserklärung", "wert": "Einheit 6A in Haus II mit Keller und Stellplatz-Sondernutzungsrecht 6A; 14 Einheiten in zwei Untergemeinschaften; MEA 754,38/10.000", "quelle": "Teilungserklärung UR-Nr. 1684/2020 vom 14.07.2020, Seiten 1–10 und Lageplan", "status": "BELEGT"},
-    {"information": "Hausgeld und Rücklagen", "wert": "Wirtschaftsplan 2027: 480,00 EUR/Monat; 778,52 EUR/Jahr nicht umlagefähig; 603,50 EUR/Jahr Rücklagenbeiträge", "quelle": "Wirtschaftsplan 2027, Einheit 6A, erstellt 21.08.2026", "status": "BELEGT"},
-    {"information": "Jahresabrechnung 2024", "wert": "7.841,21 EUR Kostenanteil; 2.355,88 EUR Nachzahlung; Rücklagen-/Geldkonten mit positiven Salden", "quelle": "Jahresabrechnung 2024, Einheit 6 DG links, erstellt 24.07.2025", "status": "BELEGT"},
-    {"information": "WEG-Beschlüsse Balkone", "wert": "34.000 EUR brutto für sechs Balkone 2024; weitere fünf Balkone 28.000 EUR 2025; alle zwölf Balkone danach instandgesetzt", "quelle": "WEG-Protokolle vom 16.11.2024 und 02.08.2025", "status": "BELEGT"}
+    {"information": "Energieausweis", "wert": "Dokument nennt Verbrauch 119 kWh/(m²·a), Primärenergie 130 kWh/(m²·a), Gas, Baujahr Gebäude/Wärmeerzeuger 1995, gültig bis 10.01.2028; Zuordnung zu Einheit 5 offen", "quelle": "Energieausweis ista, Registriernummer HE-2018-001627641, ausgestellt 10.01.2018", "status": "DOKUMENT BELEGT; ZUORDNUNG OFFEN"},
+    {"information": "Frühere Teilungserklärung", "wert": "Einheit 6A; laut Nutzer falsche Wohnung, nicht auf Einheit 5 übertragen", "quelle": "Teilungserklärung UR-Nr. 1684/2020 vom 14.07.2020", "status": "NICHT ANWENDBAR"},
+    {"information": "Hausgeld und Rücklagen", "wert": "Wirtschaftsplan 2027, richtige Einheit 5: angepasster Vorschuss 380 EUR/Monat; nicht umlagefähig 661,46 EUR/Jahr; Rücklagen 512,76 EUR/Jahr; zusammen 97,85 EUR monatliche Eigentümerkosten", "quelle": "Wirtschaftsplan 2027, Einheit 5, erstellt 02.10.2026; richtige Einheit laut Nutzerbestätigung", "status": "BELEGT; Summenabweichung zu Einzelpositionen offen"},
+    {"information": "Umlagefähige WP-Kosten im Abgleich mit der Mietervorauszahlung", "wert": "Aus Einzelpositionen abgeleitet: 3.723,93 EUR/Jahr bzw. 310,33 EUR/Monat; 110,33 EUR/Monat über der Vertragsvorauszahlung von 200 EUR", "quelle": "Wirtschaftsplan 2027, Einheit 5; Mietvertrag § 3", "status": "ABGELEITET; Umlagefähigkeit und tatsächliche Abrechnung offen"},
+    {"information": "Frühere Jahresabrechnung 2024", "wert": "Einheit 6 DG links; laut Nutzer falsche Wohnung, individuelle Kosten und Nachzahlung nicht auf Einheit 5 übertragen", "quelle": "Jahresabrechnung 2024, erstellt 24.07.2025", "status": "NICHT ANWENDBAR"},
+    {"information": "Frühere WEG-Protokolle / Balkonmaßnahmen", "wert": "Zuordnung zur WEG der richtigen Einheit 5 nicht bestätigt; daraus keine abgeschlossenen Maßnahmen oder Kostenfreiheit ableiten", "quelle": "WEG-Protokolle 16.11.2024 und 02.08.2025 aus dem früheren Makler-Unterlagensatz", "status": "ZUORDNUNG OFFEN"}
   ],
   "widersprueche": [
     "Die Exposé-Miete von 9,94 EUR/m² liegt deutlich über dem Immowelt-Wohnungsdurchschnitt von 6,96 EUR/m²; Mietvertrag, Wohnungsstandard und Mikrolage prüfen.",
-    "Hausgeld 2024 (rechnerisch 254,73 EUR/Monat Vorschüsse) und Wirtschaftsplan 2027 (480,00 EUR/Monat) sind wegen geänderter Kosten-/Rücklagenplanung nicht direkt vergleichbar; die aktuelle Beschluss- und Zahlungslage prüfen.",
-    "Die Unterlagen verwenden sowohl Am Harthberg als auch Am Hardtberg; Schreibweise und Einheit 6A mit Grundbuch, Aufteilungsplan und Kaufvertragsentwurf abgleichen."
+    "Der Wirtschaftsplan 2027 nennt eine angepasste Gesamtsumme von 4.560 EUR/Jahr (380 EUR/Monat), während die errechnete Summe 4.898,15 EUR/Jahr beträgt; zudem weichen die Einzelpositionen von der angepassten Kostentragung ab. Verwaltung soll die Differenz erläutern.",
+    "Die rechnerisch umlagefähigen Einzelpositionen des WP betragen 310,33 EUR/Monat gegenüber 200 EUR vertraglicher Betriebskostenvorauszahlung. Die daraus abgeleitete Differenz von 110,33 EUR/Monat ist wegen der WP-Summendifferenz und der ungeprüften tatsächlichen/vertraglich umlagefähigen Kosten kein gesicherter Nachzahlungsbetrag.",
+    "Die zuvor vorgelegten Unterlagen zur Einheit 6A gehören laut Nutzerangabe zur falschen Wohnung; richtige Ziel-Einheit ist Einheit 5. Objekt-/Einheitszuordnung der Teilungserklärung und weiterer Altunterlagen vor Kauf anhand Grundbuch und Kaufvertragsentwurf bereinigen.",
+    "Der Mietvertrag nennt eine Öl-Zentralheizung, während der Energieausweis eine Gas-Zentralheizung ausweist; tatsächliche Heizungsart und Zuordnung des Energieausweises klären.",
+    "Die früheren WEG-Protokolle und die Teilungserklärung stammen aus dem falschen Wohnung-6A-Unterlagensatz; WEG-Zugehörigkeit und Balkonsanierungen für Einheit 5 neu belegen."
   ]
 }
