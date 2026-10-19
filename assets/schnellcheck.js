@@ -39,11 +39,6 @@
         <div><span class="l">BruttoR</span><span class="v ${renditeClass}">${pct(k.rendite)}</span>${basisHinweis}</div>
         <div><span class="l">Faktor</span><span class="v ${faktorClass}">${faktorFmt(k.faktor)}</span>${basisHinweis}</div>
       </div>
-      <div class="sc-mieten">
-        <label>KM ist (€/Monat)<input type="number" step="10" inputmode="decimal" data-field="kaltmiete_ist" value="${c.kaltmiete_ist ?? ''}" onchange="scFieldSave(this)"></label>
-        <label>KM pot (€/Monat)<input type="number" step="10" inputmode="decimal" data-field="kaltmiete_pot" value="${c.kaltmiete_pot ?? ''}" onchange="scFieldSave(this)"></label>
-        <label class="sc-quelle">Quelle pot. Miete<input type="text" data-field="miete_pot_quelle" value="${esc(c.miete_pot_quelle || '')}" placeholder="z. B. Kasseler Mietspiegel, Mittelwert" onchange="scFieldSave(this)"></label>
-      </div>
       <div class="sc-edit" hidden>
         ${editField(c, 'ort', 'Ort')}${editField(c, 'stadtteil', 'Stadtteil')}
         ${editField(c, 'strasse', 'Straße')}${editField(c, 'hausnummer', 'Hausnr.')}

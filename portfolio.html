@@ -227,17 +227,15 @@ li{margin-bottom:8px}
   .sc-title { margin: 40px 0 6px; font-size: 22px; font-weight: 750; letter-spacing: -.02em; }
   #scForm[hidden] { display: none !important; }
   .sc-kpis { grid-template-columns: repeat(5, minmax(0, 1fr)) !important; margin-bottom: 10px; }
-  .sc-mieten { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 4px 0 8px; }
-  .sc-mieten .sc-quelle { grid-column: 1 / -1; }
-  .sc-mieten label, .sc-edit label { display: flex; flex-direction: column; gap: 3px; font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; font-weight: 650; }
-  .sc-mieten input, .sc-edit input { box-sizing: border-box; width: 100%; min-height: 34px; padding: 5px 8px; border: 1px solid var(--line); border-radius: 8px; background: #f8fafb; color: var(--ink); font-size: 13px; font-weight: 600; }
-  .sc-mieten input:focus, .sc-edit input:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 3px #116d7214; }
+  .sc-edit label { display: flex; flex-direction: column; gap: 3px; font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; font-weight: 650; }
+  .sc-edit input { box-sizing: border-box; width: 100%; min-height: 34px; padding: 5px 8px; border: 1px solid var(--line); border-radius: 8px; background: #f8fafb; color: var(--ink); font-size: 13px; font-weight: 600; }
+  .sc-edit input:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 3px #116d7214; }
   .sc-edit { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 0 0 8px; }
   .sc-edit[hidden] { display: none !important; }
   .sc-actions { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
   .sc-actions button, .sc-actions .sc-link { min-height: 36px; padding: 6px 12px; font-size: 12px; border-radius: 9px; }
   .sc-actions .sc-del { margin-left: auto; }
-  [data-theme="dark"] .sc-mieten input, [data-theme="dark"] .sc-edit input { background: #1b333e; border-color: #365261; }
+  [data-theme="dark"] .sc-edit input { background: #1b333e; border-color: #365261; }
   @media (max-width: 560px) { .sc-kpis { grid-template-columns: repeat(2, 1fr) !important; } .sc-edit { grid-template-columns: 1fr 1fr; } }
 </style>
 <script data-dashboard-theme>/* Presentation only: separate key, no access to property state or sync. */
@@ -355,6 +353,6 @@ li{margin-bottom:8px}
   </footer>
 </div>
 <script src="assets/portfolio_db.js?v=10"></script>
-<script src="assets/schnellcheck.js?v=1"></script>
+<script src="assets/schnellcheck.js?v=2"></script>
 </body>
 </html>
