@@ -13,7 +13,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 import db_store
 import rent_research
 from db_manager import berechne_rating
-from listing_import import extract_listing, validate_url, ListingError
+from listing_import import extract_extra_facts, extract_listing, validate_url, ListingError
 
 
 PAGE = b'''<html><head><title>Haus in Neustadt</title>
@@ -50,6 +50,10 @@ class DbWorkflowTest(unittest.TestCase):
         self.assertEqual(item['energieklasse'], 'D')
         self.assertEqual(item['geschoss'], '2. OG')
         self.assertEqual(item['kaltmiete'], 620)
+
+    def test_annual_cold_rent_is_converted_to_monthly_amount(self):
+        facts = extract_extra_facts('Mietfläche ca. 24 m² - jährliche Kaltmiete € 3.600,-')
+        self.assertEqual(facts['kaltmiete'], 300)
 
     def test_same_town_distinct_ids_and_revision_conflict(self):
         with tempfile.TemporaryDirectory() as tmp:

@@ -175,11 +175,22 @@ def extract_extra_facts(text: str) -> dict:
     geschoss = _text_match(
         r"((?:\d{1,2})\.\s*(?:geschoss|og|obergeschoss|etage)|erdgeschoss|\beg\b|dachgeschoss|\bdg\b)",
         text)
-    kaltmiete = _number(_text_match(
-        r"(?:netto)?kaltmiete(?:\s*ist)?[:\s]*(?:ca\.?\s*)?(?:von\s*)?([\d.,\s]+)\s*(?:€|eur|euro)",
-        text))
-    if kaltmiete is None:
-        kaltmiete = _number(_text_match(r"([\d.,]+)\s*€\s*(?:netto)?kaltmiete", text))
+    annual_rent = _text_match(
+        r"(?:jährliche[nr]?\s+(?:netto)?kaltmiete|(?:netto)?kaltmiete\s*(?:pro\s+jahr|jährlich|p\.?\s*a\.?))"
+        r"\s*[:=]?\s*(?:€|eur|euro)?\s*([\d.,]+)", text)
+    if not annual_rent:
+        annual_rent = _text_match(
+            r"(?:netto)?kaltmiete\s*[:=]?\s*(?:€|eur|euro)?\s*([\d.,]+)\s*(?:€|eur|euro)?"
+            r"\s*(?:pro\s+jahr|jährlich|p\.?\s*a\.?)", text)
+    if annual_rent:
+        annual_amount = _number(annual_rent)
+        kaltmiete = round(annual_amount / 12, 2) if annual_amount is not None else None
+    else:
+        kaltmiete = _number(_text_match(
+            r"(?:netto)?kaltmiete(?:\s*ist)?[:\s]*(?:ca\.?\s*)?(?:von\s*)?([\d.,\s]+)\s*(?:€|eur|euro)",
+            text))
+        if kaltmiete is None:
+            kaltmiete = _number(_text_match(r"([\d.,]+)\s*€\s*(?:netto)?kaltmiete", text))
     return {
         "baujahr": float(baujahr) if baujahr else None,
         "energieklasse": energie.rstrip("+") or None,
