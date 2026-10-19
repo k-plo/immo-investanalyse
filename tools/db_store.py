@@ -15,6 +15,7 @@ from pathlib import Path
 
 from db_manager import DB_PATH, berechne_rating, ensure_runtime_schema
 from listing_import import ListingError, extract_listing, fetch_public, validate_url
+from rent_research import research_potential_rent
 
 BASE = Path(__file__).resolve().parent.parent
 
@@ -450,7 +451,10 @@ def create_schnellcheck(url: str) -> dict:
         now = datetime.now(timezone.utc).isoformat(timespec="seconds")
         if data is None:
             domain = final_url.split("/")[2]
-            values = {"titel": f"Anzeige von {domain} (Abruf blockiert – bitte manuell ergänzen)"}
+            values = {
+                "titel": f"Anzeige von {domain} (Abruf blockiert – bitte manuell ergänzen)",
+                "miete_pot_quelle": "KM-pot-Recherche nicht möglich: Anzeigenabruf blockiert; Ort und Wohnfläche fehlen.",
+            }
         else:
             values = {
                 "titel": data["title"], "ort": data.get("ort") or "",
@@ -461,6 +465,7 @@ def create_schnellcheck(url: str) -> dict:
                 "energieklasse": data.get("energieklasse"), "kaufpreis": data.get("price"),
                 "kaltmiete_ist": data.get("kaltmiete"),
             }
+            values.update(research_potential_rent(data, page, final_url))
         columns = ["public_id", "source_url", *SCHNELLCHECK_TEXT_FIELDS, *SCHNELLCHECK_NUM_FIELDS,
                    "erstellt_am", "geaendert_am"]
         row_values = {key: values.get(key) for key in SCHNELLCHECK_TEXT_FIELDS + SCHNELLCHECK_NUM_FIELDS}

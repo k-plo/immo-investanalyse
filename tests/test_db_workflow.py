@@ -11,6 +11,7 @@ from unittest.mock import patch
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 import db_store
+import rent_research
 from db_manager import berechne_rating
 from listing_import import extract_listing, validate_url, ListingError
 
@@ -94,6 +95,31 @@ class DbWorkflowTest(unittest.TestCase):
 
 
 class SchnellcheckTest(unittest.TestCase):
+    def test_kassel_official_mietspiegel_is_preferred_when_address_is_known(self):
+        rows = [{"1949": 10.0, "1960": 9.0, "1977": 7.55, "wohnflaeche": 44}]
+        addresses = [{"straße": "Teststraße", "nr": "1A", "wohnlage": "mittel"}]
+        with patch.object(rent_research, '_kassel_data', return_value=(addresses, {
+            'uF': rows, 'cF': rows, 'mF': rows, 'fF': rows,
+        })):
+            result = rent_research.research_potential_rent(
+                {'ort': 'Kassel', 'strasse': 'Teststr.', 'hausnummer': '1a',
+                 'area': 43.6, 'baujahr': 1963}, b'', 'https://example.org/anzeige')
+        self.assertEqual(result['kaltmiete_pot'], 342.58)
+        self.assertIn('Kasseler Mietspiegel 2026', result['miete_pot_quelle'])
+        self.assertIn('Wohnlage mittel', result['miete_pot_quelle'])
+
+    def test_regional_rent_research_uses_market_page_and_area(self):
+        listing_page = b'''<script type="application/ld+json">{"@type":"BreadcrumbList","itemListElement":[{"position":1,"item":{"@id":"https://www.immowelt.de/suche/kaufen/wohnung/hessen/kassel-34127/ad08de2795"}}]}</script>'''
+        market_page = '<div>Wohnung Preis pro Quadratmeter 8,87 €</div><p>Geschätzter Preis aktualisiert am 01. Oktober 2026.</p>'.encode('utf-8')
+        market_url = 'https://www.immowelt.de/immobilienpreise/mietpreise/hessen/kassel-34127/ad08de2795'
+        with patch.object(rent_research, 'fetch_public', return_value=(market_url, market_page, 'text/html')):
+            result = rent_research.research_potential_rent(
+                {'area': 43.6, 'ort': 'Kassel', 'stadtteil': 'Nord-Holland'}, listing_page,
+                'https://www.immowelt.de/expose/example')
+        self.assertEqual(result['kaltmiete_pot'], 386.73)
+        self.assertIn('Kassel (Stadt)', result['miete_pot_quelle'])
+        self.assertIn('01. Oktober 2026', result['miete_pot_quelle'])
+
     def test_create_update_uebersicht_delete(self):
         with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
             base = Path(tmp)
@@ -108,8 +134,10 @@ class SchnellcheckTest(unittest.TestCase):
 
             patches = (patch.object(db_store, 'BASE', base), patch.object(db_store, 'DB_PATH', db_path),
                        patch.object(db_store, 'validate_url', side_effect=lambda url: url),
-                       patch.object(db_store, 'fetch_public', side_effect=fake_fetch))
-            with patches[0], patches[1], patches[2], patches[3]:
+                       patch.object(db_store, 'fetch_public', side_effect=fake_fetch),
+                       patch.object(db_store, 'research_potential_rent', return_value={
+                           'kaltmiete_pot': 650, 'miete_pot_quelle': 'Automatische regionale Mietrecherche'}))
+            with patches[0], patches[1], patches[2], patches[3], patches[4]:
                 # Die kopierte Echt-DB kann bereits Schnellchecks enthalten -> Tabelle leeren
                 with db_store.connection() as conn:
                     conn.execute('DELETE FROM schnellcheck')
@@ -121,6 +149,8 @@ class SchnellcheckTest(unittest.TestCase):
                 self.assertEqual(check['ort'], 'Kassel')
                 self.assertEqual(check['energieklasse'], 'D')
                 self.assertEqual(check['kaltmiete_ist'], 620)
+                self.assertEqual(check['kaltmiete_pot'], 650)
+                self.assertEqual(check['miete_pot_quelle'], 'Automatische regionale Mietrecherche')
                 self.assertIsNone(check['objekt_id'])
 
                 duplicate = db_store.create_schnellcheck('https://example.org/anzeige/9')
