@@ -13,7 +13,8 @@ sys.path.insert(0, str(ROOT / "tools"))
 import db_store
 import rent_research
 from db_manager import berechne_rating
-from listing_import import extract_extra_facts, extract_listing, validate_url, ListingError
+from listing_import import (extract_energy_certificate_facts, extract_extra_facts, extract_listing,
+                            validate_url, ListingError)
 
 
 PAGE = b'''<html><head><title>Haus in Neustadt</title>
@@ -54,6 +55,31 @@ class DbWorkflowTest(unittest.TestCase):
     def test_annual_cold_rent_is_converted_to_monthly_amount(self):
         facts = extract_extra_facts('Mietfläche ca. 24 m² - jährliche Kaltmiete € 3.600,-')
         self.assertEqual(facts['kaltmiete'], 300)
+
+    def test_energy_certificate_address_and_embedded_living_area(self):
+        state = json.dumps({
+            'documents': {'display': True, 'files': [{
+                'url': 'https://mms.immowelt.de/energy.pdf',
+                'title': 'Energieausweis Franzgraben 35-37 Kassel.pdf',
+            }]},
+            'Baujahr': 1993,
+            'Wohnflaeche': 33.16,
+        }, ensure_ascii=False, separators=(',', ':'))
+        page = f'<script>window.state={json.dumps(state, ensure_ascii=False)};</script>'.encode('utf-8')
+        pdf_url = 'https://mms.immowelt.de/energy.pdf'
+        with (
+            patch('listing_import.fetch_public', return_value=(pdf_url, b'%PDF-test', 'application/pdf')),
+            patch('listing_import._read_pdf_text', return_value=(
+                'Franzgraben35-37 ; 34125 Kassel\nAdresse\nGebäudeteil\n1993')),
+        ):
+            listing = extract_listing(page, 'https://www.immowelt.de/expose/test')
+            certificate = extract_energy_certificate_facts(page)
+        self.assertEqual(listing['area'], 33.16)
+        self.assertEqual(listing['baujahr'], 1993)
+        self.assertEqual(certificate['strasse'], 'Franzgraben')
+        self.assertEqual(certificate['hausnummer'], '35-37')
+        self.assertEqual(certificate['plz'], '34125')
+        self.assertEqual(certificate['ort'], 'Kassel')
 
     def test_same_town_distinct_ids_and_revision_conflict(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -99,6 +125,30 @@ class DbWorkflowTest(unittest.TestCase):
 
 
 class SchnellcheckTest(unittest.TestCase):
+    def test_kassel_address_range_requires_one_residential_zone(self):
+        rows = [{"2000": 8.0, "wohnflaeche": 33}]
+        addresses = [
+            {"straße": "Franzgraben", "nr": "35", "wohnlage": "einfach"},
+            {"straße": "Franzgraben", "nr": "37", "wohnlage": "einfach"},
+        ]
+        with patch.object(rent_research, '_kassel_data', return_value=(addresses, {
+            'uF': rows, 'cF': rows, 'mF': rows, 'fF': rows,
+        })):
+            result = rent_research._kassel_official_mean({
+                'ort': 'Kassel', 'strasse': 'Franzgraben', 'hausnummer': '35-37',
+                'area': 33.16, 'baujahr': 1993,
+            })
+        self.assertEqual(result, (8.3256, 'einfach'))
+
+        addresses[1]['wohnlage'] = 'mittel'
+        with patch.object(rent_research, '_kassel_data', return_value=(addresses, {
+            'uF': rows, 'cF': rows, 'mF': rows, 'fF': rows,
+        })):
+            self.assertIsNone(rent_research._kassel_official_mean({
+                'ort': 'Kassel', 'strasse': 'Franzgraben', 'hausnummer': '35-37',
+                'area': 33.16, 'baujahr': 1993,
+            }))
+
     def test_kassel_official_mietspiegel_is_preferred_when_address_is_known(self):
         rows = [{"1949": 10.0, "1960": 9.0, "1977": 7.55, "wohnflaeche": 44}]
         addresses = [{"straße": "Teststraße", "nr": "1A", "wohnlage": "mittel"}]
@@ -191,6 +241,41 @@ class SchnellcheckTest(unittest.TestCase):
                 blocked = db_store.create_schnellcheck('https://example.org/anzeige/10')
                 self.assertIn('blockiert', blocked['status'])
                 self.assertIsNone(blocked['kaufpreis'])
+
+    def test_create_schnellcheck_uses_certificate_address_and_saves_provenance(self):
+        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+            base = Path(tmp)
+            (base / 'objekte' / '_VORLAGE').mkdir(parents=True)
+            shutil.copy2(ROOT / 'objekte' / '_VORLAGE' / 'Objektname_Übersicht.html',
+                         base / 'objekte' / '_VORLAGE' / 'Objektname_Übersicht.html')
+            db_path = base / 'immo_datenbank.db'
+            shutil.copy2(ROOT / 'immo_datenbank.db', db_path)
+            pdf_source = 'Energieausweis: https://mms.immowelt.de/energy.pdf'
+            patches = (
+                patch.object(db_store, 'BASE', base),
+                patch.object(db_store, 'DB_PATH', db_path),
+                patch.object(db_store, 'validate_url', side_effect=lambda url: url),
+                patch.object(db_store, 'fetch_public', return_value=(
+                    'https://example.org/anzeige/11', SC_PAGE, 'text/html; charset=utf-8')),
+                patch.object(db_store, 'extract_energy_certificate_facts', return_value={
+                    'strasse': 'Franzgraben', 'hausnummer': '35-37', 'plz': '34125',
+                    'ort': 'Kassel', 'energy_certificate_address': 'Franzgraben 35-37, 34125 Kassel',
+                    'energy_certificate_source': pdf_source,
+                }),
+                patch.object(db_store, 'research_potential_rent', return_value={
+                    'kaltmiete_pot': 275.39, 'miete_pot_quelle': 'Kasseler Mietspiegel 2026: Wohnlage einfach'}),
+            )
+            with patches[0], patches[1], patches[2], patches[3], patches[4], patches[5]:
+                with db_store.connection() as conn:
+                    conn.execute('DELETE FROM schnellcheck')
+                    conn.commit()
+                check = db_store.create_schnellcheck('https://example.org/anzeige/11')
+            self.assertEqual(check['strasse'], 'Franzgraben')
+            self.assertEqual(check['hausnummer'], '35-37')
+            self.assertEqual(check['plz'], '34125')
+            self.assertEqual(check['kaltmiete_pot'], 275.39)
+            self.assertIn('laut Energieausweis: Franzgraben 35-37, 34125 Kassel', check['miete_pot_quelle'])
+            self.assertIn(pdf_source, check['miete_pot_quelle'])
 
 
 if __name__ == '__main__':

@@ -138,9 +138,24 @@ def _kassel_official_mean(data: dict) -> tuple[float, str] | None:
         return None
 
     addresses, tables = _kassel_data()
-    residence = next((entry for entry in addresses
-                      if _normalize_street(str(entry.get("straße") or "")) == street
-                      and re.sub(r"\s+", "", str(entry.get("nr") or "").casefold()) == number), None)
+    range_match = re.fullmatch(r"(\d+)[a-z]?[-/](\d+)[a-z]?", number)
+    if range_match:
+        first_number, last_number = map(int, range_match.groups())
+        matching_residences = [
+            entry for entry in addresses
+            if _normalize_street(str(entry.get("straße") or "")) == street
+            and (entry_number := re.fullmatch(r"(\d+)[a-z]?", re.sub(
+                r"\s+", "", str(entry.get("nr") or "").casefold())))
+            and first_number <= int(entry_number.group(1)) <= last_number
+        ]
+        locations = {entry.get("wohnlage") for entry in matching_residences}
+        if not matching_residences or len(locations) != 1:
+            return None
+        residence = matching_residences[0]
+    else:
+        residence = next((entry for entry in addresses
+                          if _normalize_street(str(entry.get("straße") or "")) == street
+                          and re.sub(r"\s+", "", str(entry.get("nr") or "").casefold()) == number), None)
     if not residence:
         return None
 

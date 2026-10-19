@@ -22,10 +22,17 @@
 git clone https://github.com/k-plo/immo-investanalyse.git
 cd immo-investanalyse
 git switch --track origin/codex/portfolio-current-sync
-python3 tools/local_server.py
 ```
 
-Danach im Browser [http://127.0.0.1:8000/portfolio.html](http://127.0.0.1:8000/portfolio.html) öffnen. Unter Windows kann alternativ `start_portfolio.ps1` verwendet werden.
+Unter Windows die Python-Umgebung einmalig einrichten und dann den Starter verwenden:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\start_portfolio.ps1
+```
+
+Danach öffnet sich die Portfolioübersicht in Chrome.
 
 ### Inhaltsübersicht
 
@@ -72,7 +79,14 @@ git push origin codex/portfolio-current-sync
 .\start_portfolio.ps1
 ```
 
-Das Skript startet mit `python3` den dependency-freien lokalen Python-Server auf `http://127.0.0.1:8000/` und öffnet die Portfolioübersicht direkt in Chrome. Der Server stellt außerdem DB-Objekt-, Export- und Anzeigenimport-Endpunkte bereit. Nach Codeänderungen muss ein alter Serverprozess neu gestartet werden.
+Der Server nutzt `pypdf`, um angehängte Energieausweise bei neuen Schnellchecks auszulesen. Einmalig die Projektumgebung einrichten:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+```
+
+`start_portfolio.ps1` bevorzugt danach diese Projektumgebung und öffnet die Portfolioübersicht in Chrome. Wird der Server direkt gestartet, ebenfalls `.venv\Scripts\python.exe` verwenden. Nach Änderungen an der Serverlogik muss ein bereits laufender Server beendet und neu gestartet werden.
 
 **DB-Befehle:**
 | Befehl | Wirkung |

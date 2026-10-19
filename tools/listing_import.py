@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import html
 import ipaddress
+from io import BytesIO
 import json
 import re
 import socket
@@ -167,6 +168,23 @@ def _text_match(pattern: str, text: str) -> str:
     return match.group(1).strip() if match else ""
 
 
+def _embedded_json_value(text: str, key: str):
+    unescaped = text
+    slash_quote = chr(92) + chr(34)
+    while slash_quote in unescaped:
+        unescaped = unescaped.replace(slash_quote, chr(34))
+    matches = list(re.finditer(rf'"{re.escape(key)}"\s*:', unescaped))
+    for match in reversed(matches):
+        start = unescaped.find("{", match.end())
+        if start < 0 or start - match.end() > 2:
+            continue
+        try:
+            return json.JSONDecoder().raw_decode(unescaped, start)[0]
+        except json.JSONDecodeError:
+            continue
+    return None
+
+
 def extract_extra_facts(text: str) -> dict:
     """Konservative Zusatzfakten (Baujahr, Energieklasse, Geschoss, Kaltmiete) aus Freitext."""
     baujahr = _text_match(r"baujahr[:\s]*(?:ca\.?\s*)?((?:18|19|20)\d{2})", text)
@@ -212,8 +230,11 @@ def extract_embedded_state(text: str) -> dict:
                  "rooms": _number(field(r'"type":"numberOfRooms","value":"[^"]*","splitValue":"([\d,]+)"')),
                  "area": _number(field(r'"type":"livingSpace","value":"[^"]*","splitValue":"([\d,]+)"')),
                  "geschoss": field(r'"type":"numberOfFloors","value":"([^"]+)"'),
-                 "baujahr": _number(field(r'"type":"yearOfConstruction","label":"[^"]*","value":"(\d{4})"')),
+                 "baujahr": _number(field(r'"type":"yearOfConstruction","label":"[^"]*","value":"(\d{4})"')
+                                    or field(r'"Baujahr":(\d{4})')),
                  "energieklasse": field(r'"efficiencyClass":\{"rating":"([A-H]\+?)"')}
+    if out["area"] is None:
+        out["area"] = _number(field(r'"Wohnflaeche":([\d.,]+)'))
     address = re.search(r'"address":\{([^{}]*)\},"isAddressPublished"', unesc) or \
         re.search(r'"address":\{([^{}]*"zipCode"[^{}]*)\}', unesc)
     if address:
@@ -231,7 +252,76 @@ def extract_embedded_state(text: str) -> dict:
         out["energieklasse"] = extras["energieklasse"]
     if not out.get("geschoss"):
         out["geschoss"] = extras["geschoss"]
+    documents = _embedded_json_value(text, "documents")
+    out["energy_certificate_files"] = [
+        {"url": item.get("url"), "title": item.get("title")}
+        for item in (documents.get("files", []) if isinstance(documents, dict) else [])
+        if isinstance(item, dict) and isinstance(item.get("url"), str)
+    ]
     return out
+
+
+def _read_pdf_text(pdf_data: bytes) -> str:
+    from pypdf import PdfReader
+
+    reader = PdfReader(BytesIO(pdf_data), strict=False)
+    return "\n".join(page.extract_text() or "" for page in list(reader.pages)[:20])
+
+
+def _energy_certificate_address(text: str) -> dict:
+    lines = [re.sub(r"\s+", " ", line).strip() for line in text.splitlines()]
+    address_line = ""
+    for index, line in enumerate(lines):
+        if not re.fullmatch(r"Adresse", line, re.I):
+            continue
+        for offset in (-1, 1, -2, 2, 3):
+            candidate_index = index + offset
+            if 0 <= candidate_index < len(lines) and re.search(r"\b\d{5}\b", lines[candidate_index]):
+                address_line = lines[candidate_index]
+                break
+        if address_line:
+            break
+    if not address_line:
+        return {}
+    address = address_line.strip(" ,;")
+    postal_match = re.search(r"\b(\d{5})\b", address)
+    if not postal_match:
+        return {}
+    street_text = address[:postal_match.start()].strip(" ,;").replace("–", "-").replace("—", "-")
+    street_text = re.sub(r"(?<=[A-Za-zÄÖÜäöüß])(?=\d)", " ", street_text)
+    street, number = split_street(street_text)
+    locality = address[postal_match.end():].strip(" ,;")
+    if not street or not number:
+        return {}
+    return {"strasse": street, "hausnummer": number,
+            "plz": postal_match.group(1), "ort": locality}
+
+
+def extract_energy_certificate_facts(page: bytes) -> dict:
+    """Read the address from an attached energy certificate PDF when available."""
+    raw_text = page.decode("utf-8", errors="replace")
+    files = extract_embedded_state(raw_text).get("energy_certificate_files", [])
+    for document in files:
+        title = str(document.get("title") or "")
+        if not re.search(r"energieausweis|energy\s*certificate", title, re.I):
+            continue
+        try:
+            final_url, pdf_data, content_type = fetch_public(document["url"], limit=8_000_000)
+            if "pdf" not in content_type.lower() and not pdf_data.startswith(b"%PDF-"):
+                continue
+            pdf_text = _read_pdf_text(pdf_data)
+        except ImportError:
+            return {"energy_certificate_note": "Energieausweis-PDF nicht lesbar: pypdf fehlt."}
+        except Exception:
+            continue
+        address = _energy_certificate_address(pdf_text)
+        if address:
+            address["energy_certificate_source"] = f"{title}: {final_url}"
+            address["energy_certificate_address"] = ", ".join((
+                f"{address['strasse']} {address['hausnummer']}",
+                f"{address['plz']} {address['ort']}"))
+            return address
+    return {}
 
 
 def extract_listing(page: bytes, base_url: str) -> dict:

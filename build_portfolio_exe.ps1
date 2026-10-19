@@ -3,6 +3,7 @@ $root = Split-Path -Parent $MyInvocation.MyCommand.Path
 $python = Join-Path $root ".venv\Scripts\python.exe"
 if (-not (Test-Path $python)) { $python = (Get-Command python -ErrorAction Stop).Source }
 
+& $python -m pip install -r (Join-Path $root "requirements.txt")
 & $python -m pip install pyinstaller
 & $python -m PyInstaller --noconfirm --clean --onefile --windowed `
     --name "ImmoPortfolio" `

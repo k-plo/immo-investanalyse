@@ -14,7 +14,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from db_manager import DB_PATH, berechne_rating, ensure_runtime_schema
-from listing_import import ListingError, extract_listing, fetch_public, validate_url
+from listing_import import (ListingError, extract_energy_certificate_facts, extract_listing,
+                            fetch_public, validate_url)
 from rent_research import research_potential_rent
 
 BASE = Path(__file__).resolve().parent.parent
@@ -437,6 +438,13 @@ def create_schnellcheck(url: str) -> dict:
         if "html" not in content_type.lower():
             raise ListingError("Der Link liefert keine HTML-Anzeige")
         data = extract_listing(page, final_url)
+        certificate = extract_energy_certificate_facts(page)
+        if certificate.get("strasse") and certificate.get("hausnummer"):
+            data.update({key: certificate[key] for key in ("strasse", "hausnummer", "plz", "ort")})
+            data["energy_certificate_address"] = certificate.get("energy_certificate_address", "")
+            data["energy_certificate_source"] = certificate.get("energy_certificate_source", "")
+        if certificate.get("energy_certificate_note"):
+            data["energy_certificate_note"] = certificate["energy_certificate_note"]
         if not any((data["price"], data["area"], data["address"], data["description"])):
             data = None
     except ListingError as error:
@@ -465,7 +473,18 @@ def create_schnellcheck(url: str) -> dict:
                 "energieklasse": data.get("energieklasse"), "kaufpreis": data.get("price"),
                 "kaltmiete_ist": data.get("kaltmiete"),
             }
-            values.update(research_potential_rent(data, page, final_url))
+            rent_values = research_potential_rent(data, page, final_url)
+            provenance = data.get("energy_certificate_source")
+            certificate_address = data.get("energy_certificate_address")
+            certificate_note = data.get("energy_certificate_note")
+            if provenance or certificate_note:
+                note = rent_values.get("miete_pot_quelle") or ""
+                if certificate_address and provenance:
+                    note += f" Adresse laut Energieausweis: {certificate_address}. Beleg: {provenance}."
+                elif certificate_note:
+                    note += f" {certificate_note}"
+                rent_values["miete_pot_quelle"] = note[:500]
+            values.update(rent_values)
         columns = ["public_id", "source_url", *SCHNELLCHECK_TEXT_FIELDS, *SCHNELLCHECK_NUM_FIELDS,
                    "erstellt_am", "geaendert_am"]
         row_values = {key: values.get(key) for key in SCHNELLCHECK_TEXT_FIELDS + SCHNELLCHECK_NUM_FIELDS}

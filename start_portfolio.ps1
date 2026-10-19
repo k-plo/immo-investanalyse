@@ -14,18 +14,25 @@ function Get-PortfolioServerVersion {
 }
 
 $serverVersion = Get-PortfolioServerVersion
-if ($serverVersion -gt 0 -and $serverVersion -lt 2) {
+if ($serverVersion -gt 0 -and $serverVersion -lt 3) {
     throw "Auf Port $port läuft noch ein alter Portfolio-Server. Bitte diesen zuerst beenden und das Skript erneut starten."
 }
 if ($serverVersion -eq 0) {
-    $python = Get-Command python3 -ErrorAction Stop
+    $python = Join-Path $root ".venv\Scripts\python.exe"
+    if (-not (Test-Path $python)) {
+        $python = (Get-Command python3 -ErrorAction Stop).Source
+    }
+    & $python -c "import pypdf" *> $null
+    if ($LASTEXITCODE -ne 0) {
+        throw "Das Python-Paket pypdf fehlt. Erstelle .venv und installiere requirements.txt (siehe README.md)."
+    }
     $arguments = @("tools\local_server.py", "$port")
-    Start-Process -FilePath $python.Source -ArgumentList $arguments -WorkingDirectory $root -WindowStyle Hidden
+    Start-Process -FilePath $python -ArgumentList $arguments -WorkingDirectory $root -WindowStyle Hidden
 
     $ready = $false
     for ($attempt = 0; $attempt -lt 30; $attempt++) {
         Start-Sleep -Milliseconds 200
-        if ((Get-PortfolioServerVersion) -ge 2) {
+        if ((Get-PortfolioServerVersion) -ge 3) {
             $ready = $true
             break
         }
