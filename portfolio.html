@@ -150,6 +150,8 @@ button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-v
 .karte-kpis .l{font-size:8px;letter-spacing:.05em;color:var(--muted);font-weight:650}
 .karte-kpis .v{font-size:13px;letter-spacing:-.03em;font-weight:750;margin-top:1px;font-variant-numeric:tabular-nums}
 .karte-kpis .s{font-size:9px;color:var(--muted);margin-top:1px}
+.sc-makler .v,.sc-makler .s{overflow-wrap:anywhere;line-height:1.25}
+.sc-makler .v{font-size:11px}
 .karte-fin{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:9px;margin:0;margin-top:auto}
 .karte-fin div{border:0;background:none;padding:2px 0}
 .karte-fin .v{font-size:12px;font-weight:650;line-height:1.45;margin-top:2px}
@@ -228,7 +230,7 @@ li{margin-bottom:8px}
   #scForm[hidden] { display: none !important; }
   .sc-kpis { grid-template-columns: repeat(6, minmax(0, 1fr)) !important; margin-bottom: 10px; }
   .sc-kpis > div:nth-child(-n+3) { grid-column: span 2 !important; }
-  .sc-kpis > div:nth-child(n+4) { grid-column: span 3 !important; }
+  .sc-kpis > div:nth-child(n+4) { grid-column: span 2 !important; }
   .sc-edit label { display: flex; flex-direction: column; gap: 3px; font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; font-weight: 650; }
   .sc-edit input { box-sizing: border-box; width: 100%; min-height: 34px; padding: 5px 8px; border: 1px solid var(--line); border-radius: 8px; background: #f8fafb; color: var(--ink); font-size: 13px; font-weight: 600; }
   .sc-edit input:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 3px #116d7214; }
@@ -238,6 +240,7 @@ li{margin-bottom:8px}
   .sc-actions button, .sc-actions .sc-link { min-height: 36px; padding: 6px 12px; font-size: 12px; border-radius: 9px; }
   .sc-actions .sc-del { margin-left: auto; }
   [data-theme="dark"] .sc-edit input { background: #1b333e; border-color: #365261; }
+  @media (max-width: 760px) { .sc-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; } .sc-kpis > div { grid-column: span 1 !important; } }
   @media (max-width: 560px) { .sc-edit { grid-template-columns: 1fr 1fr; } }
 </style>
 <script data-dashboard-theme>/* Presentation only: separate key, no access to property state or sync. */
@@ -355,6 +358,6 @@ li{margin-bottom:8px}
   </footer>
 </div>
 <script src="assets/portfolio_db.js?v=10"></script>
-<script src="assets/schnellcheck.js?v=2"></script>
+<script src="assets/schnellcheck.js?v=4"></script>
 </body>
 </html>

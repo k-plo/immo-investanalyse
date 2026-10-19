@@ -399,7 +399,7 @@ def set_photo(public_id: str, encoded: str, mime: str, expected_revision: int) -
 
 # ------------------------------------------------------------ Schnellcheck ---
 SCHNELLCHECK_TEXT_FIELDS = (
-    "titel", "ort", "stadtteil", "strasse", "hausnummer", "plz",
+    "titel", "maklerfirma", "ansprechpartner", "ort", "stadtteil", "strasse", "hausnummer", "plz",
     "geschoss", "energieklasse", "miete_pot_quelle", "source_url",
 )
 SCHNELLCHECK_NUM_FIELDS = (
@@ -465,7 +465,8 @@ def create_schnellcheck(url: str) -> dict:
             }
         else:
             values = {
-                "titel": data["title"], "ort": data.get("ort") or "",
+                "titel": data["title"], "maklerfirma": data.get("maklerfirma") or "",
+                "ansprechpartner": data.get("ansprechpartner") or "", "ort": data.get("ort") or "",
                 "stadtteil": data.get("stadtteil") or "", "strasse": data.get("strasse") or "",
                 "hausnummer": data.get("hausnummer") or "", "plz": data.get("plz") or "",
                 "wohnflaeche": data.get("area"), "zimmer": data.get("rooms"),

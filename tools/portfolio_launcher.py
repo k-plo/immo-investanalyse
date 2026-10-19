@@ -78,16 +78,16 @@ def main() -> None:
         return
 
     version = server_version()
-    if 0 < version < 3:
+    if 0 < version < 4:
         show_error(f"Auf Port {PORT} läuft noch ein alter Portfolio-Server (API {version}). Bitte ihn zuerst beenden.")
         return
     server = None
-    if version < 3:
+    if version < 4:
         try:
             server = start_server(root)
             for _ in range(30):
                 time.sleep(0.2)
-                if server_version() >= 3:
+                if server_version() >= 4:
                     break
             else:
                 raise RuntimeError("Der Portfolio-Server wurde nicht rechtzeitig gestartet.")

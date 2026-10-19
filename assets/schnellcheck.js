@@ -38,10 +38,12 @@
         <div><span class="l">Faktor</span><span class="v ${faktorClass}">${faktorFmt(k.faktor)}</span>${basisHinweis}</div>
         <div><span class="l">KM ist</span><span class="v">${eur(num(c.kaltmiete_ist))}</span><span class="s">${perM2(num(c.kaltmiete_ist), num(c.wohnflaeche))}</span></div>
         <div><span class="l">KM pot</span><span class="v">${eur(num(c.kaltmiete_pot))}</span><span class="s">${perM2(num(c.kaltmiete_pot), num(c.wohnflaeche))}</span></div>
+        <div class="sc-makler"><span class="l">Makler</span><span class="v">${esc(c.maklerfirma || '–')}</span><span class="s">${esc(c.ansprechpartner || '')}</span></div>
       </div>
       <div class="sc-edit" hidden>
         ${editField(c, 'ort', 'Ort')}${editField(c, 'stadtteil', 'Stadtteil')}
         ${editField(c, 'strasse', 'Straße')}${editField(c, 'hausnummer', 'Hausnr.')}
+        ${editField(c, 'maklerfirma', 'Maklerfirma')}${editField(c, 'ansprechpartner', 'Ansprechpartner')}
         ${editField(c, 'kaufpreis', 'Kaufpreis (€)', 'number')}${editField(c, 'wohnflaeche', 'Wohnfläche (m²)', 'number')}
         ${editField(c, 'zimmer', 'Zimmer', 'number')}${editField(c, 'geschoss', 'Geschoss')}
         ${editField(c, 'baujahr', 'Baujahr', 'number')}${editField(c, 'energieklasse', 'Energieklasse')}

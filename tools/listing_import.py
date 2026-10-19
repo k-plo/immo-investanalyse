@@ -87,9 +87,20 @@ class ListingParser(HTMLParser):
         self._title = False
         self.title = ""
         self._buffer = ""
+        self._provider_depth = 0
+        self._provider_done = False
+        self.provider_company = ""
+        self.provider_text: list[str] = []
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
+        if tag == "div":
+            if self._provider_depth:
+                self._provider_depth += 1
+            elif not self._provider_done and attrs.get("data-testid") == "aviv.CDP.Contacting.ProviderSection":
+                self._provider_depth = 1
+        if self._provider_depth and attrs.get("aria-label") and not self.provider_company:
+            self.provider_company = html.unescape(attrs["aria-label"]).strip()
         if tag == "meta":
             key = attrs.get("property") or attrs.get("name")
             if key and attrs.get("content"):
@@ -105,8 +116,14 @@ class ListingParser(HTMLParser):
             self._buffer += data
         if self._title:
             self.title += data
+        if self._provider_depth and data.strip():
+            self.provider_text.append(data.strip())
 
     def handle_endtag(self, tag):
+        if tag == "div" and self._provider_depth:
+            self._provider_depth -= 1
+            if not self._provider_depth:
+                self._provider_done = True
         if tag == "script" and self._script:
             try:
                 data = json.loads(self._buffer)
@@ -116,6 +133,37 @@ class ListingParser(HTMLParser):
             self._script = False
         elif tag == "title":
             self._title = False
+
+
+def _provider_person(text: str) -> str:
+    text = re.split(r"\b(?:Dein Kontakt|Your contact)\b", text, maxsplit=1, flags=re.I)[0]
+    match = re.search(
+        r"\b(?:Herrn?|Frau)\s+([A-ZÄÖÜ][\wÄÖÜäöüß'’.-]*(?:\s+[A-ZÄÖÜ][\wÄÖÜäöüß'’.-]*){1,3})\b",
+        text,
+    )
+    return match.group(1).strip() if match else ""
+
+
+def _structured_provider(nodes: list[dict]) -> tuple[str, str]:
+    company = ""
+    contact = ""
+    for node in nodes:
+        for key in ("seller", "provider", "realEstateAgent", "broker"):
+            value = node.get(key)
+            candidates = value if isinstance(value, list) else [value]
+            for candidate in candidates:
+                if not isinstance(candidate, dict):
+                    continue
+                name = str(candidate.get("name") or "").strip()
+                kind = str(candidate.get("@type") or "").casefold()
+                if name and kind == "person" and not contact:
+                    contact = name
+                elif name and not company:
+                    company = name
+                point = candidate.get("contactPoint")
+                if isinstance(point, dict) and not contact:
+                    contact = str(point.get("name") or "").strip()
+    return company, contact
 
 
 def _first(*values):
@@ -348,6 +396,8 @@ def extract_listing(page: bytes, base_url: str) -> dict:
     title = html.unescape(str(_first(property_node.get("name"), parser.meta.get("og:title"), parser.title, "Neue Immobilie"))).strip()[:180]
     description = html.unescape(str(_first(property_node.get("description"), parser.meta.get("og:description"), parser.meta.get("description"), ""))).strip()[:5000]
     extras = extract_extra_facts(" ".join((title, description)))
+    structured_company, structured_contact = _structured_provider(nodes)
+    provider_text = " ".join(parser.provider_text)
     strasse, hausnummer = split_street(street)
     stadtteil = ""
     if "-" in locality:
@@ -365,6 +415,8 @@ def extract_listing(page: bytes, base_url: str) -> dict:
         "ort": locality, "stadtteil": stadtteil,
         "baujahr": extras["baujahr"], "energieklasse": extras["energieklasse"],
         "geschoss": extras["geschoss"], "kaltmiete": extras["kaltmiete"],
+        "maklerfirma": parser.provider_company or structured_company,
+        "ansprechpartner": _provider_person(provider_text) or structured_contact,
     }
     # Fallback fuer JS-gerenderte Portale: fehlende Felder aus eingebettetem JSON ergaenzen
     fallback = extract_embedded_state(raw_text)

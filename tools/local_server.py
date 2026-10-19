@@ -52,7 +52,7 @@ class PortfolioHandler(SimpleHTTPRequestHandler):
     def do_GET(self) -> None:
         path = urlparse(self.path).path.rstrip("/") or "/"
         if path == "/api/health":
-            self.send_json({"ok": True, "service": "immo-portfolio", "api_version": 3,
+            self.send_json({"ok": True, "service": "immo-portfolio", "api_version": 4,
                             "time": datetime.now(timezone.utc).isoformat()})
             return
         if path == "/api/portfolio":

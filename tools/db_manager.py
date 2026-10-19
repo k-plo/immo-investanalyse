@@ -123,6 +123,8 @@ CREATE TABLE IF NOT EXISTS schnellcheck (
     public_id TEXT UNIQUE NOT NULL,
     source_url TEXT,
     titel TEXT,
+    maklerfirma TEXT,
+    ansprechpartner TEXT,
     ort TEXT,
     stadtteil TEXT,
     strasse TEXT,
@@ -153,6 +155,8 @@ def ensure_runtime_schema(conn: sqlite3.Connection) -> None:
         public_id TEXT UNIQUE NOT NULL,
         source_url TEXT,
         titel TEXT,
+        maklerfirma TEXT,
+        ansprechpartner TEXT,
         ort TEXT,
         stadtteil TEXT,
         strasse TEXT,
@@ -173,6 +177,10 @@ def ensure_runtime_schema(conn: sqlite3.Connection) -> None:
         revision INTEGER NOT NULL DEFAULT 0
     )""")
     conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_schnellcheck_public_id ON schnellcheck(public_id)")
+    columns = {row[1] for row in conn.execute("PRAGMA table_info(schnellcheck)")}
+    for column in ("maklerfirma", "ansprechpartner"):
+        if column not in columns:
+            conn.execute(f"ALTER TABLE schnellcheck ADD COLUMN {column} TEXT")
 
 
 def db():

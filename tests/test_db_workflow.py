@@ -23,7 +23,7 @@ PAGE = b'''<html><head><title>Haus in Neustadt</title>
 </head><body></body></html>'''
 SC_PAGE = b'''<html><head><title>ETW Kassel-Wehlheiden</title>
 <script type="application/ld+json">{"@type":"Apartment","name":"ETW Kassel","description":"Gepflegte Wohnung, Baujahr: 1965, Energieeffizienzklasse D, 2. OG, Kaltmiete: 620 EUR","address":{"streetAddress":"Frankfurter Str. 12","postalCode":"34121","addressLocality":"Kassel-Wehlheiden"},"floorSize":{"value":75},"numberOfRooms":3,"offers":{"price":"189.000"}}</script>
-</head><body></body></html>'''
+</head><body><div data-testid="aviv.CDP.Contacting.ProviderSection"><div data-testid="aviv.CDP.Contacting.ProviderSection.IntermediaryCard"><div data-testid="aviv.CDP.Contacting.ProviderSection.IntermediaryCard.Logo"><a aria-label="Mustermann Immobilien GmbH"></a></div><span>Mustermann Immobilien GmbH</span><span>Herr Max Mustermann</span><span>Dein Kontakt</span></div></div></body></html>'''
 PNG = base64.b64decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/l0cAAAAASUVORK5CYII=')
 
 
@@ -51,6 +51,8 @@ class DbWorkflowTest(unittest.TestCase):
         self.assertEqual(item['energieklasse'], 'D')
         self.assertEqual(item['geschoss'], '2. OG')
         self.assertEqual(item['kaltmiete'], 620)
+        self.assertEqual(item['maklerfirma'], 'Mustermann Immobilien GmbH')
+        self.assertEqual(item['ansprechpartner'], 'Max Mustermann')
 
     def test_annual_cold_rent_is_converted_to_monthly_amount(self):
         facts = extract_extra_facts('Mietfläche ca. 24 m² - jährliche Kaltmiete € 3.600,-')
@@ -202,6 +204,8 @@ class SchnellcheckTest(unittest.TestCase):
                 self.assertEqual(check['strasse'], 'Frankfurter Str.')
                 self.assertEqual(check['ort'], 'Kassel')
                 self.assertEqual(check['energieklasse'], 'D')
+                self.assertEqual(check['maklerfirma'], 'Mustermann Immobilien GmbH')
+                self.assertEqual(check['ansprechpartner'], 'Max Mustermann')
                 self.assertEqual(check['kaltmiete_ist'], 620)
                 self.assertEqual(check['kaltmiete_pot'], 650)
                 self.assertEqual(check['miete_pot_quelle'], 'Automatische regionale Mietrecherche')
