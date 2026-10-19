@@ -71,7 +71,9 @@ def main():
   @media (max-width: 760px) {{ .pf-top .portfolio-brand {{ height: 56px; }} }}
   .sc-title {{ margin: 40px 0 6px; font-size: 22px; font-weight: 750; letter-spacing: -.02em; }}
   #scForm[hidden] {{ display: none !important; }}
-  .sc-kpis {{ grid-template-columns: repeat(5, minmax(0, 1fr)) !important; margin-bottom: 10px; }}
+  .sc-kpis {{ grid-template-columns: repeat(6, minmax(0, 1fr)) !important; margin-bottom: 10px; }}
+  .sc-kpis > div:nth-child(-n+3) {{ grid-column: span 2 !important; }}
+  .sc-kpis > div:nth-child(n+4) {{ grid-column: span 3 !important; }}
   .sc-edit label {{ display: flex; flex-direction: column; gap: 3px; font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; font-weight: 650; }}
   .sc-edit input {{ box-sizing: border-box; width: 100%; min-height: 34px; padding: 5px 8px; border: 1px solid var(--line); border-radius: 8px; background: #f8fafb; color: var(--ink); font-size: 13px; font-weight: 600; }}
   .sc-edit input:focus {{ border-color: var(--accent); outline: none; box-shadow: 0 0 0 3px #116d7214; }}
@@ -81,7 +83,7 @@ def main():
   .sc-actions button, .sc-actions .sc-link {{ min-height: 36px; padding: 6px 12px; font-size: 12px; border-radius: 9px; }}
   .sc-actions .sc-del {{ margin-left: auto; }}
   [data-theme="dark"] .sc-edit input {{ background: #1b333e; border-color: #365261; }}
-  @media (max-width: 560px) {{ .sc-kpis {{ grid-template-columns: repeat(2, 1fr) !important; }} .sc-edit {{ grid-template-columns: 1fr 1fr; }} }}
+  @media (max-width: 560px) {{ .sc-edit {{ grid-template-columns: 1fr 1fr; }} }}
 </style>
 <script data-dashboard-theme>{theme_js}</script>
 </head>

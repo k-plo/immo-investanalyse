@@ -34,10 +34,10 @@
       <div class="karte-details">${chip('📐', c.wohnflaeche == null ? null : Math.round(c.wohnflaeche) + ' m²')}${chip('🛏', c.zimmer == null ? null : c.zimmer + ' Zi.')}${chip('🧭', c.geschoss)}${chip('📅', c.baujahr == null ? null : 'BJ ' + Math.round(c.baujahr))}${chip('⚡', c.energieklasse)}</div>
       <div class="karte-kpis sc-kpis">
         <div><span class="l">Kaufpreis</span><span class="v">${eur(num(c.kaufpreis))}</span><span class="s">${perM2(num(c.kaufpreis), num(c.wohnflaeche))}</span></div>
-        <div><span class="l">KM ist</span><span class="v">${eur(num(c.kaltmiete_ist))}</span><span class="s">${perM2(num(c.kaltmiete_ist), num(c.wohnflaeche))}</span></div>
-        <div><span class="l">KM pot</span><span class="v">${eur(num(c.kaltmiete_pot))}</span><span class="s">${perM2(num(c.kaltmiete_pot), num(c.wohnflaeche))}</span></div>
         <div><span class="l">BruttoR</span><span class="v ${renditeClass}">${pct(k.rendite)}</span>${basisHinweis}</div>
         <div><span class="l">Faktor</span><span class="v ${faktorClass}">${faktorFmt(k.faktor)}</span>${basisHinweis}</div>
+        <div><span class="l">KM ist</span><span class="v">${eur(num(c.kaltmiete_ist))}</span><span class="s">${perM2(num(c.kaltmiete_ist), num(c.wohnflaeche))}</span></div>
+        <div><span class="l">KM pot</span><span class="v">${eur(num(c.kaltmiete_pot))}</span><span class="s">${perM2(num(c.kaltmiete_pot), num(c.wohnflaeche))}</span></div>
       </div>
       <div class="sc-edit" hidden>
         ${editField(c, 'ort', 'Ort')}${editField(c, 'stadtteil', 'Stadtteil')}
