@@ -105,9 +105,6 @@ def main():
     <button onclick="filtern('2', this)">Besichtigung</button>
     <button onclick="filtern('3', this)">Finanzierungscheck</button>
     <button class="sync" onclick="portfolioAktualisieren(this)">🔄 Aktualisieren</button>
-    <button class="analyse" type="button" onclick="document.getElementById('importForm').hidden = !document.getElementById('importForm').hidden">🔗 Anzeigenlink importieren</button>
-    <button class="analyse" onclick="neueObjekteAnalysieren(this)">➕ Neue Objekte analysieren</button>
-    <button class="analyse quick" type="button" onclick="location.href='schnellanalyse.html'">⚡ Schnellanalyse – Angebot in ~2 Minuten prüfen</button>
   </div>
   <form id="importForm" hidden onsubmit="importListing(event)" style="margin:-6px 0 20px;display:flex;gap:8px;flex-wrap:wrap">
     <input id="listingUrl" type="url" required placeholder="https://www.immowelt.de/..." aria-label="Link zur Immobilienanzeige" style="flex:1 1 300px;min-height:44px;padding:8px 12px;border:1px solid var(--line);border-radius:10px">
