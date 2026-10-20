@@ -45,7 +45,7 @@
     </div>`;
   }
   function applyFilter() {
-    document.querySelectorAll('#objectGrid .portfolio-card').forEach(element => {
+    document.querySelectorAll('#objectGrid .portfolio-card, #scGrid .sc-karte[data-status]').forEach(element => {
       element.style.display = activeFilter === 'alle' || String(element.dataset.status) === activeFilter ? '' : 'none';
     });
   }

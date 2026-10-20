@@ -130,15 +130,15 @@ def main():
     <div class="sub" id="scStand" aria-live="polite"></div>
   </div>
   <div class="grid" id="grid">
-    <div class="portfolio-card-list" id="objectGrid"><div class="sub">Lade aktuelle Objekte aus SQLite …</div></div>
     <div class="portfolio-card-list" id="scGrid"><div class="sub">Lade Schnellchecks …</div></div>
+    <div class="portfolio-card-list" id="objectGrid"><div class="sub">Lade aktuelle Objekte aus SQLite …</div></div>
   </div>
 
   <footer>
     ⚠️ Modellrechnungen – keine rechtliche, steuerliche oder finanzielle Beratung. 🔄 <b>Aktualisieren</b> liest aktuelle Werte direkt aus der Datenbank.
   </footer>
 </div>
-<script src="assets/portfolio_db.js?v=11"></script>
+<script src="assets/portfolio_db.js?v=13"></script>
 <script src="assets/schnellcheck.js?v=6"></script>
 </body>
 </html>"""

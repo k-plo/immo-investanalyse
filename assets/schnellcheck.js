@@ -32,8 +32,8 @@
     const archivAktion = archivAnsicht
       ? `<button type="button" class="btn secondary" onclick="schnellcheckArchivieren('${esc(c.public_id)}', false)" title="Aus dem Archiv holen" aria-label="Schnellcheck wiederherstellen">↩</button>`
       : `<button type="button" class="btn secondary" onclick="schnellcheckArchivieren('${esc(c.public_id)}', true)" title="Schnellcheck archivieren" aria-label="Schnellcheck archivieren">🗃</button>`;
-    return `<div class="karte sc-karte" data-id="${esc(c.public_id)}">
-      <div class="karte-head"><div class="karte-title"><div class="karte-name">${esc(name)}</div></div><span class="status-badge">${archivAnsicht ? 'Archiviert' : 'Schnellcheck'}</span></div>
+    return `<div class="karte sc-karte" data-id="${esc(c.public_id)}" ${archivAnsicht ? '' : 'data-status="0"'}>
+      <div class="karte-head"><div class="karte-title"><div class="karte-name">${esc(name)}</div></div><span class="status-badge">${archivAnsicht ? 'Archiviert' : 'Gefunden'}</span></div>
       <div class="karte-sub">${esc(ortsteil || 'Adresse ergänzen (✏️ Details)')}</div>
       <div class="karte-details">${chip('📐', c.wohnflaeche == null ? null : Math.round(c.wohnflaeche) + ' m²')}${chip('🛏', c.zimmer == null ? null : c.zimmer + ' Zi.')}${chip('🧭', c.geschoss)}${chip('📅', c.baujahr == null ? null : 'BJ ' + Math.round(c.baujahr))}${chip('⚡', c.energieklasse)}</div>
       <div class="karte-kpis sc-kpis">
