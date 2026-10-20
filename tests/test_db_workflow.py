@@ -167,7 +167,7 @@ class SchnellcheckTest(unittest.TestCase):
     def test_regional_rent_research_uses_market_page_and_area(self):
         listing_page = b'''<script type="application/ld+json">{"@type":"BreadcrumbList","itemListElement":[{"position":1,"item":{"@id":"https://www.immowelt.de/suche/kaufen/wohnung/hessen/kassel-34127/ad08de2795"}}]}</script>'''
         market_page = '<div>Wohnung Preis pro Quadratmeter 8,87 €</div><p>Geschätzter Preis aktualisiert am 01. Oktober 2026.</p>'.encode('utf-8')
-        market_url = 'https://www.immowelt.de/immobilienpreise/mietpreise/hessen/kassel-34127/ad08de2795'
+        market_url = 'https://www.immowelt.de/immobilienpreise/mietpreise/kassel-34127/ad08de2795'
         with patch.object(rent_research, 'fetch_public', return_value=(market_url, market_page, 'text/html')):
             result = rent_research.research_potential_rent(
                 {'area': 43.6, 'ort': 'Kassel', 'stadtteil': 'Nord-Holland'}, listing_page,
@@ -175,6 +175,26 @@ class SchnellcheckTest(unittest.TestCase):
         self.assertEqual(result['kaltmiete_pot'], 386.73)
         self.assertIn('Kassel (Stadt)', result['miete_pot_quelle'])
         self.assertIn('01. Oktober 2026', result['miete_pot_quelle'])
+
+    def test_regional_rent_research_falls_back_to_city_page(self):
+        listing_page = b'''<script type="application/ld+json">{"@type":"BreadcrumbList","itemListElement":[{"position":1,"item":{"@id":"https://www.immowelt.de/suche/kaufen/wohnung/mehrgeschosswohnung/hessen/kassel-34117/ad08city"}},{"position":2,"item":{"@id":"https://www.immowelt.de/suche/kaufen/wohnung/mehrgeschosswohnung/hessen/kassel-34117/oberzwehren-34134/ad09district"}}]}</script>'''
+        district_url = 'https://www.immowelt.de/immobilienpreise/mietpreise/kassel-34117/oberzwehren-34134/ad09district'
+        city_url = 'https://www.immowelt.de/immobilienpreise/mietpreise/kassel-34117/ad08city'
+        market_page = '<div>Wohnung Preis pro Quadratmeter 8,25 €</div>'.encode('utf-8')
+
+        def fake_fetch(url, limit=3_000_000):
+            if url == district_url:
+                raise ListingError('Anzeige nicht abrufbar (HTTP 404)')
+            return url, market_page, 'text/html; charset=utf-8'
+
+        with patch.object(rent_research, 'fetch_public', side_effect=fake_fetch):
+            result = rent_research.research_potential_rent(
+                {'area': 28.1, 'ort': 'Kassel', 'stadtteil': 'Oberzwehren'}, listing_page,
+                'https://www.immowelt.de/expose/example')
+
+        self.assertEqual(result['kaltmiete_pot'], 231.83)
+        self.assertIn('Kassel (Stadt)', result['miete_pot_quelle'])
+        self.assertIn(f'Quelle: {city_url}', result['miete_pot_quelle'])
 
     def test_create_update_uebersicht_delete(self):
         with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:

@@ -5,7 +5,9 @@
 
 ---
 
-## 🕐 Aktueller Stand (19.10.2026)
+## 🕐 Aktueller Stand (20.10.2026)
+
+**Schnellcheck-Mietrecherche Oberzwehren (20.10.2026):** Neue Karten hatten keine KM pot, weil `rent_research.py` Immowelt-Such-Breadcrumbs inklusive Kategorie/Bundesland als Mietseitenpfade verwendete; die konstruierten URLs liefen auf HTTP 404. Pfadbau verwendet jetzt den Ortsabschnitt ab der PLZ, probiert zuerst den Stadtteil und fällt bei fehlender Mietseite/Preis auf die Stadtseite zurück. Schnellcheck ID 9 nachgepflegt: 28,1 m² × 8,67 €/m² Immowelt Oberzwehren (Marktstand 01.10.2026) = **243,63 €/Monat**. Ist-Miete bleibt mangels Inseratsbetrag leer. Regressionstest deckt falschen Breadcrumb-Pfad und Stadtseiten-Fallback ab.
 
 **Energieausweis- und Maklerprüfung bei Schnellchecks (19.10.2026):** Der Immowelt-Import liest jetzt PDF-Anhänge mit „Energieausweis“ im Titel, extrahiert die Gebäudeadresse und verwendet sie vor der Pot-Mietrecherche. `Wohnflaeche`/`Baujahr` aus dem Payload sowie Maklerfirma/Ansprechpartner aus der sichtbaren Anbieterkarte werden zusätzlich ausgewertet. Kasseler Hausnummernbereiche werden nur für den offiziellen Mietspiegel verwendet, wenn alle gefundenen Nummern im Bereich dieselbe Wohnlage haben. `pypdf` ist in `requirements.txt` dokumentiert; Windows-Starter und EXE-Build berücksichtigen die Abhängigkeit, API-Version ist 4. Schnellcheck ID 8 korrigiert: Gebäudeadresse laut Energieausweis **Franzgraben 35–37, 34125 Kassel**, 33,16 m², Baujahr 1993, Pot-Kaltmiete **295,06 €/Monat** (Kasseler Mietspiegel 2026, einfache Wohnlage), Makler **Schinke Verwaltung GmbH & Co. KG**, Ansprechpartner **Mehmet Akif Durmus**. Die Ist-Miete bleibt mangels Beleg leer; die Quellenzeile weist darauf hin, dass der Energieausweis nur die Gebäudeadresse nennt. Alle fünf bestehenden Schnellchecks wurden mit belegten Anbieterangaben ergänzt.
 

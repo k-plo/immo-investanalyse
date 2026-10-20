@@ -49,10 +49,10 @@ def _walk(value):
             yield from _walk(child)
 
 
-def _market_page_url(listing_page: bytes, source_url: str) -> str | None:
+def _market_page_urls(listing_page: bytes, source_url: str) -> list[str]:
     source = urllib.parse.urlsplit(source_url)
     if source.hostname == "www.immowelt.de" and "/immobilienpreise/mietpreise/" in source.path:
-        return source_url
+        return [source_url]
 
     parser = ListingParser()
     parser.feed(listing_page.decode("utf-8", errors="replace"))
@@ -72,15 +72,20 @@ def _market_page_url(listing_page: bytes, source_url: str) -> str | None:
             match = re.search(r"/suche/[^/]+/wohnung/(.+)$", parsed.path, re.I)
             if not match:
                 continue
-            location_path = match.group(1).strip("/")
+            location_parts = match.group(1).strip("/").split("/")
+            location_start = next((index for index, part in enumerate(location_parts)
+                                   if re.search(r"-\d{5}$", part)), None)
+            if location_start is None:
+                continue
+            location_path = "/".join(location_parts[location_start:])
             if not re.search(r"/(?:ad08|ad09|nbh2)[a-z0-9]+/?$", location_path, re.I):
                 continue
             candidates.append(location_path)
 
-    if not candidates:
-        return None
-    location_path = candidates[-1]
-    return "https://www.immowelt.de/immobilienpreise/mietpreise/" + location_path
+    return [
+        "https://www.immowelt.de/immobilienpreise/mietpreise/" + location_path
+        for location_path in reversed(dict.fromkeys(candidates))
+    ]
 
 
 def _apartment_rate(page: bytes) -> tuple[float, str | None] | None:
@@ -206,24 +211,34 @@ def research_potential_rent(data: dict, listing_page: bytes, source_url: str) ->
                     f"Wohnungszuschläge. Recherchiert {researched}. Quelle: {KASSEL_RECHNER_PAGE}")
             return {"kaltmiete_pot": monthly, "miete_pot_quelle": note[:500]}
 
-    market_url = _market_page_url(listing_page, source_url)
-    if not market_url:
+    market_urls = _market_page_urls(listing_page, source_url)
+    if not market_urls:
         region = " ".join(str(data.get(key) or "") for key in ("stadtteil", "ort", "plz")).strip()
         return {
             "kaltmiete_pot": None,
             "miete_pot_quelle": f"KM-pot-Recherche {researched}: {official_fallback}keine regionale Immowelt-Mietpreisseite aus dem Anzeigenlink bestimmbar ({region or 'Ort fehlt'}).",
         }
 
-    try:
-        _, market_page, content_type = fetch_public(market_url)
-        if "html" not in content_type.lower():
-            raise ListingError("Mietpreisseite liefert kein HTML")
-    except ListingError as error:
-        return {"kaltmiete_pot": None, "miete_pot_quelle": f"KM-pot-Recherche {researched}: Mietpreisseite nicht abrufbar ({error})."}
+    result = None
+    market_url = ""
+    failures = []
+    for candidate_url in market_urls:
+        try:
+            _, market_page, content_type = fetch_public(candidate_url)
+            if "html" not in content_type.lower():
+                raise ListingError("Mietpreisseite liefert kein HTML")
+        except ListingError as error:
+            failures.append(f"{candidate_url}: {error}")
+            continue
+        result = _apartment_rate(market_page)
+        if result:
+            market_url = candidate_url
+            break
+        failures.append(f"{candidate_url}: kein Wohnungsmittelwert")
 
-    result = _apartment_rate(market_page)
     if result is None:
-        return {"kaltmiete_pot": None, "miete_pot_quelle": f"KM-pot-Recherche {researched}: kein Wohnungsmittelwert auf {market_url}."}
+        details = "; ".join(failures) or "keine Mietpreisseite verfügbar"
+        return {"kaltmiete_pot": None, "miete_pot_quelle": f"KM-pot-Recherche {researched}: keine passende Mietpreisseite ({details})."[:500]}
 
     rate, source_date = result
     monthly = _monthly_rent(area, rate)
