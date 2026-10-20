@@ -1182,7 +1182,7 @@ function render() {
     row(["Gesamtinvestition / m²", { v: r.berechenbar ? eur(r.giProM2) : AUSSTEHEND, num: true }, { v: r10 ? eur(r10.giProM2) : AUSSTEHEND, num: true }, "", d.flaeche > 0 ? fmt(d.flaeche, 1) + " m²" : "—"]);
 
   const cash = value => value < 0 ? "−" + eur(Math.abs(value)) : eur(value);
-  const kostenRows = r.pauschal
+  const kostenRows = !r.berechenbar ? "" : r.pauschal
     ? row(["<b>Pauschale " + fmt(r.pauschalSatz, r.pauschalSatz % 1 ? 1 : 0) + " % der Kaltmiete</b>", { v: "−" + eur(r.pauschalJahr / 12), num: true }, { v: "−" + eur(r10.pauschalJahr / 12), num: true }, "", { v: "−" + eur(r.pauschalJahr), num: true }, { v: "−" + eur(r10.pauschalJahr), num: true }])
     : row(["Leerstand " + pct(d.leerstand), { v: "−" + eur(d.kaltmiete - r.mieteEffektiv / 12), num: true }, { v: "−" + eur(d.kaltmiete - r10.mieteEffektiv / 12), num: true }, "", { v: "−" + eur(d.kaltmiete * 12 - r.mieteEffektiv), num: true }, { v: "−" + eur(d.kaltmiete * 12 - r10.mieteEffektiv), num: true }]) +
       row(["<b>Effektive Mieteinnahmen</b>", { v: "<b>" + eur(r.mieteEffektiv / 12) + "</b>", num: true }, { v: "<b>" + eur(r10.mieteEffektiv / 12) + "</b>", num: true }, "", { v: "<b>" + eur(r.mieteEffektiv) + "</b>", num: true }, { v: "<b>" + eur(r10.mieteEffektiv) + "</b>", num: true }]) +
