@@ -17,8 +17,11 @@
   .filter button.sync:disabled { opacity: .55; cursor: wait; }
   .filter button.analyse { flex-basis: 100%; text-align: left; }
   .filter button.quick { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700; }
+  .portfolio-toolbar-actions { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+  .filter .portfolio-toolbar-actions button { flex: 0 1 auto; flex-basis: auto; margin-left: 0; text-align: center; white-space: nowrap; }
   #importForm[hidden] { display: none !important; }
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
+  .portfolio-card-list { display: contents; }
   .karte { background: #fff; border-radius: 12px; padding: 18px 20px; box-shadow: 0 3px 12px rgba(15,20,32,.10); transition: transform .15s; }
   .karte:hover { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(15,20,32,.15); }
   .karte-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
@@ -226,7 +229,9 @@ li{margin-bottom:8px}
   .pf-actions { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
   .pf-top .portfolio-brand { width: auto; height: 96px; opacity: .85; }
   @media (max-width: 760px) { .pf-top .portfolio-brand { height: 56px; } }
-  .sc-title { margin: 40px 0 6px; font-size: 22px; font-weight: 750; letter-spacing: -.02em; }
+  .sc-archive-state { margin: 14px 0 8px; }
+  .sc-title { margin: 0 0 4px; font-size: 18px; font-weight: 750; }
+  #scArchiveState[hidden] { display: none !important; }
   #scForm[hidden] { display: none !important; }
   .sc-kpis { grid-template-columns: repeat(6, minmax(0, 1fr)) !important; margin-bottom: 10px; }
   .sc-kpis > div:nth-child(-n+3) { grid-column: span 2 !important; }
@@ -236,11 +241,10 @@ li{margin-bottom:8px}
   .sc-edit input:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 3px #116d7214; }
   .sc-edit { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 0 0 8px; }
   .sc-edit[hidden] { display: none !important; }
-  .sc-actions { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
-  .sc-actions button, .sc-actions .sc-link { min-height: 36px; padding: 6px 12px; font-size: 12px; border-radius: 9px; }
-  .sc-actions .sc-del { margin-left: auto; }
+  .sc-actions { display: flex; gap: 6px; margin-top: 6px; flex-wrap: nowrap; }
+  .sc-actions button, .sc-actions .sc-link { flex: 0 1 auto; min-width: 36px; min-height: 36px; padding: 6px 9px; font-size: 12px; border-radius: 9px; white-space: nowrap; }
   [data-theme="dark"] .sc-edit input { background: #1b333e; border-color: #365261; }
-  @media (max-width: 760px) { .sc-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; } .sc-kpis > div { grid-column: span 1 !important; } }
+  @media (max-width: 760px) { .portfolio-toolbar-actions { flex: 1 1 100%; flex-wrap: nowrap; margin-left: 0; } .filter .portfolio-toolbar-actions button { flex: 0 0 auto; flex-basis: auto; min-width: 36px; padding: 6px 9px; } .sc-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; } .sc-kpis > div:nth-child(n) { grid-column: span 1 !important; } }
   @media (max-width: 560px) { .sc-edit { grid-template-columns: 1fr 1fr; } }
 </style>
 <script data-dashboard-theme>/* Presentation only: separate key, no access to property state or sync. */
@@ -322,7 +326,11 @@ li{margin-bottom:8px}
     <button onclick="filtern('1', this)">Angefragt</button>
     <button onclick="filtern('2', this)">Besichtigung</button>
     <button onclick="filtern('3', this)">Finanzierungscheck</button>
-    <button class="sync" onclick="portfolioAktualisieren(this)">🔄 Aktualisieren</button>
+    <div class="portfolio-toolbar-actions">
+      <button class="quick toolbar-action" type="button" title="Neuen Schnellcheck per Link anlegen" aria-label="Neuen Schnellcheck per Link anlegen" onclick="document.getElementById('scForm').hidden = !document.getElementById('scForm').hidden">🔗 Schnellcheck per Link</button>
+      <button class="sync toolbar-action" id="scArchiveToggle" type="button" title="Archivierte Schnellchecks anzeigen" aria-label="Archivierte Schnellchecks anzeigen" onclick="schnellcheckArchivUmschalten()">🗃</button>
+      <button class="sync toolbar-action" type="button" title="Portfolio und Schnellchecks aktualisieren" aria-label="Portfolio und Schnellchecks aktualisieren" onclick="portfolioAktualisieren(this)">🔄</button>
+    </div>
   </div>
   <form id="importForm" hidden onsubmit="importListing(event)" style="margin:-6px 0 20px;display:flex;gap:8px;flex-wrap:wrap">
     <input id="listingUrl" type="url" required placeholder="https://www.immowelt.de/..." aria-label="Link zur Immobilienanzeige" style="flex:1 1 300px;min-height:44px;padding:8px 12px;border:1px solid var(--line);border-radius:10px">
@@ -330,32 +338,25 @@ li{margin-bottom:8px}
     <span id="importStatus" role="status" style="flex-basis:100%"></span>
   </form>
 
-  <div class="grid" id="grid">
-    <div class="sub">Lade aktuelle Objekte aus SQLite …</div>
-  </div>
-
-  <h2 class="sc-title" id="scTitle">⚡ Schnellcheck</h2>
-  <div class="sub" id="scStand">Schnelle Erstbewertung ohne Objektübersicht · Live-Werte werden geladen</div>
-  <div class="filter">
-    <button class="analyse quick" type="button" onclick="document.getElementById('scForm').hidden = !document.getElementById('scForm').hidden">🔗 Neuer Schnellcheck per Link</button>
-    <button class="sync" id="scArchiveToggle" type="button" onclick="schnellcheckArchivUmschalten()">🗃 Archiv</button>
-    <button class="sync" onclick="schnellcheckAktualisieren(this)">🔄 Aktualisieren</button>
-  </div>
   <form id="scForm" hidden onsubmit="schnellcheckImport(event)" style="margin:-6px 0 20px;display:flex;gap:8px;flex-wrap:wrap">
     <input id="scUrl" type="url" required placeholder="https://www.immobilienscout24.de/… oder immowelt.de/…" aria-label="Link zur Immobilienanzeige für den Schnellcheck" style="flex:1 1 300px;min-height:44px;padding:8px 12px;border:1px solid var(--line);border-radius:10px">
     <button type="submit" class="btn">Check anlegen</button>
     <span id="scImportStatus" role="status" style="flex-basis:100%"></span>
   </form>
-  <p class="sub" style="margin-top:-8px">Die <b>pot. Kaltmiete</b> wird beim Anlegen automatisch recherchiert und mit Quelle, Marktstand, Recherchezeitpunkt und Rechenweg gespeichert. Wenn die Region im Anzeigenlink nicht auflösbar ist oder die Quelle blockiert, steht der Grund im Quellenfeld der Karte. Es wird <b>keine Übersicht</b> angelegt – bei Bedarf per Button auf der Karte.</p>
-  <div class="grid" id="scGrid">
-    <div class="sub">Lade Schnellchecks …</div>
+  <div class="sc-archive-state" id="scArchiveState" hidden>
+    <h2 class="sc-title" id="scTitle">🗃 Archivierte Schnellchecks</h2>
+    <div class="sub" id="scStand" aria-live="polite"></div>
+  </div>
+  <div class="grid" id="grid">
+    <div class="portfolio-card-list" id="objectGrid"><div class="sub">Lade aktuelle Objekte aus SQLite …</div></div>
+    <div class="portfolio-card-list" id="scGrid"><div class="sub">Lade Schnellchecks …</div></div>
   </div>
 
   <footer>
     ⚠️ Modellrechnungen – keine rechtliche, steuerliche oder finanzielle Beratung. 🔄 <b>Aktualisieren</b> liest aktuelle Werte direkt aus der Datenbank.
   </footer>
 </div>
-<script src="assets/portfolio_db.js?v=10"></script>
-<script src="assets/schnellcheck.js?v=5"></script>
+<script src="assets/portfolio_db.js?v=11"></script>
+<script src="assets/schnellcheck.js?v=6"></script>
 </body>
 </html>

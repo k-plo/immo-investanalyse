@@ -26,12 +26,12 @@
     const faktorClass = k.faktor == null ? '' : k.faktor >= 20 ? 'neg' : 'pos';
     const basisHinweis = k.ausPotenzial ? '<span class="s">Basis: pot. Miete</span>' : '';
     const uebersicht = c.objekt_pfad
-      ? `<a class="btn secondary sc-link" href="/${esc(c.objekt_pfad)}">Übersicht öffnen ↗</a>`
-      : `<button type="button" onclick="schnellcheckUebersicht('${esc(c.public_id)}', this)" title="Legt Objektordner und vollständige Übersicht an">🏠 Übersicht anlegen</button>`;
+      ? `<a class="btn secondary sc-link" href="/${esc(c.objekt_pfad)}" title="Objektübersicht öffnen" aria-label="Objektübersicht öffnen">↗ Übersicht</a>`
+      : `<button type="button" onclick="schnellcheckUebersicht('${esc(c.public_id)}', this)" title="Legt eine Objektübersicht an" aria-label="Objektübersicht anlegen">🏠 Übersicht</button>`;
     const quelle = c.source_url ? ` · <a href="${esc(c.source_url)}" target="_blank" rel="noopener noreferrer">Anzeige ↗</a>` : '';
     const archivAktion = archivAnsicht
-      ? `<button type="button" class="btn secondary" onclick="schnellcheckArchivieren('${esc(c.public_id)}', false)" title="Aus dem Archiv holen">↩ Wiederherstellen</button>`
-      : `<button type="button" class="btn secondary" onclick="schnellcheckArchivieren('${esc(c.public_id)}', true)" title="Schnellcheck archivieren">🗃 Archivieren</button>`;
+      ? `<button type="button" class="btn secondary" onclick="schnellcheckArchivieren('${esc(c.public_id)}', false)" title="Aus dem Archiv holen" aria-label="Schnellcheck wiederherstellen">↩</button>`
+      : `<button type="button" class="btn secondary" onclick="schnellcheckArchivieren('${esc(c.public_id)}', true)" title="Schnellcheck archivieren" aria-label="Schnellcheck archivieren">🗃</button>`;
     return `<div class="karte sc-karte" data-id="${esc(c.public_id)}">
       <div class="karte-head"><div class="karte-title"><div class="karte-name">${esc(name)}</div></div><span class="status-badge">${archivAnsicht ? 'Archiviert' : 'Schnellcheck'}</span></div>
       <div class="karte-sub">${esc(ortsteil || 'Adresse ergänzen (✏️ Details)')}</div>
@@ -54,9 +54,9 @@
       </div>
       <div class="sc-actions">
         ${uebersicht}
-        <button type="button" class="btn secondary" onclick="const e=this.closest('.sc-karte').querySelector('.sc-edit');e.hidden=!e.hidden">✏️ Details</button>
+        <button type="button" class="btn secondary" onclick="const e=this.closest('.sc-karte').querySelector('.sc-edit');e.hidden=!e.hidden" title="Details bearbeiten" aria-label="Details bearbeiten">✏️</button>
         ${archivAktion}
-        <button type="button" class="btn secondary sc-del" title="Schnellcheck löschen" onclick="schnellcheckLoeschen('${esc(c.public_id)}')">🗑</button>
+        <button type="button" class="btn secondary sc-del" title="Schnellcheck löschen" aria-label="Schnellcheck löschen" onclick="schnellcheckLoeschen('${esc(c.public_id)}')">🗑</button>
       </div>
       <div class="karte-datum">angelegt ${esc((c.erstellt_am || '').slice(0, 10))}${quelle}</div>
     </div>`;
@@ -84,7 +84,7 @@
       const stand = document.getElementById('scStand');
       if (stand) stand.textContent = archivAnsicht
         ? `${items.length} archivierte Schnellcheck(s)`
-        : `${items.length} Schnellcheck(s) · Bruttorendite ≥ 5 % = grün · Faktor < 20 = grün · Keine Objektübersicht nötig`;
+        : '';
     } catch (error) {
       document.getElementById('scGrid').innerHTML = `<p class="sub">Schnellchecks nicht ladbar: ${esc(error.message)}</p>`;
     } finally {
@@ -92,8 +92,12 @@
     }
   };
   const archiveControls = () => {
-    document.getElementById('scTitle').textContent = archivAnsicht ? '🗃 Archivierte Schnellchecks' : '⚡ Schnellcheck';
-    document.getElementById('scArchiveToggle').textContent = archivAnsicht ? '← Aktive Schnellchecks' : '🗃 Archiv';
+    document.getElementById('scArchiveState').hidden = !archivAnsicht;
+    document.getElementById('scTitle').textContent = '🗃 Archivierte Schnellchecks';
+    const archiveToggle = document.getElementById('scArchiveToggle');
+    archiveToggle.textContent = archivAnsicht ? '←' : '🗃';
+    archiveToggle.title = archivAnsicht ? 'Aktive Schnellchecks anzeigen' : 'Archivierte Schnellchecks anzeigen';
+    archiveToggle.setAttribute('aria-label', archiveToggle.title);
   };
   window.schnellcheckArchivUmschalten = async () => {
     archivAnsicht = !archivAnsicht;

@@ -25,20 +25,27 @@
       ? '≈ ' + (item.kaltmiete / item.wohnflaeche).toLocaleString('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' €/m²' : '';
     const factorValue = factorNumber(item.kaufpreis, item.kaltmiete);
     const factorClass = factorValue == null ? '' : factorValue <= 20 ? 'pos' : 'neg';
-    const photo = item.image_path && /^\/objekte\/[a-z0-9äöüß_-]+\/titelbild\.(jpg|png|webp|avif)$/i.test(item.image_path)
-      ? `<div class="karte-photo-bg" style="background-image:url('${esc(item.image_path)}')"></div>` : '';
-    return `<a class="karte${photo ? ' has-photo' : ''}" data-status="${esc(item.status_stufe ?? 0)}" href="${href}">${photo}
+    const detailItems = [
+      item.wohnflaeche == null ? '' : `📐 ${Math.round(item.wohnflaeche)} m²`,
+      item.zimmer == null ? '' : `🛏 ${Math.round(item.zimmer)} Zi.`,
+      detail(item),
+      item.baujahr == null ? '' : `📅 BJ ${Math.round(item.baujahr)}`
+    ].filter(Boolean);
+    return `<div class="karte sc-karte portfolio-card" data-status="${esc(item.status_stufe ?? 0)}">
       <div class="karte-head"><div class="karte-title"><div class="karte-name">${esc(item.display_name || item.name)}</div></div><span class="status-badge">${esc(item.status_label || 'Gefunden')}</span></div>
-      <div class="karte-details"><span>📐 ${item.wohnflaeche == null ? '–' : Math.round(item.wohnflaeche)} m²</span><span>📅 BJ ${item.baujahr == null ? '–' : Math.round(item.baujahr)}</span><span>🛏 ${item.zimmer == null ? '–' : Math.round(item.zimmer)} Zi.</span><span>${esc(detail(item))}</span></div>
-      <div class="karte-kpis"><div><span class="l">Kaufpreis</span><span class="v">${eur(item.kaufpreis)}</span><span class="s">${perM2(item.kaufpreis,item.wohnflaeche)} /m²</span></div>
+      <div class="karte-sub">${esc(item.adresse || '')}</div>
+      <div class="karte-details">${detailItems.map(value => `<span>${esc(value)}</span>`).join('')}</div>
+      <div class="karte-kpis sc-kpis"><div><span class="l">Kaufpreis</span><span class="v">${eur(item.kaufpreis)}</span><span class="s">${perM2(item.kaufpreis,item.wohnflaeche)} /m²</span></div>
+      <div><span class="l">BruttoR</span><span class="v ${hideDerived ? '' : bruttoRenditeClass(item.brutto_rendite)}">${hideDerived ? '–' : pct(item.brutto_rendite)}</span></div>
+      <div><span class="l">Faktor</span><span class="v ${factorClass}">${factor(item.kaufpreis,item.kaltmiete)}</span></div>
       <div><span class="l">Gesamtinvest</span><span class="v">${hideDerived ? '–' : eur(item.gesamtinvest)}</span><span class="s">${hideDerived ? 'Unterlagen offen' : perM2(item.gesamtinvest,item.wohnflaeche) + ' /m²'}</span></div>
       <div><span class="l">Miete/Monat</span><span class="v">${eur(item.kaltmiete)}</span><span class="s">${rentPerArea}</span></div>
-      <div><span class="l">Faktor</span><span class="v ${factorClass}">${factor(item.kaufpreis,item.kaltmiete)}</span></div>
-      <div><span class="l">BruttoR</span><span class="v ${hideDerived ? '' : bruttoRenditeClass(item.brutto_rendite)}">${hideDerived ? '–' : pct(item.brutto_rendite)}</span></div>
-      <div><span class="l">CF/M</span><span class="v">${hideDerived ? '–' : eur(item.cf_nach)}</span></div></div></a>`;
+      <div><span class="l">CF/M</span><span class="v">${hideDerived ? '–' : eur(item.cf_nach)}</span></div></div>
+      <div class="sc-actions"><a class="btn secondary sc-link" href="${href}" title="Objektübersicht öffnen" aria-label="Objektübersicht öffnen">↗ Übersicht</a></div>
+    </div>`;
   }
   function applyFilter() {
-    document.querySelectorAll('#grid .karte').forEach(element => {
+    document.querySelectorAll('#objectGrid .portfolio-card').forEach(element => {
       element.style.display = activeFilter === 'alle' || String(element.dataset.status) === activeFilter ? '' : 'none';
     });
   }
@@ -54,11 +61,11 @@
       const response = await fetch('/api/portfolio', {cache:'no-store'});
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const {items} = await response.json();
-      document.getElementById('grid').innerHTML = items.length ? items.map(card).join('') : '<p>Keine aktiven Objekte in der Datenbank.</p>';
+      document.getElementById('objectGrid').innerHTML = items.length ? items.map(card).join('') : '<p>Keine aktiven Objekte in der Datenbank.</p>';
       document.getElementById('stand').textContent = `Übersicht aller analysierten Objekte · ${items.length} Objekt(e) · DB-Stand: ${new Date().toLocaleString('de-DE')}`;
       applyFilter();
     } catch (error) {
-      document.getElementById('grid').textContent = 'Datenbank nicht erreichbar. Bitte den lokalen Projektserver starten.';
+      document.getElementById('objectGrid').textContent = 'Datenbank nicht erreichbar. Bitte den lokalen Projektserver starten.';
       document.getElementById('stand').textContent = 'Keine Daten geladen: ' + error.message;
     } finally {
       if (button) button.disabled = false;
