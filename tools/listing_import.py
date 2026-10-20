@@ -242,7 +242,8 @@ def extract_extra_facts(text: str) -> dict:
         r"((?:\d{1,2})\.\s*(?:geschoss|og|obergeschoss|etage)|erdgeschoss|\beg\b|dachgeschoss|\bdg\b)",
         text)
     annual_rent = _text_match(
-        r"(?:jährliche[nr]?\s+(?:netto)?kaltmiete|(?:netto)?kaltmiete\s*(?:pro\s+jahr|jährlich|p\.?\s*a\.?))"
+        r"(?:jährliche[nr]?\s+(?:netto)?kaltmiete|(?:(?:ist[-\s]?)?mieteinnahmen|(?:netto)?kaltmiete)"
+        r"\s*(?:pro\s+jahr|jährlich|p\.?\s*a\.?))"
         r"\s*[:=]?\s*(?:€|eur|euro)?\s*([\d.,]+)", text)
     if not annual_rent:
         annual_rent = _text_match(
@@ -395,7 +396,7 @@ def extract_listing(page: bytes, base_url: str) -> dict:
         image = image.get("url")
     title = html.unescape(str(_first(property_node.get("name"), parser.meta.get("og:title"), parser.title, "Neue Immobilie"))).strip()[:180]
     description = html.unescape(str(_first(property_node.get("description"), parser.meta.get("og:description"), parser.meta.get("description"), ""))).strip()[:5000]
-    extras = extract_extra_facts(" ".join((title, description)))
+    extras = extract_extra_facts(" ".join((title, description, raw_text)))
     structured_company, structured_contact = _structured_provider(nodes)
     provider_text = " ".join(parser.provider_text)
     strasse, hausnummer = split_street(street)

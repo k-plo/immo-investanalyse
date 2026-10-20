@@ -58,6 +58,12 @@ class DbWorkflowTest(unittest.TestCase):
         facts = extract_extra_facts('Mietfläche ca. 24 m² - jährliche Kaltmiete € 3.600,-')
         self.assertEqual(facts['kaltmiete'], 300)
 
+    def test_annual_rent_income_in_price_details_is_imported(self):
+        page = b'''<html><body><div>Weitere Preisinformationen</div>
+        <div>Ist-Mieteinnahmen pro Jahr: 4.560,00 EUR</div></body></html>'''
+        item = extract_listing(page, 'https://www.immowelt.de/expose/example')
+        self.assertEqual(item['kaltmiete'], 380)
+
     def test_energy_certificate_address_and_embedded_living_area(self):
         state = json.dumps({
             'documents': {'display': True, 'files': [{
