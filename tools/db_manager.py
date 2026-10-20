@@ -142,7 +142,8 @@ CREATE TABLE IF NOT EXISTS schnellcheck (
     objekt_id INTEGER REFERENCES objekte(id) ON DELETE SET NULL,
     erstellt_am TEXT,
     geaendert_am TEXT,
-    revision INTEGER NOT NULL DEFAULT 0
+    revision INTEGER NOT NULL DEFAULT 0,
+    archiviert INTEGER NOT NULL DEFAULT 0
 );
 """
 
@@ -174,13 +175,16 @@ def ensure_runtime_schema(conn: sqlite3.Connection) -> None:
         objekt_id INTEGER REFERENCES objekte(id) ON DELETE SET NULL,
         erstellt_am TEXT,
         geaendert_am TEXT,
-        revision INTEGER NOT NULL DEFAULT 0
+        revision INTEGER NOT NULL DEFAULT 0,
+        archiviert INTEGER NOT NULL DEFAULT 0
     )""")
     conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_schnellcheck_public_id ON schnellcheck(public_id)")
     columns = {row[1] for row in conn.execute("PRAGMA table_info(schnellcheck)")}
     for column in ("maklerfirma", "ansprechpartner"):
         if column not in columns:
             conn.execute(f"ALTER TABLE schnellcheck ADD COLUMN {column} TEXT")
+    if "archiviert" not in columns:
+        conn.execute("ALTER TABLE schnellcheck ADD COLUMN archiviert INTEGER NOT NULL DEFAULT 0")
 
 
 def db():

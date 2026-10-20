@@ -1,6 +1,7 @@
 /* Schnellcheck-Karten: leichtgewichtige Erstbewertung, nur SQLite-API, keine Objektübersicht. */
 (() => {
   const byId = new Map();
+  let archivAnsicht = false;
   const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[char]));
   const num = value => value === null || value === undefined || value === '' ? null : Number(value);
   const eur = value => value == null ? '–' : Number(value).toLocaleString('de-DE', {maximumFractionDigits:0}) + ' €';
@@ -28,8 +29,11 @@
       ? `<a class="btn secondary sc-link" href="/${esc(c.objekt_pfad)}">Übersicht öffnen ↗</a>`
       : `<button type="button" onclick="schnellcheckUebersicht('${esc(c.public_id)}', this)" title="Legt Objektordner und vollständige Übersicht an">🏠 Übersicht anlegen</button>`;
     const quelle = c.source_url ? ` · <a href="${esc(c.source_url)}" target="_blank" rel="noopener noreferrer">Anzeige ↗</a>` : '';
+    const archivAktion = archivAnsicht
+      ? `<button type="button" class="btn secondary" onclick="schnellcheckArchivieren('${esc(c.public_id)}', false)" title="Aus dem Archiv holen">↩ Wiederherstellen</button>`
+      : `<button type="button" class="btn secondary" onclick="schnellcheckArchivieren('${esc(c.public_id)}', true)" title="Schnellcheck archivieren">🗃 Archivieren</button>`;
     return `<div class="karte sc-karte" data-id="${esc(c.public_id)}">
-      <div class="karte-head"><div class="karte-title"><div class="karte-name">${esc(name)}</div></div><span class="status-badge">Schnellcheck</span></div>
+      <div class="karte-head"><div class="karte-title"><div class="karte-name">${esc(name)}</div></div><span class="status-badge">${archivAnsicht ? 'Archiviert' : 'Schnellcheck'}</span></div>
       <div class="karte-sub">${esc(ortsteil || 'Adresse ergänzen (✏️ Details)')}</div>
       <div class="karte-details">${chip('📐', c.wohnflaeche == null ? null : Math.round(c.wohnflaeche) + ' m²')}${chip('🛏', c.zimmer == null ? null : c.zimmer + ' Zi.')}${chip('🧭', c.geschoss)}${chip('📅', c.baujahr == null ? null : 'BJ ' + Math.round(c.baujahr))}${chip('⚡', c.energieklasse)}</div>
       <div class="karte-kpis sc-kpis">
@@ -51,6 +55,7 @@
       <div class="sc-actions">
         ${uebersicht}
         <button type="button" class="btn secondary" onclick="const e=this.closest('.sc-karte').querySelector('.sc-edit');e.hidden=!e.hidden">✏️ Details</button>
+        ${archivAktion}
         <button type="button" class="btn secondary sc-del" title="Schnellcheck löschen" onclick="schnellcheckLoeschen('${esc(c.public_id)}')">🗑</button>
       </div>
       <div class="karte-datum">angelegt ${esc((c.erstellt_am || '').slice(0, 10))}${quelle}</div>
@@ -69,19 +74,31 @@
   window.schnellcheckAktualisieren = async button => {
     if (button) button.disabled = true;
     try {
-      const {items} = await api('GET', '/api/schnellchecks');
+      const {items} = await api('GET', `/api/schnellchecks?archiviert=${archivAnsicht ? '1' : '0'}`);
       byId.clear();
       items.forEach(item => byId.set(item.public_id, item));
       const grid = document.getElementById('scGrid');
       grid.innerHTML = items.length ? items.map(card).join('')
-        : '<p class="sub">Noch keine Schnellchecks. Oben per Link den ersten Check anlegen.</p>';
+        : archivAnsicht ? '<p class="sub">Das Archiv ist leer.</p>'
+          : '<p class="sub">Noch keine Schnellchecks. Oben per Link den ersten Check anlegen.</p>';
       const stand = document.getElementById('scStand');
-      if (stand) stand.textContent = `${items.length} Schnellcheck(s) · Bruttorendite ≥ 5 % = grün · Faktor < 20 = grün · Keine Objektübersicht nötig`;
+      if (stand) stand.textContent = archivAnsicht
+        ? `${items.length} archivierte Schnellcheck(s)`
+        : `${items.length} Schnellcheck(s) · Bruttorendite ≥ 5 % = grün · Faktor < 20 = grün · Keine Objektübersicht nötig`;
     } catch (error) {
       document.getElementById('scGrid').innerHTML = `<p class="sub">Schnellchecks nicht ladbar: ${esc(error.message)}</p>`;
     } finally {
       if (button) button.disabled = false;
     }
+  };
+  const archiveControls = () => {
+    document.getElementById('scTitle').textContent = archivAnsicht ? '🗃 Archivierte Schnellchecks' : '⚡ Schnellcheck';
+    document.getElementById('scArchiveToggle').textContent = archivAnsicht ? '← Aktive Schnellchecks' : '🗃 Archiv';
+  };
+  window.schnellcheckArchivUmschalten = async () => {
+    archivAnsicht = !archivAnsicht;
+    archiveControls();
+    await window.schnellcheckAktualisieren();
   };
   window.schnellcheckImport = async event => {
     event.preventDefault();
@@ -94,6 +111,10 @@
       const data = await api('POST', '/api/schnellcheck', {url: document.getElementById('scUrl').value.trim()});
       status.textContent = data.status;
       form.reset();
+      if (archivAnsicht) {
+        archivAnsicht = false;
+        archiveControls();
+      }
       await window.schnellcheckAktualisieren();
     } catch (error) {
       status.textContent = `Schnellcheck nicht möglich: ${error.message}. Felder können nach dem Anlegen manuell ergänzt werden.`;
@@ -134,6 +155,17 @@
       await window.schnellcheckAktualisieren();
     } catch (error) {
       alert('Löschen fehlgeschlagen: ' + error.message);
+    }
+  };
+  window.schnellcheckArchivieren = async (id, archiviert) => {
+    const item = byId.get(id);
+    if (!item) return;
+    try {
+      await api('POST', `/api/schnellcheck/${id}/archive`, {revision: item.revision, archiviert});
+      await window.schnellcheckAktualisieren();
+    } catch (error) {
+      alert('Archivstatus konnte nicht geändert werden: ' + error.message);
+      await window.schnellcheckAktualisieren();
     }
   };
   window.schnellcheckAktualisieren();

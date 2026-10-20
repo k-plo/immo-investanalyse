@@ -417,12 +417,13 @@ def _schnellcheck_payload(conn: sqlite3.Connection, public_id: str) -> dict:
     return dict(row)
 
 
-def schnellcheck_rows() -> list[dict]:
+def schnellcheck_rows(archiviert: bool = False) -> list[dict]:
     with closing(connection()) as conn:
         rows = conn.execute("""
             SELECT s.*, o.html_pfad AS objekt_pfad, o.public_id AS objekt_public_id
             FROM schnellcheck s LEFT JOIN objekte o ON o.id = s.objekt_id
-            ORDER BY s.erstellt_am DESC, s.id DESC""").fetchall()
+            WHERE s.archiviert = ?
+            ORDER BY s.erstellt_am DESC, s.id DESC""", (int(archiviert),)).fetchall()
     return [dict(row) for row in rows]
 
 
@@ -538,6 +539,22 @@ def delete_schnellcheck(public_id: str, expected_revision: int) -> dict:
             raise RevisionConflict(f"DB-Revision {row['revision']}, Browser-Revision {expected_revision}")
         conn.execute("DELETE FROM schnellcheck WHERE public_id=?", (public_id,))
     return {"id": public_id, "deleted": True}
+
+
+def set_schnellcheck_archived(public_id: str, expected_revision: int, archiviert: bool) -> dict:
+    if not isinstance(expected_revision, int) or expected_revision < 0 or not isinstance(archiviert, bool):
+        raise ValueError("Ungültiger Archivstatus oder Revision")
+    now = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    with closing(connection()) as conn, conn:
+        conn.execute("BEGIN IMMEDIATE")
+        row = conn.execute("SELECT revision FROM schnellcheck WHERE public_id=?", (public_id,)).fetchone()
+        if row is None:
+            raise KeyError(public_id)
+        if row["revision"] != expected_revision:
+            raise RevisionConflict(f"DB-Revision {row['revision']}, Browser-Revision {expected_revision}")
+        conn.execute("UPDATE schnellcheck SET archiviert=?,geaendert_am=?,revision=revision+1 WHERE public_id=?",
+                     (int(archiviert), now, public_id))
+        return _schnellcheck_payload(conn, public_id)
 
 
 def schnellcheck_uebersicht(public_id: str) -> dict:

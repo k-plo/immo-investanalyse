@@ -8,11 +8,12 @@ import sys
 from datetime import datetime, timezone
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import unquote, urlparse
+from urllib.parse import parse_qs, unquote, urlparse
 
 from db_store import (RevisionConflict, create_schnellcheck, delete_schnellcheck, get_object,
                       import_listing, new_candidates, portfolio_rows, save_object,
                       schnellcheck_rows, schnellcheck_uebersicht, set_archive_status, set_photo,
+                      set_schnellcheck_archived,
                       update_schnellcheck)
 from listing_import import ListingError
 
@@ -52,7 +53,7 @@ class PortfolioHandler(SimpleHTTPRequestHandler):
     def do_GET(self) -> None:
         path = urlparse(self.path).path.rstrip("/") or "/"
         if path == "/api/health":
-            self.send_json({"ok": True, "service": "immo-portfolio", "api_version": 4,
+            self.send_json({"ok": True, "service": "immo-portfolio", "api_version": 5,
                             "time": datetime.now(timezone.utc).isoformat()})
             return
         if path == "/api/portfolio":
@@ -66,7 +67,8 @@ class PortfolioHandler(SimpleHTTPRequestHandler):
             return
         if path == "/api/schnellchecks":
             try:
-                self.send_json({"items": schnellcheck_rows()})
+                archiviert = parse_qs(urlparse(self.path).query).get("archiviert", ["0"])[0] == "1"
+                self.send_json({"items": schnellcheck_rows(archiviert)})
             except sqlite3.Error as error:
                 self.send_json({"error": f"Datenbankfehler: {error}"}, status=500)
             return
@@ -144,6 +146,7 @@ class PortfolioHandler(SimpleHTTPRequestHandler):
         path = urlparse(self.path).path
         allowed = (path in ("/api/import-listing", "/api/schnellcheck")
                    or (path.startswith("/api/objects/") and path.endswith(("/archive", "/reactivate", "/photo")))
+                   or (path.startswith("/api/schnellcheck/") and path.endswith("/archive"))
                    or (path.startswith("/api/schnellcheck/") and path.endswith("/uebersicht")))
         if not allowed:
             self.send_json({"error": "Unbekannter Endpunkt"}, 404)
@@ -167,6 +170,12 @@ class PortfolioHandler(SimpleHTTPRequestHandler):
                     raise ValueError("Ungültige Schnellcheck-ID")
                 result = schnellcheck_uebersicht(public_id)
                 self.send_json(result, 200 if result.get("existing") else 201)
+            elif path.startswith("/api/schnellcheck/") and path.endswith("/archive"):
+                public_id = unquote(path.split("/")[3])
+                if not public_id or "/" in public_id or "\\" in public_id:
+                    raise ValueError("Ungültige Schnellcheck-ID")
+                result = set_schnellcheck_archived(public_id, data.get("revision"), data.get("archiviert"))
+                self.send_json(result)
             elif path.endswith("/photo"):
                 public_id = unquote(path.split("/")[3])
                 result = set_photo(public_id, data.get("data"), data.get("mime"), data.get("revision"))

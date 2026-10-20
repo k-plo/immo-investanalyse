@@ -119,10 +119,11 @@ def main():
     <div class="sub">Lade aktuelle Objekte aus SQLite …</div>
   </div>
 
-  <h2 class="sc-title">⚡ Schnellcheck</h2>
+  <h2 class="sc-title" id="scTitle">⚡ Schnellcheck</h2>
   <div class="sub" id="scStand">Schnelle Erstbewertung ohne Objektübersicht · Live-Werte werden geladen</div>
   <div class="filter">
     <button class="analyse quick" type="button" onclick="document.getElementById('scForm').hidden = !document.getElementById('scForm').hidden">🔗 Neuer Schnellcheck per Link</button>
+    <button class="sync" id="scArchiveToggle" type="button" onclick="schnellcheckArchivUmschalten()">🗃 Archiv</button>
     <button class="sync" onclick="schnellcheckAktualisieren(this)">🔄 Aktualisieren</button>
   </div>
   <form id="scForm" hidden onsubmit="schnellcheckImport(event)" style="margin:-6px 0 20px;display:flex;gap:8px;flex-wrap:wrap">
@@ -140,7 +141,7 @@ def main():
   </footer>
 </div>
 <script src="assets/portfolio_db.js?v=10"></script>
-<script src="assets/schnellcheck.js?v=4"></script>
+<script src="assets/schnellcheck.js?v=5"></script>
 </body>
 </html>"""
     OUT.write_text(html, encoding="utf-8")

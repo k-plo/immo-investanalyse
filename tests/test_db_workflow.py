@@ -133,6 +133,31 @@ class DbWorkflowTest(unittest.TestCase):
 
 
 class SchnellcheckTest(unittest.TestCase):
+    def test_schnellcheck_archive_restore_and_revision(self):
+        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+            base = Path(tmp)
+            db_path = base / 'immo_datenbank.db'
+            shutil.copy2(ROOT / 'immo_datenbank.db', db_path)
+            with patch.object(db_store, 'BASE', base), patch.object(db_store, 'DB_PATH', db_path):
+                with db_store.connection() as conn:
+                    conn.execute('DELETE FROM schnellcheck')
+                    conn.execute("INSERT INTO schnellcheck (public_id,titel) VALUES ('archive-test','Test')")
+                    conn.commit()
+
+                archived = db_store.set_schnellcheck_archived('archive-test', 0, True)
+                self.assertEqual(archived['archiviert'], 1)
+                self.assertEqual(archived['revision'], 1)
+                self.assertEqual(db_store.schnellcheck_rows(), [])
+                self.assertEqual(len(db_store.schnellcheck_rows(archiviert=True)), 1)
+                with self.assertRaises(db_store.RevisionConflict):
+                    db_store.set_schnellcheck_archived('archive-test', 0, False)
+
+                restored = db_store.set_schnellcheck_archived('archive-test', 1, False)
+                self.assertEqual(restored['archiviert'], 0)
+                self.assertEqual(restored['revision'], 2)
+                self.assertEqual(len(db_store.schnellcheck_rows()), 1)
+                self.assertEqual(db_store.schnellcheck_rows(archiviert=True), [])
+
     def test_kassel_address_range_requires_one_residential_zone(self):
         rows = [{"2000": 8.0, "wohnflaeche": 33}]
         addresses = [
